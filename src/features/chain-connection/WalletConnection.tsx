@@ -18,12 +18,12 @@ export const WalletConnection = ({}: {}) => {
   return (
     <Button
       className={twJoin([
-        "flex flex-row gap-2 items-center",
+        "flex flex-row items-center gap-2",
         isConnected && "cursor-default",
       ])}
       onClick={() => (isConnected ? () => {} : connect())}
     >
-      <div className="w-3 h-3 rounded-full bg-accent-green"></div>
+      <div className="h-3 w-3 rounded-full bg-accent-green"></div>
       <span className="font-medium">
         {isConnected ? ensName || truncateEthAddress(address || "") : "Connect"}
       </span>

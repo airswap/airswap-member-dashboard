@@ -15,7 +15,7 @@ export const Button = ({
   return (
     <button
       className={twMerge(
-        "rounded-full px-5 py-3 border border-border-dark transition-colors",
+        "rounded-full border border-border-dark px-5 py-3 transition-colors",
         "hover:border-white",
         className,
       )}

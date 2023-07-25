@@ -6,7 +6,7 @@ import { StakeButton } from "../staking/StakeButton";
 
 export const Header = ({}: {}) => {
   return (
-    <div className="flex flex-row justify-between items-center h-24 px-8">
+    <div className="flex h-24 flex-row items-center justify-between px-8">
       <div>
         <img src={AirSwapLogo} alt="AirSwap Logo" className="md:hidden" />
         <img
@@ -16,7 +16,7 @@ export const Header = ({}: {}) => {
         />
       </div>
 
-      <div className="flex flex-row gap-4 items-center">
+      <div className="flex flex-row items-center gap-4">
         <WalletConnection />
         <SettingsMenuButton />
         <StakeButton />

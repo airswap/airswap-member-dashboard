@@ -4,7 +4,7 @@ import { useUserVotes } from "./hooks/useUserVotes";
 const ProposalListItem = ({ proposal }: { proposal: Proposal }) => {
   return (
     <div
-      className="grid border border-border-dark px-6 py-5 gap-x-4"
+      className="grid gap-x-4 border border-border-dark px-6 py-5"
       style={{ gridTemplateColumns: "auto 1fr auto" }}
     >
       <span>todo</span>
@@ -20,13 +20,13 @@ export const VoteList = ({}: {}) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row gap-4 items-center">
-        <h3 className="uppercase text-xs font-bold">Live Votes</h3>
+      <div className="flex flex-row items-center gap-4">
+        <h3 className="text-xs font-bold uppercase">Live Votes</h3>
         <div className="h-px flex-1 bg-border-dark"></div>
       </div>
 
-      <div className="flex flex-row gap-4 items-center">
-        <h3 className="uppercase text-xs font-bold">Past Votes</h3>
+      <div className="flex flex-row items-center gap-4">
+        <h3 className="text-xs font-bold uppercase">Past Votes</h3>
       </div>
       <div className="h-px flex-1 bg-border-dark">
         {proposals?.map((proposal) => <ProposalListItem proposal={proposal} />)}

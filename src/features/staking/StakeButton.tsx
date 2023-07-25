@@ -15,9 +15,9 @@ export const StakeButton = ({}: {}) => {
     format(sAstBalance?.value, { tokenDecimals: 4 }) + " sAST";
 
   return (
-    <div className="flex flex-row gap-4 items-center border border-border-dark px-5 py-3">
+    <div className="flex flex-row items-center gap-4 border border-border-dark px-5 py-3">
       <span className="font-medium">{formattedBalance}</span>
-      <Button className="-my-3 -mr-5 bg-accent-blue uppercase font-bold">
+      <Button className="-my-3 -mr-5 bg-accent-blue font-bold uppercase">
         Stake
       </Button>
     </div>

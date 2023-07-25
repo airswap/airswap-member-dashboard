@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="flex flex-col">
       <Header />
-      <main className="mx-auto w-[800px] max-w-full flex flex-col">
+      <main className="mx-auto flex w-[800px] max-w-full flex-col">
         <VoteList />
       </main>
     </div>
