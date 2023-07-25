@@ -1,5 +1,5 @@
 import { Header } from "./features/structure/Header";
-import { VoteList } from "./features/votes/hooks/VoteList";
+import { VoteList } from "./features/votes/VoteList";
 
 function App() {
   return (

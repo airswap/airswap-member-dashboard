@@ -1,5 +1,5 @@
-import { Proposal, useProposals } from "./useProposals";
-import { useUserVotes } from "./useUserVotes";
+import { Proposal, useProposals } from "./hooks/useProposals";
+import { useUserVotes } from "./hooks/useUserVotes";
 
 const ProposalListItem = ({ proposal }: { proposal: Proposal }) => {
   return (
