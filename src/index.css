@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Loos";
+  font-style: ExtraLight;
+  font-weight: 200;
+  src:
+    local("Loos ExtraLight"),
+    url(@/assets/fonts/Loos-ExtraLight.otf) format("opentype");
+}
+@font-face {
+  font-family: "Loos";
+  font-style: normal;
+  font-weight: 400;
+  src:
+    local("Loos Regular"),
+    url(@/assets/fonts/Loos-Regular.otf) format("opentype");
+}
+@font-face {
+  font-family: "Loos";
+  font-style: medium;
+  font-weight: 500;
+  src:
+    local("Loos Medium"),
+    url(@/assets/fonts/Loos-Medium.otf) format("opentype");
+}
+@font-face {
+  font-family: "Loos";
+  font-style: bold;
+  font-weight: 700;
+  src:
+    local("Loos Bold"),
+    url(@/assets/fonts/Loos-Bold.otf) format("opentype");
+}
+@font-face {
+  font-family: "Loos";
+  font-style: black;
+  font-weight: 900;
+  src:
+    local("Loos Black"),
+    url(@/assets/fonts/Loos-Black.otf) format("opentype");
+}
+
+:root {
+  @apply bg-bg-dark text-white;
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
