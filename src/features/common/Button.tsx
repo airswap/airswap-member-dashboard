@@ -4,10 +4,14 @@ import { twMerge } from "tailwind-merge";
 export const Button = ({
   children,
   className,
+  ...rest
 }: {
   children?: ReactNode;
   className?: string;
-}) => {
+} & React.DetailedHTMLProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>) => {
   return (
     <button
       className={twMerge(
@@ -15,6 +19,7 @@ export const Button = ({
         "hover:border-white",
         className,
       )}
+      {...rest}
     >
       {children}
     </button>
