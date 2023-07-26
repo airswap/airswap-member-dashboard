@@ -1,4 +1,4 @@
-import { request, gql } from "graphql-request";
+import { gql, request } from "graphql-request";
 import { useQuery } from "wagmi";
 import { SNAPSHOT_HUB_GRAPHQL_ENDPOINT } from "../config/constants";
 
@@ -14,6 +14,7 @@ const PROPOSALS_QUERY = gql`
     ) {
       id
       title
+      start
       end
       snapshot
       state
@@ -25,6 +26,8 @@ export type Proposal = {
   id: string;
   title: string;
   /** This is a **unix timestamp** (seconds, not ms).  */
+  start: number;
+  /** This is a **unix timestamp** (seconds, not ms).  */
   end: number;
   /** Block number as a string */
   snapshot: string;
@@ -32,15 +35,7 @@ export type Proposal = {
 };
 
 type ProposalsQueryResult = {
-  proposals: {
-    id: string;
-    title: string;
-    /** This is a **unix timestamp** (seconds, not ms).  */
-    end: number;
-    /** Block number as a string */
-    snapshot: string;
-    state: "closed" | "open";
-  }[];
+  proposals: Proposal[];
 };
 
 export const useProposals = () => {

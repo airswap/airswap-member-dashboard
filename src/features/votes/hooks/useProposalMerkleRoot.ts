@@ -1,11 +1,19 @@
-import { useMemo } from "react";
+import { useQuery } from "wagmi";
 import { useProposalMerkleTree } from "./useProposalMerkleTree";
 
-export const useProposalMerkleRoot = (proposalId: string) => {
+export const useProposalMerkleRoot = (
+  proposalId: string,
+  options?: { enabled: boolean },
+) => {
   const tree = useProposalMerkleTree(proposalId);
 
-  return useMemo(() => {
-    if (!tree) return;
-    return tree.getHexRoot();
-  }, [tree]);
+  return useQuery(
+    ["proposal-merkle-root", proposalId],
+    () => tree!.getHexRoot(),
+    {
+      enabled: (options?.enabled ?? true) && !!tree,
+      cacheTime: Infinity,
+      staleTime: Infinity,
+    },
+  );
 };

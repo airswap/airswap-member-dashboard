@@ -1,4 +1,4 @@
-import { request, gql } from "graphql-request";
+import { gql, request } from "graphql-request";
 import { useQuery } from "wagmi";
 import { SNAPSHOT_HUB_GRAPHQL_ENDPOINT } from "../config/constants";
 
@@ -46,6 +46,7 @@ export const useProposalVotes = (proposalId?: string) => {
   };
 
   return useQuery(["snapshot", "votesByProposalId", proposalId], fetch, {
+    // FIXME: remove all Infinity caches and have a configurable cache time
     cacheTime: Infinity,
     // TODO: Should be possible to increase this to be much more aggresively cached
     // if we ensure that this is only requested for closed proposals.

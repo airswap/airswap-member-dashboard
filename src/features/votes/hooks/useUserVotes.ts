@@ -1,4 +1,4 @@
-import { request, gql } from "graphql-request";
+import { gql, request } from "graphql-request";
 import { useAccount, useQuery } from "wagmi";
 import { SNAPSHOT_HUB_GRAPHQL_ENDPOINT } from "../config/constants";
 
@@ -21,6 +21,7 @@ const VOTES_QUERY = (voter?: string) => gql`
         id
       }
       choice
+      vp
     }
   }
 `;
@@ -29,6 +30,7 @@ type VotesQueryResult = {
   votes: {
     id: string;
     choice: number;
+    vp: number;
     proposal: { id: string };
   }[];
 };
