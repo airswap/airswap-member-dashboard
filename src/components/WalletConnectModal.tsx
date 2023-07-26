@@ -1,7 +1,6 @@
 import { FC, MouseEvent } from "react";
-import { useAccount, useConnect } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
-import { GrClose } from 'react-icons/gr'
+import { AiOutlineClose } from 'react-icons/ai';
+import { useConnect } from "wagmi";
 
 interface WalletConnectModalProps {
   isDisplayModal: boolean
@@ -9,12 +8,10 @@ interface WalletConnectModalProps {
 }
 
 const WalletConnectModal: FC<WalletConnectModalProps> = ({ isDisplayModal, onClose }) => {
-  const { isConnected } = useAccount()
-  const { connect } = useConnect({
-    connector: new InjectedConnector(),
-  });
+  const { connect, connectors, isLoading, pendingConnector } = useConnect()
+  const metamaskConnector = connectors[0]
+  const walletConnectConnector = connectors[1]
 
-  if (!isDisplayModal) return null;
 
   const handleOnClose = (e: MouseEvent<HTMLInputElement>) => {
     const target = e.target as HTMLElement
@@ -23,22 +20,56 @@ const WalletConnectModal: FC<WalletConnectModalProps> = ({ isDisplayModal, onClo
     }
   }
 
+  if (!isDisplayModal) return null;
+
   return (
     <div
       className="fixed inset-0 bg-black/1 backdrop-blur-sm flex justify-center items-center"
       id="container"
       onClick={handleOnClose}
     >
-      <div className="bg-darkShaded p-2 rounded-sm">
-        <div className="flex flex-row">
+      <div className="flex flex-col space-y-2 bg-bg-dark px-4 pt-4 pb-6 rounded-md font-bold w-[360px] border-2 border-border-dark">
+        <div className="flex flex-row px-2 pb-1  justify-between">
           <span>Select Wallet</span>
-          <button
-            className="text-white bg-white"
-            onClick={onClose}>
-            <GrClose style={{ color: 'white' }}
-            />
+          <button onClick={onClose}>
+            <AiOutlineClose />
           </button>
         </div>
+        <button
+          className="flex flex-row items-center p-2 border-2 border-border-dark"
+          disabled={!connectors[0].ready}
+          onClick={() => connect({ connector: metamaskConnector })}
+        >
+          <img
+            src="src/assets/MetaMask-logo.svg"
+            alt='MetaMask logo'
+            className="mr-4 w-8 h-8"
+          />
+          <span>
+            {connectors[0].name}
+            {!connectors[0].ready && ' (unsupported)'}
+            {isLoading &&
+              connectors[0].id === pendingConnector?.id &&
+              ' (connecting)'}
+          </span>
+        </button>
+        <button
+          className="flex flex-row items-center p-2  border-2 border-border-dark"
+          onClick={() => connect({ connector: walletConnectConnector })}
+        >
+          <img
+            src="src/assets/walletconnect-logo.svg"
+            alt='WalletConnect logo'
+            className="mr-4 w-8 h-8"
+          />
+          <span>
+            {connectors[1].name}
+            {!connectors[1].ready && ' (unsupported)'}
+            {isLoading &&
+              connectors[1].id === pendingConnector?.id &&
+              ' (connecting)'}
+          </span>
+        </button>
       </div>
     </div >
   )

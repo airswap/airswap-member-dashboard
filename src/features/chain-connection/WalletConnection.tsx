@@ -4,9 +4,6 @@ import { twJoin } from "tailwind-merge";
 import truncateEthAddress from "truncate-eth-address";
 import { FC, Dispatch } from "react";
 
-// TODO: this component should actually open a modal instead of defaulting to
-// the injected connector
-
 interface WalletConnectionProps {
   setRenderWalletConnectModal: Dispatch<boolean>
 }
