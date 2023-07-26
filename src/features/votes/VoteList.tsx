@@ -1,21 +1,47 @@
+import { format } from "@greypixel_/nicenumbers";
+import { twJoin } from "tailwind-merge";
+import { useAccount } from "wagmi";
+import { useProposalClaimStatus } from "./hooks/useProposalClaimStatus";
 import { Proposal, useProposals } from "./hooks/useProposals";
-import { useUserVotes } from "./hooks/useUserVotes";
 
 const ProposalListItem = ({ proposal }: { proposal: Proposal }) => {
+  const { isConnected: isWalletConnected } = useAccount();
+
+  const {
+    hasEnded,
+    hasStarted,
+    hasUserVoted,
+    hasUserClaimed,
+    isRootEnabled,
+    pointsEarned,
+  } = useProposalClaimStatus({
+    proposal,
+  });
+
   return (
-    <div
-      className="grid gap-x-4 border border-border-dark px-6 py-5"
-      style={{ gridTemplateColumns: "auto 1fr auto" }}
-    >
-      <span>todo</span>
-      <span>{proposal.title}</span>
-      <span>todo</span>
+    <div className="flex flex-row gap-4 border border-border-dark px-6 py-5">
+      {isWalletConnected && !hasEnded && (
+        <div
+          className={twJoin([
+            "w-3 h-3",
+            hasStarted ? "bg-accent-green" : "bg-accent-orange",
+          ])}
+        />
+      )}
+      <span className="flex-1">{proposal.title}</span>
+      {hasUserVoted ? (
+        <span>
+          {format(pointsEarned, { tokenDecimals: 0 })} points{" "}
+          {hasUserClaimed && "claimed"}
+        </span>
+      ) : (
+        <span className="text-xs text-accent-orange">Didn't vote</span>
+      )}
     </div>
   );
 };
 
 export const VoteList = ({}: {}) => {
-  const { data: votes } = useUserVotes();
   const { data: proposals } = useProposals();
 
   return (

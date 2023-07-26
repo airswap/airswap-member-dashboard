@@ -7,7 +7,7 @@ import { SNAPSHOT_HUB_GRAPHQL_ENDPOINT } from "../config/constants";
 const VOTES_BY_PROPOSAL_QUERY = (proposalId?: string) => gql`
   query {
     votes(
-      # first: 1000
+      first: 1000
       where: {
         proposal: "${proposalId}",
       }

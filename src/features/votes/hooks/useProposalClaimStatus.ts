@@ -27,14 +27,15 @@ export const useProposalClaimStatus = ({
 
   // Determine if the user has voted for this proposal or not:
   const vote = userVotes?.find((vote) => vote.proposal.id === proposal.id);
-  const hasVoted = !!vote;
+  const hasUserVoted = !!vote;
 
   // Determine if proposal has ended
   const hasEnded = proposal.end * 1000 < Date.now();
+  const hasStarted = proposal.start * 1000 < Date.now();
 
   // If the user has voted, check if they've claimed. We need the root for this.
   const root = useProposalMerkleRoot(proposal.id, {
-    enabled: hasVoted || false, // note that we don't compute root 'til we know user has voted.
+    enabled: hasUserVoted || false, // note that we don't compute root 'til we know user has voted.
   });
 
   // TODO: this can be a useContractRead
@@ -42,10 +43,12 @@ export const useProposalClaimStatus = ({
 
   const hasUserClaimed: boolean | undefined = false; //
 
-  const pointsEarned = hasVoted ? vote.vp / (numSimultaneous || 1) : 0;
+  const pointsEarned = hasUserVoted ? vote.vp / (numSimultaneous || 1) : 0;
 
   return {
-    hasVoted,
+    hasStarted,
+    hasEnded,
+    hasUserVoted,
     pointsEarned,
     isRootEnabled,
     hasUserClaimed,
