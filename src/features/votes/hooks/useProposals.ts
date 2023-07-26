@@ -1,10 +1,8 @@
 import { request, gql } from "graphql-request";
 import { useQuery } from "wagmi";
+import { SNAPSHOT_HUB_GRAPHQL_ENDPOINT } from "../config/constants";
 
 // Snapshot docs here: https://docs.snapshot.org/tools/graphql-api
-
-const snapshotGraphqlEndpoint = "https://hub.snapshot.org/graphql";
-
 const PROPOSALS_QUERY = gql`
   query {
     proposals(
@@ -48,7 +46,7 @@ type ProposalsQueryResult = {
 export const useProposals = () => {
   const fetch = async () => {
     const result = await request<ProposalsQueryResult>(
-      snapshotGraphqlEndpoint,
+      SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
       PROPOSALS_QUERY,
     );
     return result.proposals;
