@@ -45,12 +45,16 @@ export const useProposalVotes = (proposalId?: string) => {
     return result.votes;
   };
 
-  return useQuery(["snapshot", "votesByProposalId", proposalId], fetch, {
-    // FIXME: remove all Infinity caches and have a configurable cache time
-    cacheTime: Infinity,
-    // TODO: Should be possible to increase this to be much more aggresively cached
-    // if we ensure that this is only requested for closed proposals.
-    staleTime: 600_000, // 10 minutes
-    enabled: !!proposalId,
-  });
+  return useQuery(
+    [SNAPSHOT_HUB_GRAPHQL_ENDPOINT, "votesByProposalId", proposalId],
+    fetch,
+    {
+      // FIXME: remove all Infinity caches and have a configurable cache time
+      cacheTime: Infinity,
+      // TODO: Should be possible to increase this to be much more aggresively cached
+      // if we ensure that this is only requested for closed proposals.
+      staleTime: 600_000, // 10 minutes
+      enabled: !!proposalId,
+    },
+  );
 };

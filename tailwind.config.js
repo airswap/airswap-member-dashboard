@@ -8,10 +8,14 @@ module.exports = {
     },
     extend: {
       colors: {
+        font: {
+          secondary: "hsla(220, 10%, 48%, 1)",
+        },
         bg: {
           dark: "hsl(240, 8%, 3%)",
         },
         accent: {
+          lightgreen: "hsla(158, 88%, 44%, 1)",
           blue: "hsl(220, 100%, 58%)",
           orange: "hsl(42, 100%, 59%)",
           green: "hsl(122, 100%, 69%)",

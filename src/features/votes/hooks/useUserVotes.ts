@@ -1,6 +1,9 @@
 import { gql, request } from "graphql-request";
 import { useAccount, useQuery } from "wagmi";
-import { SNAPSHOT_HUB_GRAPHQL_ENDPOINT } from "../config/constants";
+import {
+  SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
+  SNAPSHOT_SPACE,
+} from "../config/constants";
 
 // Snapshot docs here: https://docs.snapshot.org/tools/graphql-api
 const VOTES_QUERY = (voter?: string) => gql`
@@ -10,7 +13,7 @@ const VOTES_QUERY = (voter?: string) => gql`
       first: 100
       skip: 0
       where: {
-        space_in: ["vote.airswap.eth"]
+        space_in: ["${SNAPSHOT_SPACE}"]
         voter: "${voter}"
       }
       orderBy: "created"
@@ -52,7 +55,11 @@ export const useUserVotes = (voter?: `0x${string}`) => {
   };
 
   return useQuery(
-    ["snapshot", "votesByVoterAddress", _voter?.toLowerCase()],
+    [
+      SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
+      "votesByVoterAddress",
+      _voter?.toLowerCase(),
+    ],
     fetch,
     {
       cacheTime: Infinity,

@@ -1,6 +1,11 @@
 import { gql, request } from "graphql-request";
 import { useQuery } from "wagmi";
-import { SNAPSHOT_HUB_GRAPHQL_ENDPOINT } from "../config/constants";
+import {
+  SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
+  SNAPSHOT_SPACE,
+} from "../config/constants";
+
+console.log(SNAPSHOT_SPACE);
 
 // Snapshot docs here: https://docs.snapshot.org/tools/graphql-api
 const PROPOSALS_QUERY = gql`
@@ -8,7 +13,7 @@ const PROPOSALS_QUERY = gql`
     proposals(
       first: 100
       skip: 0
-      where: { space_in: ["vote.airswap.eth"] }
+      where: { space_in: ["${SNAPSHOT_SPACE}"] }
       orderBy: "created"
       orderDirection: desc
     ) {
@@ -31,7 +36,7 @@ export type Proposal = {
   end: number;
   /** Block number as a string */
   snapshot: string;
-  state: "closed" | "open";
+  state: "closed" | "open" | "pending";
 };
 
 type ProposalsQueryResult = {
@@ -47,7 +52,7 @@ export const useProposals = () => {
     return result.proposals;
   };
 
-  return useQuery(["snapshot", "proposals"], fetch, {
+  return useQuery([SNAPSHOT_HUB_GRAPHQL_ENDPOINT, "proposals"], fetch, {
     cacheTime: Infinity,
     staleTime: 3_600_000, // 1 hour
   });
