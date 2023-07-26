@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in contributing to the AirSwap web app! We welcome contributions no matter their size.
+Thank you for your interest in contributing to the AirSwap Voter Rewards app! We welcome contributions no matter their size.
 
 ## Issues
 
@@ -9,6 +9,10 @@ While we use GitHub for issue tracking and project management, development is ge
 ## Key libraries
 
 TODO: add this.
+- React-Query
+- TailwindCSS
+- Viem
+- Wagmi
 
 ## Code Style
 

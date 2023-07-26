@@ -1,19 +1,21 @@
-import { useAccount, useConnect, useEnsName } from "wagmi";
+import { useAccount, useEnsName, useDisconnect } from "wagmi";
 import { Button } from "../common/Button";
-import { InjectedConnector } from "wagmi/connectors/injected";
 import { twJoin } from "tailwind-merge";
 import truncateEthAddress from "truncate-eth-address";
+import { FC, Dispatch } from "react";
 
 // TODO: this component should actually open a modal instead of defaulting to
 // the injected connector
 
-export const WalletConnection = ({}: {}) => {
+interface WalletConnectionProps {
+  setRenderWalletConnectModal: Dispatch<boolean>
+}
+
+export const WalletConnection: FC<WalletConnectionProps> = ({ setRenderWalletConnectModal }) => {
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
 
-  const { connect } = useConnect({
-    connector: new InjectedConnector(),
-  });
+  const disconnect = useDisconnect()
 
   return (
     <Button
@@ -21,7 +23,8 @@ export const WalletConnection = ({}: {}) => {
         "flex flex-row items-center gap-2",
         isConnected && "cursor-default",
       ])}
-      onClick={() => (isConnected ? () => {} : connect())}
+      // onClick={() => (isConnected ? () => {} : connect())}
+      onClick={() => !isConnected ? setRenderWalletConnectModal(true) : disconnect}
     >
       <div className="h-3 w-3 rounded-full bg-accent-green"></div>
       <span className="font-medium">

@@ -3,8 +3,16 @@ import AirSwapLogoWithText from "../../assets/airswap-logo-with-text.svg";
 import { SettingsMenuButton } from "../settings/SettingsMenuButton";
 import { WalletConnection } from "../chain-connection/WalletConnection";
 import { StakeButton } from "../staking/StakeButton";
+import { useState } from "react";
+import WalletConnectModal from "../../components/WalletConnectModal";
 
-export const Header = ({}: {}) => {
+export const Header = ({ }: {}) => {
+  const [isRenderWalletConnectModal, setIsRenderWalletConnectModal] = useState<boolean>(false)
+
+  const handleCloseModal = (): void => {
+    setIsRenderWalletConnectModal(false)
+  }
+
   return (
     <div className="flex h-24 flex-row items-center justify-between px-8">
       <div>
@@ -17,7 +25,8 @@ export const Header = ({}: {}) => {
       </div>
 
       <div className="flex flex-row items-center gap-4">
-        <WalletConnection />
+        <WalletConnection setRenderWalletConnectModal={setIsRenderWalletConnectModal} />
+        <WalletConnectModal isDisplayModal={isRenderWalletConnectModal} onClose={handleCloseModal} />
         <SettingsMenuButton />
         <StakeButton />
       </div>
