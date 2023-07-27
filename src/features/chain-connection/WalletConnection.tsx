@@ -6,7 +6,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useEffect } from "react";
 
 const WalletConnection = () => {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, isConnecting } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const { connect, connectors, isLoading, pendingConnector } = useConnect()
   const { disconnect } = useDisconnect()
@@ -14,10 +14,24 @@ const WalletConnection = () => {
   const dialog = document.querySelector('dialog')
 
   useEffect(() => {
-    if (isConnected) {
+    if (isConnected || isConnecting) {
       dialog?.close()
     }
-  }, [isConnected, dialog])
+  }, [isConnected, isConnecting, dialog])
+
+  useEffect(() => {
+    dialog && dialog.addEventListener("click", e => {
+      const dialogDimensions = dialog.getBoundingClientRect()
+      if (
+        e.clientX < dialogDimensions.left ||
+        e.clientX > dialogDimensions.right ||
+        e.clientY < dialogDimensions.top ||
+        e.clientY > dialogDimensions.bottom
+      ) {
+        dialog.close()
+      }
+    })
+  }, [dialog]);
 
   const connectorButtons = () => {
     return connectors.map((connector: Connector) => {
@@ -33,7 +47,7 @@ const WalletConnection = () => {
             alt='MetaMask logo'
             className="mr-4 w-8 h-8"
           />
-          <span className="color-white">
+          <span>
             {connector.name}
             {!connector.ready && ' (unsupported)'}
             {isLoading &&
@@ -59,15 +73,11 @@ const WalletConnection = () => {
         </span>
       </Button>
 
-      <dialog className="rounded-md backdrop:bg-color-black color-white">
-        <div
-          className="flex flex-col space-y-3 bg-bg-dark px-6 pt-4 pb-6 font-bold w-[360px] color-white"
-        >
+      <dialog className="rounded-md text-white backdrop-blur-sm">
+        <div className="flex flex-col space-y-3 px-6 pt-4 pb-6 bg-bg-dark font-bold w-[360px] color-white">
           <div className="flex flex-row px-2 pb-1  justify-between">
             <span>Select Wallet</span>
-            <button
-              onClick={() => dialog?.close()}
-            >
+            <button onClick={() => dialog?.close()}>
               <AiOutlineClose />
             </button>
           </div>
