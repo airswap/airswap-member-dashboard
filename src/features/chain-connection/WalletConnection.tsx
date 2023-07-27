@@ -12,7 +12,7 @@ export const WalletConnection: FC<WalletConnectionProps> = ({ setRenderWalletCon
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
 
-  const disconnect = useDisconnect()
+  const { disconnect } = useDisconnect()
 
   return (
     <Button
@@ -20,8 +20,7 @@ export const WalletConnection: FC<WalletConnectionProps> = ({ setRenderWalletCon
         "flex flex-row items-center gap-2",
         isConnected && "cursor-default",
       ])}
-      // onClick={() => (isConnected ? () => {} : connect())}
-      onClick={() => !isConnected ? setRenderWalletConnectModal(true) : disconnect}
+      onClick={() => !isConnected ? setRenderWalletConnectModal(true) : disconnect()}
     >
       <div className="h-3 w-3 rounded-full bg-accent-green"></div>
       <span className="font-medium">

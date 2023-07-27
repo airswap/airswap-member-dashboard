@@ -1,6 +1,6 @@
 import { FC, MouseEvent } from "react";
 import { AiOutlineClose } from 'react-icons/ai';
-import { useConnect } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
 
 interface WalletConnectModalProps {
   isDisplayModal: boolean
@@ -9,9 +9,9 @@ interface WalletConnectModalProps {
 
 const WalletConnectModal: FC<WalletConnectModalProps> = ({ isDisplayModal, onClose }) => {
   const { connect, connectors, isLoading, pendingConnector } = useConnect()
+  const { isConnected } = useAccount()
   const metamaskConnector = connectors[0]
   const walletConnectConnector = connectors[1]
-
 
   const handleOnClose = (e: MouseEvent<HTMLInputElement>) => {
     const target = e.target as HTMLElement
@@ -20,7 +20,7 @@ const WalletConnectModal: FC<WalletConnectModalProps> = ({ isDisplayModal, onClo
     }
   }
 
-  if (!isDisplayModal) return null;
+  if (!isDisplayModal || isConnected) return null;
 
   return (
     <div
@@ -28,7 +28,7 @@ const WalletConnectModal: FC<WalletConnectModalProps> = ({ isDisplayModal, onClo
       id="container"
       onClick={handleOnClose}
     >
-      <div className="flex flex-col space-y-2 bg-bg-dark px-4 pt-4 pb-6 rounded-md font-bold w-[360px] border-2 border-border-dark">
+      <div className="flex flex-col space-y-3 bg-bg-dark px-6 pt-4 pb-6 rounded-lg font-bold w-[360px] border-2 border-border-dark">
         <div className="flex flex-row px-2 pb-1  justify-between">
           <span>Select Wallet</span>
           <button onClick={onClose}>
@@ -36,7 +36,7 @@ const WalletConnectModal: FC<WalletConnectModalProps> = ({ isDisplayModal, onClo
           </button>
         </div>
         <button
-          className="flex flex-row items-center p-2 border-2 border-border-dark"
+          className="flex flex-row items-center p-2 border-2 border-border-dark rounded"
           disabled={!connectors[0].ready}
           onClick={() => connect({ connector: metamaskConnector })}
         >
@@ -54,7 +54,7 @@ const WalletConnectModal: FC<WalletConnectModalProps> = ({ isDisplayModal, onClo
           </span>
         </button>
         <button
-          className="flex flex-row items-center p-2  border-2 border-border-dark"
+          className="flex flex-row items-center p-2  border-2 border-border-dark rounded"
           onClick={() => connect({ connector: walletConnectConnector })}
         >
           <img
