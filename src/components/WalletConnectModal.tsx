@@ -24,7 +24,7 @@ const WalletConnectModal: FC<WalletConnectModalProps> = ({ isDisplayModal, onClo
 
   return (
     <div
-      className="fixed inset-0 bg-black/1 backdrop-blur-sm flex justify-center items-center"
+      className="fixed inset-0 bg-transparent/[0.5] backdrop-blur-sm flex justify-center items-center"
       id="container"
       onClick={handleOnClose}
     >
