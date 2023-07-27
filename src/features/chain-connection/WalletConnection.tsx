@@ -2,7 +2,7 @@ import { useAccount, useEnsName, useDisconnect, useConnect, Connector } from "wa
 import { Button } from "../common/Button";
 import { twJoin } from "tailwind-merge";
 import truncateEthAddress from "truncate-eth-address";
-import { AiOutlineClose } from "react-icons/ai";
+import { VscChromeClose } from "react-icons/vsc";
 import { useEffect } from "react";
 
 const WalletConnection = () => {
@@ -12,26 +12,6 @@ const WalletConnection = () => {
   const { disconnect } = useDisconnect()
 
   const dialog = document.querySelector('dialog')
-
-  useEffect(() => {
-    if (isConnected || isConnecting) {
-      dialog?.close()
-    }
-  }, [isConnected, isConnecting, dialog])
-
-  useEffect(() => {
-    dialog && dialog.addEventListener("click", e => {
-      const dialogDimensions = dialog.getBoundingClientRect()
-      if (
-        e.clientX < dialogDimensions.left ||
-        e.clientX > dialogDimensions.right ||
-        e.clientY < dialogDimensions.top ||
-        e.clientY > dialogDimensions.bottom
-      ) {
-        dialog.close()
-      }
-    })
-  }, [dialog]);
 
   const connectorButtons = () => {
     return connectors.map((connector: Connector) => {
@@ -58,6 +38,26 @@ const WalletConnection = () => {
     })
   }
 
+  useEffect(() => {
+    if (isConnected || isConnecting) {
+      dialog?.close()
+    }
+  }, [isConnected, isConnecting, dialog])
+
+  useEffect(() => {
+    dialog && dialog.addEventListener("click", e => {
+      const dialogDimensions = dialog.getBoundingClientRect()
+      if (
+        e.clientX < dialogDimensions.left ||
+        e.clientX > dialogDimensions.right ||
+        e.clientY < dialogDimensions.top ||
+        e.clientY > dialogDimensions.bottom
+      ) {
+        dialog.close()
+      }
+    })
+  }, [dialog]);
+
   return (
     <>
       <Button
@@ -73,12 +73,12 @@ const WalletConnection = () => {
         </span>
       </Button>
 
-      <dialog className="rounded-md text-white backdrop-blur-sm">
+      <dialog className="rounded-md text-white">
         <div className="flex flex-col space-y-3 px-6 pt-4 pb-6 bg-bg-dark font-bold w-[360px] color-white">
-          <div className="flex flex-row px-2 pb-1  justify-between">
+          <div className="flex flex-row pb-1 justify-between">
             <span>Select Wallet</span>
             <button onClick={() => dialog?.close()}>
-              <AiOutlineClose />
+              <VscChromeClose size={20} />
             </button>
           </div>
           {connectorButtons()}
