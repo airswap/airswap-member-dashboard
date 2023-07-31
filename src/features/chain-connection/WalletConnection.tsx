@@ -1,62 +1,24 @@
-import { useAccount, useEnsName, useDisconnect, useConnect, Connector } from "wagmi";
+import { useAccount, useEnsName, useDisconnect } from "wagmi";
 import { Button } from "../common/Button";
 import { twJoin } from "tailwind-merge";
 import truncateEthAddress from "truncate-eth-address";
-import { VscChromeClose } from "react-icons/vsc";
-import { useEffect } from "react";
+import { useState } from "react";
+import WalletConnectionModal from "../../components/WalletConnectionModal";
 
 const WalletConnection = () => {
-  const { address, isConnected, isConnecting } = useAccount();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
-  const { connect, connectors, isLoading, pendingConnector } = useConnect()
   const { disconnect } = useDisconnect()
 
-  const dialog = document.querySelector('dialog')
-
-  const connectorButtons = () => {
-    return connectors.map((connector: Connector) => {
-      return (
-        <button
-          className="flex flex-row items-center p-2 border-2 border-border-dark rounded"
-          disabled={!connector.ready}
-          onClick={() => connect({ connector })}
-          key={connector.name}
-        >
-          <img
-            src={`src/assets/${connector.id}-logo.svg`}
-            alt='MetaMask logo'
-            className="mr-4 w-8 h-8"
-          />
-          <span>
-            {connector.name}
-            {!connector.ready && ' (unsupported)'}
-            {isLoading &&
-              connector.id === pendingConnector?.id &&
-              ' (connecting)'}
-          </span>
-        </button>)
-    })
-  }
-
-  useEffect(() => {
-    if (isConnected || isConnecting) {
-      dialog?.close()
+  const handleModalOpening = () => {
+    if (!isConnected) {
+      setIsModalOpen(true)
+    } else {
+      disconnect()
     }
-  }, [isConnected, isConnecting, dialog])
 
-  useEffect(() => {
-    dialog && dialog.addEventListener("click", e => {
-      const dialogDimensions = dialog.getBoundingClientRect()
-      if (
-        e.clientX < dialogDimensions.left ||
-        e.clientX > dialogDimensions.right ||
-        e.clientY < dialogDimensions.top ||
-        e.clientY > dialogDimensions.bottom
-      ) {
-        dialog.close()
-      }
-    })
-  }, [dialog]);
+  }
 
   return (
     <>
@@ -65,25 +27,14 @@ const WalletConnection = () => {
           "flex flex-row items-center gap-2",
           isConnected && "cursor-default",
         ])}
-        onClick={() => !isConnected ? dialog?.showModal() : disconnect()}
+        onClick={() => handleModalOpening()}
       >
         <div className="h-3 w-3 rounded-full bg-accent-green"></div>
         <span className="font-medium">
           {isConnected ? ensName || truncateEthAddress(address || "") : "Connect"}
         </span>
       </Button>
-
-      <dialog className="rounded-md text-white">
-        <div className="flex flex-col space-y-3 px-6 pt-4 pb-6 bg-bg-dark font-bold w-[360px] color-white">
-          <div className="flex flex-row pb-1 justify-between">
-            <span>Select Wallet</span>
-            <button onClick={() => dialog?.close()}>
-              <VscChromeClose size={20} />
-            </button>
-          </div>
-          {connectorButtons()}
-        </div>
-      </dialog>
+      <WalletConnectionModal isOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </>
   );
 };
