@@ -2,18 +2,19 @@ import { useAccount, useEnsName, useDisconnect } from "wagmi";
 import { Button } from "../common/Button";
 import { twJoin } from "tailwind-merge";
 import truncateEthAddress from "truncate-eth-address";
-import { useState } from "react";
+import { useRef } from "react";
 import WalletConnectionModal from "../../components/WalletConnectionModal";
 
 const WalletConnection = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const { disconnect } = useDisconnect()
 
+  const modalRef = useRef<HTMLDialogElement>(null);
+
   const handleModalOpening = () => {
     if (!isConnected) {
-      setIsModalOpen(true)
+      modalRef.current?.showModal()
     } else {
       disconnect()
     }
@@ -33,7 +34,7 @@ const WalletConnection = () => {
           {isConnected ? ensName || truncateEthAddress(address || "") : "Connect"}
         </span>
       </Button>
-      <WalletConnectionModal isOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+      <WalletConnectionModal modalRef={modalRef} />
     </>
   );
 };

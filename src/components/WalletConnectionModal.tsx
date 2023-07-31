@@ -1,41 +1,37 @@
-import { Dispatch, FC, useEffect, useRef } from "react";
+import { FC, MouseEvent, RefObject, useEffect } from "react";
 import { useAccount, useConnect, Connector } from "wagmi";
 import { VscChromeClose } from "react-icons/vsc";
 
 interface WalletConnectionModalProps {
-  isOpen: boolean;
-  setIsModalOpen: Dispatch<boolean>
+  modalRef: RefObject<HTMLDialogElement>;
 }
 
-const WalletConnectionModal: FC<WalletConnectionModalProps> = ({ isOpen, setIsModalOpen }) => {
+const WalletConnectionModal: FC<WalletConnectionModalProps> = ({ modalRef }) => {
   const { isConnected, isConnecting } = useAccount();
   const { connect, connectors, isLoading, pendingConnector } = useConnect()
 
-  const modalRef = useRef<HTMLDialogElement | null>(null);
-
-  const handleCloseOnOutsideClick = () => {
-    modalRef.current?.close()
-    setIsModalOpen(false)
+  const handleCloseOnOutsideClick = (e: MouseEvent<HTMLDialogElement>) => {
+    if (e.target === e.currentTarget) {
+      modalRef.current?.close()
+    }
   }
 
-  useEffect(() => {
-    if (isOpen) {
-      modalRef.current?.showModal()
-    }
-  }, [isOpen, modalRef])
+  const handleCloseModalButton = () => {
+    modalRef.current?.close()
+  }
 
   useEffect(() => {
     if (isConnected || isConnecting) {
       modalRef.current?.close()
     }
-  }, [isConnected, isConnecting])
+  }, [isConnected, isConnecting, modalRef])
 
   return (
-    <dialog className="rounded-md text-white" ref={modalRef} onClick={handleCloseOnOutsideClick}>
+    <dialog className="rounded-md text-white border-0 p-0" ref={modalRef} onClick={handleCloseOnOutsideClick}>
       <div className="flex flex-col space-y-3 px-6 pt-4 pb-6 bg-bg-dark font-bold w-[360px] color-white">
         <div className="flex flex-row pb-1 justify-between">
           <span>Select Wallet</span>
-          <button onClick={() => modalRef.current?.close()}>
+          <button onClick={() => handleCloseModalButton()}>
             <VscChromeClose size={20} />
           </button>
         </div>
