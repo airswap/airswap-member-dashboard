@@ -17,7 +17,6 @@ const WalletConnection = () => {
     } else {
       disconnect()
     }
-
   }
 
   return (

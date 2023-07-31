@@ -1,4 +1,4 @@
-import { Dispatch, FC, useEffect } from "react";
+import { Dispatch, FC, useEffect, useRef } from "react";
 import { useAccount, useConnect, Connector } from "wagmi";
 import { VscChromeClose } from "react-icons/vsc";
 
@@ -11,70 +11,56 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({ isOpen, setIsMo
   const { isConnected, isConnecting } = useAccount();
   const { connect, connectors, isLoading, pendingConnector } = useConnect()
 
-  const dialog = document.querySelector('dialog')
+  const modalRef = useRef<HTMLDialogElement | null>(null);
 
-  const connectorButtons = () => {
-    return connectors.map((connector: Connector) => {
-      return (
-        <button
-          className="flex flex-row items-center p-2 border-2 border-border-dark rounded"
-          disabled={!connector.ready}
-          onClick={() => connect({ connector })}
-          key={connector.name}
-        >
-          <img
-            src={`src/assets/${connector.id}-logo.svg`}
-            alt='MetaMask logo'
-            className="mr-4 w-8 h-8"
-          />
-          <span>
-            {connector.name}
-            {!connector.ready && ' (unsupported)'}
-            {isLoading &&
-              connector.id === pendingConnector?.id &&
-              ' (connecting)'}
-          </span>
-        </button>)
-    })
+  const handleCloseOnOutsideClick = () => {
+    modalRef.current?.close()
+    setIsModalOpen(false)
   }
 
   useEffect(() => {
     if (isOpen) {
-      dialog?.showModal()
+      modalRef.current?.showModal()
     }
-  }, [isOpen, dialog])
+  }, [isOpen, modalRef])
 
   useEffect(() => {
     if (isConnected || isConnecting) {
-      dialog?.close()
+      modalRef.current?.close()
     }
-  }, [isConnected, isConnecting, dialog])
-
-  useEffect(() => {
-    dialog && dialog.addEventListener("click", e => {
-      const dialogDimensions = dialog.getBoundingClientRect()
-      if (
-        e.clientX < dialogDimensions.left ||
-        e.clientX > dialogDimensions.right ||
-        e.clientY < dialogDimensions.top ||
-        e.clientY > dialogDimensions.bottom
-      ) {
-        dialog.close()
-        setIsModalOpen(false)
-      }
-    })
-  }, [dialog, setIsModalOpen]);
+  }, [isConnected, isConnecting])
 
   return (
-    <dialog className="rounded-md text-white">
+    <dialog className="rounded-md text-white" ref={modalRef} onClick={handleCloseOnOutsideClick}>
       <div className="flex flex-col space-y-3 px-6 pt-4 pb-6 bg-bg-dark font-bold w-[360px] color-white">
         <div className="flex flex-row pb-1 justify-between">
           <span>Select Wallet</span>
-          <button onClick={() => dialog?.close()}>
+          <button onClick={() => modalRef.current?.close()}>
             <VscChromeClose size={20} />
           </button>
         </div>
-        {connectorButtons()}
+        {connectors.map((connector: Connector) => {
+          return (
+            <button
+              className="flex flex-row items-center p-2 border-2 border-border-dark rounded"
+              disabled={!connector.ready}
+              onClick={() => connect({ connector })}
+              key={connector.name}
+            >
+              <img
+                src={`src/assets/${connector.id}-logo.svg`}
+                alt='MetaMask logo'
+                className="mr-4 w-8 h-8"
+              />
+              <span>
+                {connector.name}
+                {!connector.ready && ' (unsupported)'}
+                {isLoading &&
+                  connector.id === pendingConnector?.id &&
+                  ' (connecting)'}
+              </span>
+            </button>)
+        })}
       </div>
     </dialog>
   )
