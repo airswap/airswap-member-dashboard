@@ -3,7 +3,7 @@ import { Button } from "../common/Button";
 import { twJoin } from "tailwind-merge";
 import truncateEthAddress from "truncate-eth-address";
 import { useRef } from "react";
-import WalletConnectionModal from "../../components/WalletConnectionModal";
+import WalletConnectionModal from "./WalletConnectionModal";
 
 const WalletConnection = () => {
   const { address, isConnected } = useAccount();
