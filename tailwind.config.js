@@ -19,6 +19,8 @@ module.exports = {
         },
         border: {
           dark: "hsl(216, 18%, 12%)",
+          darkShaded: "hsl(220, 19%, 8%)",
+          darkLight: "hsl(216, 18%, 20%)"
         },
       },
     },

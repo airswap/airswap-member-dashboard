@@ -14,7 +14,7 @@ const ProposalListItem = ({ proposal }: { proposal: Proposal }) => {
   );
 };
 
-export const VoteList = ({}: {}) => {
+export const VoteList = ({ }: {}) => {
   const { data: votes } = useUserVotes();
   const { data: proposals } = useProposals();
 
@@ -29,7 +29,7 @@ export const VoteList = ({}: {}) => {
         <h3 className="text-xs font-bold uppercase">Past Votes</h3>
       </div>
       <div className="h-px flex-1 bg-border-dark">
-        {proposals?.map((proposal) => <ProposalListItem proposal={proposal} />)}
+        {proposals?.map((proposal) => <ProposalListItem proposal={proposal} key={proposal.id} />)}
       </div>
     </div>
   );
