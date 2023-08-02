@@ -16,7 +16,7 @@ export const StakeButton = ({}: {}) => {
 
   return (
     <div className="flex flex-row items-center gap-4 border border-border-dark px-5 py-3">
-      <span className="font-medium">{formattedBalance}</span>
+      <span className="hidden xs:flex font-medium">{formattedBalance}</span>
       <Button className="-my-3 -mr-5 bg-accent-blue font-bold uppercase">
         Stake
       </Button>
