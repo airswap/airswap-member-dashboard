@@ -13,6 +13,7 @@ module.exports = {
       colors: {
         bg: {
           dark: "hsl(240, 8%, 3%)",
+          darkShaded: "hsl(220, 48%, 39%)",
         },
         accent: {
           blue: "hsl(220, 100%, 58%)",

@@ -1,10 +1,11 @@
 import AirSwapLogo from "../../assets/airswap-logo.svg";
 import AirSwapLogoWithText from "../../assets/airswap-logo-with-text.svg";
 import { SettingsMenuButton } from "../settings/SettingsMenuButton";
-import { WalletConnection } from "../chain-connection/WalletConnection";
+import WalletConnection from "../chain-connection/WalletConnection";
 import { StakeButton } from "../staking/StakeButton";
 
-export const Header = ({}: {}) => {
+
+export const Header = ({ }: {}) => {
   return (
     <div className="flex h-24 flex-row items-center justify-between px-8">
       <div>
