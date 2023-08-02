@@ -1,15 +1,15 @@
 import { useMemo } from "react";
 import { generateMerkleLeaf } from "../utils/merkleUtils";
-import { useProposalMerkleTree } from "./useProposalMerkleTree";
+import { useGroupMerkleTree } from "./useGroupMerkleTree";
 
-export const useProposalMerkleProof = (
-  proposalId: string,
+export const useGroupMerkleProof = (
+  proposalIds: string[],
   vote: {
     voter: `0x${string}`;
     vp: number;
   },
 ) => {
-  const tree = useProposalMerkleTree(proposalId);
+  const tree = useGroupMerkleTree(proposalIds);
 
   return useMemo(() => {
     if (!tree) return;

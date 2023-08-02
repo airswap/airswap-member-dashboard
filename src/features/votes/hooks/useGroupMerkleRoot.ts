@@ -1,14 +1,14 @@
 import { useQuery } from "wagmi";
-import { useProposalMerkleTree } from "./useProposalMerkleTree";
+import { useGroupMerkleTree } from "./useGroupMerkleTree";
 
-export const useProposalMerkleRoot = (
-  proposalId: string,
+export const useGroupMerkleRoot = (
+  proposalIds: string[],
   options?: { enabled: boolean },
 ) => {
-  const tree = useProposalMerkleTree(proposalId);
+  const tree = useGroupMerkleTree(proposalIds);
 
   return useQuery(
-    ["proposal-merkle-root", proposalId],
+    ["group-merkle-root", proposalIds],
     () => tree!.getHexRoot(),
     {
       enabled: (options?.enabled ?? true) && !!tree,

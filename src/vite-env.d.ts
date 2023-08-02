@@ -3,5 +3,6 @@
 interface ImportMetaEnv {
   readonly VITE_SNAPSHOT_HUB_GRAPHQL_ENDPOINT?: string;
   readonly VITE_SNAPSHOT_SPACE?: string;
+  readonly VITE_SNAPSHOT_WEB?: string;
   // more env variables...
 }

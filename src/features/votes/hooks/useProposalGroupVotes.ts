@@ -4,14 +4,17 @@ import { SNAPSHOT_HUB_GRAPHQL_ENDPOINT } from "../config/constants";
 
 // Snapshot docs here: https://docs.snapshot.org/tools/graphql-api
 
-const VOTES_BY_PROPOSAL_QUERY = (proposalId?: string) => gql`
+const VOTES_FOR_PROPOSALS_QUERY = (proposalIds?: string[]) => gql`
   query {
     votes(
       first: 1000
       where: {
-        proposal: "${proposalId}",
+        proposal_in: [${proposalIds || [].map((id) => `"${id}"`).join(",")}])}],
       }
     ) {
+      proposal {
+        id
+      }
 			voter
       vp
     }
@@ -23,6 +26,9 @@ type VotesByProposalQueryResult = {
     voter: `0x${string}`;
     /** Note this is a float. It can have more than 4 decimals */
     vp: number;
+    proposal: {
+      id: string;
+    };
   }[];
 };
 
@@ -36,17 +42,17 @@ type VotesByProposalQueryResult = {
  * from the pool.
  * @param proposalId If undefined, query is disabled.
  */
-export const useProposalVotes = (proposalId?: string) => {
+export const useProposalGroupVotes = (proposalIds?: string[]) => {
   const fetch = async () => {
     const result = await request<VotesByProposalQueryResult>(
       SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
-      VOTES_BY_PROPOSAL_QUERY(proposalId),
+      VOTES_FOR_PROPOSALS_QUERY(proposalIds),
     );
     return result.votes;
   };
 
   return useQuery(
-    [SNAPSHOT_HUB_GRAPHQL_ENDPOINT, "votesByProposalId", proposalId],
+    [SNAPSHOT_HUB_GRAPHQL_ENDPOINT, "votesByProposalIds", proposalIds],
     fetch,
     {
       // FIXME: remove all Infinity caches and have a configurable cache time
@@ -54,7 +60,7 @@ export const useProposalVotes = (proposalId?: string) => {
       // TODO: Should be possible to increase this to be much more aggresively cached
       // if we ensure that this is only requested for closed proposals.
       staleTime: 600_000, // 10 minutes
-      enabled: !!proposalId,
+      enabled: !!proposalIds && proposalIds.length > 0,
     },
   );
 };

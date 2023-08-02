@@ -1,6 +1,6 @@
 import { useAccount, useQuery } from "wagmi";
 
-export const useHasUserClaimedRoot = ({
+export const useHasUserClaimerForGroup = ({
   root,
   voterAddress,
 }: {

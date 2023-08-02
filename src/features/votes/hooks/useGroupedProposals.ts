@@ -5,8 +5,6 @@ import {
   SNAPSHOT_SPACE,
 } from "../config/constants";
 
-console.log(SNAPSHOT_SPACE);
-
 // Snapshot docs here: https://docs.snapshot.org/tools/graphql-api
 const PROPOSALS_QUERY = gql`
   query {
@@ -43,13 +41,33 @@ type ProposalsQueryResult = {
   proposals: Proposal[];
 };
 
-export const useProposals = () => {
+/**
+ *
+ * @returns Groups of proposals. Each group contains proposals that have the
+ * same start and end.
+ */
+export const useGroupedProposals = () => {
   const fetch = async () => {
     const result = await request<ProposalsQueryResult>(
       SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
       PROPOSALS_QUERY,
     );
-    return result.proposals;
+    const proposalGroups: Proposal[][] = [];
+
+    // group all proposals that have the same start and end
+    result.proposals.forEach((proposal) => {
+      const group = proposalGroups.find(
+        (group) =>
+          group[0].start === proposal.start && group[0].end === proposal.end,
+      );
+      if (group) {
+        group.push(proposal);
+      } else {
+        proposalGroups.push([proposal]);
+      }
+    });
+
+    return proposalGroups;
   };
 
   return useQuery([SNAPSHOT_HUB_GRAPHQL_ENDPOINT, "proposals"], fetch, {
