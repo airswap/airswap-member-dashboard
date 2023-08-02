@@ -1,9 +1,11 @@
-import { Dispatch, FC, MouseEvent, RefObject, useState } from "react"
+import { Dispatch, FC, MouseEvent, RefObject } from "react"
 import { useClickOutside } from '@react-hookz/web';
 import { languageOptions } from "../../utils/languageOptions";
 import { themeOptions } from "../../utils/themeOptions";
 import { VscGithub, VscGithubInverted } from 'react-icons/vsc'
-import { TextLineAfter } from "../common/TextLineAfter";
+import { TextWithLineAfter } from "../common/TextWithLineAfter";
+import useSettingsStore from "../../store/store";
+
 
 interface SettingsPopoverProps {
   settingsPopoverRef: RefObject<HTMLDivElement>
@@ -11,14 +13,14 @@ interface SettingsPopoverProps {
 }
 
 const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, setIsSettingsPopoverOpen }) => {
-  // TODO: put into Context
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('english');
-  // const [selectedTheme, setSelectedTheme] = useState<string>('system')
+  const { selectedTheme, selectedLanguage, setTheme, setLanguage } = useSettingsStore();
 
-  // TODO: put into Context
+  const handleThemeChange = (e: MouseEvent<HTMLButtonElement>) => {
+    setTheme(e.currentTarget.value)
+  }
+
   const handleLanguageChange = (e: MouseEvent<HTMLButtonElement>) => {
-    setSelectedLanguage(e.currentTarget.value)
-    console.log(selectedLanguage)
+    setLanguage(e.currentTarget.value)
   }
 
   const handleClosePopoverOnOutsideClick = useClickOutside(
@@ -33,12 +35,12 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, setIsSe
       ref={settingsPopoverRef}
       onClick={() => handleClosePopoverOnOutsideClick}
     >
-      <TextLineAfter className="mt-2">Theme</TextLineAfter>
+      <TextWithLineAfter className="mt-2">THEME</TextWithLineAfter>
       <div className="flex flex-row">
-        {themeOptions.map(theme =>
+        {themeOptions.map((theme) =>
           <button
-            className="px-5 py-3 w-1/3 text-center font-normal border border-border-darkLight hover:bg-border-darkLight hover:text-font-darkActive hover:font-medium"
-            onClick={handleLanguageChange}
+            className={`px-5 py-3 w-1/3 text-center font-normal border border-border-darkLight hover:bg-border-darkLight hover:text-font-darkActive hover:font-medium ${theme.value === selectedTheme ? "bg-border-darkLight" : null}`}
+            onClick={handleThemeChange}
             value={theme.value}
             key={theme.value}
           >
@@ -46,11 +48,11 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, setIsSe
           </button>
         )}
       </div>
-      <TextLineAfter>Language</TextLineAfter>
+      <TextWithLineAfter>LANGUAGE</TextWithLineAfter>
       <div className="flex flex-col h-40 overflow-y-auto">
         {languageOptions.map(language =>
           <button
-            className="px-4 py-2 text-left hover:bg-border-darkLight font-normal hover:text-font-darkActive hover:font-medium"
+            className={`px-4 py-2 text-left hover:bg-border-darkLight font-normal hover:text-font-darkActive hover:font-medium ${language.value === selectedLanguage ? "bg-border-darkLight" : null}`}
             onClick={handleLanguageChange}
             value={language.value}
             key={language.value}
@@ -62,7 +64,9 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, setIsSe
       <footer className="border-t border-width-full border-border-darkLight mt-2 text-xs">
         <div className="flex my-4">
           <div className="px-4 py-4 border border-border-darkLight">
-            <VscGithubInverted />
+            <a href="https://github.com/airswap/airswap-voter-rewards" target="_">
+              <VscGithubInverted />
+            </a>
           </div>
           <div className="px-4 py-3 border border-border-darkLight">
             {/* TODO: replace with latest git commit */}
