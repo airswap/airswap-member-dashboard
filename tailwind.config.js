@@ -11,6 +11,10 @@ module.exports = {
         bg: {
           dark: "hsl(240, 8%, 3%)",
         },
+        font: {
+          darkSubtext: "hsl(219, 8%, 65%)",
+          darkActive: "hsl(0, 0%, 100%)"
+        },
         accent: {
           blue: "hsl(220, 100%, 58%)",
           orange: "hsl(42, 100%, 59%)",
