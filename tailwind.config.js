@@ -7,6 +7,9 @@ module.exports = {
       sans: ["Loos", "sans-serif"],
     },
     extend: {
+      screens: {
+        xs: "425px",
+      },
       colors: {
         font: {
           secondary: "hsla(220, 10%, 48%, 1)",
@@ -15,6 +18,7 @@ module.exports = {
           dark: "hsl(240, 8%, 3%)",
           light: "hsl(220, 29%, 93.9%)",
           grey: "hsl(0, 0%, 96.1%)",
+          darkShaded: "hsl(220, 48%, 39%)",
         },
         accent: {
           lightgreen: "hsla(158, 88%, 44%, 1)",
