@@ -12,8 +12,8 @@ module.exports = {
           dark: "hsl(240, 8%, 3%)",
         },
         font: {
+          darkPrimary: "hsl(0, 0%, 100%)",
           darkSubtext: "hsl(219, 8%, 65%)",
-          darkActive: "hsl(0, 0%, 100%)"
         },
         accent: {
           blue: "hsl(220, 100%, 58%)",
@@ -24,7 +24,8 @@ module.exports = {
         border: {
           dark: "hsl(216, 18%, 12%)",
           darkShaded: "hsl(220, 19%, 8%)",
-          darkLight: "hsl(216, 18%, 20%)"
+          darkLight: "hsl(219, 8%, 65%)",
+          darkGray: "hsl(216, 18%, 20%)"
         },
       },
     },
