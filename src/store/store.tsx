@@ -1,15 +1,15 @@
 import { create } from 'zustand'
 
 interface SettingsState {
-  selectedTheme: string,
+  theme: string,
   selectedLanguage: string,
   setTheme: (theme: string) => void
   setLanguage: (language: string) => void
 }
 
 const useSettingsStore = create<SettingsState>((set) => ({
-  selectedTheme: 'dark',
-  setTheme: (selectedTheme) => set({ selectedTheme }),
+  theme: 'dark',
+  setTheme: (theme) => set({ theme }),
 
   selectedLanguage: 'english',
   setLanguage: (selectedLanguage) => set({ selectedLanguage }),

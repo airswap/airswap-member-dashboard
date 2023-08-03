@@ -3,7 +3,7 @@ import { VoteList } from "./features/votes/VoteList";
 
 function App() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-bg-dark">
       <Header />
       <main className="mx-auto flex w-[800px] max-w-full flex-col">
         <VoteList />
