@@ -10,17 +10,16 @@ import { formatDate } from "../../utils/formatDate";
 
 interface SettingsPopoverProps {
   settingsPopoverRef: RefObject<HTMLDivElement>
-  setIsSettingsPopoverOpen: Dispatch<boolean>
+  togglePopover: Dispatch<boolean>
 }
 
-const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, setIsSettingsPopoverOpen }) => {
+const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, togglePopover }) => {
   const [latestCommit, setLatestCommit] = useState<string | undefined>(undefined)
   const [latestCommitLink, setLatestCommitLink] = useState<string | undefined>(undefined);
   const [latestCommitDate, setLatestCommitDate] = useState<Date | undefined>(undefined)
 
 
   const { theme, selectedLanguage, setTheme, setLanguage } = useSettingsStore();
-  console.log(theme)
 
   const formattedCommitDate = formatDate(latestCommitDate)
 
@@ -41,7 +40,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, setIsSe
 
   const handleClosePopoverOnOutsideClick = useClickOutside(
     settingsPopoverRef,
-    () => setIsSettingsPopoverOpen(false),
+    () => togglePopover(false),
     ['keydown', 'mousedown']
   )
 

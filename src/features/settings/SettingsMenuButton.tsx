@@ -1,26 +1,23 @@
 import { MdSettings } from "react-icons/md";
 import { Button } from "../common/Button";
 import SettingsPopover from "./SettingsPopover";
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { useToggle } from '@react-hookz/web';
 
 export const SettingsMenuButton = ({ }: {}) => {
-  const [isSettingsPopoverOpen, setIsSettingsPopoverOpen] = useState<boolean>(false);
+  const [isToggled, toggle] = useToggle(false)
 
   const settingsPopoverRef = useRef<HTMLDivElement | null>(null)
 
-  const handleOpenSettingsPopover = () => {
-    setIsSettingsPopoverOpen(!isSettingsPopoverOpen)
-  }
-
   return (
     <>
-      <Button className="relative aspect-square px-4" onClick={handleOpenSettingsPopover}>
+      <Button className="relative aspect-square px-4" onClick={toggle}>
         <MdSettings />
       </Button>
 
-      {isSettingsPopoverOpen && (
-        <SettingsPopover settingsPopoverRef={settingsPopoverRef} setIsSettingsPopoverOpen={setIsSettingsPopoverOpen} />
-      )}
+      {isToggled ?
+        <SettingsPopover settingsPopoverRef={settingsPopoverRef} togglePopover={toggle} />
+        : null}
     </>
   );
 };
