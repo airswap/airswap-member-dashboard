@@ -123,7 +123,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, setIsSe
         <div className="flex items-center my-4">
           <a href="https://github.com/airswap/airswap-voter-rewards" target="_" className="px-4 py-3 border dark:border-border-darkGray hover:border-border-darkLight">
             <div>
-              <VscGithubInverted color={theme === 'light' ? 'black' : 'white'} size='16' />
+              <VscGithubInverted color={localStorage.theme === 'dark' ? 'white' : 'black'} size='16' />
             </div>
           </a>
 
