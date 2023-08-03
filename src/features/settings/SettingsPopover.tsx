@@ -97,18 +97,18 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, setIsSe
       <footer className="flex content-center border-t border-width-full border-border-darkGray mt-2 text-xs">
         <div className="flex items-center my-4">
           <a href="https://github.com/airswap/airswap-voter-rewards" target="_" className="px-4 py-3.5 border border-border-darkGray hover:border-border-darkLight">
-            <div className="">
+            <div>
               <VscGithubInverted />
             </div>
           </a>
 
-          <a href={latestCommitLink} target="_" className="px-4 py-3.5 border border-border-darkGray hover:border-border-darkLight">
-            <div className="">
+          <a href={latestCommitLink} target="_" className="px-4 py-3 border border-border-darkGray hover:border-border-darkLight">
+            <div>
               {latestCommit?.slice(0, 6)}
             </div>
           </a>
-          <a href={latestCommitLink} target="_" className="px-4 py-3.5 border border-border-darkGray hover:border-border-darkLight">
-            <div className="">
+          <a href={latestCommitLink} target="_" className="px-4 py-3 border border-border-darkGray hover:border-border-darkLight">
+            <div>
               {formattedCommitDate}
             </div>
           </a>
