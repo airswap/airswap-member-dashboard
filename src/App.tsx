@@ -1,3 +1,4 @@
+import React from "react";
 import { Header } from "./features/structure/Header";
 import { VoteList } from "./features/votes/VoteList";
 

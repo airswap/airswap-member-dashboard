@@ -1,6 +1,4 @@
-type ThemeOptions = { value: string, label: string }
-
-export const themeOptions: ThemeOptions[] = [
+export const themeOptions = [
   { value: 'auto', label: 'Auto' },
   { value: 'light', label: 'Light' },
   { value: 'dark', label: 'Dark' },

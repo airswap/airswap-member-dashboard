@@ -1,10 +1,11 @@
-import { Dispatch, FC, MouseEvent, RefObject, useEffect, useState } from "react"
+import React, { Dispatch, FC, MouseEvent, RefObject, useEffect, useState } from "react"
 import { useClickOutside } from '@react-hookz/web';
 import { languageOptions } from "../../utils/languageOptions";
 import { themeOptions } from "../../utils/themeOptions";
 import { VscGithubInverted } from 'react-icons/vsc'
 import { TextWithLineAfter } from "../common/TextWithLineAfter";
-import useSettingsStore from "../../store/store";
+import { useThemeStore } from "../../store/themeStore";
+import { useLanguageStore } from "../../store/languageStore";
 import { formatDate } from "../../utils/formatDate";
 
 
@@ -19,7 +20,8 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
   const [latestCommitDate, setLatestCommitDate] = useState<Date | undefined>(undefined)
 
 
-  const { theme, selectedLanguage, setTheme, setLanguage } = useSettingsStore();
+  const { theme, setTheme } = useThemeStore()
+  const { language, setLanguage } = useLanguageStore()
 
   const formattedCommitDate = formatDate(latestCommitDate)
 
@@ -41,24 +43,8 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
   const handleClosePopoverOnOutsideClick = useClickOutside(
     settingsPopoverRef,
     () => togglePopover(false),
-    ['click']
+    ['click', 'keydown']
   )
-
-  useEffect(() => {
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-
-    if (theme === 'dark') {
-      localStorage.theme = 'dark'
-    } else if (theme === 'light') {
-      localStorage.theme = 'light'
-    } else {
-      localStorage.removeItem('theme')
-    }
-  }, [theme])
 
   useEffect(() => {
     const url = 'https://api.github.com/repos/airswap/airswap-voter-rewards/commits';
@@ -102,16 +88,16 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
       </div>
       <TextWithLineAfter>LANGUAGE</TextWithLineAfter>
       <div className="flex flex-col h-40 overflow-auto mb-3">
-        {languageOptions.map(language => {
-          const isSelected = language.value === selectedLanguage
+        {languageOptions.map(languageOption => {
+          const isSelected = languageOption.value === language
           return (
             <button
               className={`px-4 py-2 text-left font-normal hover:text-font-lightBluePrimary dark:hover:text-font-darkPrimary ${isSelected && "bg-bg-lightGray dark:bg-border-darkGray text-font-lightBluePrimary dark:text-font-darkPrimary font-semibold"}`}
               onClick={handleLanguageChange}
-              value={language.value}
-              key={language.value}
+              value={languageOption.value}
+              key={languageOption.value}
             >
-              {language.label}
+              {languageOption.label}
             </button>
           )
         }
