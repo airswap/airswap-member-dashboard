@@ -41,7 +41,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
   const handleClosePopoverOnOutsideClick = useClickOutside(
     settingsPopoverRef,
     () => togglePopover(false),
-    ['keydown', 'mousedown']
+    ['click']
   )
 
   useEffect(() => {

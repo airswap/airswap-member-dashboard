@@ -11,7 +11,11 @@ export const SettingsMenuButton = ({ }: {}) => {
 
   return (
     <>
-      <Button className="relative aspect-square px-4" onClick={toggle}>
+      <Button className="relative aspect-square px-4" onClick={(e) => {
+        toggle();
+        e.stopPropagation();
+      }
+      }>
         <MdSettings />
       </Button>
 
