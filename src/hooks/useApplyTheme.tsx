@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { useThemeStore } from "../store/themeStore";
+import { useCurrentTheme } from "../store/themeStore";
 
 export const useApplyTheme = () => {
-  const [theme] = useThemeStore((state) => [state.theme]);
+  const theme = useCurrentTheme()
 
   useEffect(() => {
     const root = document.documentElement;

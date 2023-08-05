@@ -33,7 +33,6 @@ export const useThemeStore = create<ThemeState>()(
 
 export const useCurrentTheme = () => {
   const [theme, themeLastSet] = useThemeStore((s) => [s.theme, s.themeLastSet]);
-
   const themeIsStale = themeLastSet && Date.now() - themeLastSet > 86_400_000;
   return theme === "system" || themeIsStale ? getCurrentSystemTheme() : theme;
 }

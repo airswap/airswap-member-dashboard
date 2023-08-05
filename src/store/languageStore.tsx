@@ -9,7 +9,7 @@ export type LanguageState = {
 }
 
 const getUserPreferredLanguage = () =>
-  navigator.language.split('-')[0] || 'en';
+  navigator.language.split('-')[0] || 'EN';
 
 export const useLanguageStore = create<LanguageState>()(
   persist(
@@ -25,8 +25,3 @@ export const useLanguageStore = create<LanguageState>()(
     }
   )
 );
-
-export const useCurrentLanguage = () => {
-  const [language] = useLanguageStore((s) => [s.language]);
-  return language
-}

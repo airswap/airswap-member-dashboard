@@ -1,11 +1,11 @@
 export const languageOptions = [
-  { value: "english", label: "English" },
-  { value: "french", label: "Français" },
-  { value: "norwegian", label: "Norsk Bokmål" },
-  { value: "dutch", label: "Nederlands" },
-  { value: "portuguese", label: "Portugues" },
-  { value: "turkish", label: "Türkçe" },
-  { value: "romanian", label: "Limba română" },
-  { value: "russian", label: "українська" },
-  { value: "chinese", label: "中文繁體" }
+  { value: "US", label: "English" },
+  { value: "FR", label: "Français" },
+  { value: "NO", label: "Norsk Bokmål" },
+  { value: "NL", label: "Nederlands" },
+  { value: "PT", label: "Portugues" },
+  { value: "TR", label: "Türkçe" },
+  { value: "RO", label: "Limba română" },
+  { value: "RU", label: "українська" },
+  { value: "CN", label: "中文繁體" }
 ]

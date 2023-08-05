@@ -14,7 +14,7 @@ interface SettingsPopoverProps {
 }
 
 const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, togglePopover }) => {
-  const { theme, setTheme } = useThemeStore()
+  const { setTheme, theme } = useThemeStore()
   const { language, setLanguage } = useLanguageStore()
 
   const handleThemeChange = (e: MouseEvent<HTMLButtonElement>) => {
