@@ -1,11 +1,9 @@
-import { Dispatch, FC, MouseEvent, RefObject } from "react"
+import { Dispatch, FC, RefObject } from "react"
 import { useClickOutside } from '@react-hookz/web';
-import { languageOptions } from "../../utils/languageOptions";
-import { themeOptions } from "../../utils/themeOptions";
 import { VscGithubInverted } from 'react-icons/vsc'
 import { TextWithLineAfter } from "../common/TextWithLineAfter";
-import { Theme, useThemeStore } from "../../store/themeStore";
-import { useLanguageStore } from "../../store/languageStore";
+import { ThemeValue, themeLabels, themeValues, useThemeStore } from "../../store/themeStore";
+import { LanguageValue, languageLabels, languageValues, useLanguageStore } from "../../store/languageStore";
 import { twJoin } from "tailwind-merge";
 
 interface SettingsPopoverProps {
@@ -17,13 +15,12 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
   const { setTheme, theme } = useThemeStore()
   const { language, setLanguage } = useLanguageStore()
 
-  const handleThemeChange = (e: MouseEvent<HTMLButtonElement>) => {
-    const newTheme = e.currentTarget.value as Theme
+  const handleThemeChange = (newTheme: ThemeValue) => {
     setTheme(newTheme)
   }
 
-  const handleLanguageChange = (e: MouseEvent<HTMLButtonElement>) => {
-    setLanguage(e.currentTarget.value)
+  const handleLanguageChange = (newLanguage: LanguageValue) => {
+    setLanguage(newLanguage)
   }
 
   useClickOutside(
@@ -43,8 +40,8 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
     >
       <TextWithLineAfter className="mt-1">THEME</TextWithLineAfter>
       <div className="flex flex-row">
-        {themeOptions.map((themeOption) => {
-          const isSelected = themeOption.value === theme;
+        {themeValues.map((themeValue: ThemeValue) => {
+          const isSelected = themeValue === theme;
           return (
             <button
               className={twJoin(
@@ -53,11 +50,11 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
                 ['hover:border-border-darkLight'],
                 isSelected ? ['bg-bg-lightGray', 'dark:bg-border-darkGray', 'dark:text-font-darkPrimary', 'text-font-lightBluePrimary', 'font-semibold'] : []
               )}
-              onClick={handleThemeChange}
-              value={themeOption.value}
-              key={themeOption.value}
+              onClick={() => handleThemeChange(themeValue)}
+              value={themeValue}
+              key={themeValue}
             >
-              {themeOption.label}
+              {themeLabels[themeValue]}
             </button>
           )
         }
@@ -65,8 +62,8 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
       </div>
       <TextWithLineAfter>LANGUAGE</TextWithLineAfter>
       <div className="flex flex-col h-40 overflow-auto mb-3">
-        {languageOptions.map(languageOption => {
-          const isSelected = languageOption.value === language
+        {languageValues.map(languageValue => {
+          const isSelected = languageValue === language
           return (
             <button
               className={twJoin(
@@ -76,11 +73,11 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
                   ? ['bg-bg-lightGray', 'dark:bg-border-darkGray', 'text-font-lightBluePrimary', 'dark:text-font-darkPrimary', 'font-semibold']
                   : []
               )}
-              onClick={handleLanguageChange}
-              value={languageOption.value}
-              key={languageOption.value}
+              onClick={() => handleLanguageChange(languageValue)}
+              value={languageValue}
+              key={languageValue}
             >
-              {languageOption.label}
+              {languageLabels[languageValue]}
             </button>
           )
         }
