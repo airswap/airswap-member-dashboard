@@ -47,7 +47,12 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
           const isSelected = themeOption.value === theme;
           return (
             <button
-              className={`px-4 py-2 w-1/3 text-center font-normal border dark:border-border-darkGray hover:border-border-darkLight ${isSelected && "bg-bg-lightGray dark:bg-border-darkGray dark:text-font-darkPrimary text-font-lightBluePrimary font-semibold"}`}
+              className={twJoin(
+                ['px-4', 'py-2', 'w-1/3', 'text-center', 'font-normal', 'border'],
+                ['dark:border-border-darkGray dark:hover:border-border-darkLight'],
+                ['hover:border-border-darkLight'],
+                isSelected ? ['bg-bg-lightGray', 'dark:bg-border-darkGray', 'dark:text-font-darkPrimary', 'text-font-lightBluePrimary', 'font-semibold'] : []
+              )}
               onClick={handleThemeChange}
               value={themeOption.value}
               key={themeOption.value}
