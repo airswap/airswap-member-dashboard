@@ -4,10 +4,7 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { twJoin } from "tailwind-merge";
 import truncateEthAddress from "truncate-eth-address";
 
-// TODO: this component should actually open a modal instead of defaulting to
-// the injected connector
-
-export const WalletConnection = ({}: {}) => {
+export const WalletConnection = ({ }: {}) => {
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
 
@@ -21,7 +18,7 @@ export const WalletConnection = ({}: {}) => {
         "flex flex-row items-center gap-2",
         isConnected && "cursor-default",
       ])}
-      onClick={() => (isConnected ? () => {} : connect())}
+      onClick={() => (isConnected ? () => { } : connect())}
     >
       <div className="h-3 w-3 rounded-full bg-accent-green"></div>
       <span className="font-medium">

@@ -1,9 +1,9 @@
-import create from "zustand";
+import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export const colorSchemeQuery = "(prefers-color-scheme: dark)";
 
-type Theme = "light" | "dark" | "system";
+export type Theme = "light" | "dark" | "system";
 
 export type ThemeState = {
   theme: Theme;
@@ -26,13 +26,14 @@ export const useThemeStore = create<ThemeState>()(
         }),
     }),
     {
-      name: "theme-setting"
+      name: "theme"
     }
   )
 );
 
 export const useCurrentTheme = () => {
   const [theme, themeLastSet] = useThemeStore((s) => [s.theme, s.themeLastSet]);
+
   const themeIsStale = themeLastSet && Date.now() - themeLastSet > 86_400_000;
   return theme === "system" || themeIsStale ? getCurrentSystemTheme() : theme;
 }

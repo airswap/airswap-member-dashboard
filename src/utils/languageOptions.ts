@@ -1,6 +1,4 @@
-type LanguageOptions = { value: string, label: string }
-
-export const languageOptions: LanguageOptions[] = [
+export const languageOptions = [
   { value: "english", label: "English" },
   { value: "french", label: "Français" },
   { value: "norwegian", label: "Norsk Bokmål" },

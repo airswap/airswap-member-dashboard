@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export const languageQuery = "preferred-language"
@@ -21,7 +21,7 @@ export const useLanguageStore = create<LanguageState>()(
         }),
     }),
     {
-      name: "language-setting"
+      name: "language"
     }
   )
 );

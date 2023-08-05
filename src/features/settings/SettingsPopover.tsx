@@ -1,13 +1,12 @@
-import React, { Dispatch, FC, MouseEvent, RefObject, useEffect, useState } from "react"
+import { Dispatch, FC, MouseEvent, RefObject } from "react"
 import { useClickOutside } from '@react-hookz/web';
 import { languageOptions } from "../../utils/languageOptions";
 import { themeOptions } from "../../utils/themeOptions";
 import { VscGithubInverted } from 'react-icons/vsc'
 import { TextWithLineAfter } from "../common/TextWithLineAfter";
-import { useThemeStore } from "../../store/themeStore";
+import { Theme, useThemeStore } from "../../store/themeStore";
 import { useLanguageStore } from "../../store/languageStore";
-import { formatDate } from "../../utils/formatDate";
-
+import { twJoin } from "tailwind-merge";
 
 interface SettingsPopoverProps {
   settingsPopoverRef: RefObject<HTMLDivElement>
@@ -15,59 +14,32 @@ interface SettingsPopoverProps {
 }
 
 const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, togglePopover }) => {
-  const [latestCommit, setLatestCommit] = useState<string | undefined>(undefined)
-  const [latestCommitLink, setLatestCommitLink] = useState<string | undefined>(undefined);
-  const [latestCommitDate, setLatestCommitDate] = useState<Date | undefined>(undefined)
-
-
   const { theme, setTheme } = useThemeStore()
   const { language, setLanguage } = useLanguageStore()
 
-  const formattedCommitDate = formatDate(latestCommitDate)
-
   const handleThemeChange = (e: MouseEvent<HTMLButtonElement>) => {
-    setTheme(e.currentTarget.value)
-    localStorage.theme = e.currentTarget.value;
-
-    if (e.currentTarget.value === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    const newTheme = e.currentTarget.value as Theme
+    setTheme(newTheme)
   }
 
   const handleLanguageChange = (e: MouseEvent<HTMLButtonElement>) => {
     setLanguage(e.currentTarget.value)
   }
 
-  const handleClosePopoverOnOutsideClick = useClickOutside(
+  useClickOutside(
     settingsPopoverRef,
     () => togglePopover(false),
     ['click', 'keydown']
   )
 
-  useEffect(() => {
-    const url = 'https://api.github.com/repos/airswap/airswap-voter-rewards/commits';
-
-    fetch(url)
-      .then((response) => response.json())
-      .then((commits) => {
-        const latestCommit = commits[0];
-        const sha = latestCommit.sha;
-        const date = latestCommit.commit.author.date;
-
-        setLatestCommit(sha)
-        setLatestCommitDate(new Date(date))
-        setLatestCommitLink(latestCommit.html_url)
-      })
-      .catch((error) => console.error('Error fetching commits:', error));
-  }, [])
-
   return (
     <div
-      className='absolute sm:right-60 top-20 py-2 px-4 rounded-md border border-border-lightLightGray dark:border-border-darkGray font-medium text-sm text-font-darkSubtext bg-bg-lightSecondary dark:bg-bg-darkShaded'
+      className={twJoin(
+        ['absolute top-20 py-2 px-4 rounded-md font-medium text-sm text-font-darkSubtext border border-border-lightLightGray bg-bg-lightSecondary'],
+        ['sm: right - 60'],
+        ['dark:border-border-darkGray dark:bg-bg-darkShaded'],
+      )}
       ref={settingsPopoverRef}
-      onClick={() => handleClosePopoverOnOutsideClick}
     >
       <TextWithLineAfter className="mt-1">THEME</TextWithLineAfter>
       <div className="flex flex-row">
@@ -92,7 +64,13 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
           const isSelected = languageOption.value === language
           return (
             <button
-              className={`px-4 py-2 text-left font-normal hover:text-font-lightBluePrimary dark:hover:text-font-darkPrimary ${isSelected && "bg-bg-lightGray dark:bg-border-darkGray text-font-lightBluePrimary dark:text-font-darkPrimary font-semibold"}`}
+              className={twJoin(
+                ['px-4', 'py-2', 'text-left', 'font-normal'],
+                ['hover:text-font-lightBluePrimary', 'dark:hover:text-font-darkPrimary'],
+                isSelected
+                  ? ['bg-bg-lightGray', 'dark:bg-border-darkGray', 'text-font-lightBluePrimary', 'dark:text-font-darkPrimary', 'font-semibold']
+                  : []
+              )}
               onClick={handleLanguageChange}
               value={languageOption.value}
               key={languageOption.value}
@@ -103,23 +81,45 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
         }
         )}
       </div>
-      <hr className="my-2 w-full absolute left-0 border-t-1 dark:border-border-darkGray" />
+      <hr className={twJoin(
+        ['my-2 w-full absolute left-0 border-t-1'],
+        ['dark:border-border-darkGray'])} />
       <footer className="flex content-center border-width-full text-xs">
         <div className="flex items-center my-4">
-          <a href="https://github.com/airswap/airswap-voter-rewards" target="_" className="px-4 py-3 border dark:border-border-darkGray hover:border-border-darkLight">
+          <a href="https://github.com/airswap/airswap-voter-rewards" target="_" className={twJoin(
+            ['px-4 py-3 border'],
+            ['dark:border-border-darkGray'],
+            ['hover:border-border-darkLight'])}>
             <div>
-              <VscGithubInverted color={localStorage.theme === 'dark' ? 'white' : 'black'} size='16' />
+              <VscGithubInverted color={theme === 'dark' ? 'white' : 'black'} size='16' />
             </div>
           </a>
 
-          <a href={latestCommitLink} target="_" className="px-4 py-3 border-t border-b dark:border-border-darkGray hover:border-border-darkLight">
+          <a
+            href="#"
+            target="_"
+            className={twJoin(
+              ['px-4', 'py-3', 'border-t', 'border-b'],
+              ['dark:border-border-darkGray'],
+              ['hover:border-border-darkLight']
+            )}
+          >
             <div>
-              {latestCommit?.slice(0, 6)}
+              {/* TODO: replace with dynamic name of last commit */}
+              2ac00c
             </div>
           </a>
-          <a href={latestCommitLink} target="_" className="px-4 py-3 border dark:border-border-darkGray hover:border-border-darkLight">
+          <a
+            href="#"
+            target="_"
+            className={twJoin(
+              ['px-4', 'py-3', 'border'],
+              ['dark:border-border-darkGray'],
+              ['hover:border-border-darkLight']
+            )}>
             <div>
-              {formattedCommitDate}
+              {/* {formattedCommitDate} */}
+              2023-08-08
             </div>
           </a>
         </div>

@@ -1,4 +1,3 @@
-import React from "react";
 import { MdSettings } from "react-icons/md";
 import { Button } from "../common/Button";
 import SettingsPopover from "./SettingsPopover";
