@@ -8,6 +8,9 @@ module.exports = {
       sans: ["Loos", "sans-serif"],
     },
     extend: {
+      screens: {
+        xs: '425px'
+      },
       colors: {
         bg: {
           dark: "hsl(240, 8%, 3%)",

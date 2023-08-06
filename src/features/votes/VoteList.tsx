@@ -6,6 +6,7 @@ const ProposalListItem = ({ proposal }: { proposal: Proposal }) => {
     <div
       className="grid gap-x-4 border border-border-dark px-6 py-5"
       style={{ gridTemplateColumns: "auto 1fr auto" }}
+      key={proposal.id}
     >
       <span>todo</span>
       <span>{proposal.title}</span>

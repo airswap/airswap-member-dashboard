@@ -1,29 +1,42 @@
-import { useAccount, useConnect, useEnsName } from "wagmi";
+import { useAccount, useEnsName, useDisconnect } from "wagmi";
 import { Button } from "../common/Button";
-import { InjectedConnector } from "wagmi/connectors/injected";
 import { twJoin } from "tailwind-merge";
 import truncateEthAddress from "truncate-eth-address";
+import { useRef } from "react";
+import WalletConnectionModal from "./WalletConnectionModal";
 
-export const WalletConnection = ({ }: {}) => {
+const WalletConnection = ({ }: {}) => {
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
+  const { disconnect } = useDisconnect()
 
-  const { connect } = useConnect({
-    connector: new InjectedConnector(),
-  });
+  const modalRef = useRef<HTMLDialogElement>(null);
+
+  const handleModalOpening = () => {
+    if (!isConnected) {
+      modalRef.current?.showModal()
+    } else {
+      disconnect()
+    }
+  }
 
   return (
-    <Button
-      className={twJoin([
-        "flex flex-row items-center gap-2",
-        isConnected && "cursor-default",
-      ])}
-      onClick={() => (isConnected ? () => { } : connect())}
-    >
-      <div className="h-3 w-3 rounded-full bg-accent-green"></div>
-      <span className="font-medium">
-        {isConnected ? ensName || truncateEthAddress(address || "") : "Connect"}
-      </span>
-    </Button>
+    <>
+      <Button
+        className={twJoin([
+          "flex flex-row items-center gap-2",
+          isConnected && "cursor-default",
+        ])}
+        onClick={() => handleModalOpening()}
+      >
+        <div className="h-3 w-3 rounded-full bg-accent-green"></div>
+        <span className="font-medium">
+          {isConnected ? ensName || truncateEthAddress(address || "") : "Connect"}
+        </span>
+      </Button>
+      <WalletConnectionModal modalRef={modalRef} />
+    </>
   );
 };
+
+export default WalletConnection
