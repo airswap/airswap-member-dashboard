@@ -5,7 +5,7 @@ import truncateEthAddress from "truncate-eth-address";
 import { useRef } from "react";
 import WalletConnectionModal from "./WalletConnectionModal";
 
-const WalletConnection = () => {
+const WalletConnection = ({ }: {}) => {
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const { disconnect } = useDisconnect()
