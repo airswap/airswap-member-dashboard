@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { useCurrentTheme } from "../store/themeStore";
 
 export const useApplyTheme = () => {
   const theme = useCurrentTheme()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = document.documentElement;
 
     if (theme === 'dark') {
