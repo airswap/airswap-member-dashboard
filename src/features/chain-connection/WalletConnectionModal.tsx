@@ -1,6 +1,7 @@
 import { FC, MouseEvent, RefObject, useEffect } from "react";
 import { useAccount, useConnect, Connector } from "wagmi";
 import { VscChromeClose } from "react-icons/vsc";
+import { twJoin } from "tailwind-merge";
 
 interface WalletConnectionModalProps {
   modalRef: RefObject<HTMLDialogElement>;
@@ -29,7 +30,7 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({ modalRef }) => 
   return (
     <dialog className="rounded-md text-white border-0 p-0" ref={modalRef} onClick={handleCloseOnOutsideClick}>
       <div className="flex flex-col space-y-3 px-6 pt-4 pb-6 bg-bg-dark font-bold w-[360px] color-white">
-        <div className="flex flex-row pb-1 justify-between">
+        <div className={twJoin("flex flex-row pb-1 justify-between", "hover:cursor-pointer")}>
           <span>Select Wallet</span>
           <button onClick={() => handleCloseModalButton()}>
             <VscChromeClose size={20} />

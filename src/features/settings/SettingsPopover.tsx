@@ -5,6 +5,7 @@ import { TextWithLineAfter } from "../common/TextWithLineAfter";
 import { ThemeValue, themeLabels, themeValues, useThemeStore } from "../../store/themeStore";
 import { LanguageValue, languageLabels, languageValues, useLanguageStore } from "../../store/languageStore";
 import { twJoin } from "tailwind-merge";
+import LineBreak from "../common/LineBreak";
 
 interface SettingsPopoverProps {
   settingsPopoverRef: RefObject<HTMLDivElement>
@@ -83,9 +84,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({ settingsPopoverRef, toggleP
         }
         )}
       </div>
-      <hr className={twJoin(
-        ['my-2 w-full absolute left-0 border-t-1'],
-        ['dark:border-border-darkGray'])} />
+      <LineBreak />
       <footer className="flex content-center border-width-full text-xs">
         <div className="flex items-center my-4">
           <a href="https://github.com/airswap/airswap-voter-rewards" target="_" className={twJoin(
