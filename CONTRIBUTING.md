@@ -28,6 +28,12 @@ For code formatting we use [prettier](https://www.npmjs.com/package/prettier). T
 $ yarn prettier
 ```
 
+## Coding patterns
+
+- We extensively use `hooks`
+  - It is common for a hook to return `undefined` when it is either disabled  or is still fetching data.
+- We are happy to build components that are responsible for fetching their own state. For example a balance input that shows the wallet balance within it will _always_ need a token balance, so it makes sense if it fetches that itself.
+
 ## Styling
 
 TODO:
