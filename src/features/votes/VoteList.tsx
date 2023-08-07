@@ -1,36 +1,37 @@
-import { Proposal, useProposals } from "./hooks/useProposals";
-import { useUserVotes } from "./hooks/useUserVotes";
+import { VoteListItem } from "./VoteListItem";
+import { useGroupedProposals } from "./hooks/useGroupedProposals";
 
-const ProposalListItem = ({ proposal }: { proposal: Proposal }) => {
-  return (
-    <div
-      className="grid gap-x-4 border border-border-dark px-6 py-5"
-      style={{ gridTemplateColumns: "auto 1fr auto" }}
-      key={proposal.id}
-    >
-      <span>todo</span>
-      <span>{proposal.title}</span>
-      <span>todo</span>
-    </div>
+export const VoteList = ({}: {}) => {
+  const { data: proposalGroups } = useGroupedProposals();
+
+  // Note that all proposals have the same start and end, so if the first one
+  // in the group is live, they all are.
+  const liveProposalGroups = proposalGroups?.filter(
+    (proposals) => proposals[0].end * 1000 > Date.now(),
   );
-};
 
-export const VoteList = ({ }: {}) => {
-  const { data: votes } = useUserVotes();
-  const { data: proposals } = useProposals();
+  const pastProposalGroups = proposalGroups?.filter(
+    (proposals) => proposals[0].end * 1000 < Date.now(),
+  );
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
       <div className="flex flex-row items-center gap-4">
-        <h3 className="text-xs font-bold uppercase">Live Votes</h3>
+        <h3 className="text-xs font-bold uppercase">Live votes</h3>
         <div className="h-px flex-1 bg-border-dark"></div>
       </div>
+      {liveProposalGroups?.map((group) => (
+        <VoteListItem proposalGroup={group} key={group[0].id} />
+      ))}
 
       <div className="flex flex-row items-center gap-4">
-        <h3 className="text-xs font-bold uppercase">Past Votes</h3>
+        <h3 className="text-xs font-bold uppercase">Past Epochs</h3>
+        <div className="h-px flex-1 bg-border-dark"></div>
       </div>
-      <div className="h-px flex-1 bg-border-dark">
-        {proposals?.map((proposal) => <ProposalListItem proposal={proposal} key={proposal.id} />)}
+      <div className="flex flex-col gap-9">
+        {pastProposalGroups?.map((group) => (
+          <VoteListItem proposalGroup={group} key={group[0].id} />
+        ))}
       </div>
     </div>
   );

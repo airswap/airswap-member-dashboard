@@ -1,6 +1,6 @@
 import { format } from "@greypixel_/nicenumbers";
-import { Button } from "../common/Button";
 import { useAccount, useBalance } from "wagmi";
+import { Button } from "../common/Button";
 
 export const StakeButton = ({}: {}) => {
   const { address } = useAccount();
