@@ -5,5 +5,6 @@ interface ImportMetaEnv {
   readonly VITE_SNAPSHOT_SPACE?: string;
   readonly VITE_SNAPSHOT_WEB?: string;
   readonly VITE_WALLETCONNECT_ID?: string;
+  readonly VITE_ALCHEMY_API_KEY?: string;
   // more env variables...
 }
