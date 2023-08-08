@@ -4,8 +4,8 @@ import { ContractTypes, contractAddressesByChain } from "../ContractAddresses";
 /**
  * Gets the contract address for particular contract type(s).
 
- * @returns An array of contract addresses, or undefined if the contract type
- * is not found for the given chain.
+ * @returns An array of `{contractAddress, chain}` objects for the passed in
+ * contract types.
  */
 export const useContractAddresses = (
   contractTypes: ContractTypes[],
