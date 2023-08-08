@@ -1,14 +1,22 @@
 import { format } from "@greypixel_/nicenumbers";
 import { useAccount, useBalance } from "wagmi";
+import { ContractTypes } from "../../config/ContractAddresses";
+import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { Button } from "../common/Button";
 
 export const StakeButton = ({}: {}) => {
   const { address } = useAccount();
+  const [stakedAst] = useContractAddresses([ContractTypes.AirSwapStaking], {
+    defaultChainId: 1,
+    useDefaultAsFallback: true,
+  });
+
   const { data: sAstBalance } = useBalance({
-    token: "0x579120871266ccd8De6c85EF59E2fF6743E7CD15",
+    token: stakedAst.address,
     address,
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
+    chainId: stakedAst.chainId,
   });
 
   const formattedBalance =
