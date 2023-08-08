@@ -1,27 +1,41 @@
-// import { format } from "@greypixel_/nicenumbers";
+import { format } from "@greypixel_/nicenumbers";
 import { Button } from "../common/Button";
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useNetwork } from "wagmi";
 import { useRef } from "react";
 import StakingModal from "./StakingModal";
 import { twJoin } from "tailwind-merge";
+import { tokenAddresses } from "../../utils/constants";
 
 export const StakeButton = ({ }: {}) => {
   const { address, isConnected } = useAccount();
-  // const { data: sAstBalance } = useBalance({
-  //   token: "0x579120871266ccd8De6c85EF59E2fF6743E7CD15",
-  //   address,
-  //   staleTime: 300_000, // 5 minutes,
-  //   cacheTime: Infinity,
-  // });
+  const { chain } = useNetwork()
+  const { data: astBalance } = useBalance({
+    address,
+    token: tokenAddresses[chain?.id || 1].AST as `0x${string}` || "",
+    chainId: chain?.id,
+    staleTime: 300_000, // 5 minutes,
+    cacheTime: Infinity,
+  });
+
+  const { data: sAstBalance } = useBalance({
+    address,
+    token: tokenAddresses[chain?.id || 1].sAST as `0x${string}` || "",
+    chainId: chain?.id,
+    staleTime: 300_000, // 5 minutes,
+    cacheTime: Infinity,
+  });
+
 
   const stakingModalRef = useRef<HTMLDialogElement | null>(null)
 
-  // const formattedBalance =
-  //   format(sAstBalance?.value, { tokenDecimals: 4 }) + " sAST";
+  const formattedAstBalance =
+    format(astBalance?.value, { tokenDecimals: 4 });
+
+  const formattedAastBalance =
+    format(sAstBalance?.value, { tokenDecimals: 4 });
 
   const handleOpenStakingModal = () => {
     if (isConnected) {
-      console.log('open staking modal')
       stakingModalRef.current && stakingModalRef.current.showModal()
     }
   }
@@ -31,7 +45,7 @@ export const StakeButton = ({ }: {}) => {
       <div className={twJoin("flex flex-row items-center gap-4 py-3",
         // "border border-border-dark px-5"
       )}>
-        {/* <span className="hidden xs:flex font-medium">{formattedBalance}</span> */}
+        {/* <span className="hidden xs:flex font-medium">{formattedAastBalance}</span> */}
         <Button
           className="-my-3 -mr-5 bg-accent-blue font-bold uppercase"
           onClick={handleOpenStakingModal}
@@ -40,7 +54,10 @@ export const StakeButton = ({ }: {}) => {
         </Button>
       </div>
 
-      <StakingModal stakingModalRef={stakingModalRef} />
+      <StakingModal
+        stakingModalRef={stakingModalRef}
+        astBalance={formattedAstBalance}
+        sAstBalance={formattedAastBalance} />
     </>
   );
 };

@@ -7,17 +7,20 @@ import { twJoin } from "tailwind-merge";
 import { useToggle } from "@react-hookz/web";
 
 interface StakingModalInterface {
-  stakingModalRef: RefObject<HTMLDialogElement>
+  stakingModalRef: RefObject<HTMLDialogElement>,
+  astBalance: string,
+  sAstBalance: string
 }
 
-const StakingModal: FC<StakingModalInterface> = ({ stakingModalRef }) => {
+const StakingModal: FC<StakingModalInterface> = ({ stakingModalRef, astBalance, sAstBalance }) => {
   const [isToggledStake, toggleStake] = useToggle(true);
   const handleCloseModal = () => {
     stakingModalRef.current && stakingModalRef.current.close()
   }
+
   return (
     <dialog className={twJoin("content-center bg-black p-4 text-white border border-border-darkGray",
-      'w-fit xs:w-4/5 sm:w-3/5 md:w-1/3 lg:w-2/5 xl:w-1/5')} ref={stakingModalRef}>
+      ['w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/5'])} ref={stakingModalRef}>
       <div className="flex justify-between">
         <h2 className="font-semibold">Manage Stake</h2>
         <div className="hover:cursor-pointer" onClick={handleCloseModal}>
@@ -86,8 +89,8 @@ const StakingModal: FC<StakingModalInterface> = ({ stakingModalRef }) => {
       </div>
       <div className="flex bg-black border border-border-darkShaded rounded px-4 py-2 justify-between items-center">
         <img src={AirSwapLogo} alt="AirSwap Logo" className='w-8 h-8 ' />
-        <div className="flex flex-col text-right">
-          <span className="text-lg font-medium">5700</span>
+        <div className="flex flex-col text-right  uppercase">
+          <span className="text-lg font-medium">{sAstBalance} Staked</span>
           <span className="text-xs">30,100.00 stakable</span>
         </div>
       </div>
