@@ -2,7 +2,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  darkMode: 'class',
+  darkMode: "class",
   theme: {
     fontFamily: {
       sans: ["Loos", "sans-serif"],
@@ -12,6 +12,10 @@ module.exports = {
         xs: "425px",
       },
       colors: {
+        dark: {
+          inactive: "hsla(220, 10%, 48%, 1)",
+          checkbox: "hsl(220, 11%, 11%)",
+        },
         bg: {
           dark: "hsl(240, 8%, 3%)",
           light: "hsl(220, 29%, 93.9%)",
@@ -38,7 +42,7 @@ module.exports = {
           darkGray: "hsl(216, 18%, 20%)",
           darkLight: "hsl(219, 8%, 65%)",
           lightGray: "hsl(215, 33.3%, 92.9%)",
-          lightLightGray: "hsl(213, 39%, 93%, 0.2)"
+          lightLightGray: "hsl(213, 39%, 93%, 0.2)",
         },
       },
     },

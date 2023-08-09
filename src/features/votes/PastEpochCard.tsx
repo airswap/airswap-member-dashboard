@@ -2,6 +2,7 @@ import { format } from "@greypixel_/nicenumbers";
 import { Fragment } from "react";
 import { MdChevronRight, MdClose, MdOpenInNew } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
+import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
 import { Proposal } from "./hooks/useGroupedProposals";
@@ -21,8 +22,8 @@ export const PastEpochCard = ({
       style={{ gridTemplateColumns: "auto 1fr auto auto" }}
     >
       {/* Checkbox */}
-      <div className="p-5 justify-self-center">
-        {!proposalGroupState.hasUserClaimed && <input type="checkbox" />}
+      <div className="p-5 justify-self-center flex">
+        {!proposalGroupState.hasUserClaimed && <Checkbox />}
       </div>
 
       {/* Title */}
