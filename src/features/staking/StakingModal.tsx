@@ -1,22 +1,90 @@
-import { FC, RefObject } from "react";
+import { FC, RefObject, useState } from "react";
 import AirSwapLogo from "../../assets/airswap-logo.svg";
 import { VscChromeClose } from "react-icons/vsc";
 import LineBreak from "../common/LineBreak";
 import { Button } from "../common/Button";
 import { twJoin } from "tailwind-merge";
 import { useToggle } from "@react-hookz/web";
+import { usePrepareContractWrite, useContractWrite } from 'wagmi'
+import { contractAddresses } from "../../utils/constants";
+import stakingABI from '../../contracts/stakingAbi.json'
+import astABI from '../../contracts/astAbi.json'
+import StakeBalances from "./subcomponents/StakeBalances";
+import UnstakeBalances from "./subcomponents/UnstakeBalances";
+import { buttonStatusText } from "./uils/buttonStatusText";
+import { encodeFunctionData } from "viem";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>,
   astBalance: string,
-  sAstBalance: string
+  sAstBalance: string,
+  chainId: number
 }
 
-const StakingModal: FC<StakingModalInterface> = ({ stakingModalRef, astBalance, sAstBalance }) => {
+type StatusStaking = "unapproved" | "approved" | "staking" | "success"
+
+const StakingModal: FC<StakingModalInterface> = ({
+  stakingModalRef,
+  astBalance,
+  sAstBalance,
+  chainId
+}) => {
   const [isToggledStake, toggleStake] = useToggle(true);
+  const [statusStaking, setStatusStaking] = useState<StatusStaking>("unapproved");
+  const [stakingAmount, setStakingAmount] = useState<number>(0);
+
+  // const approveData = encodeFunctionData({
+  //   abi: astABI,
+  //   functionName: 'approve',
+  //   args: [contractAddresses[chainId].staking, stakingAmount * Math.pow(10, 4)]
+  // })
+  // console.log('approveData', approveData)
+
+  const { config: configApprove } = usePrepareContractWrite({
+    address: contractAddresses[chainId].AST as `0x${string}`,
+    abi: astABI,
+    functionName: 'approve',
+    staleTime: 300_000, // 5 minutes,
+    cacheTime: Infinity,
+    args: [contractAddresses[chainId].staking, stakingAmount * Math.pow(10, 4)]
+  })
+  const { write: approveFunction } = useContractWrite(configApprove)
+  // console.log('approveFunction', approveFunction)
+
+  const {
+    config: configStake,
+  } = usePrepareContractWrite({
+    address: contractAddresses[chainId].staking as `0x${string}`,
+    abi: stakingABI,
+    functionName: 'stake',
+    staleTime: 300_000, // 5 minutes,
+    cacheTime: Infinity,
+  })
+  const { write: stakeFunction } = useContractWrite(configStake)
+
   const handleCloseModal = () => {
     stakingModalRef.current && stakingModalRef.current.close()
   }
+
+  const stakable = +astBalance - stakingAmount
+
+  const buttonText = buttonStatusText(statusStaking)
+
+  const buttonAction = () => {
+    switch (statusStaking) {
+      case 'unapproved':
+        if (approveFunction)
+          return approveFunction
+        break;
+      case 'staking':
+        return;
+      case 'success':
+        return;
+      case 'approved':
+        return;
+    }
+  };
+  console.log('buttonAction', buttonAction())
 
   return (
     <dialog className={twJoin("content-center bg-black p-4 text-white border border-border-darkGray",
@@ -28,41 +96,12 @@ const StakingModal: FC<StakingModalInterface> = ({ stakingModalRef, astBalance, 
         </div>
       </div>
       <LineBreak />
-
-
       <div className="flex flex-col space-y-3">
-        {isToggledStake ?
-          (
-            <>
-              <div className="mt-6">
-                (PROGRESS BAR)
-                {/* TODO: add progress bar here with AST balance */}
-              </div>
-              <div className="flex flex-row">
-                <span className="mr-2">5.7k</span>unstakable
-              </div>
-              <div className="flex flex-row">
-                <span className="mr-2">180k</span>staked
-              </div>
-              <div className="flex flex-row">
-                <span className="mr-2">30.1k</span>stakable
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="mt-6">
-                (PROGRESS BAR)
-                {/* TODO: add progress bar here with AST balance */}
-              </div>
-              <div className="flex flex-row">
-                <span className="mr-2">30.1k</span>
-                <span>stakable</span>
-              </div>
-            </>
-          )}
+        {isToggledStake &&
+          <StakeBalances unstakable="5.7k" staked="180k" stakable="30.1k" />}
+        {!isToggledStake &&
+          <UnstakeBalances stakedBalance={sAstBalance} />}
       </div>
-
-
       <LineBreak />
       <div className="mt-6 font-lg rounded-md font-semibold pointer-cursor">
         <Button
@@ -90,11 +129,22 @@ const StakingModal: FC<StakingModalInterface> = ({ stakingModalRef, astBalance, 
       <div className="flex bg-black border border-border-darkShaded rounded px-4 py-2 justify-between items-center">
         <img src={AirSwapLogo} alt="AirSwap Logo" className='w-8 h-8 ' />
         <div className="flex flex-col text-right  uppercase">
-          <span className="text-lg font-medium">{sAstBalance} Staked</span>
-          <span className="text-xs">30,100.00 stakable</span>
+          <div>
+            <input
+              type="number"
+              value={stakingAmount}
+              onChange={(e) => setStakingAmount(+e.target.value)}
+              className="text-right w-1/5 items-right"
+            />
+          </div>
+          {/* <span className="text-lg font-medium">{sAstBalance}</span> */}
+          <span className="text-xs">{stakable} stakable</span>
         </div>
       </div>
-      <Button className="rounded-sm w-full uppercase font-semibold bg-accent-blue mt-10 mb-2">approve token</Button>
+      <Button
+        className="rounded-sm w-full uppercase font-semibold bg-accent-blue mt-10 mb-2"
+        onClick={buttonAction()}
+      >{buttonText}</Button>
     </dialog>
   )
 }

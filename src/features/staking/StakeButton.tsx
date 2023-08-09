@@ -4,14 +4,14 @@ import { useAccount, useBalance, useNetwork } from "wagmi";
 import { useRef } from "react";
 import StakingModal from "./StakingModal";
 import { twJoin } from "tailwind-merge";
-import { tokenAddresses } from "../../utils/constants";
+import { contractAddresses } from "../../utils/constants";
 
 export const StakeButton = ({ }: {}) => {
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork()
   const { data: astBalance } = useBalance({
     address,
-    token: tokenAddresses[chain?.id || 1].AST as `0x${string}` || "",
+    token: contractAddresses[chain?.id || 1].AST as `0x${string}` || "",
     chainId: chain?.id,
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
@@ -19,12 +19,11 @@ export const StakeButton = ({ }: {}) => {
 
   const { data: sAstBalance } = useBalance({
     address,
-    token: tokenAddresses[chain?.id || 1].sAST as `0x${string}` || "",
+    token: contractAddresses[chain?.id || 1].sAST as `0x${string}` || "",
     chainId: chain?.id,
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
   });
-
 
   const stakingModalRef = useRef<HTMLDialogElement | null>(null)
 
@@ -54,10 +53,12 @@ export const StakeButton = ({ }: {}) => {
         </Button>
       </div>
 
-      <StakingModal
-        stakingModalRef={stakingModalRef}
-        astBalance={formattedAstBalance}
-        sAstBalance={formattedAastBalance} />
+      {isConnected &&
+        <StakingModal
+          stakingModalRef={stakingModalRef}
+          astBalance={formattedAstBalance}
+          sAstBalance={formattedAastBalance}
+          chainId={chain?.id || 1} />}
     </>
   );
 };
