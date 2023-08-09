@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
-import { VscChromeClose } from "react-icons/vsc";
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import LineBreak from "../../common/LineBreak";
 import { useToggle } from "@react-hookz/web";
@@ -11,7 +10,6 @@ import { twJoin } from "tailwind-merge";
 import { StakeInput } from "../types/StakingTypes";
 
 interface ManageStakeProps {
-  handleCloseModal: () => void;
   sAstBalance: string;
   astBalance: string;
   register: UseFormRegister<StakeInput>
@@ -19,22 +17,15 @@ interface ManageStakeProps {
 }
 
 const ManageStake: FC<ManageStakeProps> = ({
-  handleCloseModal,
   sAstBalance,
   astBalance,
   register,
   setValue
 }) => {
   const [isToggledStake, toggleStake] = useToggle(true);
-  console.log(register)
+
   return (
     <>
-      <div className="flex justify-between">
-        <h2 className="font-semibold">Manage Stake</h2>
-        <div className="hover:cursor-pointer" onClick={handleCloseModal}>
-          <VscChromeClose />
-        </div>
-      </div>
       <LineBreak />
       <div className="flex flex-col space-y-3">
         {isToggledStake &&

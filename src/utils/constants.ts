@@ -15,7 +15,7 @@ export const contractAddresses: ContractAddress = {
 
 export const etherscanLink = (
   chainId: number,
-  transactionHash: string
+  transactionHash: string | undefined
 ) => {
   switch (chainId) {
     case 1:

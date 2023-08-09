@@ -11,8 +11,11 @@ import { useForm } from "react-hook-form"
 import { format } from "@greypixel_/nicenumbers";
 import ManageStake from "./subcomponents/ManageStake";
 import { StakeInput, StatusStaking } from "./types/StakingTypes";
-import Approving from "./subcomponents/Approving";
+import PendingTransaction from "./subcomponents/PendingTransaction";
 import ApproveSuccess from "./subcomponents/ApproveSuccess";
+import { VscChromeClose } from "react-icons/vsc";
+import { modalHeadline } from "./uils/headline";
+import TransactionFailed from "./subcomponents/TransactionFailed";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>,
@@ -32,12 +35,13 @@ const StakingModal: FC<StakingModalInterface> = ({
     watch,
     setValue,
     getValues,
-    // formState: { errors }
+    formState: { errors }
   } = useForm<StakeInput>()
 
   watch();
   const values = getValues();
   const stakingAmount = values.stakingAmount || 0;
+  console.log(stakingAmount)
 
   const { data: astBalanceData } = useBalance({
     address: address as `0x${string}`,
@@ -92,6 +96,8 @@ const StakingModal: FC<StakingModalInterface> = ({
     format(astBalanceData?.value, { tokenDecimals: 4 }).replace("T", "");
   const sAstBalance = (sAstBalanceData as bigint).toString()
 
+  const headline = modalHeadline(statusStaking)
+
   const disableButtonLogic = (statusStaking: string) => {
     if (statusStaking === 'unapproved') {
       return stakingAmount <= 0
@@ -115,6 +121,7 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   const handleCloseModal = () => {
     stakingModalRef.current && stakingModalRef.current.close()
+    setValue('stakingAmount', 0)
   }
 
   useEffect(() => {
@@ -129,10 +136,14 @@ const StakingModal: FC<StakingModalInterface> = ({
   return (
     <dialog className={twJoin("content-center bg-black p-4 text-white border border-border-darkGray",
       ['w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/5'])} ref={stakingModalRef}>
-
+      <div className="flex justify-between">
+        <h2 className="font-semibold">{headline}</h2>
+        <div className="hover:cursor-pointer" onClick={handleCloseModal}>
+          <VscChromeClose />
+        </div>
+      </div>
       {(statusStaking === 'unapproved' || statusStaking === 'approved') ? (
         <ManageStake
-          handleCloseModal={handleCloseModal}
           sAstBalance={sAstBalance}
           astBalance={astBalance}
           register={register}
@@ -141,15 +152,25 @@ const StakingModal: FC<StakingModalInterface> = ({
       ) : null}
 
       {statusStaking === 'approving' ? (
-        <Approving handleCloseModal={handleCloseModal} />
+        <PendingTransaction statusStaking={statusStaking} />
       ) : null}
 
-      {statusStaking === 'approved' ? (
+      {(statusStaking === 'approved' || statusStaking === 'staking') ? (
         <ApproveSuccess
-          handleCloseModal={handleCloseModal}
+          statusStaking={statusStaking}
           setStatusStaking={setStatusStaking}
           amountApproved={stakingAmount.toString()}
-          transactionHash={'0x'}
+          chainId={chainId}
+          transactionHashApprove="0x"
+          transactionHashStake="0x"
+        />
+      ) : null}
+
+      {statusStaking === 'failed' ? (
+        <TransactionFailed
+          setStatusStaking={setStatusStaking}
+          chainId={chainId}
+          transactionHash="0x"
         />
       ) : null}
 
