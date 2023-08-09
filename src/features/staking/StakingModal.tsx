@@ -11,6 +11,8 @@ import { useForm } from "react-hook-form"
 import { format } from "@greypixel_/nicenumbers";
 import ManageStake from "./subcomponents/ManageStake";
 import { StakeInput, StatusStaking } from "./types/StakingTypes";
+import Approving from "./subcomponents/Approving";
+import ApproveSuccess from "./subcomponents/ApproveSuccess";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>,
@@ -35,7 +37,7 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   watch();
   const values = getValues();
-  const stakingAmount = values.stakingAmount;
+  const stakingAmount = values.stakingAmount || 0;
 
   const { data: astBalanceData } = useBalance({
     address: address as `0x${string}`,
@@ -61,7 +63,6 @@ const StakingModal: FC<StakingModalInterface> = ({
     cacheTime: Infinity,
   })
   const { write: stakeFunction } = useContractWrite(configStake)
-  console.log('stakeFunction', stakeFunction)
 
   const { data: astAllowanceData } = useContractRead({
     address: contractAddresses[chainId].ast as `0x${string}`,
@@ -91,8 +92,6 @@ const StakingModal: FC<StakingModalInterface> = ({
     format(astBalanceData?.value, { tokenDecimals: 4 }).replace("T", "");
   const sAstBalance = (sAstBalanceData as bigint).toString()
 
-  console.log('isSuccessApprove', isSuccessApprove)
-
   const disableButtonLogic = (statusStaking: string) => {
     if (statusStaking === 'unapproved') {
       return stakingAmount <= 0
@@ -105,8 +104,8 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   const buttonAction = () => {
     if (statusStaking === 'unapproved') {
-      setStatusStaking("approving");
-      return approveAst && approveAst
+      // setStatusStaking("approving");
+      return approveAst && approveAst()
     } else if (statusStaking === 'approved') {
       null
     } else if (statusStaking === 'success') {
@@ -121,6 +120,7 @@ const StakingModal: FC<StakingModalInterface> = ({
   useEffect(() => {
     if (isSuccessApprove) {
       setStatusStaking('approved')
+      console.log('isSuccessApprove', isSuccessApprove)
     }
   }, [isSuccessApprove, statusStaking])
 
@@ -130,17 +130,29 @@ const StakingModal: FC<StakingModalInterface> = ({
     <dialog className={twJoin("content-center bg-black p-4 text-white border border-border-darkGray",
       ['w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/5'])} ref={stakingModalRef}>
 
-      {statusStaking === 'unapproved' || statusStaking === 'approved' ?
-        (
-          <ManageStake
-            handleCloseModal={handleCloseModal}
-            sAstBalance={sAstBalance}
-            astBalance={astBalance}
-            register={register}
-            setValue={setValue}
-          />
-        ) : null
-      }
+      {(statusStaking === 'unapproved' || statusStaking === 'approved') ? (
+        <ManageStake
+          handleCloseModal={handleCloseModal}
+          sAstBalance={sAstBalance}
+          astBalance={astBalance}
+          register={register}
+          setValue={setValue}
+        />
+      ) : null}
+
+      {statusStaking === 'approving' ? (
+        <Approving handleCloseModal={handleCloseModal} />
+      ) : null}
+
+      {statusStaking === 'approved' ? (
+        <ApproveSuccess
+          handleCloseModal={handleCloseModal}
+          setStatusStaking={setStatusStaking}
+          amountApproved={stakingAmount.toString()}
+          transactionHash={'0x'}
+        />
+      ) : null}
+
       <Button
         className="rounded-sm w-full uppercase font-semibold bg-accent-blue mt-10 mb-2"
         onClick={buttonAction}
@@ -148,11 +160,6 @@ const StakingModal: FC<StakingModalInterface> = ({
       >
         {buttonText}
       </Button>
-      {statusStaking === 'approving' && (
-        <>
-          {null}
-        </>
-      )}
     </dialog>
   )
 }
