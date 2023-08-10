@@ -1,12 +1,12 @@
 import * as RadixCheckbox from "@radix-ui/react-checkbox";
 import { AnimatePresence, motion } from "framer-motion";
-import { HTMLAttributes, useState } from "react";
+import { useState } from "react";
 import { twJoin, twMerge } from "tailwind-merge";
 
 export const Checkbox = ({
   className,
   ...rest
-}: { className?: string } & HTMLAttributes<HTMLButtonElement>) => {
+}: { className?: string } & RadixCheckbox.CheckboxProps) => {
   const [checked, setChecked] = useState<RadixCheckbox.CheckedState>(false);
 
   return (
@@ -20,6 +20,7 @@ export const Checkbox = ({
         "data-[state=checked]:border-accent-blue",
         "data-[state=unchecked]:active:bg-accent-blue data-[state=unchecked]:active:bg-opacity-50 data-[state=unchecked]:transition-none",
         "!outline-none focus-visible:ring-1 ring-accent-blue ring-offset-2 ring-offset-bg-dark",
+        "disabled:bg-dark-checkbox-bg-inactive disabled:border-dark-checkbox-border-inactive disabled:pointer-events-none",
         className,
       ])}
       {...rest}

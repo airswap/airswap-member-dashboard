@@ -2,6 +2,7 @@ import { format } from "@greypixel_/nicenumbers";
 import { Fragment } from "react";
 import { MdChevronRight, MdClose, MdOpenInNew } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
+import { useAccount } from "wagmi";
 import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
@@ -15,6 +16,7 @@ export const PastEpochCard = ({
   proposalGroup: Proposal[];
   proposalGroupState: ReturnType<typeof useGroupClaimStatus>;
 }) => {
+  const { isConnected: isWalletConnected } = useAccount();
   const proposalGroupTitle = getEpochName(proposalGroup[0]) + " Epoch";
   return (
     <div
@@ -23,7 +25,15 @@ export const PastEpochCard = ({
     >
       {/* Checkbox */}
       <div className="p-5 justify-self-center flex">
-        {!proposalGroupState.hasUserClaimed && <Checkbox />}
+        {!proposalGroupState.hasUserClaimed && (
+          <Checkbox
+            className={twJoin(!isWalletConnected && "invisible")}
+            disabled={
+              proposalGroupState.hasUserClaimed ||
+              proposalGroupState.pointsEarned === 0
+            }
+          />
+        )}
       </div>
 
       {/* Title */}

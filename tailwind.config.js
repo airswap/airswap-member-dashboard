@@ -16,6 +16,8 @@ module.exports = {
           inactive: "hsla(220, 10%, 48%, 1)",
           checkbox: "hsl(220, 11%, 11%)",
           "checkbox-hovered": "hsl(222, 10.6%, 18.4%)",
+          "checkbox-bg-inactive": "#101113",
+          "checkbox-border-inactive": "#1A1E25",
         },
         bg: {
           dark: "hsl(240, 8%, 3%)",
