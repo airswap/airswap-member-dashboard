@@ -24,20 +24,40 @@ const ManageStake: FC<ManageStakeProps> = ({
   const [stakeOrUnstake, setStakeOrUnstake] = useState<"stake" | "unstake">(
     "stake",
   );
+  console.log(sAstBalance, "sAstBalance", astBalance, "astBalance");
 
   return (
     <>
       <LineBreak />
       <div className="flex flex-col space-y-3">
         {stakeOrUnstake === "stake" && (
-          <StakeBalances
-            unstakable={sAstBalance}
-            staked={sAstBalance}
-            stakable={astBalance}
-          />
+          <>
+            <div className="mt-6">
+              {/* TODO: add progress bar here with AST balance */}
+              (PROGRESS BAR)
+            </div>
+            <div className="flex flex-row">
+              <span className="mr-2">{sAstBalance}</span>unstakable
+            </div>
+            <div className="flex flex-row">
+              <span className="mr-2">{sAstBalance}</span>staked
+            </div>
+            <div className="flex flex-row">
+              <span className="mr-2">{astBalance}</span>stakable
+            </div>
+          </>
         )}
         {stakeOrUnstake === "unstake" && (
-          <UnstakeBalances stakedBalance={astBalance} />
+          <>
+            <div className="mt-6">
+              {/* TODO: add progress bar here with AST balance */}
+              (PROGRESS BAR)
+            </div>
+            <div className="flex flex-row">
+              <span className="mr-2">{astBalance}</span>
+              <span>stakable</span>
+            </div>
+          </>
         )}
       </div>
       <LineBreak />
