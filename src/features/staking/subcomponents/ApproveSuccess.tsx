@@ -1,7 +1,7 @@
 import { Dispatch, FC } from "react";
-import { IoMdOpen } from "react-icons/io"
+import { IoMdOpen } from "react-icons/io";
 import { etherscanLink } from "../../../utils/constants";
-import greenCheck from "../../../assets/check-green.svg"
+import greenCheck from "../../../assets/check-green.svg";
 import { StatusStaking } from "../types/StakingTypes";
 
 interface ApproveSuccessProps {
@@ -21,57 +21,61 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
   amountStaked,
   chainId,
   transactionHashApprove,
-  transactionHashStake
+  transactionHashStake,
 }) => {
   const handleCloseMessage = () => {
     if (statusStaking === "approved") {
-      setStatusStaking("readyToStake")
+      setStatusStaking("readyToStake");
     } else if (statusStaking === "success") {
-      setStatusStaking("unapproved")
+      setStatusStaking("unapproved");
     }
-  }
+  };
 
   const message = () => {
     if (statusStaking === "approved") {
-      return "You successfully approved"
+      return "You successfully approved";
     } else if (statusStaking === "success") {
-      return "You successfully staked"
+      return "You successfully staked";
     }
-  }
+  };
 
   return (
     <div className="flex flex-col items-center p-6">
-      <div className="border border-border-darkShaded rounded-full p-2 bg-black">
-        <img
-          src={greenCheck} alt="green check"
-          onClick={handleCloseMessage}
-        />
+      <div className="rounded-full border border-border-darkShaded bg-black p-2">
+        <img src={greenCheck} alt="green check" onClick={handleCloseMessage} />
       </div>
       <div className="my-4 text-font-darkSubtext">
         <span>{message()}</span>
-        <span className="ml-1 text-white font-medium">
-          <span>{statusStaking === "approved" ? amountApproved : amountStaked}</span>
+        <span className="ml-1 font-medium text-white">
+          <span>
+            {statusStaking === "approved" ? amountApproved : amountStaked}
+          </span>
           <span className="ml-1">AST</span>
         </span>
       </div>
       <div className="flex items-center text-font-darkSubtext">
         <span>View on Etherscan</span>
         <div className="ml-2">
-          {statusStaking === "approved" &&
-            <a href={etherscanLink(chainId || 1, transactionHashApprove)} target="_">
+          {statusStaking === "approved" && (
+            <a
+              href={etherscanLink(chainId || 1, transactionHashApprove)}
+              target="_"
+            >
               <IoMdOpen />
             </a>
-          }
-          {statusStaking === "staking" &&
-            <a href={etherscanLink(chainId || 1, transactionHashStake)} target="_">
+          )}
+          {statusStaking === "staking" && (
+            <a
+              href={etherscanLink(chainId || 1, transactionHashStake)}
+              target="_"
+            >
               <IoMdOpen />
             </a>
-          }
+          )}
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-
-export default ApproveSuccess
+export default ApproveSuccess;

@@ -7,30 +7,41 @@ interface WalletConnectionModalProps {
   modalRef: RefObject<HTMLDialogElement>;
 }
 
-const WalletConnectionModal: FC<WalletConnectionModalProps> = ({ modalRef }) => {
+const WalletConnectionModal: FC<WalletConnectionModalProps> = ({
+  modalRef,
+}) => {
   const { isConnected, isConnecting } = useAccount();
-  const { connect, connectors, isLoading, pendingConnector } = useConnect()
+  const { connect, connectors, isLoading, pendingConnector } = useConnect();
 
   const handleCloseOnOutsideClick = (e: MouseEvent<HTMLDialogElement>) => {
     if (e.target === e.currentTarget) {
-      modalRef.current?.close()
+      modalRef.current?.close();
     }
-  }
+  };
 
   const handleCloseModalButton = () => {
-    modalRef.current?.close()
-  }
+    modalRef.current?.close();
+  };
 
   useEffect(() => {
     if (isConnected || isConnecting) {
-      modalRef.current?.close()
+      modalRef.current?.close();
     }
-  }, [isConnected, isConnecting, modalRef])
+  }, [isConnected, isConnecting, modalRef]);
 
   return (
-    <dialog className="rounded-md text-white border-0 p-0" ref={modalRef} onClick={handleCloseOnOutsideClick}>
-      <div className="flex flex-col space-y-3 px-6 pt-4 pb-6 bg-bg-dark font-bold w-[360px] color-white">
-        <div className={twJoin("flex flex-row pb-1 justify-between", "hover:cursor-pointer")}>
+    <dialog
+      className="rounded-md border-0 p-0 text-white"
+      ref={modalRef}
+      onClick={handleCloseOnOutsideClick}
+    >
+      <div className="color-white flex w-[360px] flex-col space-y-3 bg-bg-dark px-6 pb-6 pt-4 font-bold">
+        <div
+          className={twJoin(
+            "flex flex-row justify-between pb-1",
+            "hover:cursor-pointer",
+          )}
+        >
           <span>Select Wallet</span>
           <button onClick={() => handleCloseModalButton()}>
             <VscChromeClose size={20} />
@@ -39,28 +50,29 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({ modalRef }) => 
         {connectors.map((connector: Connector) => {
           return (
             <button
-              className="flex flex-row items-center p-2 border-2 border-border-dark rounded"
+              className="flex flex-row items-center rounded border-2 border-border-dark p-2"
               disabled={!connector.ready}
               onClick={() => connect({ connector })}
               key={connector.name}
             >
               <img
                 src={`src/assets/${connector.id}-logo.svg`}
-                alt='MetaMask logo'
-                className="mr-4 w-8 h-8"
+                alt="MetaMask logo"
+                className="mr-4 h-8 w-8"
               />
               <span>
                 {connector.name}
-                {!connector.ready && ' (unsupported)'}
+                {!connector.ready && " (unsupported)"}
                 {isLoading &&
                   connector.id === pendingConnector?.id &&
-                  ' (connecting)'}
+                  " (connecting)"}
               </span>
-            </button>)
+            </button>
+          );
         })}
       </div>
     </dialog>
-  )
-}
+  );
+};
 
-export default WalletConnectionModal
+export default WalletConnectionModal;

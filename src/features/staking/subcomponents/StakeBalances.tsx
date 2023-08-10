@@ -1,10 +1,14 @@
 interface StakeBalancesInterface {
-  unstakable: string,
-  staked: string,
-  stakable: string
+  unstakable: string;
+  staked: string;
+  stakable: string;
 }
 
-const StakeBalances = ({ unstakable, staked, stakable }: StakeBalancesInterface) => {
+const StakeBalances = ({
+  unstakable,
+  staked,
+  stakable,
+}: StakeBalancesInterface) => {
   return (
     <>
       <div className="mt-6">
@@ -21,7 +25,7 @@ const StakeBalances = ({ unstakable, staked, stakable }: StakeBalancesInterface)
         <span className="mr-2">{stakable}</span>stakable
       </div>
     </>
-  )
-}
+  );
+};
 
-export default StakeBalances
+export default StakeBalances;

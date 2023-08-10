@@ -1,20 +1,20 @@
-import { StatusStaking } from "../types/StakingTypes"
+import { StatusStaking } from "../types/StakingTypes";
 
 export const modalHeadline = (statusStaking: StatusStaking) => {
   switch (statusStaking) {
     case "unapproved":
-      return "Manage Stake"
+      return "Manage Stake";
     case "approving":
-      return "Approve token"
+      return "Approve token";
     case "approved":
-      return "Approve successful"
+      return "Approve successful";
     case "readyToStake":
-      return "Manage stake"
+      return "Manage stake";
     case "staking":
-      return "Sign transaction"
+      return "Sign transaction";
     case "success":
-      return "Transaction successful"
+      return "Transaction successful";
     case "failed":
-      return "Transaction failed"
+      return "Transaction failed";
   }
-}
+};

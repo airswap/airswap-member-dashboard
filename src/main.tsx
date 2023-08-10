@@ -15,7 +15,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli],
   [
     alchemyProvider({ apiKey: import.meta.env.VITE_ALCHEMY_API_KEY || "" }),
-    publicProvider()
+    publicProvider(),
   ],
 );
 
@@ -31,10 +31,10 @@ const config = createConfig({
     new WalletConnectConnector({
       chains,
       options: {
-        projectId: import.meta.env.VITE_WALLETCONNECT_ID
-      }
-    })
-  ]
+        projectId: import.meta.env.VITE_WALLETCONNECT_ID,
+      },
+    }),
+  ],
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

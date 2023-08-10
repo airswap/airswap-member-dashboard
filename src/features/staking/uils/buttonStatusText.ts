@@ -2,13 +2,13 @@ import { StatusStaking } from "../types/StakingTypes";
 
 export const buttonStatusText = (statusStaking: StatusStaking) => {
   switch (statusStaking) {
-    case 'unapproved':
+    case "unapproved":
       return "Approve token";
     case "readyToStake":
-      return "Stake"
+      return "Stake";
     case "success":
       return "Manage stake";
     case "failed":
-      return "Try again"
+      return "Try again";
   }
-}
+};

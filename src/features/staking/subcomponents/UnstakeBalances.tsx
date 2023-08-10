@@ -1,5 +1,5 @@
 interface UnstakeBalancesInterface {
-  stakedBalance: string
+  stakedBalance: string;
 }
 
 const UnstakeBalances = ({ stakedBalance }: UnstakeBalancesInterface) => {
@@ -14,7 +14,7 @@ const UnstakeBalances = ({ stakedBalance }: UnstakeBalancesInterface) => {
         <span>stakable</span>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default UnstakeBalances
+export default UnstakeBalances;

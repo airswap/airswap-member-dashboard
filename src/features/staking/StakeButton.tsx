@@ -4,17 +4,17 @@ import { useRef } from "react";
 import StakingModal from "./StakingModal";
 import { twJoin } from "tailwind-merge";
 
-export const StakeButton = ({ }: {}) => {
+export const StakeButton = ({}: {}) => {
   const { address, isConnected } = useAccount();
-  const { chain } = useNetwork()
+  const { chain } = useNetwork();
 
-  const stakingModalRef = useRef<HTMLDialogElement | null>(null)
+  const stakingModalRef = useRef<HTMLDialogElement | null>(null);
 
   const handleOpenStakingModal = () => {
     if (isConnected) {
-      stakingModalRef.current && stakingModalRef.current.showModal()
+      stakingModalRef.current && stakingModalRef.current.showModal();
     }
-  }
+  };
 
   return (
     <>
@@ -27,11 +27,13 @@ export const StakeButton = ({ }: {}) => {
         </Button>
       </div>
 
-      {isConnected && address &&
+      {isConnected && address && (
         <StakingModal
           stakingModalRef={stakingModalRef}
           address={address}
-          chainId={chain?.id || 1} />}
+          chainId={chain?.id || 1}
+        />
+      )}
     </>
   );
 };
