@@ -5,7 +5,7 @@ import greenCheck from "../../../assets/check-green.svg"
 import { StatusStaking } from "../types/StakingTypes";
 
 interface ApproveSuccessProps {
-  statusStaking: string;
+  statusStaking: StatusStaking;
   setStatusStaking: Dispatch<StatusStaking>;
   amountApproved?: string;
   amountStaked?: string;
@@ -24,20 +24,24 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
   transactionHashStake
 }) => {
   const handleCloseMessage = () => {
-    setStatusStaking("readyToStake")
+    if (statusStaking === "approved") {
+      setStatusStaking("readyToStake")
+    } else if (statusStaking === "success") {
+      setStatusStaking("unapproved")
+    }
   }
 
   const message = () => {
-    if (statusStaking === "approving") {
+    if (statusStaking === "approved") {
       return "You successfully approved"
-    } else if (statusStaking === "staking") {
+    } else if (statusStaking === "success") {
       return "You successfully staked"
     }
   }
 
   return (
     <div className="flex flex-col items-center p-6">
-      <div>
+      <div className="border border-border-darkShaded rounded-full p-2 bg-black">
         <img
           src={greenCheck} alt="green check"
           onClick={handleCloseMessage}
@@ -46,20 +50,20 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
       <div className="my-4 text-font-darkSubtext">
         <span>{message()}</span>
         <span className="ml-1 text-white font-medium">
-          {statusStaking === "approving" ? amountApproved : amountStaked}
-          <span>AST</span>
+          <span>{statusStaking === "approved" ? amountApproved : amountStaked}</span>
+          <span className="ml-1">AST</span>
         </span>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center text-font-darkSubtext">
         <span>View on Etherscan</span>
         <div className="ml-2">
-          {statusStaking === "approving" &&
-            <a href={etherscanLink(chainId || 1, transactionHashApprove)}>
+          {statusStaking === "approved" &&
+            <a href={etherscanLink(chainId || 1, transactionHashApprove)} target="_">
               <IoMdOpen />
             </a>
           }
           {statusStaking === "staking" &&
-            <a href={etherscanLink(chainId || 1, transactionHashStake)}>
+            <a href={etherscanLink(chainId || 1, transactionHashStake)} target="_">
               <IoMdOpen />
             </a>
           }

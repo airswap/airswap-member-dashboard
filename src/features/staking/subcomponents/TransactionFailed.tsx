@@ -19,11 +19,12 @@ const TransactionFailed: FC<TransactionFailedProps> = ({
 
   const handleCloseMessage = () => {
     setStatusStaking("readyToStake")
+    setStatusStaking("readyToStake")
   }
 
   return (
-    <div className="flex flex-col items-center p-6">
-      <div>
+    <div className="flex flex-col items-center my-12">
+      <div className="border border-border-darkShaded rounded-full p-2 bg-black">
         <img
           src={closeRed} alt="green check"
           onClick={handleCloseMessage}

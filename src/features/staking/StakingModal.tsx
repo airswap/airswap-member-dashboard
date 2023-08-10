@@ -1,7 +1,7 @@
 import { FC, RefObject, useEffect, useState } from "react";
 import { Button } from "../common/Button";
 import { twJoin } from "tailwind-merge";
-import { usePrepareContractWrite, useContractWrite, useContractRead, useBalance } from 'wagmi'
+import { usePrepareContractWrite, useContractWrite, useContractRead, useBalance, useWaitForTransaction } from 'wagmi'
 import { contractAddresses } from "../../utils/constants";
 import stakingABI from '../../contracts/stakingAbi.json'
 import astABI from '../../contracts/astAbi.json'
@@ -41,7 +41,6 @@ const StakingModal: FC<StakingModalInterface> = ({
   watch();
   const values = getValues();
   const stakingAmount = values.stakingAmount || 0;
-  console.log(stakingAmount)
 
   const { data: astBalanceData } = useBalance({
     address: address as `0x${string}`,
@@ -59,24 +58,7 @@ const StakingModal: FC<StakingModalInterface> = ({
     staleTime: 300_000, // 5 minutes,
   })
 
-  const { config: configStake } = usePrepareContractWrite({
-    address: contractAddresses[chainId].staking as `0x${string}`,
-    abi: stakingABI,
-    functionName: 'stake',
-    staleTime: 300_000, // 5 minutes,
-    cacheTime: Infinity,
-  })
-  const { write: stakeFunction } = useContractWrite(configStake)
-
-  const { data: astAllowanceData } = useContractRead({
-    address: contractAddresses[chainId].ast as `0x${string}`,
-    abi: astABI,
-    functionName: 'allowance',
-    args: [address, contractAddresses[chainId].staking],
-    watch: true,
-    staleTime: 300_000, // 5 minutes,
-  })
-
+  // Start approve functions
   const { config: configApprove } = usePrepareContractWrite({
     address: contractAddresses[chainId].ast as `0x${string}`,
     abi: astABI,
@@ -87,8 +69,61 @@ const StakingModal: FC<StakingModalInterface> = ({
   })
   const {
     write: approveAst,
-    isSuccess: isSuccessApprove
+    data: dataApproveAst,
   } = useContractWrite(configApprove)
+  // check transaction status and hash
+  const {
+    data: hashApproveAst,
+    status: statusApproveAst
+  } = useWaitForTransaction({
+    hash: dataApproveAst?.hash,
+    onSettled() {
+      // putting this logic into useEffect hook will never allow statusApproveAst to not equal "success"
+      if (statusApproveAst === 'success') {
+        setStatusStaking('approved')
+      }
+    },
+  })
+
+  // start staking funtion
+  const { config: configStake } = usePrepareContractWrite({
+    address: contractAddresses[chainId].staking as `0x${string}`,
+    abi: stakingABI,
+    functionName: 'stake',
+    args: [stakingAmount * Math.pow(10, 4)],
+    staleTime: 300_000, // 5 minutes,
+    cacheTime: Infinity,
+  })
+  const {
+    write: writeStakeFunction,
+    data: dataStakeFunction
+  } = useContractWrite(configStake)
+  // check transaction status and hash
+  const {
+    data: hashStake,
+    status: statusStakeAst
+  } = useWaitForTransaction({
+    hash: dataStakeFunction?.hash,
+    onSettled() {
+      if (statusStakeAst === "success") {
+        setStatusStaking("success")
+      }
+    },
+    onError(err) {
+      console.log("Error", err)
+      setStatusStaking("failed")
+    },
+  })
+
+
+  const { data: astAllowanceData } = useContractRead({
+    address: contractAddresses[chainId].ast as `0x${string}`,
+    abi: astABI,
+    functionName: 'allowance',
+    args: [address, contractAddresses[chainId].staking],
+    watch: true,
+    staleTime: 300_000, // 5 minutes,
+  })
 
   // convert unformatted balances
   const astAllowance = (astAllowanceData as bigint).toString() || "0";
@@ -97,6 +132,8 @@ const StakingModal: FC<StakingModalInterface> = ({
   const sAstBalance = (sAstBalanceData as bigint).toString()
 
   const headline = modalHeadline(statusStaking)
+
+  const doNotShowButtonLogic = statusStaking === "approving" || statusStaking === "approved" || statusStaking === "staking"
 
   const disableButtonLogic = (statusStaking: string) => {
     if (statusStaking === 'unapproved') {
@@ -110,12 +147,11 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   const buttonAction = () => {
     if (statusStaking === 'unapproved') {
-      // setStatusStaking("approving");
-      return approveAst && approveAst()
-    } else if (statusStaking === 'approved') {
-      null
+      return approveAst && approveAst();
+    } else if (statusStaking === 'readyToStake') {
+      return writeStakeFunction && writeStakeFunction();
     } else if (statusStaking === 'success') {
-      null
+      setStatusStaking("unapproved")
     }
   };
 
@@ -125,16 +161,17 @@ const StakingModal: FC<StakingModalInterface> = ({
   }
 
   useEffect(() => {
-    if (isSuccessApprove) {
-      setStatusStaking('approved')
-      console.log('isSuccessApprove', isSuccessApprove)
+    // putting this into `onSettled` in `useWaitForTransaction` will cause too much lag
+    if (statusApproveAst === 'loading') {
+      setStatusStaking('approving')
+    } else if (statusStakeAst === "loading") {
+      setStatusStaking("staking")
     }
-  }, [isSuccessApprove, statusStaking])
-
-  console.log('statusStaking', statusStaking)
+    console.log('statusStaking', statusStaking)
+  }, [statusApproveAst, statusStaking, statusStakeAst])
 
   return (
-    <dialog className={twJoin("content-center bg-black p-4 text-white border border-border-darkGray",
+    <dialog className={twJoin("content-center bg-black p-6 text-white border border-border-darkGray",
       ['w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/5'])} ref={stakingModalRef}>
       <div className="flex justify-between">
         <h2 className="font-semibold">{headline}</h2>
@@ -142,7 +179,7 @@ const StakingModal: FC<StakingModalInterface> = ({
           <VscChromeClose />
         </div>
       </div>
-      {(statusStaking === 'unapproved' || statusStaking === 'approved') ? (
+      {(statusStaking === 'unapproved' || statusStaking === 'readyToStake') ? (
         <ManageStake
           sAstBalance={sAstBalance}
           astBalance={astBalance}
@@ -161,8 +198,8 @@ const StakingModal: FC<StakingModalInterface> = ({
           setStatusStaking={setStatusStaking}
           amountApproved={stakingAmount.toString()}
           chainId={chainId}
-          transactionHashApprove="0x"
-          transactionHashStake="0x"
+          transactionHashApprove={hashApproveAst?.transactionHash}
+          transactionHashStake={hashStake?.transactionHash}
         />
       ) : null}
 
@@ -174,13 +211,13 @@ const StakingModal: FC<StakingModalInterface> = ({
         />
       ) : null}
 
-      <Button
+      {!doNotShowButtonLogic && <Button
         className="rounded-sm w-full uppercase font-semibold bg-accent-blue mt-10 mb-2"
         onClick={buttonAction}
         disabled={disableButtonLogic(statusStaking)}
       >
         {buttonText}
-      </Button>
+      </Button>}
     </dialog>
   )
 }

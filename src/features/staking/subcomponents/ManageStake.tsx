@@ -1,8 +1,7 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import LineBreak from "../../common/LineBreak";
-import { useToggle } from "@react-hookz/web";
 import StakeBalances from "./StakeBalances";
 import UnstakeBalances from "./UnstakeBalances";
 import { Button } from "../../common/Button";
@@ -22,15 +21,15 @@ const ManageStake: FC<ManageStakeProps> = ({
   register,
   setValue
 }) => {
-  const [isToggledStake, toggleStake] = useToggle(true);
+  const [stakeOrUnstake, setStakeOrUnstake] = useState<"stake" | "unstake">("stake")
 
   return (
     <>
       <LineBreak />
       <div className="flex flex-col space-y-3">
-        {isToggledStake &&
+        {stakeOrUnstake === "stake" &&
           <StakeBalances unstakable={sAstBalance} staked={sAstBalance} stakable={astBalance} />}
-        {!isToggledStake &&
+        {stakeOrUnstake === "unstake" &&
           <UnstakeBalances stakedBalance={astBalance} />}
       </div>
       <LineBreak />
@@ -39,17 +38,17 @@ const ManageStake: FC<ManageStakeProps> = ({
           className={twJoin(
             "rounded-none rounded-l-md",
             "w-1/2 uppercase text-sm",
-            `${isToggledStake && 'bg-bg-darkShaded'}`
+            `${stakeOrUnstake === "stake" && 'bg-bg-darkShaded'}`
           )}
-          onClick={toggleStake}
+          onClick={() => setStakeOrUnstake("stake")}
         >Stake</Button>
         <Button
           className={twJoin(
             "rounded-none rounded-r-md",
             "w-1/2 uppercase text-sm",
-            `${!isToggledStake && 'bg-bg-darkShaded'}`
+            `${stakeOrUnstake === "unstake" && 'bg-bg-darkShaded'}`
           )}
-          onClick={toggleStake}
+          onClick={() => setStakeOrUnstake("unstake")}
         >Unstake</Button>
       </div>
       <div className={twJoin(

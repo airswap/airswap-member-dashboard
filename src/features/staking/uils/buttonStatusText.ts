@@ -1,21 +1,14 @@
-export const buttonStatusText = (statusStaking: string): string | null => {
-  let buttonText: string | null;
+import { StatusStaking } from "../types/StakingTypes";
+
+export const buttonStatusText = (statusStaking: StatusStaking) => {
   switch (statusStaking) {
     case 'unapproved':
-      buttonText = "Approve token";
-      break;
-    case "approved":
-      buttonText = "Stake"
-      break;
-    case "staking":
-      buttonText = null;
-      break;
+      return "Approve token";
+    case "readyToStake":
+      return "Stake"
     case "success":
-      buttonText = "Manage stake";
-      break;
-    default:
-      buttonText = "Approve Stake"
-      break;
+      return "Manage stake";
+    case "failed":
+      return "Try again"
   }
-  return buttonText
 }

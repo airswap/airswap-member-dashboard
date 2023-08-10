@@ -7,14 +7,6 @@ interface PendingTransactionProps {
 }
 
 const PendingTransaction: FC<PendingTransactionProps> = ({ statusStaking }) => {
-  const headline = () => {
-    if (statusStaking === "approving") {
-      return "Approve token"
-    } else if (statusStaking === "staking") {
-      return "Sign transaction"
-    }
-  }
-
   const message = () => {
     if (statusStaking === "approving") {
       return "To stake your AST you will have to approve the token spent. Please the transaction in your wallet, your wallet should open. If your wallet doesn't open please try again."
@@ -26,11 +18,11 @@ const PendingTransaction: FC<PendingTransactionProps> = ({ statusStaking }) => {
 
   return (
     <>
-      <div className="flex justify-between">
-        <h2 className="font-semibold">{headline()}</h2>
-      </div>
       <div className="flex flex-col">
-        <div className="m-auto animate-spin">
+        <div className={twJoin(
+          "m-auto border border-border-darkShaded rounded-full p-2 bg-black",
+          "animate-spin"
+        )}>
           <img src={loadingSpinner} alt="loading spinner" />
         </div>
         <div className="m-auto my-6">Token approval pending</div>
