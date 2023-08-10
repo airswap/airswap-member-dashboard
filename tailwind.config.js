@@ -32,6 +32,7 @@ module.exports = {
           lightgreen: "hsla(158, 88%, 44%, 1)",
           lightred: "hsla(3, 88%, 68%, 1)",
           blue: "hsl(220, 100%, 58%)",
+          lightblue: "hsl(220, 30%, 70%)",
           orange: "hsl(42, 100%, 59%)",
           green: "hsl(122, 100%, 69%)",
           red: "hsl(0, 100%, 50%)",

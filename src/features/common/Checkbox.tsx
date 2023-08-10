@@ -16,7 +16,8 @@ export const Checkbox = forwardRef<HTMLButtonElement>(
           "group",
           "w-6 h-6 border border-dark-inactive rounded-sm bg-dark-checkbox relative",
           "data-[state=checked]:border-accent-blue data-[state=unchecked]:active:bg-accent-blue data-[state=unchecked]:active:bg-opacity-50",
-          "transition-colors duration-100",
+          "hover:!border-accent-lightblue",
+          "transition-colors duration-150",
           "outline-none focus-visible:ring-1 ring-white",
           className,
         ])}
