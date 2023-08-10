@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@greypixel_/nicenumbers": "^0.0.20",
+    "@radix-ui/react-checkbox": "^1.0.4",
     "@react-hookz/web": "^23.1.0",
     "@tanstack/react-query": "^4.32.0",
     "bignumber.js": "^9.1.1",
+    "framer-motion": "^10.15.1",
     "graphql": "^16.7.1",
     "graphql-request": "^6.1.0",
     "merkletreejs": "^0.3.10",
