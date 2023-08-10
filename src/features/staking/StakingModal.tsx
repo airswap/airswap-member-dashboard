@@ -41,7 +41,7 @@ const StakingModal: FC<StakingModalInterface> = ({
     watch,
     setValue,
     getValues,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<StakeInput>();
 
   watch();
@@ -95,6 +95,7 @@ const StakingModal: FC<StakingModalInterface> = ({
       await receipt;
       refetchAllowance();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [approve]);
 
   // start staking funtion
@@ -150,7 +151,6 @@ const StakingModal: FC<StakingModalInterface> = ({
   const sAstBalance = format(sAstBalanceData, { tokenDecimals: 4 });
 
   const needsApproval = +astBalance < +stakingAmount;
-  console.log(typeof needsApproval, needsApproval);
 
   const headline = modalHeadline(statusStaking);
 
