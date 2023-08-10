@@ -149,7 +149,8 @@ const StakingModal: FC<StakingModalInterface> = ({
   const astBalance = format(astBalanceData?.value, { tokenDecimals: 4 });
   const sAstBalance = format(sAstBalanceData, { tokenDecimals: 4 });
 
-  // const needsApproval = +astAllowance < +stakingAmount;
+  const needsApproval = +astBalance < +stakingAmount;
+  console.log(typeof needsApproval, needsApproval);
 
   const headline = modalHeadline(statusStaking);
 
@@ -245,7 +246,6 @@ const StakingModal: FC<StakingModalInterface> = ({
         <Button
           className="mb-2 mt-10 w-full rounded-sm bg-accent-blue font-semibold uppercase"
           onClick={buttonAction}
-          // disabled={!!needsApproval}
         >
           {buttonText}
         </Button>
