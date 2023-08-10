@@ -1,9 +1,11 @@
-import { request, gql } from "graphql-request";
+import { gql, request } from "graphql-request";
 import { useAccount, useQuery } from "wagmi";
+import {
+  SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
+  SNAPSHOT_SPACE,
+} from "../config/constants";
 
 // Snapshot docs here: https://docs.snapshot.org/tools/graphql-api
-
-const snapshotGraphqlEndpoint = "https://hub.snapshot.org/graphql";
 const VOTES_QUERY = (voter?: string) => gql`
   query {
     votes(
@@ -11,7 +13,7 @@ const VOTES_QUERY = (voter?: string) => gql`
       first: 100
       skip: 0
       where: {
-        space_in: ["vote.airswap.eth"]
+        space_in: ["${SNAPSHOT_SPACE}"]
         voter: "${voter}"
       }
       orderBy: "created"
@@ -22,6 +24,7 @@ const VOTES_QUERY = (voter?: string) => gql`
         id
       }
       choice
+      vp
     }
   }
 `;
@@ -30,6 +33,7 @@ type VotesQueryResult = {
   votes: {
     id: string;
     choice: number;
+    vp: number;
     proposal: { id: string };
   }[];
 };
@@ -44,15 +48,23 @@ export const useUserVotes = (voter?: `0x${string}`) => {
 
   const fetch = async () => {
     const result = await request<VotesQueryResult>(
-      snapshotGraphqlEndpoint,
+      SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
       VOTES_QUERY(_voter),
     );
     return result.votes;
   };
 
-  return useQuery(["snapshot", "votes", _voter?.toLowerCase()], fetch, {
-    cacheTime: Infinity,
-    staleTime: 600_000, // 10 minutes
-    enabled: !!_voter,
-  });
+  return useQuery(
+    [
+      SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
+      "votesByVoterAddress",
+      _voter?.toLowerCase(),
+    ],
+    fetch,
+    {
+      cacheTime: Infinity,
+      staleTime: 600_000, // 10 minutes
+      enabled: !!_voter,
+    },
+  );
 };

@@ -1,12 +1,18 @@
-import { Button } from "../common/Button";
-import { useAccount, useNetwork } from "wagmi";
 import { useRef } from "react";
-import StakingModal from "./StakingModal";
+import { useAccount, useNetwork } from "wagmi";
 import { twJoin } from "tailwind-merge";
+import { ContractTypes } from "../../config/ContractAddresses";
+import { useContractAddresses } from "../../config/hooks/useContractAddress";
+import { Button } from "../common/Button";
+import StakingModal from "./StakingModal";
 
 export const StakeButton = ({}: {}) => {
-  const { address, isConnected } = useAccount();
+  const { address } = useAccount();
   const { chain } = useNetwork();
+  const [stakedAst] = useContractAddresses([ContractTypes.AirSwapStaking], {
+    defaultChainId: 1,
+    useDefaultAsFallback: true,
+  });
 
   const stakingModalRef = useRef<HTMLDialogElement | null>(null);
 
