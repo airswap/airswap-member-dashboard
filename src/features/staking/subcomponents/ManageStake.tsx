@@ -2,8 +2,6 @@ import { FC, useState } from "react";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import LineBreak from "../../common/LineBreak";
-import StakeBalances from "./StakeBalances";
-import UnstakeBalances from "./UnstakeBalances";
 import { Button } from "../../common/Button";
 import { twJoin } from "tailwind-merge";
 import { StakeInput } from "../types/StakingTypes";
@@ -24,7 +22,6 @@ const ManageStake: FC<ManageStakeProps> = ({
   const [stakeOrUnstake, setStakeOrUnstake] = useState<"stake" | "unstake">(
     "stake",
   );
-  console.log(sAstBalance, "sAstBalance", astBalance, "astBalance");
 
   return (
     <>

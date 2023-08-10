@@ -1,4 +1,4 @@
-import { FC, RefObject, useEffect, useState } from "react";
+import { FC, RefObject, useCallback, useEffect, useState } from "react";
 import { Button } from "../common/Button";
 import { twJoin } from "tailwind-merge";
 import {
@@ -12,7 +12,6 @@ import { contractAddresses } from "../../utils/constants";
 import stakingABI from "../../contracts/stakingAbi.json";
 import astABI from "../../contracts/astAbi.json";
 import { buttonStatusText } from "./uils/buttonStatusText";
-// import { encodeFunctionData } from "viem";
 import { useForm } from "react-hook-form";
 import { format } from "@greypixel_/nicenumbers";
 import ManageStake from "./subcomponents/ManageStake";
@@ -74,19 +73,29 @@ const StakingModal: FC<StakingModalInterface> = ({
     cacheTime: Infinity,
     args: [contractAddresses[chainId].staking, stakingAmount * Math.pow(10, 4)],
   });
-  const { write: approveAst, data: dataApproveAst } =
+  const { writeAsync: approve, data: dataApprove } =
     useContractWrite(configApprove);
+
+  // TODO: code below can probably be refactored
   // check transaction status and hash
-  const { data: hashApproveAst, status: statusApproveAst } =
-    useWaitForTransaction({
-      hash: dataApproveAst?.hash,
-      onSettled() {
-        // putting this logic into useEffect hook will never allow statusApproveAst to not equal "success"
-        if (statusApproveAst === "success") {
-          setStatusStaking("approved");
-        }
-      },
-    });
+  const { data: hashApprove, status: statusApprove } = useWaitForTransaction({
+    hash: dataApprove?.hash,
+    onSettled() {
+      // putting this logic into useEffect hook will never allow statusApprove to not equal "success"
+      if (statusApprove === "success") {
+        setStatusStaking("approved");
+      }
+    },
+  });
+
+  const handleClickApprove = useCallback(async () => {
+    if (approve) {
+      const receipt = await approve();
+      // await receipt.wait(2);
+      await receipt;
+      refetchAllowance();
+    }
+  }, [approve]);
 
   // start staking funtion
   const { config: configStake } = usePrepareContractWrite({
@@ -97,8 +106,11 @@ const StakingModal: FC<StakingModalInterface> = ({
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
   });
-  const { write: writeStakeFunction, data: dataStakeFunction } =
+
+  const { writeAsync: stake, data: dataStakeFunction } =
     useContractWrite(configStake);
+
+  // TODO: code below can probably be refactored
   // check transaction status and hash
   const { data: hashStake, status: statusStakeAst } = useWaitForTransaction({
     hash: dataStakeFunction?.hash,
@@ -113,49 +125,53 @@ const StakingModal: FC<StakingModalInterface> = ({
     },
   });
 
-  const { data: astAllowanceData } = useContractRead({
-    address: contractAddresses[chainId].ast as `0x${string}`,
-    abi: astABI,
-    functionName: "allowance",
-    args: [address, contractAddresses[chainId].staking],
-    watch: true,
-    staleTime: 300_000, // 5 minutes,
-  });
+  const handleClickStake = useCallback(async () => {
+    if (stake) {
+      const receipt = await stake();
+      await receipt;
+      await console.log(receipt);
+    }
+  }, [stake]);
+
+  const { data: astAllowanceData, refetch: refetchAllowance } = useContractRead(
+    {
+      address: contractAddresses[chainId].ast as `0x${string}`,
+      abi: astABI,
+      functionName: "allowance",
+      args: [address, contractAddresses[chainId].staking],
+      watch: true,
+      staleTime: 300_000, // 5 minutes,
+    },
+  );
 
   // convert unformatted balances
-  const astAllowance = (astAllowanceData as bigint).toString() || "0";
-  const astBalance = format(astBalanceData?.value, {
-    tokenDecimals: 4,
-  }).replace("T", "");
-  const sAstBalance = (sAstBalanceData as bigint).toString();
+  const astAllowance = format(astAllowanceData, { tokenDecimals: 4 });
+  const astBalance = format(astBalanceData?.value, { tokenDecimals: 4 });
+  const sAstBalance = format(sAstBalanceData, { tokenDecimals: 4 });
 
-  const needsApproval = stakingAmount < +astAllowance;
-  console.log(
-    needsApproval ? "true, needs approval" : "false, go ahead and stake!",
-  );
+  // const needsApproval = +astAllowance < +stakingAmount;
 
   const headline = modalHeadline(statusStaking);
 
-  const doNotShowButtonLogic =
-    statusStaking === "approving" ||
-    statusStaking === "approved" ||
-    statusStaking === "staking";
-
-  const disableButtonLogic = (statusStaking: string) => {
-    if (statusStaking === "unapproved") {
-      return stakingAmount <= 0;
-    } else if (statusStaking === "approved") {
-      return +astBalance < +astAllowance;
+  // button should not render on certain components
+  const shouldRenderBtn = () => {
+    if (
+      statusStaking === "approving" ||
+      statusStaking === "approved" ||
+      statusStaking === "staking"
+    ) {
+      return true;
     }
   };
+  const isShouldRenderBtn = shouldRenderBtn();
 
   const buttonText = buttonStatusText(statusStaking);
 
   const buttonAction = () => {
     if (statusStaking === "unapproved") {
-      return approveAst && approveAst();
+      return approve && handleClickApprove();
     } else if (statusStaking === "readyToStake") {
-      return writeStakeFunction && writeStakeFunction();
+      return stake && handleClickStake();
     } else if (statusStaking === "success") {
       setStatusStaking("unapproved");
     }
@@ -168,13 +184,15 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   useEffect(() => {
     // putting this into `onSettled` in `useWaitForTransaction` will cause too much lag
-    if (statusApproveAst === "loading") {
+    if (statusApprove === "loading") {
       setStatusStaking("approving");
-    } else if (statusStakeAst === "loading") {
+    }
+
+    if (statusStakeAst === "loading") {
       setStatusStaking("staking");
     }
     console.log("statusStaking", statusStaking);
-  }, [statusApproveAst, statusStaking, statusStakeAst]);
+  }, [stakingAmount, statusApprove, statusStaking, statusStakeAst]);
 
   return (
     <dialog
@@ -199,17 +217,18 @@ const StakingModal: FC<StakingModalInterface> = ({
         />
       ) : null}
 
-      {statusStaking === "approving" ? (
+      {statusStaking === "approving" || statusStaking === "staking" ? (
         <PendingTransaction statusStaking={statusStaking} />
       ) : null}
 
-      {statusStaking === "approved" || statusStaking === "staking" ? (
+      {statusStaking === "approved" || statusStaking === "success" ? (
         <ApproveSuccess
           statusStaking={statusStaking}
           setStatusStaking={setStatusStaking}
           amountApproved={stakingAmount.toString()}
+          amountStaked={stakingAmount.toString()}
           chainId={chainId}
-          transactionHashApprove={hashApproveAst?.transactionHash}
+          transactionHashApprove={hashApprove?.transactionHash}
           transactionHashStake={hashStake?.transactionHash}
         />
       ) : null}
@@ -222,11 +241,11 @@ const StakingModal: FC<StakingModalInterface> = ({
         />
       ) : null}
 
-      {!doNotShowButtonLogic && (
+      {!isShouldRenderBtn && (
         <Button
           className="mb-2 mt-10 w-full rounded-sm bg-accent-blue font-semibold uppercase"
           onClick={buttonAction}
-          disabled={disableButtonLogic(statusStaking)}
+          // disabled={!!needsApproval}
         >
           {buttonText}
         </Button>

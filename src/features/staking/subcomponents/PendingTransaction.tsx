@@ -15,10 +15,12 @@ const PendingTransaction: FC<PendingTransactionProps> = ({ statusStaking }) => {
     }
   };
 
+  const displayMessage = message();
+
   return (
     <>
       <div className="flex flex-col">
-        <div className="m-autop-2 animate-spin">
+        <div className="m-auto animate-spin p-2">
           <img src={loadingSpinner} alt="loading spinner" />
         </div>
         <div className="m-auto my-6">Token approval pending</div>
@@ -28,7 +30,7 @@ const PendingTransaction: FC<PendingTransactionProps> = ({ statusStaking }) => {
             "dark:bg-bg-darkShaded",
           )}
         >
-          {message()}
+          {displayMessage}
         </div>
       </div>
     </>
