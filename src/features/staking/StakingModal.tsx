@@ -8,10 +8,7 @@ import {
   useBalance,
   useWaitForTransaction,
 } from "wagmi";
-import {
-  ContractTypes,
-  contractAddressesByChain,
-} from "../../config/ContractAddresses";
+import { ContractTypes } from "../../config/ContractAddresses";
 import { stakingAbi } from "../../contracts/stakingAbi";
 import { astAbi } from "../../contracts/astAbi";
 import { buttonStatusText } from "./uils/buttonStatusText";
@@ -24,6 +21,7 @@ import ApproveSuccess from "./subcomponents/ApproveSuccess";
 import { VscChromeClose } from "react-icons/vsc";
 import { modalHeadline } from "./uils/headline";
 import TransactionFailed from "./subcomponents/TransactionFailed";
+import { useContractAddresses } from "../../config/hooks/useContractAddress";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>;
@@ -45,34 +43,40 @@ const StakingModal: FC<StakingModalInterface> = ({
     setValue,
     // formState: { errors },
   } = useForm<{ stakingAmount: number }>();
-
   const stakingAmount = watch("stakingAmount") || "0";
+
+  const [AirSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
+    defaultChainId: 1,
+    useDefaultAsFallback: true,
+  });
+  const [AirSwapStaking] = useContractAddresses(
+    [ContractTypes.AirSwapStaking],
+    {
+      defaultChainId: 1,
+      useDefaultAsFallback: true,
+    },
+  );
 
   const { data: astBalanceData } = useBalance({
     address,
-    token: contractAddressesByChain[chainId][ContractTypes.AirSwapToken],
+    token: AirSwapToken.address,
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
   });
 
   const { data: sAstBalanceData } = useBalance({
     address,
-    token: contractAddressesByChain[chainId][ContractTypes.AirSwapStaking],
+    token: AirSwapStaking.address,
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
   });
 
   const { data: astAllowanceData, refetch: refetchAllowance } = useContractRead(
     {
-      address: contractAddressesByChain[chainId][ContractTypes.AirSwapToken],
+      address: AirSwapToken.address,
       abi: astAbi,
       functionName: "allowance",
-      args: [
-        address,
-        contractAddressesByChain[chainId][
-          ContractTypes.AirSwapStaking
-        ] as `0x${string}`,
-      ],
+      args: [address, AirSwapStaking.address as `0x${string}`],
       watch: true,
       staleTime: 300_000, // 5 minutes,
     },
@@ -80,15 +84,13 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   // Start approve functionse
   const { config: configApprove } = usePrepareContractWrite({
-    address: contractAddressesByChain[chainId][ContractTypes.AirSwapToken],
+    address: AirSwapToken.address,
     abi: astAbi,
     functionName: "approve",
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
     args: [
-      contractAddressesByChain[chainId][
-        ContractTypes.AirSwapStaking
-      ] as `0x${string}`,
+      AirSwapStaking.address as `0x${string}`,
       BigInt(+stakingAmount * Math.pow(10, 4)),
     ],
     enabled: !!stakingAmount,
@@ -118,7 +120,6 @@ const StakingModal: FC<StakingModalInterface> = ({
   const handleClickApprove = useCallback(async () => {
     if (approve) {
       const receipt = await approve();
-      // await receipt.wait(2);
       await receipt;
       refetchAllowance();
     }
@@ -127,7 +128,7 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   // start staking funtion
   const { config: configStake } = usePrepareContractWrite({
-    address: contractAddressesByChain[chainId][ContractTypes.AirSwapStaking],
+    address: AirSwapStaking.address,
     abi: stakingAbi,
     functionName: "stake",
     args: [BigInt(+stakingAmount * Math.pow(10, 4))],

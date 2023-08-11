@@ -31,9 +31,7 @@ const config = createConfig({
   queryClient,
   connectors: [
     new MetaMaskConnector({ chains }),
-    new InjectedConnector({
-      chains,
-    }),
+    new InjectedConnector({ chains }),
     new CoinbaseWalletConnector({
       chains,
       options: {
