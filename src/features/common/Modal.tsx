@@ -34,11 +34,10 @@ export const Modal = ({
       }}
       className={twMerge(
         "backdrop:bg-slate-900/50 backdrop:backdrop-blur-[2px]",
-        "p-4",
         className,
       )}
     >
-      <div>{children}</div>
+      <div className="p-4">{children}</div>
     </dialog>
   );
 };
