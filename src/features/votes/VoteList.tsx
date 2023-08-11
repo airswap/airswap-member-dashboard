@@ -1,6 +1,6 @@
+import { ClaimForm } from "../claims/ClaimForm";
 import { Modal } from "../common/Modal";
 import { ClaimFloat } from "./ClaimFloat";
-import { ClaimForm } from "./ClaimForm";
 import { VoteListItem } from "./VoteListItem";
 import { useGroupedProposals } from "./hooks/useGroupedProposals";
 import { useEpochSelectionStore } from "./store/useEpochSelectionStore";
