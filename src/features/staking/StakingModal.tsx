@@ -8,7 +8,10 @@ import {
   useBalance,
   useWaitForTransaction,
 } from "wagmi";
-import { contractAddresses } from "../../utils/constants";
+import {
+  ContractTypes,
+  contractAddressesByChain,
+} from "../../config/ContractAddresses";
 import { stakingAbi } from "../../contracts/stakingAbi";
 import { astAbi } from "../../contracts/astAbi";
 import { buttonStatusText } from "./uils/buttonStatusText";
@@ -47,24 +50,29 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   const { data: astBalanceData } = useBalance({
     address,
-    token: contractAddresses[chainId].ast,
+    token: contractAddressesByChain[chainId][ContractTypes.AirSwapToken],
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
   });
 
   const { data: sAstBalanceData } = useBalance({
     address,
-    token: contractAddresses[chainId].staking,
+    token: contractAddressesByChain[chainId][ContractTypes.AirSwapStaking],
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
   });
 
   const { data: astAllowanceData, refetch: refetchAllowance } = useContractRead(
     {
-      address: contractAddresses[chainId].ast,
+      address: contractAddressesByChain[chainId][ContractTypes.AirSwapToken],
       abi: astAbi,
       functionName: "allowance",
-      args: [address, contractAddresses[chainId].staking],
+      args: [
+        address,
+        contractAddressesByChain[chainId][
+          ContractTypes.AirSwapStaking
+        ] as `0x${string}`,
+      ],
       watch: true,
       staleTime: 300_000, // 5 minutes,
     },
@@ -72,13 +80,15 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   // Start approve functionse
   const { config: configApprove } = usePrepareContractWrite({
-    address: contractAddresses[chainId].ast,
+    address: contractAddressesByChain[chainId][ContractTypes.AirSwapToken],
     abi: astAbi,
     functionName: "approve",
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
     args: [
-      contractAddresses[chainId].staking,
+      contractAddressesByChain[chainId][
+        ContractTypes.AirSwapStaking
+      ] as `0x${string}`,
       BigInt(+stakingAmount * Math.pow(10, 4)),
     ],
     enabled: !!stakingAmount,
@@ -117,7 +127,7 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   // start staking funtion
   const { config: configStake } = usePrepareContractWrite({
-    address: contractAddresses[chainId].staking,
+    address: contractAddressesByChain[chainId][ContractTypes.AirSwapStaking],
     abi: stakingAbi,
     functionName: "stake",
     args: [BigInt(+stakingAmount * Math.pow(10, 4))],

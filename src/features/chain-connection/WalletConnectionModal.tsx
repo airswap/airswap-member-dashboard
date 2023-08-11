@@ -65,15 +65,15 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({
           .map((connector: Connector) => {
             return (
               <button
-                className="flex flex-row items-center p-2 border-2 border-border-dark rounded disabled:cursor-not-allowed"
+                className="flex flex-row items-center rounded border-2 border-border-dark p-2 disabled:cursor-not-allowed"
                 disabled={!connector.ready}
                 onClick={() => connect({ connector })}
-                key={connector.name}
+                key={connector.id}
               >
                 <img
                   src={walletLogos[connector.name.toLowerCase()]}
                   alt={`${connector.name} logo`}
-                  className="mr-4 w-8 h-8"
+                  className="mr-4 h-8 w-8"
                 />
                 <span className={twJoin(!connector.ready && "opacity-50")}>
                   {connector.name}
