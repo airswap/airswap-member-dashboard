@@ -13,12 +13,15 @@ export const Modal = ({
 }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
 
+  // This component is intended to be rendered conditionally, so if it is
+  // rendered we need to immediately show the modal dialog.
   useEffect(() => {
     if (modalRef.current) {
       modalRef.current.showModal();
     }
   }, [modalRef]);
 
+  // Close on escape pressed.
   useKeyboardEvent("Escape", () => {
     onCloseRequest();
   });
