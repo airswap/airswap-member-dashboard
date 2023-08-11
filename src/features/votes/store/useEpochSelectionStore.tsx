@@ -3,15 +3,18 @@ import { create } from "zustand";
 export type SelectedEpochState = {
   selectedEpochs: string[];
   pointsClaimableByEpoch: Record<string, number>;
+  showClaimModal: boolean;
   setPointsClaimableForEpoch: (epoch: string, points: number) => void;
   setEpochSelected: (epoch: string, selected: boolean) => void;
   toggleEpoch: (epoch: string) => void;
   clearSelectedEpochs: () => void;
+  setShowClaimModal: (show: boolean) => void;
 };
 
 export const useEpochSelectionStore = create<SelectedEpochState>((set) => ({
   selectedEpochs: [],
   pointsClaimableByEpoch: {},
+  showClaimModal: false,
   setPointsClaimableForEpoch(epoch: string, points: number) {
     set((state) => {
       const pointsClaimableByEpoch = {
@@ -39,5 +42,8 @@ export const useEpochSelectionStore = create<SelectedEpochState>((set) => ({
   },
   clearSelectedEpochs() {
     set({ selectedEpochs: [] });
+  },
+  setShowClaimModal(show: boolean) {
+    set({ showClaimModal: show });
   },
 }));

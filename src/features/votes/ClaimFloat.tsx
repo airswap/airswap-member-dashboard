@@ -4,10 +4,17 @@ import { twJoin } from "tailwind-merge";
 import { Button } from "../common/Button";
 import { useEpochSelectionStore } from "./store/useEpochSelectionStore";
 
-export const ClaimPopover = ({}: {}) => {
-  const [selectedEpochs, pointsClaimableByEpoch] = useEpochSelectionStore(
-    (state) => [state.selectedEpochs, state.pointsClaimableByEpoch],
-  );
+export const ClaimFloat = ({
+  onClaimClicked,
+}: {
+  onClaimClicked: () => void;
+}) => {
+  const [selectedEpochs, pointsClaimableByEpoch, showClaimModal] =
+    useEpochSelectionStore((state) => [
+      state.selectedEpochs,
+      state.pointsClaimableByEpoch,
+      state.showClaimModal,
+    ]);
 
   const totalPointsClaimable =
     selectedEpochs.length > 0
@@ -20,7 +27,7 @@ export const ClaimPopover = ({}: {}) => {
           0,
         );
 
-  const isVisible = totalPointsClaimable > 0;
+  const isVisible = totalPointsClaimable > 0 && !showClaimModal;
 
   return (
     <AnimatePresence>
@@ -59,7 +66,7 @@ export const ClaimPopover = ({}: {}) => {
             </span>
           </div>
 
-          <Button color="primary" rounded={false}>
+          <Button color="primary" rounded={false} onClick={onClaimClicked}>
             {selectedEpochs.length ? "Claim Selected" : "Claim All"}
           </Button>
         </motion.div>
