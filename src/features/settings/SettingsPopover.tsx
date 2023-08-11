@@ -37,10 +37,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
     setLanguage(newLanguage);
   };
 
-  useClickOutside(settingsPopoverRef, () => togglePopover(false), [
-    "click",
-    "keydown",
-  ]);
+  useClickOutside(settingsPopoverRef, () => togglePopover(false), ["click"]);
 
   return (
     <div

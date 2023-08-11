@@ -9,13 +9,13 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import { contractAddresses } from "../../utils/constants";
-import stakingABI from "../../contracts/stakingAbi.json";
-import astABI from "../../contracts/astAbi.json";
+import { stakingAbi } from "../../contracts/stakingAbi";
+import { astAbi } from "../../contracts/astAbi";
 import { buttonStatusText } from "./uils/buttonStatusText";
 import { useForm } from "react-hook-form";
 import { format } from "@greypixel_/nicenumbers";
 import ManageStake from "./subcomponents/ManageStake";
-import { StakeInput, StatusStaking } from "./types/StakingTypes";
+import { StatusStaking } from "./types/StakingTypes";
 import PendingTransaction from "./subcomponents/PendingTransaction";
 import ApproveSuccess from "./subcomponents/ApproveSuccess";
 import { VscChromeClose } from "react-icons/vsc";
@@ -24,7 +24,7 @@ import TransactionFailed from "./subcomponents/TransactionFailed";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>;
-  address: string;
+  address: `0x${string}`;
   chainId: number;
 }
 
@@ -40,38 +40,48 @@ const StakingModal: FC<StakingModalInterface> = ({
     register,
     watch,
     setValue,
-    getValues,
     // formState: { errors },
-  } = useForm<StakeInput>();
+  } = useForm<{ stakingAmount: number }>();
 
-  watch();
-  const values = getValues();
-  const stakingAmount = values.stakingAmount || 0;
+  const stakingAmount = watch("stakingAmount") || "0";
 
   const { data: astBalanceData } = useBalance({
-    address: address as `0x${string}`,
-    token: (contractAddresses[chainId].ast as `0x${string}`) || "",
+    address,
+    token: contractAddresses[chainId].ast,
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
   });
 
-  const { data: sAstBalanceData } = useContractRead({
-    address: contractAddresses[chainId].staking as `0x${string}`,
-    abi: stakingABI,
-    functionName: "balanceOf",
-    args: [address],
-    watch: true,
+  const { data: sAstBalanceData } = useBalance({
+    address,
+    token: contractAddresses[chainId].staking,
     staleTime: 300_000, // 5 minutes,
+    cacheTime: Infinity,
   });
 
-  // Start approve functions
+  const { data: astAllowanceData, refetch: refetchAllowance } = useContractRead(
+    {
+      address: contractAddresses[chainId].ast,
+      abi: astAbi,
+      functionName: "allowance",
+      args: [address, contractAddresses[chainId].staking],
+      watch: true,
+      staleTime: 300_000, // 5 minutes,
+    },
+  );
+
+  // Start approve functionse
   const { config: configApprove } = usePrepareContractWrite({
-    address: contractAddresses[chainId].ast as `0x${string}`,
-    abi: astABI,
+    address: contractAddresses[chainId].ast,
+    abi: astAbi,
     functionName: "approve",
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
-    args: [contractAddresses[chainId].staking, stakingAmount * Math.pow(10, 4)],
+    args: [
+      contractAddresses[chainId].staking,
+      BigInt(+stakingAmount * Math.pow(10, 4)),
+    ],
+    enabled: !!stakingAmount,
   });
   const { writeAsync: approve, data: dataApprove } =
     useContractWrite(configApprove);
@@ -88,6 +98,13 @@ const StakingModal: FC<StakingModalInterface> = ({
     },
   });
 
+  // convert unformatted balances
+  const astBalance = format(astBalanceData?.value, { tokenDecimals: 4 });
+  const sAstBalance = format(sAstBalanceData?.value, { tokenDecimals: 4 });
+  const astAllowance = format(astAllowanceData, { tokenDecimals: 4 });
+
+  const needsApproval = +astBalance < +stakingAmount;
+
   const handleClickApprove = useCallback(async () => {
     if (approve) {
       const receipt = await approve();
@@ -100,12 +117,13 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   // start staking funtion
   const { config: configStake } = usePrepareContractWrite({
-    address: contractAddresses[chainId].staking as `0x${string}`,
-    abi: stakingABI,
+    address: contractAddresses[chainId].staking,
+    abi: stakingAbi,
     functionName: "stake",
-    args: [stakingAmount * Math.pow(10, 4)],
+    args: [BigInt(+stakingAmount * Math.pow(10, 4))],
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
+    enabled: !needsApproval && +stakingAmount > 0,
   });
 
   const { writeAsync: stake, data: dataStakeFunction } =
@@ -133,24 +151,6 @@ const StakingModal: FC<StakingModalInterface> = ({
       await console.log(receipt);
     }
   }, [stake]);
-
-  const { data: astAllowanceData, refetch: refetchAllowance } = useContractRead(
-    {
-      address: contractAddresses[chainId].ast as `0x${string}`,
-      abi: astABI,
-      functionName: "allowance",
-      args: [address, contractAddresses[chainId].staking],
-      watch: true,
-      staleTime: 300_000, // 5 minutes,
-    },
-  );
-
-  // convert unformatted balances
-  const astAllowance = format(astAllowanceData, { tokenDecimals: 4 });
-  const astBalance = format(astBalanceData?.value, { tokenDecimals: 4 });
-  const sAstBalance = format(sAstBalanceData, { tokenDecimals: 4 });
-
-  const needsApproval = +astBalance < +stakingAmount;
 
   const headline = modalHeadline(statusStaking);
 

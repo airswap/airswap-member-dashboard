@@ -1,4 +1,4 @@
-type ContractAddress = { [key: number]: { [key: string]: string } };
+type ContractAddress = { [key: number]: { [key: string]: `0x${string}` } };
 
 export const contractAddresses: ContractAddress = {
   1: {

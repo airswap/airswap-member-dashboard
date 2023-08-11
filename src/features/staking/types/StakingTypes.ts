@@ -6,7 +6,3 @@ export type StatusStaking =
   | "staking"
   | "success"
   | "failed";
-
-export type StakeInput = {
-  stakingAmount: number;
-};
