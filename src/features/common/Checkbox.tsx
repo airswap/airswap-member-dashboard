@@ -12,7 +12,7 @@ export const Checkbox = ({
       className={twMerge([
         "group",
         "w-6 h-6 border border-dark-inactive rounded-sm bg-dark-checkbox relative",
-        "transition-colors duration-150",
+        "transition-colors duration-150 touch-none",
         "data-[state=checked]:border-accent-blue",
         "data-[state=unchecked]:active:bg-accent-blue data-[state=unchecked]:active:bg-opacity-50 data-[state=unchecked]:transition-none",
         "!outline-none focus-visible:ring-1 ring-accent-blue ring-offset-2 ring-offset-bg-dark",

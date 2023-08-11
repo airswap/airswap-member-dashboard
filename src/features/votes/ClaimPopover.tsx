@@ -1,3 +1,4 @@
+import { format } from "@greypixel_/nicenumbers";
 import { AnimatePresence, motion } from "framer-motion";
 import { twJoin } from "tailwind-merge";
 import { Button } from "../common/Button";
@@ -38,7 +39,7 @@ export const ClaimPopover = ({}: {}) => {
           className={twJoin(
             // position at bottom of container.
             "absolute bottom-4 right-0 left-0",
-            "bg-[#101217] !bg-red-300 flex flex-row justify-between p-5 rounded-md",
+            "bg-[#101217] flex flex-row justify-between p-5 rounded-md",
             "border border-border-dark",
             "shadow-[0_0_10px_8px] shadow-[#060607]",
           )}
@@ -48,10 +49,17 @@ export const ClaimPopover = ({}: {}) => {
               Total {selectedEpochs.length ? "Selected" : "Available"}
             </span>
 
-            <span>{totalPointsClaimable} Points</span>
+            <span className="text-[22px] leading-6 font-bold text-white">
+              {format(totalPointsClaimable, {
+                tokenDecimals: 0,
+                minDecimalPlaces: 0,
+                significantFigures: 3,
+              })}{" "}
+              Points
+            </span>
           </div>
 
-          <Button>
+          <Button color="primary" rounded={false}>
             {selectedEpochs.length ? "Claim Selected" : "Claim All"}
           </Button>
         </motion.div>
