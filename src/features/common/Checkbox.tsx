@@ -1,18 +1,14 @@
 import * as RadixCheckbox from "@radix-ui/react-checkbox";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
 import { twJoin, twMerge } from "tailwind-merge";
 
 export const Checkbox = ({
   className,
+  checked,
   ...rest
 }: { className?: string } & RadixCheckbox.CheckboxProps) => {
-  const [checked, setChecked] = useState<RadixCheckbox.CheckedState>(false);
-
   return (
     <RadixCheckbox.Root
-      checked={checked}
-      onCheckedChange={setChecked}
       className={twMerge([
         "group",
         "w-6 h-6 border border-dark-inactive rounded-sm bg-dark-checkbox relative",

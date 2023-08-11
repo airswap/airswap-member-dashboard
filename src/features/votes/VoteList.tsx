@@ -1,3 +1,4 @@
+import { ClaimPopover } from "./ClaimPopover";
 import { VoteListItem } from "./VoteListItem";
 import { useGroupedProposals } from "./hooks/useGroupedProposals";
 
@@ -15,7 +16,7 @@ export const VoteList = ({}: {}) => {
   );
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 relative flex-1 overflow-hidden">
       <div className="flex flex-row items-center gap-4">
         <h3 className="text-xs font-bold uppercase">Live votes</h3>
         <div className="h-px flex-1 bg-border-dark"></div>
@@ -33,6 +34,7 @@ export const VoteList = ({}: {}) => {
           <VoteListItem proposalGroup={group} key={group[0].id} />
         ))}
       </div>
+      <ClaimPopover />
     </div>
   );
 };
