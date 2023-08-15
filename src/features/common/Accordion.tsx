@@ -1,28 +1,26 @@
-import { ReactNode, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import { MdChevronRight } from "react-icons/md";
-import { twJoin, twMerge } from "tailwind-merge";
+import { twJoin } from "tailwind-merge";
+import { ReactNode, useState } from "react";
 
 interface AccordionComponentProps {
-  rootStyles: string | string[];
   itemId: string;
   triggerTitle: string;
   pointsPill: ReactNode;
   content: ReactNode;
 }
 
-// trigger is the dropdown. Content contains multiple (or single) items
 const AccordionComponent = ({
-  rootStyles,
   itemId,
   triggerTitle,
   pointsPill,
   content,
 }: AccordionComponentProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
   return (
     <Accordion.Root
-      className={twMerge(rootStyles)}
+      className="w-full items-center border border-border-dark"
       type="single"
       defaultValue="item-1"
       collapsible
@@ -39,19 +37,16 @@ const AccordionComponent = ({
               {triggerTitle}
               {pointsPill}
             </div>
-            <div>
-              <MdChevronRight size={32} className={"-rotate-90"} />
+            <div onClick={() => (!isOpen ? setIsOpen(true) : setIsOpen(false))}>
+              {!isOpen ? (
+                <MdChevronRight size={32} className={"-rotate-90"} />
+              ) : (
+                <MdChevronRight size={32} className={"rotate-90"} />
+              )}
             </div>
           </Accordion.Trigger>
         </Accordion.Header>
-        <Accordion.Content
-          className={twMerge([
-            "grid grid-cols-[auto,1fr,auto,auto]",
-            "items-center border border-border-dark",
-          ])}
-        >
-          {content}
-        </Accordion.Content>
+        <Accordion.Content>{content}</Accordion.Content>
       </Accordion.Item>
     </Accordion.Root>
   );

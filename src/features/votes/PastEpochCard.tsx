@@ -1,11 +1,10 @@
-import { Fragment } from "react";
-import { MdClose, MdOpenInNew } from "react-icons/md";
-import { twJoin } from "tailwind-merge";
-import { CheckMark } from "../common/icons/CheckMark";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
 import { Proposal } from "./hooks/useGroupedProposals";
 import { getEpochName } from "./utils/getEpochName";
 import AccordionComponent from "../common/Accordion";
+import { twMerge } from "tailwind-merge";
+import { CheckMark } from "../common/icons/CheckMark";
+import { MdClose, MdOpenInNew } from "react-icons/md";
 import { format } from "@greypixel_/nicenumbers";
 
 export const PastEpochCard = ({
@@ -17,9 +16,9 @@ export const PastEpochCard = ({
 }) => {
   const proposalGroupTitle = getEpochName(proposalGroup[0]) + " Epoch";
 
-  const pointsPillTrigger = (
+  const pointsPill = (
     <div
-      className={twJoin([
+      className={twMerge([
         "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
         "flex flex-row items-center gap-2 ring-1 ring-border-dark",
         proposalGroupState.hasUserClaimed && "text-font-secondary",
@@ -35,7 +34,13 @@ export const PastEpochCard = ({
   );
 
   const content = proposalGroup.map((proposal, i) => (
-    <Fragment key={proposal.id}>
+    <div
+      className={twMerge([
+        "grid grid-cols-[auto,1fr,auto,auto]",
+        "items-center border border-border-dark",
+      ])}
+      key={proposal.id}
+    >
       <div className="col-span-full h-px"></div>
 
       <div className="justify-self-center p-5">
@@ -65,15 +70,14 @@ export const PastEpochCard = ({
           <MdOpenInNew size={16} />
         </a>
       </div>
-    </Fragment>
+    </div>
   ));
 
   return (
     <AccordionComponent
-      rootStyles={["w-full items-center border border-border-dark p-2"]}
       triggerTitle={proposalGroupTitle}
-      pointsPill={pointsPillTrigger}
       itemId={"1"}
+      pointsPill={pointsPill}
       content={content}
     />
   );
