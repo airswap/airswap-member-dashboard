@@ -8,6 +8,7 @@ import { CheckMark } from "../common/icons/CheckMark";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
 import { Proposal } from "./hooks/useGroupedProposals";
 import { getEpochName } from "./utils/getEpochName";
+import AccordionComponent from "../common/Accordian";
 
 export const PastEpochCard = ({
   proposalGroup,
@@ -19,81 +20,82 @@ export const PastEpochCard = ({
   const { isConnected: isWalletConnected } = useAccount();
   const proposalGroupTitle = getEpochName(proposalGroup[0]) + " Epoch";
   return (
-    <div
-      className="grid border border-border-dark items-center"
-      style={{ gridTemplateColumns: "auto 1fr auto auto" }}
-    >
-      {/* Checkbox */}
-      <div className="p-5 justify-self-center flex">
-        {!proposalGroupState.hasUserClaimed && (
-          <Checkbox
-            className={twJoin(!isWalletConnected && "invisible")}
-            disabled={
-              proposalGroupState.hasUserClaimed ||
-              proposalGroupState.pointsEarned === 0
-            }
-          />
-        )}
-      </div>
-
-      {/* Title */}
-      <div className="font-bold">{proposalGroupTitle}</div>
-
-      {/* Points pill */}
+    <>
+      {/* <AccordionComponent> */}
       <div
-        className={twJoin([
-          "text-xs leading-6 uppercase font-bold px-4 py-1 rounded-full",
-          "ring-1 ring-border-dark flex flex-row gap-2 items-center",
-          proposalGroupState.hasUserClaimed && "text-font-secondary",
-        ])}
+        className="grid grid-cols-[auto,1fr,auto,auto] items-center border border-border-dark"
+        style={{ gridTemplateColumns: "auto 1fr auto auto" }}
       >
-        {format(proposalGroupState.pointsEarned, {
-          tokenDecimals: 0,
-          significantFigures: 3,
-          minDecimalPlaces: 0,
-        })}
-        &nbsp; Points
+        {/* <Checkbox */}
+        <div className="flex justify-self-center p-5">
+          {!proposalGroupState.hasUserClaimed && (
+            <Checkbox
+              className={twJoin(!isWalletConnected && "invisible")}
+              disabled={
+                proposalGroupState.hasUserClaimed ||
+                proposalGroupState.pointsEarned === 0
+              }
+            />
+          )}
+        </div>
+        {/* Title */}
+        <div className="font-bold">{proposalGroupTitle}</div>
+        {/* Points pill */}
+        <div
+          className={twJoin([
+            "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
+            "flex flex-row items-center gap-2 ring-1 ring-border-dark",
+            proposalGroupState.hasUserClaimed && "text-font-secondary",
+          ])}
+        >
+          {format(proposalGroupState.pointsEarned, {
+            tokenDecimals: 0,
+            significantFigures: 3,
+            minDecimalPlaces: 0,
+          })}
+          &nbsp; Points
+        </div>
+        {/* Accordion collapse */}
+        <button className="p-5">
+          <MdChevronRight size={32} className={"-rotate-90"} />
+        </button>
+
+        {/* Proposal list */}
+        {proposalGroup.map((proposal, i) => (
+          <Fragment key={proposal.id}>
+            <div className="col-span-full h-px bg-border-dark"></div>
+
+            <div className="justify-self-center p-5">
+              {proposalGroupState.votedForProposal[i] ? (
+                <span className="text-accent-lightgreen">
+                  <CheckMark />
+                </span>
+              ) : (
+                // FIXME: THIS WAS NOT DONE TO DESIGN SPEC - DESIGN DIDN'T EXIST.
+                <span className="text-accent-lightred">
+                  <MdClose />
+                </span>
+              )}
+            </div>
+            <div className="text-font-secondary text-sm font-medium">
+              {proposal.title}
+            </div>
+            <div></div>
+            <div className="self-end justify-self-center p-5">
+              <a
+                href={`${import.meta.env.VITE_SNAPSHOT_WEB}#/${
+                  import.meta.env.VITE_SNAPSHOT_SPACE
+                }/proposal/${proposal.id}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <MdOpenInNew size={16} />
+              </a>
+            </div>
+          </Fragment>
+        ))}
       </div>
-
-      {/* Accordion collapse */}
-      <button className="p-5">
-        <MdChevronRight size={32} className={"-rotate-90"} />
-      </button>
-
-      {/* Proposal list */}
-      {proposalGroup.map((proposal, i) => (
-        <Fragment key={proposal.id}>
-          <div className="col-span-full h-px bg-border-dark"></div>
-
-          <div className="p-5 justify-self-center">
-            {proposalGroupState.votedForProposal[i] ? (
-              <span className="text-accent-lightgreen">
-                <CheckMark />
-              </span>
-            ) : (
-              // FIXME: THIS WAS NOT DONE TO DESIGN SPEC - DESIGN DIDN'T EXIST.
-              <span className="text-accent-lightred">
-                <MdClose />
-              </span>
-            )}
-          </div>
-          <div className="font-medium text-font-secondary text-sm">
-            {proposal.title}
-          </div>
-          <div></div>
-          <div className="p-5 justify-self-center self-end">
-            <a
-              href={`${import.meta.env.VITE_SNAPSHOT_WEB}#/${
-                import.meta.env.VITE_SNAPSHOT_SPACE
-              }/proposal/${proposal.id}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <MdOpenInNew size={16} />
-            </a>
-          </div>
-        </Fragment>
-      ))}
-    </div>
+      {/* </AccordionComponent> */}
+    </>
   );
 };
