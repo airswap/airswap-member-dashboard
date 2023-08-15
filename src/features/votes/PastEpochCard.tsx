@@ -2,7 +2,7 @@ import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
 import { Proposal } from "./hooks/useGroupedProposals";
 import { getEpochName } from "./utils/getEpochName";
 import AccordionComponent from "../common/Accordion";
-import { twMerge } from "tailwind-merge";
+import { twJoin } from "tailwind-merge";
 import { CheckMark } from "../common/icons/CheckMark";
 import { MdClose, MdOpenInNew } from "react-icons/md";
 import { format } from "@greypixel_/nicenumbers";
@@ -16,9 +16,12 @@ export const PastEpochCard = ({
 }) => {
   const proposalGroupTitle = getEpochName(proposalGroup[0]) + " Epoch";
 
+  const SNAPSHOT_WEB = import.meta.env.VITE_SNAPSHOT_WEB;
+  const SNAPSHOT_SPACE = import.meta.env.VITE_SNAPSHOT_SPACE;
+
   const pointsPill = (
     <div
-      className={twMerge([
+      className={twJoin([
         "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
         "flex flex-row items-center gap-2 ring-1 ring-border-dark",
         proposalGroupState.hasUserClaimed && "text-font-secondary",
@@ -35,7 +38,7 @@ export const PastEpochCard = ({
 
   const content = proposalGroup.map((proposal, i) => (
     <div
-      className={twMerge([
+      className={twJoin([
         "grid grid-cols-[auto,1fr,auto,auto]",
         "items-center border border-border-dark",
       ])}
@@ -61,9 +64,7 @@ export const PastEpochCard = ({
       <div></div>
       <div className="self-end justify-self-center p-5">
         <a
-          href={`${import.meta.env.VITE_SNAPSHOT_WEB}#/${
-            import.meta.env.VITE_SNAPSHOT_SPACE
-          }/proposal/${proposal.id}`}
+          href={`${SNAPSHOT_WEB}#/${SNAPSHOT_SPACE}/proposal/${proposal.id}`}
           target="_blank"
           rel="noreferrer"
         >

@@ -15,7 +15,7 @@ export const VoteList = ({}: {}) => {
   );
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 p-4">
       <div className="flex flex-row items-center gap-4">
         <h3 className="text-xs font-bold uppercase">Live votes</h3>
         <div className="h-px flex-1 bg-border-dark"></div>
@@ -28,7 +28,7 @@ export const VoteList = ({}: {}) => {
         <h3 className="text-xs font-bold uppercase">Past Epochs</h3>
         <div className="h-px flex-1 bg-border-dark"></div>
       </div>
-      <div className="flex flex-col gap-9">
+      <div className="flex flex-col gap-5">
         {pastProposalGroups?.map((group) => (
           <VoteListItem proposalGroup={group} key={group[0].id} />
         ))}
