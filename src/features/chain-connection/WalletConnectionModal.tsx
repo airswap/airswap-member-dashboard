@@ -45,12 +45,12 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({
 
   return (
     <dialog
-      className="rounded-md text-white border-0 p-0"
+      className="rounded-md border-0 p-0 text-white"
       ref={modalRef}
       onClick={handleCloseOnOutsideClick}
     >
-      <div className="flex flex-col space-y-3 px-6 pt-4 pb-6 bg-bg-dark font-bold w-[360px] color-white">
-        <div className="flex flex-row pb-1 justify-between">
+      <div className="color-white flex w-[360px] flex-col space-y-3 bg-bg-dark px-6 pb-6 pt-4 font-bold">
+        <div className="flex flex-row justify-between pb-1">
           <span>Select Wallet</span>
           <button onClick={() => handleCloseModalButton()}>
             <VscChromeClose size={20} />
@@ -61,15 +61,15 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({
           .map((connector: Connector) => {
             return (
               <button
-                className="flex flex-row items-center p-2 border-2 border-border-dark rounded disabled:cursor-not-allowed"
+                className="flex flex-row items-center rounded border-2 border-border-dark p-2 disabled:cursor-not-allowed"
                 disabled={!connector.ready}
                 onClick={() => connect({ connector })}
-                key={connector.name}
+                key={connector.id}
               >
                 <img
                   src={walletLogos[connector.name.toLowerCase()]}
                   alt={`${connector.name} logo`}
-                  className="mr-4 w-8 h-8"
+                  className="mr-4 h-8 w-8"
                 />
                 <span className={twJoin(!connector.ready && "opacity-50")}>
                   {connector.name}
