@@ -16,6 +16,7 @@ export const PastEpochCard = ({
   proposalGroupState: ReturnType<typeof useGroupClaimStatus>;
 }) => {
   const proposalGroupTitle = getEpochName(proposalGroup[0]) + " Epoch";
+  const itemId = getEpochName(proposalGroup[0]).replace(" ", "-").toLowerCase();
 
   const SNAPSHOT_WEB = import.meta.env.VITE_SNAPSHOT_WEB;
   const SNAPSHOT_SPACE = import.meta.env.VITE_SNAPSHOT_SPACE;
@@ -88,7 +89,7 @@ export const PastEpochCard = ({
     <AccordionComponent
       rootStyles="w-full items-center border border-border-dark rounded"
       trigger={trigger}
-      itemId={"1"}
+      itemId={itemId}
       content={content}
     />
   );
