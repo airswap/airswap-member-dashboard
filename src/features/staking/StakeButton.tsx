@@ -3,6 +3,7 @@ import { useAccount, useBalance } from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { Button } from "../common/Button";
+import { twJoin } from "tailwind-merge";
 
 export const StakeButton = ({}: {}) => {
   const { address } = useAccount();
@@ -23,8 +24,13 @@ export const StakeButton = ({}: {}) => {
     format(sAstBalance?.value, { tokenDecimals: 4 }) + " sAST";
 
   return (
-    <div className="flex flex-row items-center gap-4 border border-border-dark px-5 py-3">
-      <span className="hidden xs:flex font-medium">{formattedBalance}</span>
+    <div
+      className={twJoin([
+        "flex flex-row items-center gap-4 px-5 py-3",
+        "rounded-full border border-border-dark",
+      ])}
+    >
+      <span className="hidden font-medium xs:flex">{formattedBalance}</span>
       <Button className="-my-3 -mr-5 bg-accent-blue font-bold uppercase">
         Stake
       </Button>
