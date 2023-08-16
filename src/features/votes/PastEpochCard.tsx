@@ -1,5 +1,5 @@
 import { format } from "@greypixel_/nicenumbers";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { MdChevronRight, MdClose, MdOpenInNew } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { useAccount } from "wagmi";
@@ -7,6 +7,7 @@ import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
 import { Proposal } from "./hooks/useGroupedProposals";
+import { useEpochSelectionStore } from "./store/useEpochSelectionStore";
 import { getEpochName } from "./utils/getEpochName";
 
 export const PastEpochCard = ({
@@ -16,6 +17,25 @@ export const PastEpochCard = ({
   proposalGroup: Proposal[];
   proposalGroupState: ReturnType<typeof useGroupClaimStatus>;
 }) => {
+  const [setEpochSelected, selectedEpochs, setPointsClaimableForEpoch] =
+    useEpochSelectionStore((state) => [
+      state.setEpochSelected,
+      state.selectedEpochs,
+      state.setPointsClaimableForEpoch,
+    ]);
+
+  useEffect(() => {
+    setPointsClaimableForEpoch(
+      proposalGroup[0].id,
+      proposalGroupState.pointsEarned,
+    );
+  }, [
+    proposalGroup,
+    proposalGroupState.pointsEarned,
+    proposalGroupState.hasUserClaimed,
+    setPointsClaimableForEpoch,
+  ]);
+
   const { isConnected: isWalletConnected } = useAccount();
   const proposalGroupTitle = getEpochName(proposalGroup[0]) + " Epoch";
   return (
@@ -31,6 +51,10 @@ export const PastEpochCard = ({
             disabled={
               proposalGroupState.hasUserClaimed ||
               proposalGroupState.pointsEarned === 0
+            }
+            checked={selectedEpochs.includes(proposalGroup[0].id)}
+            onCheckedChange={(newState) =>
+              setEpochSelected(proposalGroup[0].id, newState as boolean)
             }
           />
         )}
