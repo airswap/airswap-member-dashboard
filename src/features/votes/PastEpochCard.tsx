@@ -6,6 +6,7 @@ import { twJoin } from "tailwind-merge";
 import { CheckMark } from "../common/icons/CheckMark";
 import { MdClose, MdOpenInNew } from "react-icons/md";
 import { format } from "@greypixel_/nicenumbers";
+import { Checkbox } from "../common/Checkbox";
 
 export const PastEpochCard = ({
   proposalGroup,
@@ -36,6 +37,18 @@ export const PastEpochCard = ({
     </div>
   );
 
+  const trigger = (
+    <div className="flex w-full items-center justify-between pr-4 font-semibold">
+      <div className="flex items-center">
+        <div className="align-center -mt-1 ml-0.5 mr-4 items-center ">
+          <Checkbox />
+        </div>
+        {proposalGroupTitle}
+      </div>
+      {pointsPill}
+    </div>
+  );
+
   const content = proposalGroup.map((proposal, i) => (
     <div
       className={twJoin([
@@ -44,17 +57,14 @@ export const PastEpochCard = ({
       ])}
       key={proposal.id}
     >
-      <div className="col-span-full h-px"></div>
-
-      <div className="justify-self-center p-5">
+      <div className="justify-self-center p-4">
         {proposalGroupState.votedForProposal[i] ? (
           <span className="text-accent-lightgreen">
-            <CheckMark />
+            <CheckMark size={20} />
           </span>
         ) : (
-          // FIXME: THIS WAS NOT DONE TO DESIGN SPEC - DESIGN DIDN'T EXIST.
           <span className="text-accent-lightred">
-            <MdClose />
+            <MdClose size={20} />
           </span>
         )}
       </div>
@@ -76,9 +86,9 @@ export const PastEpochCard = ({
 
   return (
     <AccordionComponent
-      triggerTitle={proposalGroupTitle}
+      rootStyles="w-full items-center border border-border-dark rounded"
+      trigger={trigger}
       itemId={"1"}
-      pointsPill={pointsPill}
       content={content}
     />
   );

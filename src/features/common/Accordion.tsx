@@ -2,51 +2,40 @@ import * as Accordion from "@radix-ui/react-accordion";
 import { MdChevronRight } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { ReactNode, useState } from "react";
-import { Checkbox } from "./Checkbox";
 
 interface AccordionComponentProps {
+  rootStyles: string;
+  type?: "single" | "multiple";
   itemId: string;
-  triggerTitle: string;
-  pointsPill: ReactNode;
+  trigger: ReactNode;
   content: ReactNode;
 }
 
 const AccordionComponent = ({
+  rootStyles,
+  type = "multiple",
   itemId,
-  triggerTitle,
-  pointsPill,
+  trigger,
   content,
 }: AccordionComponentProps) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const toggleOpen = () => setIsOpen((prevState) => !prevState);
+  const [isAccordionOpen, setIsAccordionOpen] = useState<boolean>(false);
+  const toggleChevronIconUp = () =>
+    setIsAccordionOpen((isAccordionOpen) => !isAccordionOpen);
 
   return (
-    <Accordion.Root
-      className="w-full items-center border border-border-dark"
-      type="single"
-      collapsible
-    >
+    <Accordion.Root className={rootStyles} type={type}>
       <Accordion.Item className="flex flex-col overflow-hidden" value={itemId}>
         <Accordion.Header>
           <div
             className={twJoin([
-              "flex rounded border border-border-dark p-3",
+              "flex border border-border-dark p-3",
               "hover:bg-border-darkGray",
             ])}
           >
-            <div className="flex w-full items-center justify-between pr-4 font-semibold">
-              <div className="flex items-center">
-                <div className="align-center -mt-1 mr-4 items-center ">
-                  <Checkbox />
-                </div>
-                {triggerTitle}
-              </div>
-              {pointsPill}
-            </div>
-            {/* only want arrow to trigger opening */}
-            <Accordion.Trigger className={"w-fit items-center"}>
-              <div onClick={toggleOpen}>
-                {!isOpen ? (
+            {trigger}
+            <Accordion.Trigger className={"align-end align-end w-fit"}>
+              <div onClick={toggleChevronIconUp}>
+                {!isAccordionOpen ? (
                   <MdChevronRight size={32} className={"rotate-90"} />
                 ) : (
                   <MdChevronRight size={32} className={"-rotate-90"} />
