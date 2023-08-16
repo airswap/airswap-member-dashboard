@@ -144,7 +144,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
           </a>
 
           <a
-            href="#"
+            href={`https://github.com/airswap/airswap-voter-rewards/commit/${commitHash}`}
             target="_"
             className={twJoin([
               "border-b border-t px-4 py-3",
@@ -155,7 +155,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
             <div>{commitHash?.slice(-6)}</div>
           </a>
           <a
-            href="#"
+            href={`https://github.com/airswap/airswap-voter-rewards/commit/${commitHash}`}
             target="_"
             className={twJoin([
               "border px-4 py-3",
