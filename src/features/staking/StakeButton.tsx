@@ -25,7 +25,7 @@ export const StakeButton = ({}: {}) => {
   return (
     <>
       <div className={twJoin("flex flex-row items-center gap-4 py-3")}>
-        <span className="hidden xs:flex font-medium">{formattedBalance}</span>
+        {/* <span className="hidden xs:flex font-medium">{formattedBalance}</span> */}
         <Button
           className="-my-3 -mr-5 bg-accent-blue font-bold uppercase"
           onClick={handleOpenStakingModal}

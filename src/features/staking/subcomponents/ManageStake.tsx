@@ -5,6 +5,7 @@ import LineBreak from "../../common/LineBreak";
 import { Button } from "../../common/Button";
 import { twJoin } from "tailwind-merge";
 import { StakeInput } from "../types/StakingTypes";
+import StakableBar from "./StakableBar";
 
 interface ManageStakeProps {
   sAstBalance: string;
@@ -26,37 +27,13 @@ const ManageStake: FC<ManageStakeProps> = ({
   return (
     <>
       <LineBreak />
-      <div className="flex flex-col space-y-3">
-        {stakeOrUnstake === "stake" && (
-          <>
-            <div className="mt-6">
-              {/* TODO: add progress bar here with AST balance */}
-              (PROGRESS BAR)
-            </div>
-            <div className="flex flex-row">
-              <span className="mr-2">{sAstBalance}</span>unstakable
-            </div>
-            <div className="flex flex-row">
-              <span className="mr-2">{sAstBalance}</span>staked
-            </div>
-            <div className="flex flex-row">
-              <span className="mr-2">{astBalance}</span>stakable
-            </div>
-          </>
-        )}
-        {stakeOrUnstake === "unstake" && (
-          <>
-            <div className="mt-6">
-              {/* TODO: add progress bar here with AST balance */}
-              (PROGRESS BAR)
-            </div>
-            <div className="flex flex-row">
-              <span className="mr-2">{astBalance}</span>
-              <span>stakable</span>
-            </div>
-          </>
-        )}
-      </div>
+      <StakableBar
+        mode={stakeOrUnstake}
+        // TODO: replace unstakable with real number
+        unstakable={"100"}
+        staked={sAstBalance}
+        stakable={astBalance}
+      />
       <LineBreak />
       <div className="font-lg pointer-cursor mt-6 rounded-md font-semibold">
         <Button
