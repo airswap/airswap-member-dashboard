@@ -1,7 +1,7 @@
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
 import { Proposal } from "./hooks/useGroupedProposals";
 import { getEpochName } from "./utils/getEpochName";
-import AccordionComponent from "../common/Accordion";
+import { Accordion } from "../common/Accordion";
 import { twJoin } from "tailwind-merge";
 import { CheckMark } from "../common/icons/CheckMark";
 import { MdClose, MdOpenInNew } from "react-icons/md";
@@ -86,7 +86,7 @@ export const PastEpochCard = ({
   ));
 
   return (
-    <AccordionComponent
+    <Accordion
       rootStyles="w-full items-center border border-border-dark rounded"
       trigger={trigger}
       itemId={itemId}

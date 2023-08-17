@@ -1,9 +1,9 @@
-import * as Accordion from "@radix-ui/react-accordion";
+import * as RadixAccordion from "@radix-ui/react-accordion";
 import { MdChevronRight } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { ReactNode, useState } from "react";
 
-interface AccordionComponentProps {
+interface AccordionProps {
   rootStyles: string;
   type?: "single" | "multiple";
   itemId: string;
@@ -11,21 +11,24 @@ interface AccordionComponentProps {
   content: ReactNode;
 }
 
-const AccordionComponent = ({
+export const Accordion = ({
   rootStyles,
   type = "multiple",
   itemId,
   trigger,
   content,
-}: AccordionComponentProps) => {
+}: AccordionProps) => {
   const [isAccordionOpen, setIsAccordionOpen] = useState<boolean>(false);
-  const toggleChevronIconUp = () =>
+  const toggleAccordion = () =>
     setIsAccordionOpen((isAccordionOpen) => !isAccordionOpen);
 
   return (
-    <Accordion.Root className={rootStyles} type={type}>
-      <Accordion.Item className="flex flex-col overflow-hidden" value={itemId}>
-        <Accordion.Header>
+    <RadixAccordion.Root className={rootStyles} type={type}>
+      <RadixAccordion.Item
+        className="flex flex-col overflow-hidden"
+        value={itemId}
+      >
+        <RadixAccordion.Header>
           <div
             className={twJoin([
               "flex border border-border-dark p-3",
@@ -33,21 +36,25 @@ const AccordionComponent = ({
             ])}
           >
             {trigger}
-            <Accordion.Trigger className={"align-end align-end w-fit"}>
-              <div onClick={toggleChevronIconUp}>
+            <RadixAccordion.Trigger className={"align-end align-end w-fit"}>
+              <div onClick={toggleAccordion}>
                 {!isAccordionOpen ? (
-                  <MdChevronRight size={32} className={"rotate-90"} />
+                  <MdChevronRight
+                    size={32}
+                    className="rotate-90 transition-transform duration-150"
+                  />
                 ) : (
-                  <MdChevronRight size={32} className={"-rotate-90"} />
+                  <MdChevronRight
+                    size={32}
+                    className="-rotate-90 transition-transform duration-150"
+                  />
                 )}
               </div>
-            </Accordion.Trigger>
+            </RadixAccordion.Trigger>
           </div>
-        </Accordion.Header>
-        <Accordion.Content>{content}</Accordion.Content>
-      </Accordion.Item>
-    </Accordion.Root>
+        </RadixAccordion.Header>
+        <RadixAccordion.Content>{content}</RadixAccordion.Content>
+      </RadixAccordion.Item>
+    </RadixAccordion.Root>
   );
 };
-
-export default AccordionComponent;
