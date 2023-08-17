@@ -15,6 +15,7 @@ import {
   useThemeStore,
 } from "../../store/themeStore";
 import { TextWithLineAfter } from "../common/TextWithLineAfter";
+import { useFormattedDate } from "./utils/useFormattedDate";
 
 interface SettingsPopoverProps {
   settingsPopoverRef: RefObject<HTMLDivElement>;
@@ -37,12 +38,16 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
   };
 
   useClickOutside(settingsPopoverRef, () => togglePopover(false), ["click"]);
+  const commitHash = process.env.COMMIT_HASH;
+  const commitDate = process.env.COMMIT_DATE;
+
+  const formattedDate = useFormattedDate(commitDate);
 
   return (
     <div
       className={twJoin([
-        "text-font-darkSubtext absolute top-20 rounded-md border border-border-lightLightGray bg-bg-lightSecondary px-4 py-2 text-sm font-medium",
-        "sm: right - 60",
+        "text-font-darkSubtext absolute top-20 z-50 rounded-md border border-border-lightLightGray bg-bg-lightSecondary px-4 py-2 text-sm font-medium text-black dark:text-white",
+        "sm: right-60",
         "dark:border-border-darkGray dark:bg-bg-darkShaded",
       ])}
       ref={settingsPopoverRef}
@@ -57,9 +62,9 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
                 [
                   "w-1/3 border px-4 py-2 text-center font-normal",
                   "dark:border-border-darkGray",
-                  "dark:hover:border-border-darkLight",
                   "hover:border-border-darkLight",
                 ],
+
                 isSelected
                   ? [
                       "bg-bg-lightGray",
@@ -133,7 +138,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
           </a>
 
           <a
-            href="#"
+            href={`https://github.com/airswap/airswap-voter-rewards/commit/${commitHash}`}
             target="_"
             className={twJoin([
               "border-b border-t px-4 py-3",
@@ -141,13 +146,10 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
               "hover:border-border-darkLight",
             ])}
           >
-            <div>
-              {/* TODO: replace with dynamic name of last commit */}
-              2ac00c
-            </div>
+            <div>{commitHash?.slice(-6)}</div>
           </a>
           <a
-            href="#"
+            href={`https://github.com/airswap/airswap-voter-rewards/commit/${commitHash}`}
             target="_"
             className={twJoin([
               "border px-4 py-3",
@@ -155,10 +157,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
               "hover:border-border-darkLight",
             ])}
           >
-            <div>
-              {/* {formattedCommitDate} */}
-              2023-08-08
-            </div>
+            <div>{formattedDate}</div>
           </a>
         </div>
       </footer>
