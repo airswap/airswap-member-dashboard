@@ -5,6 +5,7 @@ import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { Button } from "../common/Button";
 import StakingModal from "./StakingModal";
+import { zeroAddress } from "viem";
 
 export const StakeButton = ({}: {}) => {
   const { address, isConnected } = useAccount();
@@ -28,31 +29,32 @@ export const StakeButton = ({}: {}) => {
 
   return (
     <>
-      <div
-        className={twJoin([
-          "flex flex-row items-center gap-4 py-[0.7rem] pl-4",
-          "rounded-full border border-border-dark ",
-        ])}
-      >
-        <span className="hidden font-medium xs:flex">
-          {`${sAstBalance?.formatted} sAST`}
-        </span>
-        <Button
-          className="-my-3 -mr-5 bg-accent-blue font-bold uppercase"
-          onClick={handleOpenStakingModal}
-        >
-          Stake
-        </Button>
-      </div>
-
-      {isConnected && address && (
-        <StakingModal
-          stakingModalRef={stakingModalRef}
-          address={address}
-          chainId={chain?.id || 1}
-          sAstBalance={sAstBalance?.formatted || "0"}
-        />
-      )}
+      {isConnected ? (
+        <>
+          <div
+            className={twJoin([
+              "flex flex-row items-center gap-4 py-[0.7rem] pl-4",
+              "rounded-full border border-border-dark ",
+            ])}
+          >
+            <span className="hidden font-medium xs:flex">
+              {`${sAstBalance?.formatted} sAST`}
+            </span>
+            <Button
+              className="-my-3 -mr-5 bg-accent-blue font-bold uppercase"
+              onClick={handleOpenStakingModal}
+            >
+              Stake
+            </Button>
+          </div>
+          <StakingModal
+            stakingModalRef={stakingModalRef}
+            address={address || zeroAddress}
+            chainId={chain?.id || 1}
+            sAstBalance={sAstBalance?.formatted || "0"}
+          />
+        </>
+      ) : null}
     </>
   );
 };
