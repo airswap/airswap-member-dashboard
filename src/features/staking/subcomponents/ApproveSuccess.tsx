@@ -1,7 +1,7 @@
 import { Dispatch, FC } from "react";
 import { IoMdOpen } from "react-icons/io";
-import { etherscanLink } from "../../../utils/constants";
 import greenCheck from "../../../assets/check-green.svg";
+import { etherscanLink } from "../../../utils/constants";
 import { StatusStaking } from "../types/StakingTypes";
 
 interface ApproveSuccessProps {

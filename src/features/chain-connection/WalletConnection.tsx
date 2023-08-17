@@ -1,8 +1,8 @@
-import { useAccount, useEnsName, useDisconnect } from "wagmi";
-import { Button } from "../common/Button";
+import { useRef } from "react";
 import { twJoin } from "tailwind-merge";
 import truncateEthAddress from "truncate-eth-address";
-import { useRef } from "react";
+import { useAccount, useDisconnect, useEnsName } from "wagmi";
+import { Button } from "../common/Button";
 import WalletConnectionModal from "./WalletConnectionModal";
 
 const WalletConnection = ({}: {}) => {

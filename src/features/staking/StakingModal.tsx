@@ -1,27 +1,27 @@
+import { format } from "@greypixel_/nicenumbers";
 import { FC, RefObject, useCallback, useEffect, useState } from "react";
-import { Button } from "../common/Button";
+import { useForm } from "react-hook-form";
+import { VscChromeClose } from "react-icons/vsc";
 import { twJoin } from "tailwind-merge";
 import {
-  usePrepareContractWrite,
-  useContractWrite,
-  useContractRead,
   useBalance,
+  useContractRead,
+  useContractWrite,
+  usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
-import { stakingAbi } from "../../contracts/stakingAbi";
-import { astAbi } from "../../contracts/astAbi";
-import { buttonStatusText } from "./utils/buttonStatusText";
-import { useForm } from "react-hook-form";
-import { format } from "@greypixel_/nicenumbers";
-import ManageStake from "./subcomponents/ManageStake";
-import { StatusStaking } from "./types/StakingTypes";
-import PendingTransaction from "./subcomponents/PendingTransaction";
-import ApproveSuccess from "./subcomponents/ApproveSuccess";
-import { VscChromeClose } from "react-icons/vsc";
-import { modalHeadline } from "./utils/headline";
-import TransactionFailed from "./subcomponents/TransactionFailed";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
+import { astAbi } from "../../contracts/astAbi";
+import { stakingAbi } from "../../contracts/stakingAbi";
+import { Button } from "../common/Button";
+import ApproveSuccess from "./subcomponents/ApproveSuccess";
+import ManageStake from "./subcomponents/ManageStake";
+import PendingTransaction from "./subcomponents/PendingTransaction";
+import TransactionFailed from "./subcomponents/TransactionFailed";
+import { StatusStaking } from "./types/StakingTypes";
+import { buttonStatusText } from "./utils/buttonStatusText";
+import { modalHeadline } from "./utils/headline";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>;

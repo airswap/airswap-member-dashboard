@@ -1,9 +1,9 @@
 import { Dispatch, FC } from "react";
 import { IoMdOpen } from "react-icons/io";
-import { etherscanLink } from "../../../utils/constants";
-import closeRed from "../../../assets/close-red.svg";
-import { StatusStaking } from "../types/StakingTypes";
 import { twJoin } from "tailwind-merge";
+import closeRed from "../../../assets/close-red.svg";
+import { etherscanLink } from "../../../utils/constants";
+import { StatusStaking } from "../types/StakingTypes";
 
 interface TransactionFailedProps {
   setStatusStaking: Dispatch<StatusStaking>;

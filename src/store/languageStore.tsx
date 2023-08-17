@@ -1,10 +1,20 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export const languageQuery = "preferred-language"
+export const languageQuery = "preferred-language";
 
-export const languageValues = ['us', 'fr', 'no', 'nl', 'pt', 'tr', 'ro', 'ru', 'cn'] as const;
-export type LanguageValue = typeof languageValues[number]
+export const languageValues = [
+  "us",
+  "fr",
+  "no",
+  "nl",
+  "pt",
+  "tr",
+  "ro",
+  "ru",
+  "cn",
+] as const;
+export type LanguageValue = (typeof languageValues)[number];
 
 export const languageLabels: Record<LanguageValue, string> = {
   us: "English",
@@ -16,16 +26,14 @@ export const languageLabels: Record<LanguageValue, string> = {
   ro: "Limba română",
   ru: "українська",
   cn: "中文繁體",
-}
-
+};
 
 export type LanguageState = {
   language: string;
   setLanguage: (newLanguage: string) => void;
-}
+};
 
-const getUserPreferredLanguage = () =>
-  navigator.language.split('-')[0] || 'EN';
+const getUserPreferredLanguage = () => navigator.language.split("-")[0] || "EN";
 
 export const useLanguageStore = create<LanguageState>()(
   persist(
@@ -37,7 +45,7 @@ export const useLanguageStore = create<LanguageState>()(
         }),
     }),
     {
-      name: "language"
-    }
-  )
+      name: "language",
+    },
+  ),
 );
