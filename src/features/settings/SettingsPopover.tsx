@@ -15,6 +15,7 @@ import {
   useLanguageStore,
 } from "../../store/languageStore";
 import { twJoin } from "tailwind-merge";
+import { useFormattedDate } from "./utils/useFormattedDate";
 import LineBreak from "../common/LineBreak";
 
 interface SettingsPopoverProps {
@@ -38,16 +39,18 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
   };
 
   useClickOutside(settingsPopoverRef, () => togglePopover(false), ["click"]);
+  const commitHash = process.env.COMMIT_HASH;
+  const commitDate = process.env.COMMIT_DATE;
+
+  const formattedDate = useFormattedDate(commitDate);
 
   return (
     <div
-      className={twJoin(
-        [
-          "absolute top-20 rounded-md border border-border-lightLightGray bg-bg-lightSecondary px-4 py-2 text-sm font-medium text-font-darkSubtext",
-        ],
-        ["sm: right - 60"],
-        ["dark:border-border-darkGray dark:bg-bg-darkShaded"],
-      )}
+      className={twJoin([
+        "text-font-darkSubtext absolute top-20 z-50 rounded-md border border-border-lightLightGray bg-bg-lightSecondary px-4 py-2 text-sm font-medium text-black dark:text-white",
+        "sm: right-60",
+        "dark:border-border-darkGray dark:bg-bg-darkShaded",
+      ])
       ref={settingsPopoverRef}
     >
       <TextWithLineAfter className="mt-1">THEME</TextWithLineAfter>
@@ -58,17 +61,11 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
             <button
               className={twJoin(
                 [
-                  "px-4",
-                  "py-2",
-                  "w-1/3",
-                  "text-center",
-                  "font-normal",
-                  "border",
-                ],
-                [
+                  "w-1/3 border px-4 py-2 text-center font-normal",
                   "dark:border-border-darkGray dark:hover:border-border-darkLight",
+                  "hover:border-border-darkLight",
                 ],
-                ["hover:border-border-darkLight"],
+
                 isSelected
                   ? [
                       "bg-bg-lightGray",
@@ -95,8 +92,8 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
           return (
             <button
               className={twJoin(
-                ["px-4", "py-2", "text-left", "font-normal"],
                 [
+                  "px-4 py-2 text-left font-normal",
                   "hover:text-font-lightBluePrimary",
                   "dark:hover:text-font-darkPrimary",
                 ],
@@ -125,11 +122,11 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
           <a
             href="https://github.com/airswap/airswap-voter-rewards"
             target="_"
-            className={twJoin(
-              ["border px-4 py-3"],
-              ["dark:border-border-darkGray"],
-              ["hover:border-border-darkLight"],
-            )}
+            className={twJoin([
+              "border px-4 py-3",
+              "dark:border-border-darkGray",
+              "hover:border-border-darkLight",
+            ])}
           >
             <div>
               <VscGithubInverted
@@ -140,32 +137,26 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
           </a>
 
           <a
-            href="#"
+            href={`https://github.com/airswap/airswap-voter-rewards/commit/${commitHash}`}
             target="_"
-            className={twJoin(
-              ["px-4", "py-3", "border-t", "border-b"],
-              ["dark:border-border-darkGray"],
-              ["hover:border-border-darkLight"],
-            )}
+            className={twJoin([
+              "border-b border-t px-4 py-3",
+              "dark:border-border-darkGray",
+              "hover:border-border-darkLight",
+            ])}
           >
-            <div>
-              {/* TODO: replace with dynamic name of last commit */}
-              2ac00c
-            </div>
+            <div>{commitHash?.slice(-6)}</div>
           </a>
           <a
-            href="#"
+            href={`https://github.com/airswap/airswap-voter-rewards/commit/${commitHash}`}
             target="_"
-            className={twJoin(
-              ["px-4", "py-3", "border"],
-              ["dark:border-border-darkGray"],
-              ["hover:border-border-darkLight"],
-            )}
+            className={twJoin([
+              "border px-4 py-3",
+              "dark:border-border-darkGray",
+              "hover:border-border-darkLight",
+            ])}
           >
-            <div>
-              {/* {formattedCommitDate} */}
-              2023-08-08
-            </div>
+            <div>{formattedDate}</div>
           </a>
         </div>
       </footer>
