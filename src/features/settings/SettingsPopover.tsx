@@ -37,10 +37,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
     setLanguage(newLanguage);
   };
 
-  useClickOutside(settingsPopoverRef, () => togglePopover(false), [
-    "click",
-    "keydown",
-  ]);
+  useClickOutside(settingsPopoverRef, () => togglePopover(false), ["click"]);
 
   const commitHash = process.env.COMMIT_HASH;
   const commitDate = process.env.COMMIT_DATE;
