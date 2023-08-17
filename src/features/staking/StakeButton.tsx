@@ -1,16 +1,27 @@
 import { format } from "@greypixel_/nicenumbers";
-import { useAccount, useBalance } from "wagmi";
+import { useRef } from "react";
+import { twJoin } from "tailwind-merge";
+import { useAccount, useBalance, useNetwork } from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { Button } from "../common/Button";
-import { twJoin } from "tailwind-merge";
+import StakingModal from "./StakingModal";
 
 export const StakeButton = ({}: {}) => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
+  const { chain } = useNetwork();
   const [stakedAst] = useContractAddresses([ContractTypes.AirSwapStaking], {
     defaultChainId: 1,
     useDefaultAsFallback: true,
   });
+
+  const stakingModalRef = useRef<HTMLDialogElement | null>(null);
+
+  const handleOpenStakingModal = () => {
+    if (isConnected) {
+      stakingModalRef.current && stakingModalRef.current.showModal();
+    }
+  };
 
   const { data: sAstBalance } = useBalance({
     token: stakedAst.address,
@@ -24,16 +35,24 @@ export const StakeButton = ({}: {}) => {
     format(sAstBalance?.value, { tokenDecimals: 4 }) + " sAST";
 
   return (
-    <div
-      className={twJoin([
-        "flex flex-row items-center gap-4 px-5 py-3",
-        "rounded-full border border-border-dark",
-      ])}
-    >
-      <span className="hidden font-medium xs:flex">{formattedBalance}</span>
-      <Button className="-my-3 -mr-5 bg-accent-blue font-bold uppercase">
-        Stake
-      </Button>
-    </div>
+    <>
+      <div className={twJoin("flex flex-row items-center gap-4 py-3")}>
+        <span className="hidden xs:flex font-medium">{formattedBalance}</span>
+        <Button
+          className="-my-3 -mr-5 bg-accent-blue font-bold uppercase"
+          onClick={handleOpenStakingModal}
+        >
+          Stake
+        </Button>
+      </div>
+
+      {isConnected && address && (
+        <StakingModal
+          stakingModalRef={stakingModalRef}
+          address={address}
+          chainId={chain?.id || 1}
+        />
+      )}
+    </>
   );
 };

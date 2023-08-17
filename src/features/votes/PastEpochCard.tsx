@@ -1,12 +1,15 @@
+import { format } from "@greypixel_/nicenumbers";
+import { useEffect } from "react";
+import { MdClose, MdOpenInNew } from "react-icons/md";
+import { twJoin } from "tailwind-merge";
+import { useAccount } from "wagmi";
+import AccordionComponent from "../common/Accordion";
+import { Checkbox } from "../common/Checkbox";
+import { CheckMark } from "../common/icons/CheckMark";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
 import { Proposal } from "./hooks/useGroupedProposals";
+import { useEpochSelectionStore } from "./store/useEpochSelectionStore";
 import { getEpochName } from "./utils/getEpochName";
-import AccordionComponent from "../common/Accordion";
-import { twJoin } from "tailwind-merge";
-import { CheckMark } from "../common/icons/CheckMark";
-import { MdClose, MdOpenInNew } from "react-icons/md";
-import { format } from "@greypixel_/nicenumbers";
-import { Checkbox } from "../common/Checkbox";
 
 export const PastEpochCard = ({
   proposalGroup,
@@ -15,38 +18,68 @@ export const PastEpochCard = ({
   proposalGroup: Proposal[];
   proposalGroupState: ReturnType<typeof useGroupClaimStatus>;
 }) => {
+  const [setEpochSelected, selectedEpochs, setPointsClaimableForEpoch] =
+    useEpochSelectionStore((state) => [
+      state.setEpochSelected,
+      state.selectedEpochs,
+      state.setPointsClaimableForEpoch,
+    ]);
+
+  useEffect(() => {
+    setPointsClaimableForEpoch(
+      proposalGroup[0].id,
+      proposalGroupState.pointsEarned,
+    );
+  }, [
+    proposalGroup,
+    proposalGroupState.pointsEarned,
+    proposalGroupState.hasUserClaimed,
+    setPointsClaimableForEpoch,
+  ]);
+
+  const { isConnected: isWalletConnected } = useAccount();
+
   const proposalGroupTitle = getEpochName(proposalGroup[0]) + " Epoch";
   const itemId = getEpochName(proposalGroup[0]).replace(" ", "-").toLowerCase();
 
   const SNAPSHOT_WEB = import.meta.env.VITE_SNAPSHOT_WEB;
   const SNAPSHOT_SPACE = import.meta.env.VITE_SNAPSHOT_SPACE;
 
-  const pointsPill = (
-    <div
-      className={twJoin([
-        "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
-        "flex flex-row items-center gap-2 ring-1 ring-border-dark",
-        proposalGroupState.hasUserClaimed && "text-font-secondary",
-      ])}
-    >
-      {format(proposalGroupState.pointsEarned, {
-        tokenDecimals: 0,
-        significantFigures: 3,
-        minDecimalPlaces: 0,
-      })}
-      &nbsp; Points
-    </div>
-  );
-
   const trigger = (
     <div className="flex w-full items-center justify-between pr-4 font-semibold">
       <div className="flex items-center">
         <div className="align-center -mt-1 ml-0.5 mr-4 items-center ">
-          <Checkbox />
+          {!proposalGroupState.hasUserClaimed && (
+            <Checkbox
+              className={twJoin(!isWalletConnected && "invisible")}
+              disabled={
+                proposalGroupState.hasUserClaimed ||
+                proposalGroupState.pointsEarned === 0
+              }
+              checked={selectedEpochs.includes(proposalGroup[0].id)}
+              onCheckedChange={(newState) =>
+                setEpochSelected(proposalGroup[0].id, newState as boolean)
+              }
+            />
+          )}
         </div>
-        {proposalGroupTitle}
+        {/* Title */}
+        <div className="font-bold">{proposalGroupTitle}</div>
       </div>
-      {pointsPill}
+      <div
+        className={twJoin([
+          "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
+          "flex flex-row items-center gap-2 ring-1 ring-border-dark",
+          proposalGroupState.hasUserClaimed && "text-font-secondary",
+        ])}
+      >
+        {format(proposalGroupState.pointsEarned, {
+          tokenDecimals: 0,
+          significantFigures: 3,
+          minDecimalPlaces: 0,
+        })}
+        &nbsp; Points
+      </div>
     </div>
   );
 

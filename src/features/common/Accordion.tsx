@@ -1,7 +1,7 @@
 import * as Accordion from "@radix-ui/react-accordion";
+import { ReactNode, useState } from "react";
 import { MdChevronRight } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
-import { ReactNode, useState } from "react";
 
 interface AccordionComponentProps {
   rootStyles: string;
@@ -26,12 +26,7 @@ const AccordionComponent = ({
     <Accordion.Root className={rootStyles} type={type}>
       <Accordion.Item className="flex flex-col overflow-hidden" value={itemId}>
         <Accordion.Header>
-          <div
-            className={twJoin([
-              "flex border border-border-dark p-3",
-              "hover:bg-border-darkGray",
-            ])}
-          >
+          <div className={twJoin(["flex border border-border-dark p-3"])}>
             {trigger}
             <Accordion.Trigger className={"align-end align-end w-fit"}>
               <div onClick={toggleChevronIconUp}>

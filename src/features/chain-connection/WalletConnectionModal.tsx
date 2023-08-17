@@ -1,8 +1,7 @@
 import { FC, MouseEvent, RefObject, useEffect } from "react";
 import { VscChromeClose } from "react-icons/vsc";
-import { Connector, useAccount, useConnect } from "wagmi";
-
 import { twJoin } from "tailwind-merge";
+import { Connector, useAccount, useConnect } from "wagmi";
 import coinbaseWalletLogo from "./assets/wallet-logos/coinbase-wallet.svg";
 import frameLogo from "./assets/wallet-logos/frame-logo.png";
 import metamaskLogo from "./assets/wallet-logos/metamask-logo.svg";
@@ -50,7 +49,12 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({
       onClick={handleCloseOnOutsideClick}
     >
       <div className="color-white flex w-[360px] flex-col space-y-3 bg-bg-dark px-6 pb-6 pt-4 font-bold">
-        <div className="flex flex-row justify-between pb-1">
+        <div
+          className={twJoin(
+            "flex flex-row justify-between pb-1",
+            "hover:cursor-pointer",
+          )}
+        >
           <span>Select Wallet</span>
           <button onClick={() => handleCloseModalButton()}>
             <VscChromeClose size={20} />
@@ -59,6 +63,7 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({
         {connectors
           .sort((c) => (c.ready ? -1 : 1))
           .map((connector: Connector) => {
+            console.log(connector);
             return (
               <button
                 className="flex flex-row items-center rounded border-2 border-border-dark p-2 disabled:cursor-not-allowed"

@@ -1,20 +1,20 @@
-import { Dispatch, FC, RefObject } from "react";
 import { useClickOutside } from "@react-hookz/web";
+import { Dispatch, FC, RefObject } from "react";
 import { VscGithubInverted } from "react-icons/vsc";
-import { TextWithLineAfter } from "../common/TextWithLineAfter";
-import {
-  ThemeValue,
-  themeLabels,
-  themeValues,
-  useThemeStore,
-} from "../../store/themeStore";
+import { twJoin } from "tailwind-merge";
 import {
   LanguageValue,
   languageLabels,
   languageValues,
   useLanguageStore,
 } from "../../store/languageStore";
-import { twJoin } from "tailwind-merge";
+import {
+  ThemeValue,
+  themeLabels,
+  themeValues,
+  useThemeStore,
+} from "../../store/themeStore";
+import { TextWithLineAfter } from "../common/TextWithLineAfter";
 
 interface SettingsPopoverProps {
   settingsPopoverRef: RefObject<HTMLDivElement>;
@@ -36,10 +36,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
     setLanguage(newLanguage);
   };
 
-  useClickOutside(settingsPopoverRef, () => togglePopover(false), [
-    "click",
-    "keydown",
-  ]);
+  useClickOutside(settingsPopoverRef, () => togglePopover(false), ["click"]);
 
   return (
     <div
