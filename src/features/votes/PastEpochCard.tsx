@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { MdClose, MdOpenInNew } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { useAccount } from "wagmi";
-import AccordionComponent from "../common/Accordion";
+import { Accordion } from "../common/Accordion";
 import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
@@ -119,7 +119,7 @@ export const PastEpochCard = ({
   ));
 
   return (
-    <AccordionComponent
+    <Accordion
       rootStyles="w-full items-center border border-border-dark rounded"
       trigger={trigger}
       itemId={itemId}
