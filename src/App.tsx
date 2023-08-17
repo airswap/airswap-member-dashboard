@@ -6,9 +6,9 @@ function App() {
   useApplyTheme();
 
   return (
-    <div className="flex flex-col bg-bg-dark">
+    <div className="flex flex-col flex-1">
       <Header />
-      <main className="mx-auto flex w-[800px] max-w-full flex-col">
+      <main className="mx-auto flex w-[808px] p-2 max-w-full flex-col flex-1">
         <VoteList />
       </main>
     </div>
