@@ -2,6 +2,7 @@ import { FC } from "react";
 import { useCalculateTokenProportions } from "../uils/useCalculateTokenProportions";
 import { twJoin } from "tailwind-merge";
 import { BsCircleFill } from "react-icons/bs";
+import "../../../index.css";
 
 interface StakableBarProps {
   mode: "stake" | "unstake";
@@ -17,14 +18,14 @@ interface StakableBarProps {
  * @param stakable - amount of available AST
  * @returns
  */
-const StakableBar: FC<StakableBarProps> = ({
+export const StakableBar: FC<StakableBarProps> = ({
   mode,
   unstakable,
   staked,
   stakable,
 }) => {
   const { unstakablePercent, stakedPercent, stakablePercent } =
-    useCalculateTokenProportions("100", "50", "25");
+    useCalculateTokenProportions("30", "90", "25");
 
   return (
     <div className="flex w-full flex-col space-y-3">
@@ -33,8 +34,7 @@ const StakableBar: FC<StakableBarProps> = ({
           <div className="m-auto mt-6 flex h-3 w-full flex-row rounded-full">
             <div
               style={{ flexBasis: `${unstakablePercent}%` }}
-              // TODO: replace `bg-green-100` with a blue checkered pattern
-              className="rounded-l-full bg-green-100"
+              className="checkered-blue rounded-l-full"
             ></div>
             <div
               style={{ flexBasis: `${stakedPercent}%` }}
@@ -46,7 +46,9 @@ const StakableBar: FC<StakableBarProps> = ({
             ></div>
           </div>
           <div className="flex flex-row items-center">
-            <BsCircleFill className="text-blue-500" />
+            <div className="checkered-blue rounded-full">
+              <BsCircleFill className="text-transparent" />
+            </div>
             <span className="mx-2">{unstakable}</span>unstakable
           </div>
           <div className="flex flex-row items-center">
@@ -79,5 +81,3 @@ const StakableBar: FC<StakableBarProps> = ({
     </div>
   );
 };
-
-export default StakableBar;

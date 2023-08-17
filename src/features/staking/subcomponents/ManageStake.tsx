@@ -5,7 +5,7 @@ import LineBreak from "../../common/LineBreak";
 import { Button } from "../../common/Button";
 import { twJoin } from "tailwind-merge";
 import { StakeInput } from "../types/StakingTypes";
-import StakableBar from "./StakableBar";
+import { StakableBar } from "./StakableBar";
 
 interface ManageStakeProps {
   sAstBalance: string;

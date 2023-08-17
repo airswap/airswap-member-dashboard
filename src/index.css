@@ -52,3 +52,28 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
+
+.checkered-blue {
+  background-color: #2b72ff;
+  opacity: 0.8;
+  background-image: repeating-linear-gradient(
+      45deg,
+      #1a4499 25%,
+      transparent 25%,
+      transparent 75%,
+      #1a4499 75%,
+      #1a4499
+    ),
+    repeating-linear-gradient(
+      45deg,
+      #1a4499 25%,
+      #2b72ff 25%,
+      #2b72ff 75%,
+      #1a4499 75%,
+      #1a4499
+    );
+  background-position:
+    0 0,
+    4px 4px;
+  background-size: 8px 8px;
+}
