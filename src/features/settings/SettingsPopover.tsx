@@ -16,6 +16,7 @@ import {
 } from "../../store/languageStore";
 import { twJoin } from "tailwind-merge";
 import { useFormattedDate } from "./utils/useFormattedDate";
+import LineBreak from "../common/LineBreak";
 
 interface SettingsPopoverProps {
   settingsPopoverRef: RefObject<HTMLDivElement>;
@@ -38,7 +39,6 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
   };
 
   useClickOutside(settingsPopoverRef, () => togglePopover(false), ["click"]);
-
   const commitHash = process.env.COMMIT_HASH;
   const commitDate = process.env.COMMIT_DATE;
 
@@ -50,7 +50,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
         "text-font-darkSubtext absolute top-20 z-50 rounded-md border border-border-lightLightGray bg-bg-lightSecondary px-4 py-2 text-sm font-medium text-black dark:text-white",
         "sm: right-60",
         "dark:border-border-darkGray dark:bg-bg-darkShaded",
-      ])}
+      ])
       ref={settingsPopoverRef}
     >
       <TextWithLineAfter className="mt-1">THEME</TextWithLineAfter>
@@ -65,6 +65,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
                   "dark:border-border-darkGray dark:hover:border-border-darkLight",
                   "hover:border-border-darkLight",
                 ],
+
                 isSelected
                   ? [
                       "bg-bg-lightGray",
@@ -115,12 +116,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
           );
         })}
       </div>
-      <hr
-        className={twJoin([
-          "border-t-1 absolute left-0 my-2 w-full",
-          "dark:border-border-darkGray",
-        ])}
-      />
+      <LineBreak />
       <footer className="border-width-full flex content-center text-xs">
         <div className="my-4 flex items-center">
           <a

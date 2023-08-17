@@ -5,20 +5,20 @@ import truncateEthAddress from "truncate-eth-address";
 import { useRef } from "react";
 import WalletConnectionModal from "./WalletConnectionModal";
 
-const WalletConnection = ({ }: {}) => {
+const WalletConnection = ({}: {}) => {
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
-  const { disconnect } = useDisconnect()
+  const { disconnect } = useDisconnect();
 
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const handleModalOpening = () => {
     if (!isConnected) {
-      modalRef.current?.showModal()
+      modalRef.current?.showModal();
     } else {
-      disconnect()
+      disconnect();
     }
-  }
+  };
 
   return (
     <>
@@ -31,7 +31,9 @@ const WalletConnection = ({ }: {}) => {
       >
         <div className="h-3 w-3 rounded-full bg-accent-green"></div>
         <span className="font-medium">
-          {isConnected ? ensName || truncateEthAddress(address || "") : "Connect"}
+          {isConnected
+            ? ensName || truncateEthAddress(address || "")
+            : "Connect"}
         </span>
       </Button>
       <WalletConnectionModal modalRef={modalRef} />
@@ -39,4 +41,4 @@ const WalletConnection = ({ }: {}) => {
   );
 };
 
-export default WalletConnection
+export default WalletConnection;

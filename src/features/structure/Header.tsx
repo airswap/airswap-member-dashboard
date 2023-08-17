@@ -4,13 +4,12 @@ import { SettingsMenuButton } from "../settings/SettingsMenuButton";
 import WalletConnection from "../chain-connection/WalletConnection";
 import { StakeButton } from "../staking/StakeButton";
 
-
-export const Header = ({ }: {}) => {
+export const Header = ({}: {}) => {
   return (
     <div className="flex h-24 flex-row items-center justify-between px-8">
       <div>
-        <div className="md:hidden w-10 h-10">
-          <img src={AirSwapLogo} alt="AirSwap Logo" className='w-10 h-10'/>
+        <div className="h-10 w-10 md:hidden">
+          <img src={AirSwapLogo} alt="AirSwap Logo" className="h-10 w-10" />
         </div>
         <img
           src={AirSwapLogoWithText}
