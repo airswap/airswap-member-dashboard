@@ -1,8 +1,8 @@
+import { useToggle } from "@react-hookz/web";
+import { useRef } from "react";
 import { MdSettings } from "react-icons/md";
 import { Button } from "../common/Button";
 import SettingsPopover from "./SettingsPopover";
-import { useRef } from "react";
-import { useToggle } from "@react-hookz/web";
 
 export const SettingsMenuButton = ({}: {}) => {
   const [isToggled, toggle] = useToggle(false);

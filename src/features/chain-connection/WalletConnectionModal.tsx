@@ -1,7 +1,7 @@
 import { FC, MouseEvent, RefObject, useEffect } from "react";
 import { VscChromeClose } from "react-icons/vsc";
-import { Connector, useAccount, useConnect } from "wagmi";
 import { twJoin } from "tailwind-merge";
+import { Connector, useAccount, useConnect } from "wagmi";
 import coinbaseWalletLogo from "./assets/wallet-logos/coinbase-wallet.svg";
 import frameLogo from "./assets/wallet-logos/frame-logo.png";
 import metamaskLogo from "./assets/wallet-logos/metamask-logo.svg";

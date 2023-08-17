@@ -1,9 +1,9 @@
 import { FC, useState } from "react";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
-import AirSwapLogo from "../../../assets/airswap-logo.svg";
-import LineBreak from "../../common/LineBreak";
-import { Button } from "../../common/Button";
 import { twJoin } from "tailwind-merge";
+import AirSwapLogo from "../../../assets/airswap-logo.svg";
+import { Button } from "../../common/Button";
+import LineBreak from "../../common/LineBreak";
 import { StakeInput } from "../types/StakingTypes";
 import { StakableBar } from "./StakableBar";
 
