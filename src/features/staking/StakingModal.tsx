@@ -11,7 +11,7 @@ import {
 import { ContractTypes } from "../../config/ContractAddresses";
 import { stakingAbi } from "../../contracts/stakingAbi";
 import { astAbi } from "../../contracts/astAbi";
-import { buttonStatusText } from "./uils/buttonStatusText";
+import { buttonStatusText } from "./utils/buttonStatusText";
 import { useForm } from "react-hook-form";
 import { format } from "@greypixel_/nicenumbers";
 import ManageStake from "./subcomponents/ManageStake";
@@ -19,7 +19,7 @@ import { StatusStaking } from "./types/StakingTypes";
 import PendingTransaction from "./subcomponents/PendingTransaction";
 import ApproveSuccess from "./subcomponents/ApproveSuccess";
 import { VscChromeClose } from "react-icons/vsc";
-import { modalHeadline } from "./uils/headline";
+import { modalHeadline } from "./utils/headline";
 import TransactionFailed from "./subcomponents/TransactionFailed";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
 
@@ -27,22 +27,21 @@ interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>;
   address: `0x${string}`;
   chainId: number;
+  sAstBalance: string;
 }
 
 const StakingModal: FC<StakingModalInterface> = ({
   stakingModalRef,
   address,
   chainId,
+  sAstBalance,
 }) => {
   const [statusStaking, setStatusStaking] =
     useState<StatusStaking>("unapproved");
 
-  const {
-    register,
-    watch,
-    setValue,
-    // formState: { errors },
-  } = useForm<{ stakingAmount: number }>();
+  const formMethods = useForm();
+  const { watch, setValue } = formMethods;
+
   const stakingAmount = watch("stakingAmount") || "0";
 
   const [AirSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
@@ -60,13 +59,6 @@ const StakingModal: FC<StakingModalInterface> = ({
   const { data: astBalanceData } = useBalance({
     address,
     token: AirSwapToken.address,
-    staleTime: 300_000, // 5 minutes,
-    cacheTime: Infinity,
-  });
-
-  const { data: sAstBalanceData } = useBalance({
-    address,
-    token: AirSwapStaking.address,
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
   });
@@ -112,8 +104,6 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   // convert unformatted balances
   const astBalance = format(astBalanceData?.value, { tokenDecimals: 4 });
-  const sAstBalance = format(sAstBalanceData?.value, { tokenDecimals: 4 });
-  const astAllowance = format(astAllowanceData, { tokenDecimals: 4 });
 
   const needsApproval = +astBalance < +stakingAmount;
 
@@ -159,7 +149,7 @@ const StakingModal: FC<StakingModalInterface> = ({
     if (stake) {
       const receipt = await stake();
       await receipt;
-      await console.log(receipt);
+      // await console.log(receipt);
     }
   }, [stake]);
 
@@ -203,7 +193,6 @@ const StakingModal: FC<StakingModalInterface> = ({
     if (statusStakeAst === "loading") {
       setStatusStaking("staking");
     }
-    console.log("statusStaking", statusStaking);
   }, [stakingAmount, statusApprove, statusStaking, statusStakeAst]);
 
   return (
@@ -224,8 +213,7 @@ const StakingModal: FC<StakingModalInterface> = ({
         <ManageStake
           sAstBalance={sAstBalance}
           astBalance={astBalance}
-          register={register}
-          setValue={setValue}
+          formMethods={formMethods}
         />
       ) : null}
 

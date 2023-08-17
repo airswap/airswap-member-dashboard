@@ -63,7 +63,6 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({
         {connectors
           .sort((c) => (c.ready ? -1 : 1))
           .map((connector: Connector) => {
-            console.log(connector);
             return (
               <button
                 className="flex flex-row items-center rounded border-2 border-border-dark p-2 disabled:cursor-not-allowed"

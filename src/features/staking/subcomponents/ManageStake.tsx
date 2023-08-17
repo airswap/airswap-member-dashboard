@@ -1,27 +1,25 @@
 import { FC, useState } from "react";
-import { UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { FieldValues, UseFormReturn } from "react-hook-form";
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import LineBreak from "../../common/LineBreak";
 import { Button } from "../../common/Button";
 import { twJoin } from "tailwind-merge";
-import { StakeInput } from "../types/StakingTypes";
+import NumberInput from "./NumberInput";
 
 interface ManageStakeProps {
   sAstBalance: string;
   astBalance: string;
-  register: UseFormRegister<StakeInput>;
-  setValue: UseFormSetValue<StakeInput>;
+  formMethods: UseFormReturn<FieldValues>;
 }
+
+export type stakeOptions = "stake" | "unstake";
 
 const ManageStake: FC<ManageStakeProps> = ({
   sAstBalance,
   astBalance,
-  register,
-  setValue,
+  formMethods,
 }) => {
-  const [stakeOrUnstake, setStakeOrUnstake] = useState<"stake" | "unstake">(
-    "stake",
-  );
+  const [stakeOrUnstake, setStakeOrUnstake] = useState<stakeOptions>("stake");
 
   return (
     <>
@@ -94,19 +92,7 @@ const ManageStake: FC<ManageStakeProps> = ({
         <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8 " />
         <div className="flex flex-col text-right  uppercase">
           <div>
-            <input
-              placeholder={astBalance}
-              {...register("stakingAmount", {
-                required: true,
-                min: 0,
-                max: astBalance,
-                validate: (val: number) => val > 0,
-                onChange: (e) => setValue("stakingAmount", e.target.value),
-              })}
-              className={twJoin(
-                "items-right w-1/5 bg-black text-right text-white",
-              )}
-            />
+            <NumberInput astBalance={astBalance} formMethods={formMethods} />
           </div>
           <span className="text-xs">{astBalance} stakable</span>
         </div>
