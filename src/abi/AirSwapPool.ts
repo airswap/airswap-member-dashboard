@@ -1,14 +1,67 @@
-// FIXME: this is old.
 export const AirSwapPoolAbi = [
   {
     inputs: [
       { internalType: "uint256", name: "_scale", type: "uint256" },
       { internalType: "uint256", name: "_max", type: "uint256" },
-      { internalType: "address", name: "_stakingContract", type: "address" },
-      { internalType: "address", name: "_stakingToken", type: "address" },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "AddressInvalid",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "AdminNotSet",
+    type: "error",
+  },
+  { inputs: [], name: "AlreadyClaimed", type: "error" },
+  {
+    inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    name: "AmountInsufficient",
+    type: "error",
+  },
+  { inputs: [], name: "ClaimsNotProvided", type: "error" },
+  {
+    inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    name: "MaxTooHigh",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    name: "ProofInvalid",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    name: "ScaleTooHigh",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "TokenInvalid",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    name: "TreeDisabled",
+    type: "error",
+  },
+  { inputs: [], name: "Unauthorized", type: "error" },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "admin",
+        type: "address",
+      },
+    ],
+    name: "AddAdmin",
+    type: "event",
   },
   {
     anonymous: false,
@@ -33,6 +86,44 @@ export const AirSwapPoolAbi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "bytes32",
+        name: "tree",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "root",
+        type: "bytes32",
+      },
+    ],
+    name: "Enable",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferStarted",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "previousOwner",
@@ -46,6 +137,19 @@ export const AirSwapPoolAbi = [
       },
     ],
     name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "admin",
+        type: "address",
+      },
+    ],
+    name: "RemoveAdmin",
     type: "event",
   },
   {
@@ -73,19 +177,32 @@ export const AirSwapPoolAbi = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: "uint256",
-        name: "nonce",
-        type: "uint256",
+        indexed: false,
+        internalType: "address",
+        name: "stakingToken",
+        type: "address",
       },
       {
-        indexed: true,
-        internalType: "uint256",
-        name: "expiry",
-        type: "uint256",
+        indexed: false,
+        internalType: "address",
+        name: "stakingContract",
+        type: "address",
+      },
+    ],
+    name: "SetStaking",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bytes32[]",
+        name: "trees",
+        type: "bytes32[]",
       },
       {
-        indexed: true,
+        indexed: false,
         internalType: "address",
         name: "account",
         type: "address",
@@ -102,56 +219,15 @@ export const AirSwapPoolAbi = [
         name: "amount",
         type: "uint256",
       },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "score",
-        type: "uint256",
-      },
     ],
     name: "Withdraw",
     type: "event",
   },
   {
     inputs: [],
-    name: "CLAIM_TYPEHASH",
-    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_CHAIN_ID",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_NAME",
-    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_SEPARATOR",
-    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_TYPEHASH",
-    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "DOMAIN_VERSION",
-    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    stateMutability: "view",
+    name: "acceptOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -170,8 +246,8 @@ export const AirSwapPoolAbi = [
   },
   {
     inputs: [
-      { internalType: "uint256", name: "score", type: "uint256" },
-      { internalType: "address", name: "token", type: "address" },
+      { internalType: "uint256", name: "_value", type: "uint256" },
+      { internalType: "address", name: "_token", type: "address" },
     ],
     name: "calculate",
     outputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
@@ -180,8 +256,18 @@ export const AirSwapPoolAbi = [
   },
   {
     inputs: [
-      { internalType: "address[]", name: "tokens", type: "address[]" },
-      { internalType: "address", name: "dest", type: "address" },
+      { internalType: "bytes32", name: "", type: "bytes32" },
+      { internalType: "address", name: "", type: "address" },
+    ],
+    name: "claimed",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address[]", name: "_tokens", type: "address[]" },
+      { internalType: "address", name: "_dest", type: "address" },
     ],
     name: "drainTo",
     outputs: [],
@@ -189,9 +275,22 @@ export const AirSwapPoolAbi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getChainId",
-    outputs: [{ internalType: "uint256", name: "id", type: "uint256" }],
+    inputs: [
+      { internalType: "bytes32", name: "_tree", type: "bytes32" },
+      { internalType: "bytes32", name: "_root", type: "bytes32" },
+    ],
+    name: "enable",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "_account", type: "address" },
+      { internalType: "bytes32[]", name: "_trees", type: "bytes32[]" },
+    ],
+    name: "getClaimStatusForTrees",
+    outputs: [{ internalType: "bool[]", name: "", type: "bool[]" }],
     stateMutability: "view",
     type: "function",
   },
@@ -203,18 +302,15 @@ export const AirSwapPoolAbi = [
     type: "function",
   },
   {
-    inputs: [
-      { internalType: "address", name: "participant", type: "address" },
-      { internalType: "uint256", name: "nonce", type: "uint256" },
-    ],
-    name: "nonceUsed",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    inputs: [],
+    name: "owner",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
-    name: "owner",
+    name: "pendingOwner",
     outputs: [{ internalType: "address", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
@@ -231,6 +327,13 @@ export const AirSwapPoolAbi = [
     name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    name: "rootsByTree",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -256,18 +359,10 @@ export const AirSwapPoolAbi = [
   },
   {
     inputs: [
+      { internalType: "address", name: "_stakingToken", type: "address" },
       { internalType: "address", name: "_stakingContract", type: "address" },
     ],
-    name: "setStakingContract",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "_stakingToken", type: "address" },
-    ],
-    name: "setStakingToken",
+    name: "setStaking",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -295,50 +390,99 @@ export const AirSwapPoolAbi = [
   },
   {
     inputs: [
-      { internalType: "uint256", name: "nonce", type: "uint256" },
-      { internalType: "uint256", name: "expiry", type: "uint256" },
-      { internalType: "address", name: "participant", type: "address" },
-      { internalType: "uint256", name: "score", type: "uint256" },
-      { internalType: "uint8", name: "v", type: "uint8" },
-      { internalType: "bytes32", name: "r", type: "bytes32" },
-      { internalType: "bytes32", name: "s", type: "bytes32" },
+      { internalType: "address", name: "_participant", type: "address" },
+      { internalType: "bytes32", name: "_root", type: "bytes32" },
+      { internalType: "uint256", name: "_value", type: "uint256" },
+      { internalType: "bytes32[]", name: "_proof", type: "bytes32[]" },
     ],
     name: "verify",
     outputs: [{ internalType: "bool", name: "valid", type: "bool" }],
-    stateMutability: "view",
+    stateMutability: "pure",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "recipient", type: "address" },
-      { internalType: "uint256", name: "minimum", type: "uint256" },
-      { internalType: "address", name: "token", type: "address" },
-      { internalType: "uint256", name: "nonce", type: "uint256" },
-      { internalType: "uint256", name: "expiry", type: "uint256" },
-      { internalType: "uint256", name: "score", type: "uint256" },
-      { internalType: "uint8", name: "v", type: "uint8" },
-      { internalType: "bytes32", name: "r", type: "bytes32" },
-      { internalType: "bytes32", name: "s", type: "bytes32" },
+      {
+        components: [
+          { internalType: "bytes32", name: "tree", type: "bytes32" },
+          { internalType: "uint256", name: "value", type: "uint256" },
+          { internalType: "bytes32[]", name: "proof", type: "bytes32[]" },
+        ],
+        internalType: "struct IPool.Claim[]",
+        name: "_claims",
+        type: "tuple[]",
+      },
+      { internalType: "address", name: "_token", type: "address" },
+      { internalType: "uint256", name: "_minimumAmount", type: "uint256" },
     ],
     name: "withdraw",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      { internalType: "uint256", name: "amountWithdrawn", type: "uint256" },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "recipient", type: "address" },
-      { internalType: "uint256", name: "minimum", type: "uint256" },
-      { internalType: "address", name: "token", type: "address" },
-      { internalType: "uint256", name: "nonce", type: "uint256" },
-      { internalType: "uint256", name: "expiry", type: "uint256" },
-      { internalType: "uint256", name: "score", type: "uint256" },
-      { internalType: "uint8", name: "v", type: "uint8" },
-      { internalType: "bytes32", name: "r", type: "bytes32" },
-      { internalType: "bytes32", name: "s", type: "bytes32" },
+      {
+        components: [
+          { internalType: "bytes32", name: "tree", type: "bytes32" },
+          { internalType: "uint256", name: "value", type: "uint256" },
+          { internalType: "bytes32[]", name: "proof", type: "bytes32[]" },
+        ],
+        internalType: "struct IPool.Claim[]",
+        name: "_claims",
+        type: "tuple[]",
+      },
+      { internalType: "address", name: "_token", type: "address" },
+      { internalType: "uint256", name: "_minimumAmount", type: "uint256" },
     ],
     name: "withdrawAndStake",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: "bytes32", name: "tree", type: "bytes32" },
+          { internalType: "uint256", name: "value", type: "uint256" },
+          { internalType: "bytes32[]", name: "proof", type: "bytes32[]" },
+        ],
+        internalType: "struct IPool.Claim[]",
+        name: "_claims",
+        type: "tuple[]",
+      },
+      { internalType: "address", name: "_token", type: "address" },
+      { internalType: "uint256", name: "_minimumAmount", type: "uint256" },
+      { internalType: "address", name: "_account", type: "address" },
+    ],
+    name: "withdrawAndStakeFor",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: "bytes32", name: "tree", type: "bytes32" },
+          { internalType: "uint256", name: "value", type: "uint256" },
+          { internalType: "bytes32[]", name: "proof", type: "bytes32[]" },
+        ],
+        internalType: "struct IPool.Claim[]",
+        name: "_claims",
+        type: "tuple[]",
+      },
+      { internalType: "address", name: "_token", type: "address" },
+      { internalType: "uint256", name: "_minimumAmount", type: "uint256" },
+      { internalType: "address", name: "_recipient", type: "address" },
+    ],
+    name: "withdrawFor",
+    outputs: [
+      { internalType: "uint256", name: "amountWithdrawn", type: "uint256" },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
