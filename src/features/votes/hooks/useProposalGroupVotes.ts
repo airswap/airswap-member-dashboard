@@ -1,21 +1,20 @@
-import { gql, request } from "graphql-request";
+import request, { gql } from "graphql-request";
 import { useQuery } from "wagmi";
 import { SNAPSHOT_HUB_GRAPHQL_ENDPOINT } from "../config/constants";
 
 // Snapshot docs here: https://docs.snapshot.org/tools/graphql-api
 
+// Syntax Error: Invalid number, expected digit but got: "x".
+
 const VOTES_FOR_PROPOSALS_QUERY = (proposalIds?: string[]) => gql`
   query {
-    votes(
-      first: 1000
-      where: {
-        proposal_in: [${proposalIds || [].map((id) => `"${id}"`).join(",")}])}],
-      }
-    ) {
+    votes(first: 1000, where: { proposal_in: [${(proposalIds || [])
+      .map((id) => '"' + id + '"')
+      .join(",")}]}) {
       proposal {
         id
       }
-			voter
+      voter
       vp
     }
   }
@@ -42,7 +41,10 @@ type VotesByProposalQueryResult = {
  * from the pool.
  * @param proposalId If undefined, query is disabled.
  */
-export const useProposalGroupVotes = (proposalIds?: string[]) => {
+export const useProposalGroupVotes = (
+  proposalIds?: string[],
+  options?: { enabled: boolean },
+) => {
   const fetch = async () => {
     const result = await request<VotesByProposalQueryResult>(
       SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
@@ -60,7 +62,8 @@ export const useProposalGroupVotes = (proposalIds?: string[]) => {
       // TODO: Should be possible to increase this to be much more aggresively cached
       // if we ensure that this is only requested for closed proposals.
       staleTime: 600_000, // 10 minutes
-      enabled: !!proposalIds && proposalIds.length > 0,
+      enabled:
+        !!proposalIds && proposalIds.length > 0 && (options?.enabled ?? true),
     },
   );
 };
