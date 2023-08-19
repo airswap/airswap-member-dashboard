@@ -57,6 +57,7 @@ export const useTokenBalances = () => {
     format((data && data[0].result) || 0, { tokenDecimals: 4 }) || 0;
   const sAstBalanceFormatted =
     format(data && data[1].result, { tokenDecimals: 4 }) || 0;
+
   const astBalanceFormatted =
     format(data && data[2].result, { tokenDecimals: 4 }) || 0;
 

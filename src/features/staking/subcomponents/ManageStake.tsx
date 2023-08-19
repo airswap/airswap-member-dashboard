@@ -5,21 +5,19 @@ import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import { Button } from "../../common/Button";
 import LineBreak from "../../common/LineBreak";
 import { StakableBar } from "./StakableBar";
+import { useTokenBalances } from "../../../hooks/useTokenBalances";
 
 interface ManageStakeProps {
-  astBalance: string;
-  register: UseFormRegister<StakeInput>;
-  setValue: UseFormSetValue<StakeInput>;
+  register: UseFormRegister<{ stakingAmount: number }>;
+  setValue: UseFormSetValue<{ stakingAmount: number }>;
 }
 
-const ManageStake: FC<ManageStakeProps> = ({
-  astBalance,
-  register,
-  setValue,
-}) => {
+const ManageStake: FC<ManageStakeProps> = ({ register, setValue }) => {
   const [stakeOrUnstake, setStakeOrUnstake] = useState<"stake" | "unstake">(
     "stake",
   );
+
+  const { astBalanceFormatted: astBalance } = useTokenBalances();
 
   return (
     <>
@@ -63,7 +61,7 @@ const ManageStake: FC<ManageStakeProps> = ({
         <div className="flex flex-col text-right  uppercase">
           <div>
             <input
-              placeholder={astBalance}
+              placeholder={astBalance.toString()}
               {...register("stakingAmount", {
                 required: true,
                 min: 0,

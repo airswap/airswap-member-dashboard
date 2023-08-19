@@ -1,4 +1,3 @@
-import { format } from "@greypixel_/nicenumbers";
 import { FC, RefObject, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { VscChromeClose } from "react-icons/vsc";
@@ -19,9 +18,10 @@ import ManageStake from "./subcomponents/ManageStake";
 import PendingTransaction from "./subcomponents/PendingTransaction";
 import TransactionFailed from "./subcomponents/TransactionFailed";
 import { StatusStaking } from "./types/StakingTypes";
-import { buttonStatusText } from "./uils/buttonStatusText";
-import { modalHeadline } from "./uils/headline";
+import { buttonStatusText } from "./utils/buttonStatusText";
+import { modalHeadline } from "./utils/headline";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
+import { format } from "@greypixel_/nicenumbers";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>;
@@ -45,8 +45,7 @@ const StakingModal: FC<StakingModalInterface> = ({
   } = useForm<{ stakingAmount: number }>();
   const stakingAmount = watch("stakingAmount") || "0";
 
-  const { sAstBalanceFormatted: astBalance, astBalanceFormatted: sAstBalance } =
-    useTokenBalances();
+  const { sAstBalanceFormatted: astBalance } = useTokenBalances();
 
   const [AirSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
     defaultChainId: 1,
@@ -207,12 +206,7 @@ const StakingModal: FC<StakingModalInterface> = ({
         </div>
       </div>
       {statusStaking === "unapproved" || statusStaking === "readyToStake" ? (
-        <ManageStake
-          sAstBalance={sAstBalance}
-          astBalance={astBalance}
-          register={register}
-          setValue={setValue}
-        />
+        <ManageStake register={register} setValue={setValue} />
       ) : null}
 
       {statusStaking === "approving" || statusStaking === "staking" ? (
