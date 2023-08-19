@@ -70,10 +70,7 @@ export const StakableBar: FC<StakableBarProps> = ({ mode }) => {
         <>
           <div className="m-auto mt-6 flex h-3 w-[100%] flex-row rounded-full">
             <div
-              className={twJoin([
-                "w-full rounded-full bg-accent-gray",
-                // "rounded-r-full",
-              ])}
+              className={twJoin(["w-full rounded-full bg-accent-gray"])}
               // style={{ flexBasis: `${stakablePercent}%` }}
             ></div>
           </div>
