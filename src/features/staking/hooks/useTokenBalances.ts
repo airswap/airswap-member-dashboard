@@ -1,4 +1,4 @@
-import { useAccount, useBalance, useContractReads } from "wagmi";
+import { useAccount, useContractReads } from "wagmi";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { stakingAbi } from "../../../contracts/stakingAbi";
