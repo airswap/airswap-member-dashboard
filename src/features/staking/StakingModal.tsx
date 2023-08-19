@@ -45,7 +45,7 @@ const StakingModal: FC<StakingModalInterface> = ({
   } = useForm<{ stakingAmount: number }>();
   const stakingAmount = watch("stakingAmount") || "0";
 
-  const { sAstBalanceFormatted: astBalance } = useTokenBalances();
+  const { astBalanceFormatted: astBalance } = useTokenBalances();
 
   const [AirSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
     defaultChainId: 1,
