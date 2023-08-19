@@ -4,18 +4,15 @@ import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import { Button } from "../../common/Button";
 import LineBreak from "../../common/LineBreak";
-import { StakeInput } from "../types/StakingTypes";
 import { StakableBar } from "./StakableBar";
 
 interface ManageStakeProps {
-  sAstBalance: string;
   astBalance: string;
   register: UseFormRegister<StakeInput>;
   setValue: UseFormSetValue<StakeInput>;
 }
 
 const ManageStake: FC<ManageStakeProps> = ({
-  sAstBalance,
   astBalance,
   register,
   setValue,
@@ -27,13 +24,7 @@ const ManageStake: FC<ManageStakeProps> = ({
   return (
     <>
       <LineBreak />
-      <StakableBar
-        mode={stakeOrUnstake}
-        // TODO: replace unstakable with real number
-        unstakable={"100"}
-        staked={sAstBalance}
-        stakable={astBalance}
-      />
+      <StakableBar mode={stakeOrUnstake} />
       <LineBreak />
       <div className="font-lg pointer-cursor mt-6 rounded-md font-semibold">
         <Button
