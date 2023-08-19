@@ -3,8 +3,7 @@ import { calculateTokenProportions } from "../utils/calculateTokenProportions";
 import { twJoin } from "tailwind-merge";
 import { BsCircleFill } from "react-icons/bs";
 import "../../../index.css";
-import { useTokenBalances } from "../hooks/useTokenBalances";
-import { format } from "@greypixel_/nicenumbers";
+import { useTokenBalances } from "../../../hooks/useTokenBalances";
 
 interface StakableBarProps {
   mode: "stake" | "unstake";
@@ -18,17 +17,17 @@ interface StakableBarProps {
  * @returns
  */
 export const StakableBar: FC<StakableBarProps> = ({ mode }) => {
-  const { unstakableSAstBalance, sAstBalance, astBalance } = useTokenBalances();
-
-  const unstakable = format(unstakableSAstBalance, { tokenDecimals: 4 });
-  const staked = format(sAstBalance, { tokenDecimals: 4 });
-  const stakable = format(astBalance, { tokenDecimals: 4 });
+  const {
+    ustakableSAstBalanceFormatted: unstakable,
+    sAstBalanceFormatted: staked,
+    astBalanceFormatted: stakable,
+  } = useTokenBalances();
 
   const { unstakablePercent, stakedPercent, stakablePercent } =
     calculateTokenProportions({
-      unstakable: +unstakable.toString(),
-      staked: +staked.toString(),
-      stakable: +stakable.toString(),
+      unstakable: +unstakable,
+      staked: +staked,
+      stakable: +stakable,
     });
 
   return (
@@ -53,16 +52,16 @@ export const StakableBar: FC<StakableBarProps> = ({ mode }) => {
             <div className="checkered-blue rounded-full">
               <BsCircleFill className="text-transparent" />
             </div>
-            <span className="mx-2">{unstakable.toString()}</span>
+            <span className="mx-2">{unstakable}</span>
             unstakable
           </div>
           <div className="flex flex-row items-center">
             <BsCircleFill className="text-blue-500" />
-            <span className="mx-2">{staked.toString()}</span>staked
+            <span className="mx-2">{staked}</span>staked
           </div>
           <div className="flex flex-row items-center">
             <BsCircleFill className="text-accent-gray" />
-            <span className="mx-2">{stakable.toString()}</span>stakable
+            <span className="mx-2">{stakable}</span>stakable
           </div>
         </>
       )}
@@ -76,7 +75,7 @@ export const StakableBar: FC<StakableBarProps> = ({ mode }) => {
           </div>
           <div className="flex flex-row items-center">
             <BsCircleFill className="text-accent-gray" />
-            <span className="mx-2">{stakable.toString()}</span>stakable
+            <span className="mx-2">{stakable}</span>stakable
           </div>
         </>
       )}
