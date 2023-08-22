@@ -1,5 +1,9 @@
 import { twMerge } from "tailwind-merge";
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
 import { AirSwapPoolAbi } from "../../abi/AirSwapPool";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
@@ -26,7 +30,11 @@ export const SetRootButton = ({
   // Only admins can submit roots
   const { data: isPoolAdmin } = useIsPoolAdmin();
   // We only want to show the submit root button if there isn't already a root set
-  const { data: existingRoot, isLoading: existingRootLoading } = useRootByTree({
+  const {
+    data: existingRoot,
+    isLoading: existingRootLoading,
+    refetch: refetchRoot,
+  } = useRootByTree({
     treeId: groupId,
     enabled: isPoolAdmin,
   });
@@ -54,8 +62,18 @@ export const SetRootButton = ({
     args: [groupId, merkleRoot!],
     enabled: !!merkleRoot && merkleRoot !== "0x",
   });
-  const { write: sendRoot, isLoading: sendRootLoading } =
-    useContractWrite(config);
+  const { write: sendRoot, data: sendRootTxData } = useContractWrite(config);
+
+  // Show a toast when the transaction succeeds.
+  useWaitForTransaction({
+    // NOTE: when there is no hash, this will do nothing.
+    hash: sendRootTxData?.hash,
+    onSuccess: () => {
+      // TODO: show toast
+      // Refetch the root so we don't show the button anymore.
+      refetchRoot();
+    },
+  });
 
   // If the root is already set, or we don't have one to set yet, show nothing.
   if (!isPoolAdmin || hasRoot || !merkleRoot || merkleRoot === "0x")
