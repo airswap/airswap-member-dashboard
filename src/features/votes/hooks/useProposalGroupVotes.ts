@@ -3,9 +3,6 @@ import { useQuery } from "wagmi";
 import { SNAPSHOT_HUB_GRAPHQL_ENDPOINT } from "../config/constants";
 
 // Snapshot docs here: https://docs.snapshot.org/tools/graphql-api
-
-// Syntax Error: Invalid number, expected digit but got: "x".
-
 const VOTES_FOR_PROPOSALS_QUERY = (proposalIds?: string[]) => gql`
   query {
     votes(first: 1000, where: { proposal_in: [${(proposalIds || [])
