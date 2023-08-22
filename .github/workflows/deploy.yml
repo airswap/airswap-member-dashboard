@@ -43,16 +43,10 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v2
 
-      - uses: ipfs-shipyard/ipfs-github-action@v1.0.0
-        id: ipfs
+     - name: IPFS Deploy 🚀
+        uses: aquiladev/ipfs-action@master
         with:
-          path_to_add: public
-          cluster_host: /dnsaddr/cluster.ipfs.io
-          cluster_user: ${{ secrets.CLUSTER_USER }}
-          cluster_password: ${{ secrets.CLUSTER_PASSWORD }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - run: echo /ipfs/${{ steps.ipfs.outputs.cid }}
-
-      - run: echo ${{ github.ref }}
+          path: ./build
+          service: infura
+          infuraProjectId: ${{ secrets.INFURA_PROJECT_ID }}
+          infuraProjectSecret: ${{ secrets.INFURA_PROJECT_SECRET }}
