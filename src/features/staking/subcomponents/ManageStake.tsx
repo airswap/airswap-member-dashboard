@@ -4,59 +4,25 @@ import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import { Button } from "../../common/Button";
 import LineBreak from "../../common/LineBreak";
-import { StakeInput } from "../types/StakingTypes";
+import { StakableBar } from "./StakableBar";
+import { useTokenBalances } from "../../../hooks/useTokenBalances";
 
 interface ManageStakeProps {
-  sAstBalance: string;
-  astBalance: string;
-  register: UseFormRegister<StakeInput>;
-  setValue: UseFormSetValue<StakeInput>;
+  register: UseFormRegister<{ stakingAmount: number }>;
+  setValue: UseFormSetValue<{ stakingAmount: number }>;
 }
 
-const ManageStake: FC<ManageStakeProps> = ({
-  sAstBalance,
-  astBalance,
-  register,
-  setValue,
-}) => {
+const ManageStake: FC<ManageStakeProps> = ({ register, setValue }) => {
   const [stakeOrUnstake, setStakeOrUnstake] = useState<"stake" | "unstake">(
     "stake",
   );
 
+  const { astBalanceFormatted: astBalance } = useTokenBalances();
+
   return (
     <>
       <LineBreak />
-      <div className="flex flex-col space-y-3">
-        {stakeOrUnstake === "stake" && (
-          <>
-            <div className="mt-6">
-              {/* TODO: add progress bar here with AST balance */}
-              (PROGRESS BAR)
-            </div>
-            <div className="flex flex-row">
-              <span className="mr-2">{sAstBalance}</span>unstakable
-            </div>
-            <div className="flex flex-row">
-              <span className="mr-2">{sAstBalance}</span>staked
-            </div>
-            <div className="flex flex-row">
-              <span className="mr-2">{astBalance}</span>stakable
-            </div>
-          </>
-        )}
-        {stakeOrUnstake === "unstake" && (
-          <>
-            <div className="mt-6">
-              {/* TODO: add progress bar here with AST balance */}
-              (PROGRESS BAR)
-            </div>
-            <div className="flex flex-row">
-              <span className="mr-2">{astBalance}</span>
-              <span>stakable</span>
-            </div>
-          </>
-        )}
-      </div>
+      <StakableBar mode={stakeOrUnstake} />
       <LineBreak />
       <div className="font-lg pointer-cursor mt-6 rounded-md font-semibold">
         <Button
@@ -95,7 +61,7 @@ const ManageStake: FC<ManageStakeProps> = ({
         <div className="flex flex-col text-right  uppercase">
           <div>
             <input
-              placeholder={astBalance}
+              placeholder={astBalance.toString()}
               {...register("stakingAmount", {
                 required: true,
                 min: 0,
