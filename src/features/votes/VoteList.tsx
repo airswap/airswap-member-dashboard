@@ -1,8 +1,10 @@
+import { Fragment } from "react";
 import { ClaimForm } from "../claims/ClaimForm";
 import { Modal } from "../common/Modal";
 import { ClaimFloat } from "./ClaimFloat";
 import { LiveVoteCard } from "./LiveVoteCard";
 import { PastEpochCard } from "./PastEpochCard";
+import { SetRootButton } from "./SetRootButton";
 import { useGroupedProposals } from "./hooks/useGroupedProposals";
 import { useTreeRoots } from "./hooks/useTreeRoots";
 import { useEpochSelectionStore } from "./store/useEpochSelectionStore";
@@ -44,11 +46,16 @@ export const VoteList = ({}: {}) => {
         <h3 className="text-xs font-bold uppercase">Live votes</h3>
         <div className="h-px flex-1 bg-border-dark"></div>
       </div>
-      {liveProposalGroups?.map((group) =>
-        group.map((proposal) => (
-          <LiveVoteCard proposal={proposal} key={proposal.id} />
-        )),
-      )}
+      {liveProposalGroups?.map((group) => {
+        return (
+          <Fragment key={group[0].id}>
+            {group.map((proposal) => (
+              <LiveVoteCard proposal={proposal} key={proposal.id} />
+            ))}
+            <SetRootButton proposalGroup={group} className="self-center" />
+          </Fragment>
+        );
+      })}
 
       {/* Inactive Votes */}
       <div className="flex flex-row items-center gap-4">

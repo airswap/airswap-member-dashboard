@@ -5,9 +5,9 @@ import { ClaimableTokensLineItem } from "./ClaimableTokensLineItem";
 
 // with goerli and mainnet.
 const stakerTokens: `0x${string}`[] = [
-  "0x1a1ec25DC08e98e5E93F1104B5e5cdD298707d31",
-  "0x326C977E6efc84E512bB9C30f76E30c160eD06FB",
-  "0x2899a03ffDab5C90BADc5920b4f53B0884EB13cC",
+  "0x326c977e6efc84e512bb9c30f76e30c160ed06fb", // link
+  "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984", // uni
+  "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6", // weth
 ];
 
 export const ClaimForm = ({}: {}) => {
