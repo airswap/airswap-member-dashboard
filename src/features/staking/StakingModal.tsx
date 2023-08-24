@@ -2,8 +2,6 @@ import { FC, RefObject, useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { VscChromeClose } from "react-icons/vsc";
 import { twJoin } from "tailwind-merge";
-import { useWaitForTransaction } from "wagmi";
-import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { useApproveToken } from "./hooks/useApproveToken";
 import { useAstAllowance } from "./hooks/useAstAllowance";
@@ -12,9 +10,9 @@ import ApproveSuccess from "./subcomponents/ApproveSuccess";
 import ManageStake from "./subcomponents/ManageStake";
 import PendingTransaction from "./subcomponents/PendingTransaction";
 import TransactionFailed from "./subcomponents/TransactionFailed";
-import { StatusStaking } from "./types/StakingTypes";
-import { buttonStatusText } from "./utils/buttonStatusText";
-import { modalHeadline } from "./utils/headline";
+import { StakingStatus } from "./types/StakingTypes";
+import { handleStatusStaking } from "./utils/handleStatusStaking";
+import { buttonStatusText, modalHeadline } from "./utils/helpers";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>;
@@ -26,8 +24,7 @@ const StakingModal: FC<StakingModalInterface> = ({
   chainId,
 }) => {
   const [statusStaking, setStatusStaking] =
-    useState<StatusStaking>("unapproved");
-  console.log("statusStaking", statusStaking);
+    useState<StakingStatus>("unapproved");
 
   const {
     register,
@@ -37,45 +34,21 @@ const StakingModal: FC<StakingModalInterface> = ({
   } = useForm<{ stakingAmount: number }>();
   const stakingAmount = watch("stakingAmount") || 0;
 
-  const { astBalanceFormatted: astBalance } = useTokenBalances();
   const { astAllowanceFormatted: astAllowance, refetchAllowance } =
     useAstAllowance();
-  console.log("astAllowance", astAllowance);
 
-  const needsApproval = Number(astBalance) < stakingAmount;
-  console.log("needsApproval", needsApproval);
+  const needsApproval =
+    stakingAmount > 0 ? Number(astAllowance) < stakingAmount : true;
+  console.log(stakingAmount, "stakingAmount", astAllowance, "astAllowance");
 
-  const { approve, dataApprove } = useApproveToken({
+  const { approve, hashApprove, statusApprove } = useApproveToken({
     stakingAmount,
     needsApproval,
   });
-  const { stake, dataStake } = useStakeAst({ stakingAmount, needsApproval });
 
-  // TODO: code below can probably be refactored
-  // check transaction status and hash
-  const { data: hashApprove, status: statusApprove } = useWaitForTransaction({
-    hash: dataApprove?.hash,
-    onSettled() {
-      // putting this logic into useEffect hook will never allow statusApprove to not equal "success"
-      if (statusApprove === "success") {
-        setStatusStaking("approved");
-      }
-    },
-  });
-
-  // TODO: code below can probably be refactored
-  // check transaction status and hash
-  const { data: hashStake, status: statusStakeAst } = useWaitForTransaction({
-    hash: dataStake?.hash,
-    onSettled() {
-      if (statusStakeAst === "success") {
-        setStatusStaking("success");
-      }
-    },
-    onError(err) {
-      console.log("Error", err);
-      setStatusStaking("failed");
-    },
+  const { stake, hashStake, statusStake } = useStakeAst({
+    stakingAmount,
+    needsApproval,
   });
 
   const handleClickApprove = useCallback(async () => {
@@ -84,8 +57,7 @@ const StakingModal: FC<StakingModalInterface> = ({
       await receipt;
       refetchAllowance();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [approve]);
+  }, [approve, refetchAllowance]);
 
   const handleClickStake = useCallback(async () => {
     if (stake) {
@@ -105,10 +77,12 @@ const StakingModal: FC<StakingModalInterface> = ({
       statusStaking === "staking"
     ) {
       return true;
+    } else {
+      return false;
     }
   };
-  const isShouldRenderBtn = shouldRenderBtn();
 
+  const isShouldRenderBtn = shouldRenderBtn();
   const buttonText = buttonStatusText(statusStaking);
 
   const buttonAction = () => {
@@ -127,22 +101,31 @@ const StakingModal: FC<StakingModalInterface> = ({
   };
 
   useEffect(() => {
-    // putting this into `onSettled` in `useWaitForTransaction` will cause too much lag
-    if (statusApprove === "loading") {
-      setStatusStaking("approving");
-    }
-
-    if (statusStakeAst === "loading") {
-      setStatusStaking("staking");
-    }
-    // console.log("statusStaking", statusStaking);
-  }, [stakingAmount, statusApprove, statusStaking, statusStakeAst]);
+    handleStatusStaking({
+      needsApproval,
+      statusApprove,
+      setStatusStaking,
+      statusStake,
+    });
+    console.log("needsAPproval", needsApproval);
+    console.log("statusStaking", statusStaking);
+    console.log("astAllowance", astAllowance);
+    console.log("statusApprove", statusApprove);
+    console.log("statusStake", statusStake);
+  }, [
+    needsApproval,
+    astAllowance,
+    stakingAmount,
+    statusApprove,
+    statusStake,
+    statusStaking,
+  ]);
 
   return (
     <dialog
       className={twJoin(
         "content-center border border-border-darkGray bg-black p-6 text-white",
-        ["w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/5"],
+        ["w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3"],
       )}
       ref={stakingModalRef}
     >
@@ -163,7 +146,7 @@ const StakingModal: FC<StakingModalInterface> = ({
       {statusStaking === "approved" || statusStaking === "success" ? (
         <ApproveSuccess
           statusStaking={statusStaking}
-          setStatusStaking={setStatusStaking}
+          // setStatusStaking={setStatusStaking}
           amountApproved={stakingAmount.toString()}
           amountStaked={stakingAmount.toString()}
           chainId={chainId}

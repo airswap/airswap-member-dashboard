@@ -1,4 +1,4 @@
-export type StatusStaking =
+export type StakingStatus =
   | "unapproved"
   | "approving"
   | "approved"

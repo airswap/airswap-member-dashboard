@@ -1,4 +1,8 @@
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
@@ -39,5 +43,9 @@ export const useApproveToken = ({
   const { writeAsync: approve, data: dataApprove } =
     useContractWrite(configApprove);
 
-  return { approve, dataApprove };
+  const { data: hashApprove, status: statusApprove } = useWaitForTransaction({
+    hash: dataApprove?.hash,
+  });
+
+  return { approve, hashApprove, statusApprove };
 };

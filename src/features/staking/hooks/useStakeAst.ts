@@ -1,4 +1,8 @@
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { stakingAbi } from "../../../contracts/stakingAbi";
@@ -28,7 +32,11 @@ export const useStakeAst = ({
     enabled: !needsApproval && +stakingAmount > 0,
   });
 
-  const { writeAsync: stake, data: dataStake } = useContractWrite(configStake);
+  const { writeAsync: stake, data } = useContractWrite(configStake);
 
-  return { stake, dataStake };
+  const { data: hashStake, status: statusStake } = useWaitForTransaction({
+    hash: data?.hash,
+  });
+
+  return { stake, hashStake, statusStake };
 };
