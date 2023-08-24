@@ -44,8 +44,11 @@ export const useApproveToken = ({
     enabled: needsApproval,
   });
 
-  const { writeAsync: approve, data: dataApprove } =
-    useContractWrite(configApprove);
+  const {
+    writeAsync: approve,
+    data: dataApprove,
+    reset: approveReset,
+  } = useContractWrite(configApprove);
 
   const { data: hashApprove, status: statusApprove } = useWaitForTransaction({
     hash: dataApprove?.hash,
@@ -57,5 +60,5 @@ export const useApproveToken = ({
     },
   });
 
-  return { approve, hashApprove, statusApprove };
+  return { approve, approveReset, hashApprove, statusApprove };
 };

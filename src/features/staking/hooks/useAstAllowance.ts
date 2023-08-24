@@ -18,7 +18,7 @@ export const useAstAllowance = () => {
     },
   );
 
-  const { data: astAllowance, refetch: refetchAllowance } = useContractRead({
+  const { data: astAllowance } = useContractRead({
     address: AirSwapToken.address,
     abi: astAbi,
     functionName: "allowance",
@@ -29,5 +29,5 @@ export const useAstAllowance = () => {
 
   const astAllowanceFormatted = format(astAllowance, { tokenDecimals: 4 });
 
-  return { astAllowance, refetchAllowance, astAllowanceFormatted };
+  return { astAllowance, astAllowanceFormatted };
 };

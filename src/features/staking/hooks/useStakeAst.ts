@@ -36,7 +36,11 @@ export const useStakeAst = ({
     enabled: !needsApproval && +stakingAmount > 0,
   });
 
-  const { writeAsync: stake, data } = useContractWrite(configStake);
+  const {
+    writeAsync: stake,
+    data,
+    reset: writeReset,
+  } = useContractWrite(configStake);
 
   const { data: hashStake, status: statusStake } = useWaitForTransaction({
     hash: data?.hash,
@@ -48,5 +52,5 @@ export const useStakeAst = ({
     },
   });
 
-  return { stake, hashStake, statusStake };
+  return { stake, writeReset, hashStake, statusStake };
 };

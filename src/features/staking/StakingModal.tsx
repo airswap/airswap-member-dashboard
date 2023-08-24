@@ -1,4 +1,4 @@
-import { FC, RefObject, useCallback, useEffect, useState } from "react";
+import { FC, RefObject, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { VscChromeClose } from "react-icons/vsc";
 import { twJoin } from "tailwind-merge";
@@ -38,39 +38,24 @@ const StakingModal: FC<StakingModalInterface> = ({
   } = useForm<{ stakingAmount: number }>();
   const stakingAmount = watch("stakingAmount") || 0;
 
-  const { astAllowanceFormatted: astAllowance, refetchAllowance } =
-    useAstAllowance();
+  const { astAllowanceFormatted: astAllowance } = useAstAllowance();
 
   const needsApproval =
     stakingAmount > 0 ? Number(astAllowance) < stakingAmount : true;
 
-  const { approve, hashApprove, statusApprove } = useApproveToken({
+  const { approve, approveReset, hashApprove, statusApprove } = useApproveToken(
+    {
+      stakingAmount,
+      needsApproval,
+      setStatusStaking,
+    },
+  );
+
+  const { stake, writeReset, hashStake, statusStake } = useStakeAst({
     stakingAmount,
     needsApproval,
     setStatusStaking,
   });
-
-  const { stake, hashStake, statusStake } = useStakeAst({
-    stakingAmount,
-    needsApproval,
-    setStatusStaking,
-  });
-
-  const handleClickApprove = useCallback(async () => {
-    if (approve) {
-      const receipt = await approve();
-      await receipt;
-      refetchAllowance();
-    }
-  }, [approve, refetchAllowance]);
-
-  const handleClickStake = useCallback(async () => {
-    if (stake) {
-      const receipt = await stake();
-      await receipt;
-      await console.log("receipt", receipt);
-    }
-  }, [stake]);
 
   // button should not render on certain components
   const isShouldRenderBtn = shouldRenderBtn(statusStaking);
@@ -80,10 +65,12 @@ const StakingModal: FC<StakingModalInterface> = ({
   const buttonAction = () => {
     switch (statusStaking) {
       case "unapproved":
-        return approve && handleClickApprove();
+        return approve && approve();
       case "readyToStake":
-        return stake && handleClickStake();
+        return stake && stake();
       case "success":
+        approveReset && approveReset();
+        writeReset && writeReset();
         setStatusStaking("unapproved");
     }
   };
