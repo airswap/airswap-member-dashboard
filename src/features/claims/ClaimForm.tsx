@@ -1,10 +1,9 @@
 // FIXME: this should not be the source - probably a json file instead,
 
 import { useState } from "react";
-import { useAccount, usePrepareContractWrite } from "wagmi";
+import { useAccount } from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
-import { poolAbi } from "../../contracts/poolAbi";
 import { Button } from "../common/Button";
 import { useEpochSelectionStore } from "../votes/store/useEpochSelectionStore";
 import { ClaimableTokensLineItem } from "./ClaimableTokensLineItem";
@@ -55,18 +54,18 @@ export const ClaimForm = ({}: {}) => {
     amount: bigint;
   }>();
 
-  const { config } = usePrepareContractWrite({
-    ...pool,
-    abi: poolAbi,
-    functionName: "withdraw",
-    args: [
-      // claims
-      proofs,
-      selectedClaim!.tokenAddress,
-      selectedClaim!.amount,
-      connectedAccount!,
-    ],
-  });
+  // const { config } = usePrepareContractWrite({
+  //   ...pool,
+  //   abi: poolAbi,
+  //   functionName: "withdraw",
+  //   args: [
+  //     // claims
+  //     proofs,
+  //     selectedClaim!.tokenAddress,
+  //     selectedClaim!.amount,
+  //     connectedAccount!,
+  //   ],
+  // });
 
   return (
     <div className="flex flex-col w-[304px]">
