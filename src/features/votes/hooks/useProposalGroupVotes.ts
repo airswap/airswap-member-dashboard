@@ -1,6 +1,6 @@
 import request, { gql } from "graphql-request";
 import { useQuery } from "wagmi";
-import { SNAPSHOT_HUB_GRAPHQL_ENDPOINT } from "../config/constants";
+import { useSnapshotConfig } from "./useSnapshotConfig";
 
 // Snapshot docs here: https://docs.snapshot.org/tools/graphql-api
 const VOTES_FOR_PROPOSALS_QUERY = (proposalIds?: string[]) => gql`
@@ -42,16 +42,17 @@ export const useProposalGroupVotes = (
   proposalIds?: string[],
   options?: { enabled: boolean },
 ) => {
+  const snapshot = useSnapshotConfig();
   const fetch = async () => {
     const result = await request<VotesByProposalQueryResult>(
-      SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
+      snapshot.endpoint,
       VOTES_FOR_PROPOSALS_QUERY(proposalIds),
     );
     return result.votes;
   };
 
   return useQuery(
-    [SNAPSHOT_HUB_GRAPHQL_ENDPOINT, "votesByProposalIds", proposalIds],
+    [snapshot.endpoint, "votesByProposalIds", proposalIds],
     fetch,
     {
       // FIXME: remove all Infinity caches and have a configurable cache time

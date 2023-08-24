@@ -1,17 +1,14 @@
 import { gql, request } from "graphql-request";
 import { useQuery } from "wagmi";
-import {
-  SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
-  SNAPSHOT_SPACE,
-} from "../config/constants";
+import { useSnapshotConfig } from "./useSnapshotConfig";
 
 // Snapshot docs here: https://docs.snapshot.org/tools/graphql-api
-const PROPOSALS_QUERY = gql`
+const PROPOSALS_QUERY = (snapshotSpace: string) => gql`
   query {
     proposals(
       first: 100
       skip: 0
-      where: { space_in: ["${SNAPSHOT_SPACE}"] }
+      where: { space_in: ["${snapshotSpace}"] }
       orderBy: "created"
       orderDirection: desc
     ) {
@@ -47,10 +44,11 @@ type ProposalsQueryResult = {
  * same start and end.
  */
 export const useGroupedProposals = () => {
+  const snapshot = useSnapshotConfig();
   const fetch = async () => {
     const result = await request<ProposalsQueryResult>(
-      SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
-      PROPOSALS_QUERY,
+      snapshot.endpoint,
+      PROPOSALS_QUERY(snapshot.space),
     );
     const proposalGroups: Proposal[][] = [];
 
@@ -70,7 +68,7 @@ export const useGroupedProposals = () => {
     return proposalGroups;
   };
 
-  return useQuery([SNAPSHOT_HUB_GRAPHQL_ENDPOINT, "proposals"], fetch, {
+  return useQuery([snapshot.endpoint, snapshot.space, "proposals"], fetch, {
     cacheTime: Infinity,
     staleTime: 3_600_000, // 1 hour
   });
