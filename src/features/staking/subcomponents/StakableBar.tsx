@@ -1,9 +1,9 @@
 import { FC } from "react";
-import { calculateTokenProportions } from "../utils/calculateTokenProportions";
-import { twJoin } from "tailwind-merge";
 import { BsCircleFill } from "react-icons/bs";
-import "../../../index.css";
+import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../../hooks/useTokenBalances";
+import "../../../index.css";
+import { calculateTokenProportions } from "../utils/calculateTokenProportions";
 
 interface StakableBarProps {
   mode: "stake" | "unstake";
@@ -30,6 +30,7 @@ export const StakableBar: FC<StakableBarProps> = ({ mode }) => {
       stakable: +stakable,
     });
 
+  // TODO: fix rounded edges if `unstakablePercent` is small and insignificant
   return (
     <div className="flex w-full flex-col space-y-3">
       {mode === "stake" && (
@@ -41,11 +42,16 @@ export const StakableBar: FC<StakableBarProps> = ({ mode }) => {
             ></div>
             <div
               style={{ flexBasis: `${stakedPercent}%` }}
-              className="bg-accent-blue"
+              className={"bg-accent-blue"}
             ></div>
             <div
               style={{ flexBasis: `${stakablePercent}%` }}
-              className="rounded-r-full bg-accent-gray"
+              className={twJoin([
+                "bg-accent-gray",
+                `${
+                  stakablePercent === 100 ? "rounded-full" : "rounded-r-full"
+                }`,
+              ])}
             ></div>
           </div>
           <div className="flex flex-row items-center">
