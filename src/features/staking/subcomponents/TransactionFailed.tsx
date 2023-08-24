@@ -3,10 +3,10 @@ import { IoMdOpen } from "react-icons/io";
 import { twJoin } from "tailwind-merge";
 import closeRed from "../../../assets/close-red.svg";
 import { etherscanLink } from "../../../utils/constants";
-import { StatusStaking } from "../types/StakingTypes";
+import { StakingStatus } from "../types/StakingTypes";
 
 interface TransactionFailedProps {
-  setStatusStaking: Dispatch<StatusStaking>;
+  setStatusStaking: Dispatch<StakingStatus>;
   chainId: number;
   transactionHash?: string | undefined;
 }

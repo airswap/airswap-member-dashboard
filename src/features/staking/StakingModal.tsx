@@ -12,7 +12,11 @@ import PendingTransaction from "./subcomponents/PendingTransaction";
 import TransactionFailed from "./subcomponents/TransactionFailed";
 import { StakingStatus } from "./types/StakingTypes";
 import { handleStatusStaking } from "./utils/handleStatusStaking";
-import { buttonStatusText, modalHeadline } from "./utils/helpers";
+import {
+  buttonStatusText,
+  modalHeadline,
+  shouldRenderBtn,
+} from "./utils/helpers";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>;
@@ -39,16 +43,17 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   const needsApproval =
     stakingAmount > 0 ? Number(astAllowance) < stakingAmount : true;
-  console.log(stakingAmount, "stakingAmount", astAllowance, "astAllowance");
 
   const { approve, hashApprove, statusApprove } = useApproveToken({
     stakingAmount,
     needsApproval,
+    setStatusStaking,
   });
 
   const { stake, hashStake, statusStake } = useStakeAst({
     stakingAmount,
     needsApproval,
+    setStatusStaking,
   });
 
   const handleClickApprove = useCallback(async () => {
@@ -63,35 +68,23 @@ const StakingModal: FC<StakingModalInterface> = ({
     if (stake) {
       const receipt = await stake();
       await receipt;
-      await console.log(receipt);
+      await console.log("receipt", receipt);
     }
   }, [stake]);
 
+  // button should not render on certain components
+  const isShouldRenderBtn = shouldRenderBtn(statusStaking);
+  const buttonText = buttonStatusText(statusStaking);
   const headline = modalHeadline(statusStaking);
 
-  // button should not render on certain components
-  const shouldRenderBtn = () => {
-    if (
-      statusStaking === "approving" ||
-      statusStaking === "approved" ||
-      statusStaking === "staking"
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const isShouldRenderBtn = shouldRenderBtn();
-  const buttonText = buttonStatusText(statusStaking);
-
   const buttonAction = () => {
-    if (statusStaking === "unapproved") {
-      return approve && handleClickApprove();
-    } else if (statusStaking === "readyToStake") {
-      return stake && handleClickStake();
-    } else if (statusStaking === "success") {
-      setStatusStaking("unapproved");
+    switch (statusStaking) {
+      case "unapproved":
+        return approve && handleClickApprove();
+      case "readyToStake":
+        return stake && handleClickStake();
+      case "success":
+        setStatusStaking("unapproved");
     }
   };
 
@@ -107,19 +100,7 @@ const StakingModal: FC<StakingModalInterface> = ({
       setStatusStaking,
       statusStake,
     });
-    console.log("needsAPproval", needsApproval);
-    console.log("statusStaking", statusStaking);
-    console.log("astAllowance", astAllowance);
-    console.log("statusApprove", statusApprove);
-    console.log("statusStake", statusStake);
-  }, [
-    needsApproval,
-    astAllowance,
-    stakingAmount,
-    statusApprove,
-    statusStake,
-    statusStaking,
-  ]);
+  }, [needsApproval, astAllowance, statusApprove, statusStake]);
 
   return (
     <dialog
@@ -146,7 +127,6 @@ const StakingModal: FC<StakingModalInterface> = ({
       {statusStaking === "approved" || statusStaking === "success" ? (
         <ApproveSuccess
           statusStaking={statusStaking}
-          // setStatusStaking={setStatusStaking}
           amountApproved={stakingAmount.toString()}
           amountStaked={stakingAmount.toString()}
           chainId={chainId}

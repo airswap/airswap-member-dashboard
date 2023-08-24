@@ -19,7 +19,7 @@ const PendingTransaction: FC<PendingTransactionProps> = ({ statusStaking }) => {
     if (statusStaking === "approving") {
       return "To stake your AST you will have to approve the token spent. Please the transaction in your wallet, your wallet should open. If your wallet doesn't open please try again.";
     } else if (statusStaking === "staking") {
-      return "To stake your AST you will have to approve the token spent. Please the transaction in your wallet, your wallet should open. If your wallet doesn't open, please try again.";
+      return "To stake your AST please sign the transaction in your wallet. Your wallet should open, if your wallet doesn’t open please try again.";
     }
   };
 

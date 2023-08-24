@@ -1,3 +1,4 @@
+import { Dispatch } from "react";
 import {
   useContractWrite,
   usePrepareContractWrite,
@@ -6,13 +7,16 @@ import {
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
+import { StakingStatus } from "../types/StakingTypes";
 
 export const useApproveToken = ({
   stakingAmount,
   needsApproval,
+  setStatusStaking,
 }: {
   stakingAmount: number;
   needsApproval: boolean;
+  setStatusStaking: Dispatch<StakingStatus>;
 }) => {
   const [AirSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
     defaultChainId: 1,
@@ -45,6 +49,12 @@ export const useApproveToken = ({
 
   const { data: hashApprove, status: statusApprove } = useWaitForTransaction({
     hash: dataApprove?.hash,
+    cacheTime: 60_000, // 1 minute
+    onSettled(data) {
+      if (data?.transactionHash) {
+        setStatusStaking("readyToStake");
+      }
+    },
   });
 
   return { approve, hashApprove, statusApprove };

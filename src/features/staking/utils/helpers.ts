@@ -31,3 +31,15 @@ export const modalHeadline = (statusStaking: StakingStatus) => {
       return "Transaction failed";
   }
 };
+
+export const shouldRenderBtn = (statusStaking: StakingStatus) => {
+  if (
+    statusStaking === "approving" ||
+    statusStaking === "approved" ||
+    statusStaking === "staking"
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};

@@ -6,7 +6,6 @@ import { StakingStatus } from "../types/StakingTypes";
 
 interface ApproveSuccessProps {
   statusStaking: StakingStatus;
-  // setStatusStaking: Dispatch<StakingStatus>;
   amountApproved?: string;
   amountStaked?: string;
   chainId: number;
@@ -16,22 +15,12 @@ interface ApproveSuccessProps {
 
 const ApproveSuccess: FC<ApproveSuccessProps> = ({
   statusStaking,
-  // setStatusStaking,
   amountApproved,
   amountStaked,
   chainId,
   transactionHashApprove,
   transactionHashStake,
 }) => {
-  console.log("statusStaking", statusStaking);
-  // const handleCloseMessage = () => {
-  //   if (statusStaking === "approved") {
-  //     setStatusStaking("readyToStake");
-  //   } else if (statusStaking === "success") {
-  //     setStatusStaking("unapproved");
-  //   }
-  // };
-
   const message = () => {
     if (statusStaking === "approved") {
       return "You successfully approved";
@@ -43,11 +32,7 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
   return (
     <div className="flex flex-col items-center p-6">
       <div className="rounded-full border border-border-darkShaded bg-black p-2">
-        <img
-          src={greenCheck}
-          alt="green check"
-          // onClick={handleCloseMessage}
-        />
+        <img src={greenCheck} alt="green check" />
       </div>
       <div className="my-4 text-font-darkSubtext">
         <span>{message()}</span>
