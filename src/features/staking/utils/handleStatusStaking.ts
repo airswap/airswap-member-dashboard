@@ -6,6 +6,7 @@ interface HandleStatusStakingProps {
   statusApprove: "idle" | "error" | "loading" | "success";
   setStatusStaking: Dispatch<StakingStatus>;
   statusStake: "idle" | "error" | "loading" | "success";
+  stakeHash: string | undefined;
 }
 
 export const handleStatusStaking = ({
@@ -13,8 +14,9 @@ export const handleStatusStaking = ({
   statusApprove,
   setStatusStaking,
   statusStake,
+  stakeHash,
 }: HandleStatusStakingProps) => {
-  if (needsApproval) {
+  if (needsApproval && !stakeHash) {
     if (statusApprove === "idle" && statusStake !== "success") {
       setStatusStaking("unapproved");
     } else if (statusApprove === "loading") {
@@ -32,7 +34,7 @@ export const handleStatusStaking = ({
     } else if (statusStake === "error") {
       setStatusStaking("failed");
     }
-  } else if (statusStake === "success") {
+  } else if (statusStake === "success" || stakeHash) {
     setStatusStaking("success");
   }
 };

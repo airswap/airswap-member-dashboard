@@ -99,8 +99,17 @@ const StakingModal: FC<StakingModalInterface> = ({
       statusApprove,
       setStatusStaking,
       statusStake,
+      stakeHash: hashStake?.transactionHash,
     });
-  }, [needsApproval, astAllowance, statusApprove, statusStake]);
+    console.log("statusStaking", statusStaking);
+  }, [
+    needsApproval,
+    astAllowance,
+    statusApprove,
+    statusStake,
+    hashStake,
+    statusStaking,
+  ]);
 
   return (
     <dialog
