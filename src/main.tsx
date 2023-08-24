@@ -20,6 +20,14 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     alchemyProvider({ apiKey: import.meta.env.VITE_ALCHEMY_API_KEY || "" }),
     publicProvider(),
   ],
+  {
+    batch: {
+      multicall: {
+        // enable batched multicall
+        wait: 33,
+      },
+    },
+  },
 );
 
 const queryClient = new QueryClient();

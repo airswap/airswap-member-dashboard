@@ -11,10 +11,8 @@ import { Button } from "../common/Button";
 import { useGroupMerkleRoot } from "./hooks/useGroupMerkleRoot";
 import { Proposal } from "./hooks/useGroupedProposals";
 import { useIsPoolAdmin } from "./hooks/useIsPoolAdmin";
-import { useRootByTree } from "./hooks/useRootByTree";
+import { useTreeRoots } from "./hooks/useTreeRoots";
 
-const EMPTY_ROOT =
-  "0x0000000000000000000000000000000000000000000000000000000000000000";
 /**
  * Button to set the root for a proposal. Only shown to pool admins.
  */
@@ -30,16 +28,18 @@ export const SetRootButton = ({
   // Only admins can submit roots
   const { data: isPoolAdmin } = useIsPoolAdmin();
   // We only want to show the submit root button if there isn't already a root set
-  const {
-    data: existingRoot,
-    isLoading: existingRootLoading,
-    refetch: refetchRoot,
-  } = useRootByTree({
-    treeId: groupId,
+  const [
+    {
+      data: existingRoot,
+      isLoading: existingRootLoading,
+      refetch: refetchRoot,
+    },
+  ] = useTreeRoots({
+    treeIds: [groupId],
     enabled: isPoolAdmin,
   });
 
-  const hasRoot = !existingRootLoading && existingRoot !== EMPTY_ROOT;
+  const hasRoot = !existingRootLoading && !!existingRoot;
 
   // Calculate the root when we have one
   const { data: merkleRoot } = useGroupMerkleRoot(
@@ -60,7 +60,7 @@ export const SetRootButton = ({
     abi: AirSwapPoolAbi,
     functionName: "enable",
     args: [groupId, merkleRoot!],
-    enabled: !!merkleRoot && merkleRoot !== "0x",
+    enabled: !!merkleRoot,
   });
   const { write: sendRoot, data: sendRootTxData } = useContractWrite(config);
 
