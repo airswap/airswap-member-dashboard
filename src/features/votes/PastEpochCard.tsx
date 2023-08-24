@@ -6,7 +6,6 @@ import { useAccount } from "wagmi";
 import { Accordion } from "../common/Accordion";
 import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
-import { SetRootButton } from "./SetRootButton";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
 import { useGroupHash } from "./hooks/useGroupHash";
 import { Proposal } from "./hooks/useGroupedProposals";
@@ -80,25 +79,21 @@ export const PastEpochCard = ({
         <div className="font-bold">{proposalGroupTitle}</div>
       </div>
 
-      <div className="flex flex-row gap-4">
-        <SetRootButton groupId={treeId} proposalGroup={proposalGroup} />
-
-        {/* Points */}
-        <div
-          className={twJoin([
-            "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
-            "flex flex-row items-center gap-2 ring-1 ring-border-dark",
-            hasUserClaimed && "text-font-secondary",
-          ])}
-        >
-          {/* TODO: small numbers of points probably don't need decimals. */}
-          {format(pointsEarned, {
-            tokenDecimals: 0,
-            significantFigures: 3,
-            minDecimalPlaces: 0,
-          })}
-          &nbsp; Points
-        </div>
+      {/* Points */}
+      <div
+        className={twJoin([
+          "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
+          "flex flex-row items-center gap-2 ring-1 ring-border-dark",
+          hasUserClaimed && "text-font-secondary",
+        ])}
+      >
+        {/* TODO: small numbers of points probably don't need decimals. */}
+        {format(pointsEarned, {
+          tokenDecimals: 0,
+          significantFigures: 3,
+          minDecimalPlaces: 0,
+        })}
+        &nbsp; Points
       </div>
     </div>
   );
