@@ -1,9 +1,9 @@
 import { useQueries } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { usePublicClient } from "wagmi";
-import { AirSwapPoolAbi } from "../../../abi/AirSwapPool";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
+import { poolAbi } from "../../../contracts/poolAbi";
 import { getGroupHash } from "../utils/getGroupHash";
 
 const EMPTY_ROOT =
@@ -20,8 +20,8 @@ export const useTreeRoots = ({
 }: {
   // Common props.
   enabled?: boolean;
-} & // treeIds OR proposalIds and not both. // This discriminated union means the hook can only be called with either
-(| {
+} & ( // treeIds OR proposalIds and not both. // This discriminated union means the hook can only be called with either
+  | {
       treeIds?: `0x${string}`[];
       proposalIds?: undefined;
     }
@@ -43,7 +43,7 @@ export const useTreeRoots = ({
   const fetch = async (treeId: `0x${string}`) => {
     const root = await client.readContract({
       address: poolContract.address!,
-      abi: AirSwapPoolAbi,
+      abi: poolAbi,
       functionName: "rootsByTree",
       args: [treeId],
     });

@@ -1,7 +1,7 @@
 import { useAccount, useContractRead } from "wagmi";
-import { AirSwapPoolAbi } from "../../../abi/AirSwapPool";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
+import { poolAbi } from "../../../contracts/poolAbi";
 
 export const useHasClaimedForTree = ({
   treeId,
@@ -19,7 +19,7 @@ export const useHasClaimedForTree = ({
 
   return useContractRead({
     ...airswapPool,
-    abi: AirSwapPoolAbi,
+    abi: poolAbi,
     functionName: "claimed",
     args: [treeId, _voterAddress!],
     enabled: !!voterAddress,

@@ -25,6 +25,7 @@ export const Checkbox = ({
         isOptionButton && "rounded-full",
         className,
       ])}
+      checked={checked}
       {...rest}
     >
       {/* This div holds the checkmark shown on hover. */}

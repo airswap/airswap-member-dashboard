@@ -1,7 +1,7 @@
 import { useAccount, useContractRead } from "wagmi";
-import { AirSwapPoolAbi } from "../../../abi/AirSwapPool";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
+import { poolAbi } from "../../../contracts/poolAbi";
 
 /**
  * Queries the pool contract to see if the provided address is an admin.
@@ -24,7 +24,7 @@ export const useIsPoolAdmin = (address?: `0x${string}`) => {
   const enabled = !!_address && !!poolContract?.address;
 
   return useContractRead({
-    abi: AirSwapPoolAbi,
+    abi: poolAbi,
     address: poolContract?.address,
     chainId: poolContract?.chainId,
     functionName: "admins",
