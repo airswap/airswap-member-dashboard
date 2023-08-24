@@ -1,19 +1,16 @@
 import { gql, request } from "graphql-request";
 import { useAccount, useQuery } from "wagmi";
-import {
-  SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
-  SNAPSHOT_SPACE,
-} from "../config/constants";
+import { useSnapshotConfig } from "./useSnapshotConfig";
 
 // Snapshot docs here: https://docs.snapshot.org/tools/graphql-api
-const VOTES_QUERY = (voter?: string) => gql`
+const VOTES_QUERY = (space: string, voter?: string) => gql`
   query {
     votes(
       # TODO: should deal with pagination probably.
       first: 100
       skip: 0
       where: {
-        space_in: ["${SNAPSHOT_SPACE}"]
+        space_in: ["${space}"]
         voter: "${voter}"
       }
       orderBy: "created"
@@ -42,21 +39,23 @@ type VotesQueryResult = {
 // ref: https://docs.snapshot.org/tools/graphql-api/api-keys
 
 export const useUserVotes = (voter?: `0x${string}`) => {
+  const snapshot = useSnapshotConfig();
   const { address: connectedAccount } = useAccount();
 
   const _voter = voter || connectedAccount;
 
   const fetch = async () => {
     const result = await request<VotesQueryResult>(
-      SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
-      VOTES_QUERY(_voter),
+      snapshot.endpoint,
+      VOTES_QUERY(snapshot.space, _voter),
     );
     return result.votes;
   };
 
   return useQuery(
     [
-      SNAPSHOT_HUB_GRAPHQL_ENDPOINT,
+      snapshot.endpoint,
+      snapshot.space,
       "votesByVoterAddress",
       _voter?.toLowerCase(),
     ],
