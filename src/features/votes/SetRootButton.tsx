@@ -4,9 +4,9 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
-import { AirSwapPoolAbi } from "../../abi/AirSwapPool";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
+import { poolAbi } from "../../contracts/poolAbi";
 import { Button } from "../common/Button";
 import { useGroupHash } from "./hooks/useGroupHash";
 import { useGroupMerkleRoot } from "./hooks/useGroupMerkleRoot";
@@ -52,7 +52,7 @@ export const SetRootButton = ({
 
   const { config } = usePrepareContractWrite({
     ...airswapPool,
-    abi: AirSwapPoolAbi,
+    abi: poolAbi,
     functionName: "enable",
     args: [groupHash, merkleRoot!],
     enabled: !!merkleRoot,

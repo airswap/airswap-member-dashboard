@@ -1,9 +1,9 @@
 import BigNumber from "bignumber.js";
 import { useMemo } from "react";
 import { useContractRead, useToken } from "wagmi";
-import { AirSwapPoolAbi } from "../../../abi/AirSwapPool";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
+import { poolAbi } from "../../../contracts/poolAbi";
 
 export const useClaimableAmount = ({
   points,
@@ -29,7 +29,7 @@ export const useClaimableAmount = ({
   const { data: claimableAmount, isLoading: amountLoading } = useContractRead({
     address: AirSwapPool.address,
     chainId: AirSwapPool.chainId,
-    abi: AirSwapPoolAbi,
+    abi: poolAbi,
     functionName: "calculate",
     args: [
       BigInt(new BigNumber(points.toString()).multipliedBy(10 ** 4).toString()),
