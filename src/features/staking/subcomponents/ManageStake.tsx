@@ -1,22 +1,26 @@
-import { FC, useState } from "react";
+import { Dispatch, FC } from "react";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../../hooks/useTokenBalances";
 import { Button } from "../../common/Button";
 import LineBreak from "../../common/LineBreak";
+import { StakeOrUnstake } from "../types/StakingTypes";
 import { StakableBar } from "./StakableBar";
 
 interface ManageStakeProps {
   register: UseFormRegister<{ stakingAmount: number }>;
   setValue: UseFormSetValue<{ stakingAmount: number }>;
+  stakeOrUnstake: StakeOrUnstake;
+  setStakeOrUnstake: Dispatch<StakeOrUnstake>;
 }
 
-const ManageStake: FC<ManageStakeProps> = ({ register, setValue }) => {
-  const [stakeOrUnstake, setStakeOrUnstake] = useState<"stake" | "unstake">(
-    "stake",
-  );
-
+const ManageStake: FC<ManageStakeProps> = ({
+  register,
+  setValue,
+  stakeOrUnstake,
+  setStakeOrUnstake,
+}) => {
   const { astBalanceFormatted: astBalance } = useTokenBalances();
 
   return (

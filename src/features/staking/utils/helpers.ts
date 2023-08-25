@@ -1,15 +1,22 @@
-import { StakingStatus } from "../types/StakingTypes";
+import { StakeOrUnstake, StakingStatus } from "../types/StakingTypes";
 
-export const buttonStatusText = (statusStaking: StakingStatus) => {
-  switch (statusStaking) {
-    case "unapproved":
-      return "Approve token";
-    case "readyToStake":
-      return "Stake";
-    case "success":
-      return "Manage stake";
-    case "failed":
-      return "Try again";
+export const buttonStatusText = (
+  statusStaking: StakingStatus,
+  stakeOrUnstake: StakeOrUnstake,
+) => {
+  if (stakeOrUnstake === "stake") {
+    switch (statusStaking) {
+      case "unapproved":
+        return "Approve token";
+      case "readyToStake":
+        return "Stake";
+      case "success":
+        return "Manage stake";
+      case "failed":
+        return "Try again";
+    }
+  } else {
+    return "Unstake";
   }
 };
 

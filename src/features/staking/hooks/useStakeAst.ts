@@ -33,13 +33,13 @@ export const useStakeAst = ({
     args: [BigInt(+stakingAmount * Math.pow(10, 4))],
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
-    enabled: !needsApproval && +stakingAmount > 0,
+    enabled: !needsApproval && stakingAmount > 0,
   });
 
   const {
-    writeAsync: stake,
+    write: stake,
     data,
-    reset: writeReset,
+    reset: writeResetStake,
   } = useContractWrite(configStake);
 
   const { data: hashStake, status: statusStake } = useWaitForTransaction({
@@ -52,5 +52,5 @@ export const useStakeAst = ({
     },
   });
 
-  return { stake, writeReset, hashStake, statusStake };
+  return { stake, writeResetStake, hashStake, statusStake };
 };

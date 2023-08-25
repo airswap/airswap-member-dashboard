@@ -6,3 +6,5 @@ export type StakingStatus =
   | "staking"
   | "success"
   | "failed";
+
+export type StakeOrUnstake = "stake" | "unstake";

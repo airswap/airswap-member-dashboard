@@ -2,15 +2,17 @@ import { FC, RefObject, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { VscChromeClose } from "react-icons/vsc";
 import { twJoin } from "tailwind-merge";
+import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { useApproveToken } from "./hooks/useApproveToken";
 import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useStakeAst } from "./hooks/useStakeAst";
+import { useUnstakeSast } from "./hooks/useUnstakeSast";
 import ApproveSuccess from "./subcomponents/ApproveSuccess";
 import ManageStake from "./subcomponents/ManageStake";
 import PendingTransaction from "./subcomponents/PendingTransaction";
 import TransactionFailed from "./subcomponents/TransactionFailed";
-import { StakingStatus } from "./types/StakingTypes";
+import { StakeOrUnstake, StakingStatus } from "./types/StakingTypes";
 import { handleStatusStaking } from "./utils/handleStatusStaking";
 import {
   buttonStatusText,
@@ -29,6 +31,7 @@ const StakingModal: FC<StakingModalInterface> = ({
 }) => {
   const [statusStaking, setStatusStaking] =
     useState<StakingStatus>("unapproved");
+  const [stakeOrUnstake, setStakeOrUnstake] = useState<StakeOrUnstake>("stake");
 
   const {
     register,
@@ -39,9 +42,12 @@ const StakingModal: FC<StakingModalInterface> = ({
   const stakingAmount = watch("stakingAmount") || 0;
 
   const { astAllowanceFormatted: astAllowance } = useAstAllowance();
+  const { sAstBalanceFormatted } = useTokenBalances();
 
   const needsApproval =
     stakingAmount > 0 ? Number(astAllowance) < stakingAmount : true;
+  const canUnstake =
+    stakingAmount > 0 && stakingAmount <= Number(sAstBalanceFormatted);
 
   const { approve, approveReset, hashApprove, statusApprove } = useApproveToken(
     {
@@ -51,27 +57,44 @@ const StakingModal: FC<StakingModalInterface> = ({
     },
   );
 
-  const { stake, writeReset, hashStake, statusStake } = useStakeAst({
+  const { stake, writeResetStake, hashStake, statusStake } = useStakeAst({
     stakingAmount,
     needsApproval,
     setStatusStaking,
   });
 
+  const {
+    unstake,
+    // writeResetUnstake,
+    // statusUnstake,
+  } = useUnstakeSast({
+    unstakingAmount: stakingAmount,
+    canUnstake,
+  });
+
   // button should not render on certain components
   const isShouldRenderBtn = shouldRenderBtn(statusStaking);
-  const buttonText = buttonStatusText(statusStaking);
+  const buttonText = buttonStatusText(statusStaking, stakeOrUnstake);
   const headline = modalHeadline(statusStaking);
 
-  const buttonAction = () => {
-    switch (statusStaking) {
-      case "unapproved":
-        return approve && approve();
-      case "readyToStake":
-        return stake && stake();
-      case "success":
-        approveReset && approveReset();
-        writeReset && writeReset();
-        setStatusStaking("unapproved");
+  const buttonActions = () => {
+    if (stakeOrUnstake === "stake") {
+      switch (statusStaking) {
+        case "unapproved":
+          approve && approve();
+          break;
+        case "readyToStake":
+          stake && stake();
+          break;
+        case "success":
+          approveReset && approveReset();
+          writeResetStake && writeResetStake();
+          setValue("stakingAmount", 0);
+          setStatusStaking("unapproved");
+          break;
+      }
+    } else {
+      unstake && unstake();
     }
   };
 
@@ -88,7 +111,6 @@ const StakingModal: FC<StakingModalInterface> = ({
       statusStake,
       stakeHash: hashStake?.transactionHash,
     });
-    console.log("statusStaking", statusStaking);
   }, [
     needsApproval,
     astAllowance,
@@ -113,7 +135,12 @@ const StakingModal: FC<StakingModalInterface> = ({
         </div>
       </div>
       {statusStaking === "unapproved" || statusStaking === "readyToStake" ? (
-        <ManageStake register={register} setValue={setValue} />
+        <ManageStake
+          register={register}
+          setValue={setValue}
+          stakeOrUnstake={stakeOrUnstake}
+          setStakeOrUnstake={setStakeOrUnstake}
+        />
       ) : null}
 
       {statusStaking === "approving" || statusStaking === "staking" ? (
@@ -142,7 +169,8 @@ const StakingModal: FC<StakingModalInterface> = ({
       {!isShouldRenderBtn && (
         <Button
           className="mb-2 mt-10 w-full rounded-sm bg-accent-blue font-semibold uppercase"
-          onClick={buttonAction}
+          onClick={buttonActions}
+          disabled={stakingAmount <= 0}
         >
           {buttonText}
         </Button>
