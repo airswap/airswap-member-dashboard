@@ -92,6 +92,15 @@ const StakingModal: FC<StakingModalInterface> = ({
           setValue("stakingAmount", 0);
           setStatusStaking("unapproved");
           break;
+        case "failed":
+          if (needsApproval) {
+            // if approval transaction failed
+            approveReset && approveReset();
+          } else {
+            // if staking transaction failed
+            writeResetStake && writeResetStake();
+          }
+          break;
       }
     } else {
       unstake && unstake();
