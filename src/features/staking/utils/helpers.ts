@@ -90,6 +90,21 @@ export const etherscanLink = (
   }
 };
 
+type HandleButtonActions = {
+  stakeOrUnstake: StakeOrUnstake;
+  statusStaking: StakingStatus;
+  approve: (() => Promise<WriteContractResult>) | undefined;
+  stake: (() => void) | undefined;
+  approveReset: () => void;
+  writeResetStake: () => void;
+  setValue: UseFormSetValue<{ stakingAmount: number }>;
+  setStatusStaking: (value: React.SetStateAction<StakingStatus>) => void;
+  needsApproval: boolean;
+  statusUnstake: WagmiLoadingStatus;
+  unstake: (() => void) | undefined;
+  writeResetUnstake: () => void;
+};
+
 export const handleButtonActions = ({
   stakeOrUnstake,
   statusStaking,
@@ -103,20 +118,7 @@ export const handleButtonActions = ({
   statusUnstake,
   unstake,
   writeResetUnstake,
-}: {
-  stakeOrUnstake: StakeOrUnstake;
-  statusStaking: StakingStatus;
-  approve: (() => Promise<WriteContractResult>) | undefined;
-  stake: (() => void) | undefined;
-  approveReset: () => void;
-  writeResetStake: () => void;
-  setValue: UseFormSetValue<{ stakingAmount: number }>;
-  setStatusStaking: (value: React.SetStateAction<StakingStatus>) => void;
-  needsApproval: boolean;
-  statusUnstake: WagmiLoadingStatus;
-  unstake: (() => void) | undefined;
-  writeResetUnstake: () => void;
-}) => {
+}: HandleButtonActions) => {
   if (stakeOrUnstake === "stake") {
     switch (statusStaking) {
       case "unapproved":

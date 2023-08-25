@@ -129,12 +129,11 @@ const StakingModal: FC<StakingModalInterface> = ({
     statusStaking,
   ]);
   console.log(
-    "stakeOrUnstake",
-    stakeOrUnstake,
-    "statusStaking",
-    statusStaking,
     "statusUnstake",
     statusUnstake,
+    !!writeResetUnstake,
+    writeResetUnstake,
+    stakingAmount <= 0,
   );
 
   return (
@@ -209,7 +208,7 @@ const StakingModal: FC<StakingModalInterface> = ({
               writeResetUnstake,
             });
           }}
-          disabled={stakingAmount <= 0}
+          // disabled={stakingAmount <= 0}
         >
           {buttonText}
         </Button>
