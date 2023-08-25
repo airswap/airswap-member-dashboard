@@ -77,7 +77,6 @@ const StakingModal: FC<StakingModalInterface> = ({
     statusStaking,
     statusUnstake,
   );
-  console.log(stakeOrUnstake);
 
   const buttonText = buttonStatusText({
     statusStaking,
@@ -128,13 +127,6 @@ const StakingModal: FC<StakingModalInterface> = ({
     transactionDataStake,
     statusStaking,
   ]);
-  console.log(
-    "statusUnstake",
-    statusUnstake,
-    !!writeResetUnstake,
-    writeResetUnstake,
-    stakingAmount <= 0,
-  );
 
   return (
     <dialog
