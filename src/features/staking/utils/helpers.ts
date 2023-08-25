@@ -1,9 +1,20 @@
-import { StakeOrUnstake, StakingStatus } from "../types/StakingTypes";
+import { UseFormSetValue } from "react-hook-form";
+import { WriteContractResult } from "wagmi/actions";
+import {
+  StakeOrUnstake,
+  StakingStatus,
+  WagmiLoadingStatus,
+} from "../types/StakingTypes";
 
-export const buttonStatusText = (
-  statusStaking: StakingStatus,
-  stakeOrUnstake: StakeOrUnstake,
-) => {
+export const buttonStatusText = ({
+  statusStaking,
+  stakeOrUnstake,
+  statusUnstake,
+}: {
+  statusStaking: StakingStatus;
+  stakeOrUnstake: StakeOrUnstake;
+  statusUnstake: "success" | "error" | "idle" | "loading";
+}) => {
   if (stakeOrUnstake === "stake") {
     switch (statusStaking) {
       case "unapproved":
@@ -16,7 +27,11 @@ export const buttonStatusText = (
         return "Try again";
     }
   } else {
-    return "Unstake";
+    if (statusUnstake === "success") {
+      return "Manage stake";
+    } else {
+      return "Unstake";
+    }
   }
 };
 
@@ -39,15 +54,19 @@ export const modalHeadline = (statusStaking: StakingStatus) => {
   }
 };
 
-export const shouldRenderBtn = (statusStaking: StakingStatus) => {
+export const shouldRenderButton = (
+  statusStaking: StakingStatus,
+  statusUnstake: WagmiLoadingStatus,
+) => {
   if (
-    statusStaking === "approving" ||
-    statusStaking === "approved" ||
-    statusStaking === "staking"
+    statusStaking !== "approving" ||
+    // statusStaking !== "approved" ||
+    // statusStaking !== "staking" ||
+    statusUnstake !== "success"
   ) {
-    return true;
-  } else {
     return false;
+  } else {
+    return true;
   }
 };
 
@@ -60,5 +79,71 @@ export const etherscanLink = (
       return `https://etherscan.io/tx/${transactionHash}`;
     case 5:
       return `https://goerli.etherscan.io/tx/${transactionHash}`;
+  }
+};
+
+export const handleButtonActions = ({
+  stakeOrUnstake,
+  statusStaking,
+  approve,
+  stake,
+  approveReset,
+  writeResetStake,
+  setValue,
+  setStatusStaking,
+  needsApproval,
+  statusUnstake,
+  unstake,
+  writeResetUnstake,
+}: {
+  stakeOrUnstake: StakeOrUnstake;
+  statusStaking: StakingStatus;
+  approve: (() => Promise<WriteContractResult>) | undefined;
+  stake: (() => void) | undefined;
+  approveReset: () => void;
+  writeResetStake: () => void;
+  setValue: UseFormSetValue<{ stakingAmount: number }>;
+  setStatusStaking: (value: React.SetStateAction<StakingStatus>) => void;
+  needsApproval: boolean;
+  statusUnstake: WagmiLoadingStatus;
+  unstake: (() => void) | undefined;
+  writeResetUnstake: () => void;
+}) => {
+  if (stakeOrUnstake === "stake") {
+    switch (statusStaking) {
+      case "unapproved":
+        approve && approve();
+        break;
+      case "readyToStake":
+        stake && stake();
+        break;
+      case "success":
+        approveReset && approveReset();
+        writeResetStake && writeResetStake();
+        setValue("stakingAmount", 0);
+        setStatusStaking("unapproved");
+        break;
+      case "failed":
+        if (needsApproval) {
+          // if approval transaction failed
+          approveReset && approveReset();
+        } else {
+          // if staking transaction failed
+          writeResetStake && writeResetStake();
+        }
+        break;
+    }
+  } else if (stakeOrUnstake === "unstake") {
+    switch (statusUnstake) {
+      case "idle":
+        unstake && unstake();
+        break;
+      case "success":
+        writeResetUnstake && writeResetUnstake();
+        break;
+      case "error":
+        writeResetUnstake && writeResetUnstake();
+        break;
+    }
   }
 };

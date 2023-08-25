@@ -5,6 +5,9 @@ export type StakingStatus =
   | "readyToStake"
   | "staking"
   | "success"
-  | "failed";
+  | "failed"
+  | "unstaking";
 
 export type StakeOrUnstake = "stake" | "unstake";
+
+export type WagmiLoadingStatus = "success" | "error" | "idle" | "loading";

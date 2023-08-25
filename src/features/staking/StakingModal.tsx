@@ -16,8 +16,9 @@ import { StakeOrUnstake, StakingStatus } from "./types/StakingTypes";
 import { handleStatusStaking } from "./utils/handleStatusStaking";
 import {
   buttonStatusText,
+  handleButtonActions,
   modalHeadline,
-  shouldRenderBtn,
+  shouldRenderButton,
 } from "./utils/helpers";
 
 interface StakingModalInterface {
@@ -64,50 +65,41 @@ const StakingModal: FC<StakingModalInterface> = ({
       setStatusStaking,
     });
 
-  const {
-    unstake,
-    // writeResetUnstake,
-    // statusUnstake,
-    transactionDataUnstake,
-  } = useUnstakeSast({
-    unstakingAmount: stakingAmount,
-    canUnstake,
-  });
+  const { unstake, writeResetUnstake, statusUnstake, transactionDataUnstake } =
+    useUnstakeSast({
+      unstakingAmount: stakingAmount,
+      canUnstake,
+    });
 
   // button should not render on certain components
-  const isShouldRenderBtn = shouldRenderBtn(statusStaking);
-  const buttonText = buttonStatusText(statusStaking, stakeOrUnstake);
+  const isRenderButton = shouldRenderButton(statusStaking, statusUnstake);
+  console.log(stakeOrUnstake);
+
+  const buttonText = buttonStatusText({
+    statusStaking,
+    stakeOrUnstake,
+    statusUnstake,
+  });
   const headline = modalHeadline(statusStaking);
 
-  const buttonActions = () => {
-    if (stakeOrUnstake === "stake") {
-      switch (statusStaking) {
-        case "unapproved":
-          approve && approve();
-          break;
-        case "readyToStake":
-          stake && stake();
-          break;
-        case "success":
-          approveReset && approveReset();
-          writeResetStake && writeResetStake();
-          setValue("stakingAmount", 0);
-          setStatusStaking("unapproved");
-          break;
-        case "failed":
-          if (needsApproval) {
-            // if approval transaction failed
-            approveReset && approveReset();
-          } else {
-            // if staking transaction failed
-            writeResetStake && writeResetStake();
-          }
-          break;
-      }
-    } else {
-      unstake && unstake();
-    }
-  };
+  const shouldRenderManageStake =
+    (statusUnstake !== "success" &&
+      statusUnstake !== "loading" &&
+      statusStaking === "unapproved") ||
+    statusStaking === "readyToStake";
+
+  const shouldRenderPendingTransaction =
+    statusStaking === "approving" ||
+    statusStaking === "staking" ||
+    statusUnstake === "loading";
+
+  const shouldRenderApproveSuccess =
+    statusStaking === "approved" ||
+    statusStaking === "success" ||
+    statusUnstake === "success";
+
+  const shouldRenderTransactionFailed =
+    statusStaking === "failed" || statusUnstake === "error";
 
   const handleCloseModal = () => {
     stakingModalRef.current && stakingModalRef.current.close();
@@ -116,6 +108,7 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   useEffect(() => {
     handleStatusStaking({
+      stakeOrUnstake,
       needsApproval,
       statusApprove,
       setStatusStaking,
@@ -123,6 +116,7 @@ const StakingModal: FC<StakingModalInterface> = ({
       stakeHash: transactionDataStake?.transactionHash,
     });
   }, [
+    stakeOrUnstake,
     needsApproval,
     astAllowance,
     statusApprove,
@@ -130,13 +124,14 @@ const StakingModal: FC<StakingModalInterface> = ({
     transactionDataStake,
     statusStaking,
   ]);
+  console.log("statusUnstake", statusUnstake, "statusStaking", statusStaking);
 
   return (
     <dialog
-      className={twJoin(
+      className={twJoin([
         "content-center border border-border-darkGray bg-black p-6 text-white",
-        ["w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3"],
-      )}
+        "w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3",
+      ])}
       ref={stakingModalRef}
     >
       <div className="flex justify-between">
@@ -145,7 +140,7 @@ const StakingModal: FC<StakingModalInterface> = ({
           <VscChromeClose />
         </div>
       </div>
-      {statusStaking === "unapproved" || statusStaking === "readyToStake" ? (
+      {shouldRenderManageStake ? (
         <ManageStake
           register={register}
           setValue={setValue}
@@ -154,14 +149,18 @@ const StakingModal: FC<StakingModalInterface> = ({
         />
       ) : null}
 
-      {statusStaking === "approving" || statusStaking === "staking" ? (
-        <PendingTransaction statusStaking={statusStaking} />
+      {shouldRenderPendingTransaction ? (
+        <PendingTransaction
+          statusStaking={statusStaking}
+          statusUnstake={statusUnstake}
+        />
       ) : null}
 
-      {statusStaking === "approved" || statusStaking === "success" ? (
+      {shouldRenderApproveSuccess ? (
         <ApproveSuccess
           stakeOrUnstake={stakeOrUnstake}
           statusStaking={statusStaking}
+          statusUnstake={statusUnstake}
           amountApproved={stakingAmount.toString()}
           amountStaked={stakingAmount.toString()}
           amountUnstaked={stakingAmount.toString()}
@@ -172,18 +171,33 @@ const StakingModal: FC<StakingModalInterface> = ({
         />
       ) : null}
 
-      {statusStaking === "failed" ? (
+      {shouldRenderTransactionFailed ? (
         <TransactionFailed
-          setStatusStaking={setStatusStaking}
           chainId={chainId}
+          // TODO: replace transactionHash
           transactionHash="0x"
         />
       ) : null}
 
-      {!isShouldRenderBtn && (
+      {!isRenderButton && (
         <Button
           className="mb-2 mt-10 w-full rounded-sm bg-accent-blue font-semibold uppercase"
-          onClick={buttonActions}
+          onClick={() => {
+            handleButtonActions({
+              stakeOrUnstake,
+              statusStaking,
+              approve,
+              stake,
+              approveReset,
+              writeResetStake,
+              setValue,
+              setStatusStaking,
+              needsApproval,
+              statusUnstake,
+              unstake,
+              writeResetUnstake,
+            });
+          }}
           disabled={stakingAmount <= 0}
         >
           {buttonText}

@@ -1,7 +1,8 @@
 import { Dispatch } from "react";
-import { StakingStatus } from "../types/StakingTypes";
+import { StakeOrUnstake, StakingStatus } from "../types/StakingTypes";
 
 interface HandleStatusStakingProps {
+  stakeOrUnstake: StakeOrUnstake;
   needsApproval: boolean;
   statusApprove: "idle" | "error" | "loading" | "success";
   setStatusStaking: Dispatch<StakingStatus>;
@@ -10,13 +11,16 @@ interface HandleStatusStakingProps {
 }
 
 export const handleStatusStaking = ({
+  stakeOrUnstake,
   needsApproval,
   statusApprove,
   setStatusStaking,
   statusStake,
   stakeHash,
 }: HandleStatusStakingProps) => {
-  if (needsApproval && !stakeHash) {
+  const staking = stakeOrUnstake === "stake";
+
+  if (staking && needsApproval && !stakeHash) {
     if (statusApprove === "idle" && statusStake !== "success") {
       setStatusStaking("unapproved");
     } else if (statusApprove === "loading") {
@@ -26,7 +30,7 @@ export const handleStatusStaking = ({
     } else if (statusApprove === "error") {
       setStatusStaking("failed");
     }
-  } else if (!needsApproval) {
+  } else if (staking && !needsApproval) {
     if (statusStake === "idle") {
       setStatusStaking("readyToStake");
     } else if (statusStake === "loading") {
@@ -34,7 +38,7 @@ export const handleStatusStaking = ({
     } else if (statusStake === "error") {
       setStatusStaking("failed");
     }
-  } else if (statusStake === "success" || stakeHash) {
+  } else if ((staking && statusStake === "success") || stakeHash) {
     setStatusStaking("success");
   }
 };

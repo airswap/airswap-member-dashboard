@@ -1,12 +1,13 @@
 import { FC } from "react";
 import { IoMdOpen } from "react-icons/io";
 import greenCheck from "../../../assets/check-green.svg";
-import { StakingStatus } from "../types/StakingTypes";
+import { StakingStatus, WagmiLoadingStatus } from "../types/StakingTypes";
 import { etherscanLink } from "../utils/helpers";
 
 interface ApproveSuccessProps {
   stakeOrUnstake: "stake" | "unstake";
   statusStaking: StakingStatus;
+  statusUnstake: WagmiLoadingStatus;
   amountApproved?: string;
   amountStaked?: string;
   amountUnstaked?: string;
@@ -19,6 +20,7 @@ interface ApproveSuccessProps {
 const ApproveSuccess: FC<ApproveSuccessProps> = ({
   stakeOrUnstake,
   statusStaking,
+  statusUnstake,
   amountApproved,
   amountStaked,
   amountUnstaked,
@@ -35,7 +37,9 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
         return "You've successfully staked";
       }
     } else {
-      return "You've successfully unstaked";
+      if (statusUnstake === "success") {
+        return "You've successfully unstaked";
+      }
     }
   };
   const message = handleMessage();
