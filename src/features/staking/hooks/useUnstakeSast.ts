@@ -40,7 +40,7 @@ export const useUnstakeSast = ({
   const {
     write: unstake,
     data,
-    reset: writeResetUnstake,
+    reset: resetUnstake,
   } = useContractWrite(configUnstake);
 
   const { data: transactionReceiptUnstake, status: statusUnstake } =
@@ -51,7 +51,7 @@ export const useUnstakeSast = ({
 
   return {
     unstake,
-    writeResetUnstake,
+    resetUnstake,
     statusUnstake,
     transactionReceiptUnstake,
   };

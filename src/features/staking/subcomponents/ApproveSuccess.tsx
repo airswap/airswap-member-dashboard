@@ -8,9 +8,7 @@ interface ApproveSuccessProps {
   stakeOrUnstake: "stake" | "unstake";
   statusStaking: StakingStatus;
   statusUnstake: WagmiLoadingStatus;
-  amountApproved?: string;
-  amountStaked?: string;
-  amountUnstaked?: string;
+  amount: string;
   chainId: number;
   transactionHashApprove?: string | undefined;
   transactionHashStake?: string | undefined;
@@ -21,9 +19,7 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
   stakeOrUnstake,
   statusStaking,
   statusUnstake,
-  amountApproved,
-  amountStaked,
-  amountUnstaked,
+  amount,
   chainId,
   transactionHashApprove,
   transactionHashStake,
@@ -43,21 +39,6 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
     }
   };
   const message = handleMessage();
-
-  const handleStakingUnstakingOrApprovalAmount = () => {
-    if (stakeOrUnstake === "stake") {
-      switch (statusStaking) {
-        case "approved":
-          return amountApproved;
-        case "success":
-          return amountStaked;
-      }
-    } else if (stakeOrUnstake === "unstake") {
-      return amountUnstaked;
-    }
-  };
-  const stakingUnstakingOrApprovalAmount =
-    handleStakingUnstakingOrApprovalAmount();
 
   const asset = stakeOrUnstake === "stake" ? "AST" : "sAST";
 
@@ -89,7 +70,7 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
       <div className="my-4 text-font-darkSubtext">
         <span>{message}</span>
         <span className="ml-1 font-medium text-white">
-          <span>{stakingUnstakingOrApprovalAmount}</span>
+          <span>{amount}</span>
           <span className="ml-1">{asset}</span>
         </span>
       </div>

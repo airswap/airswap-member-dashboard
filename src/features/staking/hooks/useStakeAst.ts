@@ -39,7 +39,7 @@ export const useStakeAst = ({
   const {
     write: stake,
     data,
-    reset: writeResetStake,
+    reset: resetStake,
   } = useContractWrite(configStake);
 
   const { data: transactionReceiptStake, status: statusStake } =
@@ -53,5 +53,5 @@ export const useStakeAst = ({
       },
     });
 
-  return { stake, writeResetStake, transactionReceiptStake, statusStake };
+  return { stake, resetStake, transactionReceiptStake, statusStake };
 };
