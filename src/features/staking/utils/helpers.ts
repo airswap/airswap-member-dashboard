@@ -55,18 +55,26 @@ export const modalHeadline = (statusStaking: StakingStatus) => {
 };
 
 export const shouldRenderButton = (
+  stakeOrUnstake: StakeOrUnstake,
   statusStaking: StakingStatus,
   statusUnstake: WagmiLoadingStatus,
 ) => {
-  if (
-    statusStaking !== "approving" ||
-    // statusStaking !== "approved" ||
-    // statusStaking !== "staking" ||
-    statusUnstake !== "success"
-  ) {
-    return false;
-  } else {
-    return true;
+  if (stakeOrUnstake === "stake") {
+    if (
+      statusStaking === "approving" ||
+      statusStaking === "approved" ||
+      statusStaking === "staking"
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  } else if (stakeOrUnstake === "unstake") {
+    if (statusUnstake === "loading") {
+      return false;
+    } else {
+      return true;
+    }
   }
 };
 

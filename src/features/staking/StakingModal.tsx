@@ -72,7 +72,11 @@ const StakingModal: FC<StakingModalInterface> = ({
     });
 
   // button should not render on certain components
-  const isRenderButton = shouldRenderButton(statusStaking, statusUnstake);
+  const isRenderButton = shouldRenderButton(
+    stakeOrUnstake,
+    statusStaking,
+    statusUnstake,
+  );
   console.log(stakeOrUnstake);
 
   const buttonText = buttonStatusText({
@@ -124,7 +128,14 @@ const StakingModal: FC<StakingModalInterface> = ({
     transactionDataStake,
     statusStaking,
   ]);
-  console.log("statusUnstake", statusUnstake, "statusStaking", statusStaking);
+  console.log(
+    "stakeOrUnstake",
+    stakeOrUnstake,
+    "statusStaking",
+    statusStaking,
+    "statusUnstake",
+    statusUnstake,
+  );
 
   return (
     <dialog
@@ -179,7 +190,7 @@ const StakingModal: FC<StakingModalInterface> = ({
         />
       ) : null}
 
-      {!isRenderButton && (
+      {isRenderButton && (
         <Button
           className="mb-2 mt-10 w-full rounded-sm bg-accent-blue font-semibold uppercase"
           onClick={() => {
