@@ -1,13 +1,17 @@
-export type StakingStatus =
-  | "unapproved"
-  | "approving"
-  | "approved"
-  | "readyToStake"
-  | "staking"
-  | "success"
-  | "failed"
-  | "unstaking";
+export enum StakingStatus {
+  UNAPPROVED = "unapproved",
+  APPROVING = "approving",
+  APPROVED = "approved",
+  READYTOSTAKE = "readyToStake",
+  STAKING = "staking",
+  SUCCESS = "success",
+  FAILED = "failed",
+  UNSTAKING = "unstaking",
+}
 
-export type StakeOrUnstake = "stake" | "unstake";
+export enum StakeOrUnstake {
+  STAKE = "stake",
+  UNSTAKE = "unstake",
+}
 
-export type WagmiLoadingStatus = "success" | "error" | "idle" | "loading";
+export type WagmiLoadingStatus = "error" | "idle" | "success" | "loading";

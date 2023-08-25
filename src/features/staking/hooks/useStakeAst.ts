@@ -48,7 +48,7 @@ export const useStakeAst = ({
       staleTime: 300_000, // 5 minutes
       onSettled(data) {
         if (data?.transactionHash) {
-          setStatusStaking("success");
+          setStatusStaking(StakingStatus.SUCCESS);
         }
       },
     });

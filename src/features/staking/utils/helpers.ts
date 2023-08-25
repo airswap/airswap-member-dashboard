@@ -133,7 +133,7 @@ export const handleButtonActions = ({
         approveReset && approveReset();
         writeResetStake && writeResetStake();
         setValue("stakingAmount", 0);
-        setStatusStaking("unapproved");
+        setStatusStaking(StakingStatus.UNAPPROVED);
         break;
       case "failed":
         if (needsApproval) {
@@ -150,7 +150,10 @@ export const handleButtonActions = ({
       case "idle":
         unstake && unstake();
         break;
-      case "success" || "error":
+      case "success":
+        writeResetUnstake && writeResetUnstake();
+        break;
+      case "error":
         writeResetUnstake && writeResetUnstake();
         break;
     }

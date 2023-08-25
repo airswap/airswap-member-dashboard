@@ -1,12 +1,16 @@
 import { Dispatch } from "react";
-import { StakeOrUnstake, StakingStatus } from "../types/StakingTypes";
+import {
+  StakeOrUnstake,
+  StakingStatus,
+  WagmiLoadingStatus,
+} from "../types/StakingTypes";
 
 interface HandleStatusStakingProps {
   stakeOrUnstake: StakeOrUnstake;
   needsApproval: boolean;
-  statusApprove: "idle" | "error" | "loading" | "success";
+  statusApprove: WagmiLoadingStatus;
   setStatusStaking: Dispatch<StakingStatus>;
-  statusStake: "idle" | "error" | "loading" | "success";
+  statusStake: WagmiLoadingStatus;
   stakeHash: string | undefined;
 }
 
@@ -22,23 +26,23 @@ export const handleStatusStaking = ({
 
   if (staking && needsApproval && !stakeHash) {
     if (statusApprove === "idle" && statusStake !== "success") {
-      setStatusStaking("unapproved");
+      setStatusStaking(StakingStatus.UNAPPROVED);
     } else if (statusApprove === "loading") {
-      setStatusStaking("approving");
+      setStatusStaking(StakingStatus.APPROVING);
     } else if (statusApprove === "success") {
-      setStatusStaking("approved");
+      setStatusStaking(StakingStatus.APPROVED);
     } else if (statusApprove === "error") {
-      setStatusStaking("failed");
+      setStatusStaking(StakingStatus.FAILED);
     }
   } else if (staking && !needsApproval) {
     if (statusStake === "idle") {
-      setStatusStaking("readyToStake");
+      setStatusStaking(StakingStatus.READYTOSTAKE);
     } else if (statusStake === "loading") {
-      setStatusStaking("staking");
+      setStatusStaking(StakingStatus.STAKING);
     } else if (statusStake === "error") {
-      setStatusStaking("failed");
+      setStatusStaking(StakingStatus.FAILED);
     }
   } else if ((staking && statusStake === "success") || stakeHash) {
-    setStatusStaking("success");
+    setStatusStaking(StakingStatus.SUCCESS);
   }
 };

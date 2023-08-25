@@ -30,9 +30,12 @@ const StakingModal: FC<StakingModalInterface> = ({
   stakingModalRef,
   chainId,
 }) => {
-  const [statusStaking, setStatusStaking] =
-    useState<StakingStatus>("unapproved");
-  const [stakeOrUnstake, setStakeOrUnstake] = useState<StakeOrUnstake>("stake");
+  const [statusStaking, setStatusStaking] = useState<StakingStatus>(
+    StakingStatus.UNAPPROVED,
+  );
+  const [stakeOrUnstake, setStakeOrUnstake] = useState<StakeOrUnstake>(
+    StakeOrUnstake.STAKE,
+  );
 
   const {
     register,

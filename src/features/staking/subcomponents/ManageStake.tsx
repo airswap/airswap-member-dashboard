@@ -35,7 +35,7 @@ const ManageStake: FC<ManageStakeProps> = ({
             "w-1/2 text-sm uppercase",
             `${stakeOrUnstake === "stake" && "bg-bg-darkShaded"}`,
           )}
-          onClick={() => setStakeOrUnstake("stake")}
+          onClick={() => setStakeOrUnstake(StakeOrUnstake.STAKE)}
         >
           Stake
         </Button>
@@ -45,7 +45,7 @@ const ManageStake: FC<ManageStakeProps> = ({
             "w-1/2 text-sm uppercase",
             `${stakeOrUnstake === "unstake" && "bg-bg-darkShaded"}`,
           )}
-          onClick={() => setStakeOrUnstake("unstake")}
+          onClick={() => setStakeOrUnstake(StakeOrUnstake.UNSTAKE)}
         >
           Unstake
         </Button>

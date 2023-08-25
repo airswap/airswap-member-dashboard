@@ -56,7 +56,7 @@ export const useApproveToken = ({
       cacheTime: 60_000, // 1 minute
       onSettled(data) {
         if (data?.transactionHash) {
-          setStatusStaking("readyToStake");
+          setStatusStaking(StakingStatus.READYTOSTAKE);
         }
       },
     });
