@@ -6,13 +6,26 @@ import { etherscanLink } from "../utils/helpers";
 
 interface TransactionFailedProps {
   chainId: number;
-  transactionHash?: string | undefined;
+  transactionHashApprove: string | undefined;
+  transactionHashStake: string | undefined;
+  transactionHashUnstake: string | undefined;
 }
 
 const TransactionFailed: FC<TransactionFailedProps> = ({
   chainId,
-  transactionHash,
+  transactionHashApprove,
+  transactionHashStake,
+  transactionHashUnstake,
 }) => {
+  const transactionHashToRender = () => {
+    if (transactionHashApprove) {
+      return transactionHashApprove;
+    } else if (transactionHashStake) {
+      return transactionHashStake;
+    } else {
+      transactionHashUnstake;
+    }
+  };
   return (
     <div className="my-12 flex flex-col items-center">
       <div className="rounded-full border border-border-darkShaded bg-black p-2">
@@ -23,7 +36,7 @@ const TransactionFailed: FC<TransactionFailedProps> = ({
       </div>
       <div className="m-6 flex items-center">
         <span className="mr-2">View on Etherscan</span>
-        <a href={etherscanLink(chainId || 1, transactionHash)}>
+        <a href={etherscanLink(chainId || 1, transactionHashToRender())}>
           <IoMdOpen />
         </a>
       </div>

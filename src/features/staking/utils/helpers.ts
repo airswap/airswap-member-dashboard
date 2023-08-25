@@ -51,6 +51,8 @@ export const modalHeadline = (statusStaking: StakingStatus) => {
       return "Transaction successful";
     case "failed":
       return "Transaction failed";
+    default:
+      return "Manage Stake";
   }
 };
 
@@ -69,7 +71,7 @@ export const shouldRenderButton = (
     } else {
       return true;
     }
-  } else if (stakeOrUnstake === "unstake") {
+  } else {
     if (statusUnstake === "loading") {
       return false;
     } else {
@@ -82,12 +84,12 @@ export const etherscanLink = (
   chainId: number,
   transactionHash: string | undefined,
 ) => {
-  switch (chainId) {
-    case 1:
-      return `https://etherscan.io/tx/${transactionHash}`;
-    case 5:
-      return `https://goerli.etherscan.io/tx/${transactionHash}`;
-  }
+  const chainUrls: { [x: number]: string } = {
+    1: "https://etherscan.io/tx/",
+    5: "https://goerli.etherscan.io/tx/",
+  };
+
+  return `${chainUrls[chainId]}${transactionHash}`;
 };
 
 type HandleButtonActions = {
@@ -148,10 +150,7 @@ export const handleButtonActions = ({
       case "idle":
         unstake && unstake();
         break;
-      case "success":
-        writeResetUnstake && writeResetUnstake();
-        break;
-      case "error":
+      case "success" || "error":
         writeResetUnstake && writeResetUnstake();
         break;
     }

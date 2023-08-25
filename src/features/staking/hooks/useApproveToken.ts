@@ -50,15 +50,16 @@ export const useApproveToken = ({
     reset: approveReset,
   } = useContractWrite(configApprove);
 
-  const { data: hashApprove, status: statusApprove } = useWaitForTransaction({
-    hash: dataApprove?.hash,
-    cacheTime: 60_000, // 1 minute
-    onSettled(data) {
-      if (data?.transactionHash) {
-        setStatusStaking("readyToStake");
-      }
-    },
-  });
+  const { data: transactionReceiptApprove, status: statusApprove } =
+    useWaitForTransaction({
+      hash: dataApprove?.hash,
+      cacheTime: 60_000, // 1 minute
+      onSettled(data) {
+        if (data?.transactionHash) {
+          setStatusStaking("readyToStake");
+        }
+      },
+    });
 
-  return { approve, approveReset, hashApprove, statusApprove };
+  return { approve, approveReset, transactionReceiptApprove, statusApprove };
 };

@@ -50,26 +50,29 @@ const StakingModal: FC<StakingModalInterface> = ({
   const canUnstake =
     stakingAmount > 0 && stakingAmount <= Number(sAstBalanceFormatted);
 
-  const { approve, approveReset, hashApprove, statusApprove } = useApproveToken(
-    {
+  const { approve, approveReset, transactionReceiptApprove, statusApprove } =
+    useApproveToken({
       stakingAmount,
       needsApproval,
       setStatusStaking,
-    },
-  );
+    });
 
-  const { stake, writeResetStake, transactionDataStake, statusStake } =
+  const { stake, writeResetStake, transactionReceiptStake, statusStake } =
     useStakeAst({
       stakingAmount,
       needsApproval,
       setStatusStaking,
     });
 
-  const { unstake, writeResetUnstake, statusUnstake, transactionDataUnstake } =
-    useUnstakeSast({
-      unstakingAmount: stakingAmount,
-      canUnstake,
-    });
+  const {
+    unstake,
+    writeResetUnstake,
+    statusUnstake,
+    transactionReceiptUnstake,
+  } = useUnstakeSast({
+    unstakingAmount: stakingAmount,
+    canUnstake,
+  });
 
   // button should not render on certain components
   const isRenderButton = shouldRenderButton(
@@ -116,16 +119,15 @@ const StakingModal: FC<StakingModalInterface> = ({
       statusApprove,
       setStatusStaking,
       statusStake,
-      stakeHash: transactionDataStake?.transactionHash,
+      stakeHash: transactionReceiptStake?.transactionHash,
     });
   }, [
     stakeOrUnstake,
     needsApproval,
-    astAllowance,
     statusApprove,
     statusStake,
-    transactionDataStake,
-    statusStaking,
+    transactionReceiptStake,
+    setStatusStaking,
   ]);
 
   return (
@@ -167,17 +169,18 @@ const StakingModal: FC<StakingModalInterface> = ({
           amountStaked={stakingAmount.toString()}
           amountUnstaked={stakingAmount.toString()}
           chainId={chainId}
-          transactionHashApprove={hashApprove?.transactionHash}
-          transactionHashStake={transactionDataStake?.transactionHash}
-          transactionHashUnstake={transactionDataUnstake?.transactionHash}
+          transactionHashApprove={transactionReceiptApprove?.transactionHash}
+          transactionHashStake={transactionReceiptStake?.transactionHash}
+          transactionHashUnstake={transactionReceiptUnstake?.transactionHash}
         />
       ) : null}
 
       {shouldRenderTransactionFailed ? (
         <TransactionFailed
           chainId={chainId}
-          // TODO: replace transactionHash
-          transactionHash="0x"
+          transactionHashApprove={transactionReceiptUnstake?.transactionHash}
+          transactionHashStake={transactionReceiptApprove?.transactionHash}
+          transactionHashUnstake={transactionReceiptApprove?.transactionHash}
         />
       ) : null}
 
@@ -200,6 +203,7 @@ const StakingModal: FC<StakingModalInterface> = ({
               writeResetUnstake,
             });
           }}
+          // TODO: fix disabled logic
           // disabled={stakingAmount <= 0}
         >
           {buttonText}
