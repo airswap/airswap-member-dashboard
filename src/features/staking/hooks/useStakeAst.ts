@@ -42,15 +42,16 @@ export const useStakeAst = ({
     reset: writeResetStake,
   } = useContractWrite(configStake);
 
-  const { data: hashStake, status: statusStake } = useWaitForTransaction({
-    hash: data?.hash,
-    staleTime: 60_000, // 1 minute
-    onSettled(data) {
-      if (data?.transactionHash) {
-        setStatusStaking("success");
-      }
-    },
-  });
+  const { data: transactionDataStake, status: statusStake } =
+    useWaitForTransaction({
+      hash: data?.hash,
+      staleTime: 300_000, // 5 minutes
+      onSettled(data) {
+        if (data?.transactionHash) {
+          setStatusStaking("success");
+        }
+      },
+    });
 
-  return { stake, writeResetStake, hashStake, statusStake };
+  return { stake, writeResetStake, transactionDataStake, statusStake };
 };

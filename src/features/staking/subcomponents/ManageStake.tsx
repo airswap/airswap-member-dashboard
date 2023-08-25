@@ -26,7 +26,7 @@ const ManageStake: FC<ManageStakeProps> = ({
   return (
     <>
       <LineBreak />
-      <StakableBar mode={stakeOrUnstake} />
+      <StakableBar />
       <LineBreak />
       <div className="font-lg pointer-cursor mt-6 rounded-md font-semibold">
         <Button

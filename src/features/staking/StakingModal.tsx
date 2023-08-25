@@ -57,16 +57,18 @@ const StakingModal: FC<StakingModalInterface> = ({
     },
   );
 
-  const { stake, writeResetStake, hashStake, statusStake } = useStakeAst({
-    stakingAmount,
-    needsApproval,
-    setStatusStaking,
-  });
+  const { stake, writeResetStake, transactionDataStake, statusStake } =
+    useStakeAst({
+      stakingAmount,
+      needsApproval,
+      setStatusStaking,
+    });
 
   const {
     unstake,
     // writeResetUnstake,
     // statusUnstake,
+    transactionDataUnstake,
   } = useUnstakeSast({
     unstakingAmount: stakingAmount,
     canUnstake,
@@ -118,14 +120,14 @@ const StakingModal: FC<StakingModalInterface> = ({
       statusApprove,
       setStatusStaking,
       statusStake,
-      stakeHash: hashStake?.transactionHash,
+      stakeHash: transactionDataStake?.transactionHash,
     });
   }, [
     needsApproval,
     astAllowance,
     statusApprove,
     statusStake,
-    hashStake,
+    transactionDataStake,
     statusStaking,
   ]);
 
@@ -158,12 +160,15 @@ const StakingModal: FC<StakingModalInterface> = ({
 
       {statusStaking === "approved" || statusStaking === "success" ? (
         <ApproveSuccess
+          stakeOrUnstake={stakeOrUnstake}
           statusStaking={statusStaking}
           amountApproved={stakingAmount.toString()}
           amountStaked={stakingAmount.toString()}
+          amountUnstaked={stakingAmount.toString()}
           chainId={chainId}
           transactionHashApprove={hashApprove?.transactionHash}
-          transactionHashStake={hashStake?.transactionHash}
+          transactionHashStake={transactionDataStake?.transactionHash}
+          transactionHashUnstake={transactionDataUnstake?.transactionHash}
         />
       ) : null}
 

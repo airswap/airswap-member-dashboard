@@ -1,13 +1,8 @@
-import { FC } from "react";
 import { BsCircleFill } from "react-icons/bs";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../../hooks/useTokenBalances";
 import "../../../index.css";
 import { calculateTokenProportions } from "../utils/calculateTokenProportions";
-
-interface StakableBarProps {
-  mode: "stake" | "unstake";
-}
 
 /**
  *
@@ -16,7 +11,7 @@ interface StakableBarProps {
  * @param stakable - amount of available AST
  * @returns
  */
-export const StakableBar: FC<StakableBarProps> = ({ mode }) => {
+export const StakableBar = () => {
   const {
     ustakableSAstBalanceFormatted: unstakable,
     sAstBalanceFormatted: staked,
@@ -33,58 +28,38 @@ export const StakableBar: FC<StakableBarProps> = ({ mode }) => {
   // TODO: fix rounded edges if `unstakablePercent` is small and insignificant
   return (
     <div className="flex w-full flex-col space-y-3">
-      {mode === "stake" && (
-        <>
-          <div className="m-auto mt-6 flex h-3 w-full flex-row rounded-full">
-            <div
-              style={{ flexBasis: `${unstakablePercent}%` }}
-              className="checkered-blue rounded-l-full"
-            ></div>
-            <div
-              style={{ flexBasis: `${stakedPercent}%` }}
-              className={"bg-accent-blue"}
-            ></div>
-            <div
-              style={{ flexBasis: `${stakablePercent}%` }}
-              className={twJoin([
-                "bg-accent-gray",
-                `${
-                  stakablePercent === 100 ? "rounded-full" : "rounded-r-full"
-                }`,
-              ])}
-            ></div>
-          </div>
-          <div className="flex flex-row items-center">
-            <div className="checkered-blue rounded-full">
-              <BsCircleFill className="text-transparent" />
-            </div>
-            <span className="mx-2">{unstakable}</span>
-            unstakable
-          </div>
-          <div className="flex flex-row items-center">
-            <BsCircleFill className="text-blue-500" />
-            <span className="mx-2">{staked}</span>staked
-          </div>
-          <div className="flex flex-row items-center">
-            <BsCircleFill className="text-accent-gray" />
-            <span className="mx-2">{stakable}</span>stakable
-          </div>
-        </>
-      )}
-      {mode === "unstake" && (
-        <>
-          <div className="m-auto mt-6 flex h-3 w-[100%] flex-row rounded-full">
-            <div
-              className={twJoin(["w-full rounded-full bg-accent-gray"])}
-              // style={{ flexBasis: `${stakablePercent}%` }}
-            ></div>
-          </div>
-          <div className="flex flex-row items-center">
-            <BsCircleFill className="text-accent-gray" />
-            <span className="mx-2">{stakable}</span>stakable
-          </div>
-        </>
-      )}
+      <div className="m-auto mt-6 flex h-3 w-full flex-row rounded-full">
+        <div
+          style={{ flexBasis: `${unstakablePercent}%` }}
+          className="checkered-blue rounded-l-full"
+        ></div>
+        <div
+          style={{ flexBasis: `${stakedPercent}%` }}
+          className={"bg-accent-blue"}
+        ></div>
+        <div
+          style={{ flexBasis: `${stakablePercent}%` }}
+          className={twJoin([
+            "bg-accent-gray",
+            `${stakablePercent === 100 ? "rounded-full" : "rounded-r-full"}`,
+          ])}
+        ></div>
+      </div>
+      <div className="flex flex-row items-center">
+        <div className="checkered-blue rounded-full">
+          <BsCircleFill className="text-transparent" />
+        </div>
+        <span className="mx-2">{unstakable}</span>
+        unstakable
+      </div>
+      <div className="flex flex-row items-center">
+        <BsCircleFill className="text-blue-500" />
+        <span className="mx-2">{staked}</span>staked
+      </div>
+      <div className="flex flex-row items-center">
+        <BsCircleFill className="text-accent-gray" />
+        <span className="mx-2">{stakable}</span>stakable
+      </div>
     </div>
   );
 };
