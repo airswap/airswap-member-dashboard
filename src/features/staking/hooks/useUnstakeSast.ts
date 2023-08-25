@@ -31,7 +31,7 @@ export const useUnstakeSast = ({
     address: AirSwapStaking.address,
     abi: stakingAbi,
     functionName: "unstake",
-    args: [BigInt(+unstakingAmount * Math.pow(10, 4))],
+    args: [BigInt(unstakingAmount * Math.pow(10, 4))],
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
     enabled: canUnstake,
