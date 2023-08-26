@@ -1,4 +1,4 @@
-import { FC, RefObject, useEffect, useState } from "react";
+import { FC, RefObject, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImSpinner8 } from "react-icons/im";
 import { VscChromeClose } from "react-icons/vsc";
@@ -11,8 +11,7 @@ import { useStakeAst } from "./hooks/useStakeAst";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
 import ApproveSuccess from "./subcomponents/ApproveSuccess";
 import ManageStake from "./subcomponents/ManageStake";
-import { StakeOrUnstake, StakingStatus } from "./types/StakingTypes";
-import { handleStatusStaking } from "./utils/handleStatusStaking";
+import { StakeOrUnstake } from "./types/StakingTypes";
 import {
   buttonLoadingSpinner,
   buttonStatusText,
@@ -29,9 +28,6 @@ const StakingModal: FC<StakingModalInterface> = ({
   stakingModalRef,
   chainId,
 }) => {
-  const [statusStaking, setStatusStaking] = useState<StakingStatus>(
-    StakingStatus.UNAPPROVED,
-  );
   const [stakeOrUnstake, setStakeOrUnstake] = useState<StakeOrUnstake>(
     StakeOrUnstake.STAKE,
   );
@@ -60,22 +56,15 @@ const StakingModal: FC<StakingModalInterface> = ({
       ? stakingAmount <= Number(ustakableSAstBalanceFormatted)
       : false;
 
-  const {
-    approve,
-    // resetApprove,
-    transactionReceiptApprove,
-    statusApprove,
-  } = useApproveToken({
+  const { approve, statusApprove } = useApproveToken({
     stakingAmount,
     needsApproval,
-    setStatusStaking,
   });
 
   const { stake, resetStake, transactionReceiptStake, statusStake } =
     useStakeAst({
       stakingAmount,
       needsApproval,
-      setStatusStaking,
     });
 
   const { unstake, resetUnstake, statusUnstake, transactionReceiptUnstake } =
@@ -102,7 +91,7 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   const isButtonDisabled = stakingAmount <= 0;
 
-  const headline = modalHeadline(statusStaking);
+  const headline = modalHeadline({ statusStake, statusUnstake });
 
   const renderManageStake = () => {
     if (statusStake === "success") {
@@ -123,6 +112,7 @@ const StakingModal: FC<StakingModalInterface> = ({
     setValue("stakingAmount", 0);
   };
 
+  // key variables in handleButtonActions function (delete)
   console.log(
     "statusStake:",
     statusStake,
@@ -139,23 +129,6 @@ const StakingModal: FC<StakingModalInterface> = ({
     "statusUnstake:",
     statusUnstake,
   );
-
-  useEffect(() => {
-    handleStatusStaking({
-      needsApproval,
-      statusApprove,
-      setStatusStaking,
-      statusStake,
-      stakeHash: transactionReceiptStake?.transactionHash,
-    });
-  }, [
-    stakeOrUnstake,
-    needsApproval,
-    statusApprove,
-    statusStake,
-    transactionReceiptStake,
-    setStatusStaking,
-  ]);
 
   return (
     <dialog
@@ -190,11 +163,10 @@ const StakingModal: FC<StakingModalInterface> = ({
       {isRenderApproveSuccess ? (
         <ApproveSuccess
           stakeOrUnstake={stakeOrUnstake}
-          statusStaking={statusStaking}
+          // statusStaking={statusStaking}
           statusUnstake={statusUnstake}
           amount={stakingAmount.toString()}
           chainId={chainId}
-          transactionHashApprove={transactionReceiptApprove?.transactionHash}
           transactionHashStake={transactionReceiptStake?.transactionHash}
           transactionHashUnstake={transactionReceiptUnstake?.transactionHash}
         />

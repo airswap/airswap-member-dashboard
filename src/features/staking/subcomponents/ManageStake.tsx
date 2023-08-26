@@ -16,6 +16,7 @@ interface ManageStakeProps {
 }
 
 const ManageStake: FC<ManageStakeProps> = ({
+  // TODO: props were refactored in branch `feature/29-BalanceInput`. Override these with that branch
   register,
   setValue,
   stakeOrUnstake,

@@ -1,41 +1,30 @@
 import { FC } from "react";
 import { IoMdOpen } from "react-icons/io";
 import greenCheck from "../../../assets/check-green.svg";
-import { StakingStatus, WagmiLoadingStatus } from "../types/StakingTypes";
+import { StakeOrUnstake, WagmiLoadingStatus } from "../types/StakingTypes";
 import { etherscanLink } from "../utils/helpers";
 
 interface ApproveSuccessProps {
   stakeOrUnstake: "stake" | "unstake";
-  statusStaking: StakingStatus;
   statusUnstake: WagmiLoadingStatus;
   amount: string;
   chainId: number;
-  transactionHashApprove?: string | undefined;
   transactionHashStake?: string | undefined;
   transactionHashUnstake?: string | undefined;
 }
 
 const ApproveSuccess: FC<ApproveSuccessProps> = ({
   stakeOrUnstake,
-  statusStaking,
-  statusUnstake,
   amount,
   chainId,
-  transactionHashApprove,
   transactionHashStake,
   transactionHashUnstake,
 }) => {
   const handleMessage = () => {
-    if (stakeOrUnstake === "stake") {
-      if (statusStaking === "approved") {
-        return "You've successfully approved";
-      } else if (statusStaking === "success") {
-        return "You've successfully staked";
-      }
+    if (stakeOrUnstake === StakeOrUnstake.STAKE) {
+      return "You've successfully staked";
     } else {
-      if (statusUnstake === "success") {
-        return "You've successfully unstaked";
-      }
+      return "You've successfully unstaked";
     }
   };
   const message = handleMessage();
@@ -43,15 +32,10 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
   const asset = stakeOrUnstake === "stake" ? "AST" : "sAST";
 
   const handleBlockExplorerLink = () => {
-    let userAction:
-      | typeof transactionHashApprove
-      | typeof transactionHashStake
-      | typeof transactionHashUnstake;
-    if (stakeOrUnstake === "stake") {
-      statusStaking === "approved"
-        ? (userAction = transactionHashApprove)
-        : (userAction = transactionHashStake);
-    } else if (stakeOrUnstake === "unstake") {
+    let userAction;
+    if (stakeOrUnstake === StakeOrUnstake.STAKE) {
+      userAction = transactionHashStake;
+    } else {
       userAction = transactionHashUnstake;
     }
     return (

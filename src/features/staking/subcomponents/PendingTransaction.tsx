@@ -4,32 +4,33 @@ import loadingSpinner from "../../../assets/loading-spinner.svg";
 import { WagmiLoadingStatus } from "../types/StakingTypes";
 
 interface PendingTransactionProps {
-  statusStaking: string;
+  statusApprove: WagmiLoadingStatus;
+  statusStaking: WagmiLoadingStatus;
   statusUnstake: WagmiLoadingStatus;
 }
 
 const PendingTransaction: FC<PendingTransactionProps> = ({
+  statusApprove,
   statusStaking,
   statusUnstake,
 }) => {
   const subheading = () => {
-    if (statusStaking === "approving") {
+    if (statusApprove === "loading") {
       return "Token approval pending";
-    } else if (statusStaking === "staking" || statusUnstake === "loading") {
+    } else if (statusStaking === "loading" || statusUnstake === "loading") {
       ("Transaction sign pending");
     }
   };
 
   const message = () => {
-    if (statusStaking === "approving") {
+    if (statusApprove === "loading") {
       return "To stake your AST you will have to approve the token spent. Please the transaction in your wallet, your wallet should open. If your wallet doesn't open please try again.";
-    } else if (statusStaking === "staking") {
+    } else if (statusStaking === "loading") {
       return "To stake your AST please sign the transaction in your wallet. Your wallet should open, if your wallet doesn’t open please try again.";
     } else if (statusUnstake === "loading") {
       return "Your transaction to unstake sAST is pending. Please wait a moment.";
     }
   };
-
   const displayMessage = message();
 
   return (

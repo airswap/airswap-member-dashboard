@@ -1,4 +1,3 @@
-import { Dispatch } from "react";
 import {
   useContractWrite,
   usePrepareContractWrite,
@@ -7,16 +6,13 @@ import {
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { stakingAbi } from "../../../contracts/stakingAbi";
-import { StakingStatus } from "../types/StakingTypes";
 
 export const useStakeAst = ({
   stakingAmount,
   needsApproval,
-  setStatusStaking,
 }: {
   stakingAmount: number;
   needsApproval: boolean;
-  setStatusStaking: Dispatch<StakingStatus>;
 }) => {
   const [AirSwapStaking] = useContractAddresses(
     [ContractTypes.AirSwapStaking],
@@ -46,11 +42,6 @@ export const useStakeAst = ({
     useWaitForTransaction({
       hash: data?.hash,
       staleTime: 300_000, // 5 minutes
-      onSettled(data) {
-        if (data?.transactionHash) {
-          setStatusStaking(StakingStatus.SUCCESS);
-        }
-      },
     });
 
   return { stake, resetStake, transactionReceiptStake, statusStake };

@@ -1,10 +1,6 @@
 import { UseFormSetValue } from "react-hook-form";
 import { WriteContractResult } from "wagmi/actions";
-import {
-  StakeOrUnstake,
-  StakingStatus,
-  WagmiLoadingStatus,
-} from "../types/StakingTypes";
+import { StakeOrUnstake, WagmiLoadingStatus } from "../types/StakingTypes";
 
 export const buttonStatusText = ({
   stakeOrUnstake,
@@ -64,37 +60,21 @@ export const buttonLoadingSpinner = ({
   }
 };
 
-export const modalHeadline = (statusStaking: StakingStatus) => {
-  switch (statusStaking) {
-    case "unapproved":
-      return "Manage Stake";
-    case "approving":
-      return "Approve token";
-    case "approved":
-      return "Approve successful";
-    case "readyToStake":
-      return "Manage stake";
-    case "staking":
-      return "Sign transaction";
-    case "success":
-      return "Transaction successful";
-    case "failed":
-      return "Transaction failed";
-    default:
-      return "Manage Stake";
+// TODO: fix this
+export const modalHeadline = ({
+  statusStake,
+  statusUnstake,
+}: {
+  statusStake: WagmiLoadingStatus;
+  statusUnstake: WagmiLoadingStatus;
+}) => {
+  if (statusStake === "success" || statusUnstake === "success") {
+    return "Transaction successful";
+  } else if (statusStake === "error" || statusUnstake === "error") {
+    return "Transaction failed";
+  } else {
+    return "Manage Stake";
   }
-};
-
-export const shouldRenderButton = (
-  stakeOrUnstake: StakeOrUnstake,
-  statusStaking: StakingStatus,
-  statusUnstake: WagmiLoadingStatus,
-) => {
-  return stakeOrUnstake === "stake"
-    ? statusStaking !== "approving" &&
-        statusStaking !== "approved" &&
-        statusStaking !== "staking"
-    : statusUnstake !== "loading";
 };
 
 export const etherscanLink = (
