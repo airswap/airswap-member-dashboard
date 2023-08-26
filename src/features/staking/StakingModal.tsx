@@ -1,8 +1,8 @@
 import { FC, RefObject, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { ImSpinner8 } from "react-icons/im";
 import { VscChromeClose } from "react-icons/vsc";
 import { twJoin } from "tailwind-merge";
-import loadingSpinner from "../../assets/loading-spinner.svg";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { useApproveToken } from "./hooks/useApproveToken";
@@ -49,7 +49,6 @@ const StakingModal: FC<StakingModalInterface> = ({
     // sAstBalanceFormatted,
     ustakableSAstBalanceFormatted,
   } = useTokenBalances();
-  console.log("astAllowance", astAllowance);
 
   const needsApproval =
     stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > 0
@@ -79,23 +78,11 @@ const StakingModal: FC<StakingModalInterface> = ({
       setStatusStaking,
     });
 
-  const {
-    unstake,
-    resetUnstake,
-
-    statusUnstake,
-    transactionReceiptUnstake,
-  } = useUnstakeSast({
-    unstakingAmount: stakingAmount,
-    canUnstake,
-  });
-
-  // button should not render on certain components
-  // const isRenderButton = shouldRenderButton(
-  //   stakeOrUnstake,
-  //   statusStaking,
-  //   statusUnstake,
-  // );
+  const { unstake, resetUnstake, statusUnstake, transactionReceiptUnstake } =
+    useUnstakeSast({
+      unstakingAmount: stakingAmount,
+      canUnstake,
+    });
 
   const buttonText = buttonStatusText({
     stakeOrUnstake,
@@ -117,58 +104,41 @@ const StakingModal: FC<StakingModalInterface> = ({
 
   const headline = modalHeadline(statusStaking);
 
-  // const isRenderManageStake =
-  //   (statusUnstake !== "success" &&
-  //     statusUnstake !== "loading" &&
-  //     statusStaking === "unapproved") ||
-  //   statusStaking === StakingStatus.READYTOSTAKE;
-  const isRenderManageStake = () => {
-    if (statusStake !== "success") {
+  const renderManageStake = () => {
+    if (statusStake === "success") {
       return false;
-    } else if (statusUnstake !== "success") {
+    } else if (statusUnstake === "success") {
       return false;
     } else {
       return true;
     }
   };
+  const isRenderManageStake = renderManageStake();
 
-  console.log(isRenderManageStake());
-  // const shouldRenderPendingTransaction = () => {
-  //   if (
-  //     (StakeOrUnstake.STAKE && statusStaking === "approving") ||
-  //     statusStaking === "staking"
-  //   ) {
-  //     return true;
-  //   } else if (StakeOrUnstake.UNSTAKE && statusUnstake === "loading") {
-  //     return false;
-  //   }
-  // };
-  // const isRenderPendingTransaction = shouldRenderPendingTransaction();
-
-  // const shouldRenderApproveSuccess = () => {
-  //   if (
-  //     StakeOrUnstake.STAKE &&
-  //     (statusStaking === StakingStatus.APPROVED ||
-  //       statusStaking === StakingStatus.SUCCESS)
-  //   ) {
-  //     return true;
-  //   } else if (StakeOrUnstake.UNSTAKE && statusUnstake === "success") {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // };
-  // const isRenderApproveSuccess = shouldRenderApproveSuccess();
   const isRenderApproveSuccess =
     statusStake === "success" || statusUnstake === "success";
-
-  // const shouldRenderTransactionFailed =
-  //   statusStaking === "failed" || statusUnstake === "error";
 
   const handleCloseModal = () => {
     stakingModalRef.current && stakingModalRef.current.close();
     setValue("stakingAmount", 0);
   };
+
+  console.log(
+    "statusStake:",
+    statusStake,
+    "\n",
+    "statusApprove:",
+    statusApprove,
+    "\n",
+    "needsApproval:",
+    needsApproval,
+    "\n",
+    "canUnstake:",
+    canUnstake,
+    "\n",
+    "statusUnstake:",
+    statusUnstake,
+  );
 
   useEffect(() => {
     handleStatusStaking({
@@ -201,7 +171,7 @@ const StakingModal: FC<StakingModalInterface> = ({
           <VscChromeClose />
         </div>
       </div>
-      {isRenderManageStake() ? (
+      {isRenderManageStake ? (
         <ManageStake
           register={register}
           setValue={setValue}
@@ -239,11 +209,10 @@ const StakingModal: FC<StakingModalInterface> = ({
         />
       ) : null} */}
 
-      {/* {isRenderButton && ( */}
       <Button
         className={twJoin([
           "flex flex-row items-center mb-2 mt-10 w-full rounded-sm bg-accent-blue font-semibold uppercase justify-center",
-          `${isButtonDisabled ? "opacity-50" : null}`,
+          `${isButtonDisabled && "opacity-50"}`,
         ])}
         onClick={() => {
           handleButtonActions({
@@ -257,20 +226,14 @@ const StakingModal: FC<StakingModalInterface> = ({
             approve,
             stake,
             unstake,
+            setValue,
           });
         }}
         disabled={isButtonDisabled}
       >
-        {isLoadingSpinner && (
-          <img
-            src={loadingSpinner}
-            alt="loading spinner"
-            className="animate-spin mr-3 h-6"
-          />
-        )}
+        {isLoadingSpinner && <ImSpinner8 className="animate-spin mr-2 " />}
         <span>{buttonText}</span>
       </Button>
-      {/* )} */}
     </dialog>
   );
 };
