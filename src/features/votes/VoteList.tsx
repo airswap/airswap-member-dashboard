@@ -7,11 +7,11 @@ import { PastEpochCard } from "./PastEpochCard";
 import { SetRootButton } from "./SetRootButton";
 import { useGroupedProposals } from "./hooks/useGroupedProposals";
 import { useTreeRoots } from "./hooks/useTreeRoots";
-import { useEpochSelectionStore } from "./store/useEpochSelectionStore";
+import { useClaimSelectionStore } from "./store/useClaimSelectionStore";
 
 export const VoteList = ({}: {}) => {
   const { data: proposalGroups } = useGroupedProposals();
-  const [showClaimModal, setShowClaimModal] = useEpochSelectionStore(
+  const [showClaimModal, setShowClaimModal] = useClaimSelectionStore(
     (state) => [state.showClaimModal, state.setShowClaimModal],
   );
 
