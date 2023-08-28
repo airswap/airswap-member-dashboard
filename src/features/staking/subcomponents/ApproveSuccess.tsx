@@ -39,7 +39,12 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
       userAction = transactionHashUnstake;
     }
     return (
-      <a href={etherscanLink(chainId || 1, userAction)} target="_">
+      <a
+        href={etherscanLink(chainId || 1, userAction)}
+        target="_"
+        className="flex flex-row items-center text-font-darkSubtext"
+      >
+        <span className="mr-1">View on Etherscan</span>
         <IoMdOpen />
       </a>
     );
@@ -58,10 +63,7 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
           <span className="ml-1">{asset}</span>
         </span>
       </div>
-      <div className="flex items-center text-font-darkSubtext">
-        <span>View on Etherscan</span>
-        <div className="ml-2">{blockExplorerLink}</div>
-      </div>
+      <div>{blockExplorerLink}</div>
     </div>
   );
 };

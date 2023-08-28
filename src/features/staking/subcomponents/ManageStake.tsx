@@ -5,7 +5,7 @@ import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../../hooks/useTokenBalances";
 import { Button } from "../../common/Button";
 import LineBreak from "../../common/LineBreak";
-import { StakeOrUnstake } from "../types/StakingTypes";
+import { StakeOrUnstake, WagmiLoadingStatus } from "../types/StakingTypes";
 import { StakableBar } from "./StakableBar";
 
 interface ManageStakeProps {
@@ -13,6 +13,7 @@ interface ManageStakeProps {
   setValue: UseFormSetValue<{ stakingAmount: number }>;
   stakeOrUnstake: StakeOrUnstake;
   setStakeOrUnstake: Dispatch<StakeOrUnstake>;
+  loadingStatus: WagmiLoadingStatus[];
 }
 
 const ManageStake: FC<ManageStakeProps> = ({
@@ -21,8 +22,11 @@ const ManageStake: FC<ManageStakeProps> = ({
   setValue,
   stakeOrUnstake,
   setStakeOrUnstake,
+  loadingStatus,
 }) => {
   const { astBalanceFormatted: astBalance } = useTokenBalances();
+
+  const isButtonDisabled = loadingStatus.some((status) => status === "loading");
 
   return (
     <>
@@ -31,12 +35,14 @@ const ManageStake: FC<ManageStakeProps> = ({
       <LineBreak />
       <div className="font-lg pointer-cursor mt-6 rounded-md font-semibold">
         <Button
-          className={twJoin(
+          className={twJoin([
             "rounded-none rounded-l-md",
             "w-1/2 text-sm uppercase",
             `${stakeOrUnstake === "stake" && "bg-bg-darkShaded"}`,
-          )}
+            `${isButtonDisabled && "opacity-50"}`,
+          ])}
           onClick={() => setStakeOrUnstake(StakeOrUnstake.STAKE)}
+          disabled={isButtonDisabled}
         >
           Stake
         </Button>
@@ -47,6 +53,7 @@ const ManageStake: FC<ManageStakeProps> = ({
             `${stakeOrUnstake === "unstake" && "bg-bg-darkShaded"}`,
           )}
           onClick={() => setStakeOrUnstake(StakeOrUnstake.UNSTAKE)}
+          disabled={isButtonDisabled}
         >
           Unstake
         </Button>

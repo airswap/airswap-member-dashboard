@@ -27,7 +27,7 @@ export const buttonStatusText = ({
   } else if (needsApproval && statusApprove === "idle") {
     return "Approve token";
   } else if (needsApproval && statusApprove === "loading") {
-    return "Aproving...";
+    return "Approving...";
   } else if (!needsApproval && statusStake === "idle") {
     return "Stake";
   } else if (!needsApproval && statusStake === "loading") {

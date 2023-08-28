@@ -89,7 +89,11 @@ const StakingModal: FC<StakingModalInterface> = ({
     statusUnstake,
   });
 
-  const isButtonDisabled = stakingAmount <= 0;
+  const isButtonDisabled =
+    stakingAmount <= 0 ||
+    buttonText === "Approving..." ||
+    buttonText === "Staking..." ||
+    buttonText === "Unstaking...";
 
   const headline = modalHeadline({ statusStake, statusUnstake });
 
@@ -150,6 +154,7 @@ const StakingModal: FC<StakingModalInterface> = ({
           setValue={setValue}
           stakeOrUnstake={stakeOrUnstake}
           setStakeOrUnstake={setStakeOrUnstake}
+          loadingStatus={[statusApprove, statusStake, statusUnstake]}
         />
       ) : null}
 
