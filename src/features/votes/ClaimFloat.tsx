@@ -2,26 +2,23 @@ import { format } from "@greypixel_/nicenumbers";
 import { AnimatePresence, motion } from "framer-motion";
 import { twJoin } from "tailwind-merge";
 import { Button } from "../common/Button";
-import { useEpochSelectionStore } from "./store/useEpochSelectionStore";
+import { useClaimSelectionStore } from "./store/useClaimSelectionStore";
 
 export const ClaimFloat = ({
   onClaimClicked,
 }: {
   onClaimClicked: () => void;
 }) => {
-  const [selectedEpochs, pointsClaimableByEpoch, showClaimModal] =
-    useEpochSelectionStore((state) => [
-      state.selectedEpochs,
+  const [selectedClaims, pointsClaimableByEpoch, showClaimModal] =
+    useClaimSelectionStore((state) => [
+      state.selectedClaims,
       state.pointsClaimableByEpoch,
       state.showClaimModal,
     ]);
 
   const totalPointsClaimable =
-    selectedEpochs.length > 0
-      ? selectedEpochs.reduce(
-          (acc, epoch) => acc + pointsClaimableByEpoch[epoch],
-          0,
-        )
+    selectedClaims.length > 0
+      ? selectedClaims.reduce((acc, claim) => acc + claim.value, 0)
       : Object.values(pointsClaimableByEpoch).reduce(
           (acc, epoch) => acc + epoch,
           0,
@@ -53,7 +50,7 @@ export const ClaimFloat = ({
         >
           <div className="flex flex-col">
             <span className="text-dark-inactive font-bold text-xs uppercase">
-              Total {selectedEpochs.length ? "Selected" : "Available"}
+              Total {selectedClaims.length ? "Selected" : "Available"}
             </span>
 
             <span className="text-[22px] leading-6 font-bold text-white">
@@ -67,7 +64,7 @@ export const ClaimFloat = ({
           </div>
 
           <Button color="primary" rounded={false} onClick={onClaimClicked}>
-            {selectedEpochs.length ? "Claim Selected" : "Claim All"}
+            {selectedClaims.length ? "Claim Selected" : "Claim All"}
           </Button>
         </motion.div>
       )}

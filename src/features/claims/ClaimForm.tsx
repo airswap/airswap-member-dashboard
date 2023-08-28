@@ -1,13 +1,20 @@
-// FIXME: this should not be the source - probably a json file instead,
-
+import BigNumber from "bignumber.js";
 import { useState } from "react";
-import { useAccount } from "wagmi";
+import { zeroAddress } from "viem";
+import {
+  useAccount,
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
+import { poolAbi } from "../../contracts/poolAbi";
 import { Button } from "../common/Button";
-import { useEpochSelectionStore } from "../votes/store/useEpochSelectionStore";
+import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
 import { ClaimableTokensLineItem } from "./ClaimableTokensLineItem";
 
+// FIXME: this should not be the source - probably a json file instead,
 // with goerli and mainnet.
 const stakerTokens: `0x${string}`[] = [
   "0x326c977e6efc84e512bb9c30f76e30c160ed06fb", // link
@@ -19,8 +26,8 @@ export const ClaimForm = ({}: {}) => {
   const [pool] = useContractAddresses([ContractTypes.AirSwapPool], {});
   const { address: connectedAccount } = useAccount();
 
-  const [pointsClaimableByEpoch, selectedEpochs] = useEpochSelectionStore(
-    (state) => [state.pointsClaimableByEpoch, state.selectedEpochs],
+  const [pointsClaimableByEpoch, selectedClaims] = useClaimSelectionStore(
+    (state) => [state.pointsClaimableByEpoch, state.selectedClaims],
   );
 
   const totalPointsClaimable = Object.values(pointsClaimableByEpoch).reduce(
@@ -28,48 +35,52 @@ export const ClaimForm = ({}: {}) => {
     0,
   );
 
-  const pointsSelected = selectedEpochs.length
-    ? selectedEpochs.reduce(
-        (acc, epoch) => acc + pointsClaimableByEpoch[epoch],
-        0,
-      )
-    : totalPointsClaimable;
+  const pointsSelected = selectedClaims.reduce(
+    (acc, { value }) => acc + value,
+    0,
+  );
 
-  // TODO: generate proofs. Will need to refactor proof hook to accept multiple.
-  const proofs: {
-    tree: `0x${string}`;
-    value: bigint;
-    proof: `0x${string}`[];
-  }[] = [
-    {
-      proof: ["0x123"],
-      value: 1n,
-      tree: "0x123",
-    },
-  ];
-
-  const [selectedClaim, setSelectedClaim] = useState<{
+  const [selection, setSelection] = useState<{
     index: number;
     tokenAddress: `0x${string}`;
     amount: bigint;
   }>();
 
-  // const { config } = usePrepareContractWrite({
-  //   ...pool,
-  //   abi: poolAbi,
-  //   functionName: "withdraw",
-  //   args: [
-  //     // claims
-  //     proofs,
-  //     selectedClaim!.tokenAddress,
-  //     selectedClaim!.amount,
-  //     connectedAccount!,
-  //   ],
-  // });
+  const { config: claimTxConfig } = usePrepareContractWrite({
+    ...pool,
+    abi: poolAbi,
+    functionName: "withdraw",
+    args: [
+      // claims
+      selectedClaims.map((claim) => ({
+        ...claim,
+        value: BigInt(
+          new BigNumber(claim.value).multipliedBy(10 ** 4).toFixed(0),
+        ),
+      })),
+      selection?.tokenAddress || zeroAddress,
+      selection?.amount || 0n,
+      connectedAccount!,
+    ],
+    enabled: !!selection,
+    onSuccess(data) {
+      // TODO: reset balance of claimed token in pool
+      // TODO: reset claim status for used claim.
+      // TODO: close modal.
+      // TODO: show toast.
+    },
+  });
+
+  const { data, write } = useContractWrite(claimTxConfig);
+
+  const {} = useWaitForTransaction({
+    chainId: pool.chainId,
+    hash: data?.hash,
+  });
 
   return (
     <div className="flex flex-col w-[304px]">
-      <h2 className="font-semibold text-xl mb-1">Claim</h2>
+      <h2 className="font-semibold text-xl mb-1 text-white">Claim</h2>
       <h3 className="text-gray-400">
         Using {pointsSelected} out of {totalPointsClaimable} points
       </h3>
@@ -84,9 +95,9 @@ export const ClaimForm = ({}: {}) => {
       >
         {stakerTokens.map((stakerToken, i) => (
           <ClaimableTokensLineItem
-            isSelected={selectedClaim?.index === i}
+            isSelected={selection?.index === i}
             onSelect={(amount) =>
-              setSelectedClaim({
+              setSelection({
                 amount,
                 index: i,
                 tokenAddress: stakerTokens[i],
@@ -99,7 +110,8 @@ export const ClaimForm = ({}: {}) => {
         ))}
       </div>
 
-      <Button color="primary" rounded={false} className="mt-7">
+      {/* TODO: loading spinner when preparing and claiming */}
+      <Button color="primary" rounded={false} className="mt-7" onClick={write}>
         Claim
       </Button>
     </div>

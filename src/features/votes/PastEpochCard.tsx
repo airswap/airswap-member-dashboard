@@ -8,9 +8,10 @@ import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
 import { useGroupHash } from "./hooks/useGroupHash";
+import { useGroupMerkleProof } from "./hooks/useGroupMerkleProof";
 import { Proposal } from "./hooks/useGroupedProposals";
 import { useTreeRoots } from "./hooks/useTreeRoots";
-import { useEpochSelectionStore } from "./store/useEpochSelectionStore";
+import { useClaimSelectionStore } from "./store/useClaimSelectionStore";
 import { getEpochName } from "./utils/getEpochName";
 
 const SNAPSHOT_WEB = import.meta.env.VITE_SNAPSHOT_WEB;
@@ -21,17 +22,37 @@ export const PastEpochCard = ({
 }: {
   proposalGroup: Proposal[];
 }) => {
-  const [setEpochSelected, selectedEpochs, setPointsClaimableForEpoch] =
-    useEpochSelectionStore((state) => [
-      state.setEpochSelected,
-      state.selectedEpochs,
-      state.setPointsClaimableForEpoch,
-    ]);
+  const { address: connectedAccount } = useAccount();
+  const [
+    isClaimSelected,
+    setClaimSelected,
+    selectedClaims,
+    setPointsClaimableForEpoch,
+  ] = useClaimSelectionStore((state) => [
+    state.isClaimSelected,
+    state.setClaimSelected,
+    state.selectedClaims,
+    state.setPointsClaimableForEpoch,
+  ]);
 
-  const { pointsEarned, hasUserClaimed, votedForProposal } =
-    useGroupClaimStatus({
-      proposalGroup,
-    });
+  const {
+    pointsEarned,
+    hasUserClaimed,
+    votedForProposal,
+    votedOnAllProposals,
+    tree,
+  } = useGroupClaimStatus({
+    proposalGroup,
+  });
+
+  const proof = useGroupMerkleProof({
+    proposalIds: proposalGroup.map((p) => p.id),
+    enabled: !!connectedAccount && !hasUserClaimed && votedOnAllProposals,
+    vote: {
+      voter: connectedAccount!,
+      vp: pointsEarned,
+    },
+  });
 
   const treeId = useGroupHash(proposalGroup);
   const [{ data: root }] = useTreeRoots({
@@ -66,12 +87,20 @@ export const PastEpochCard = ({
               disabled={
                 !root || // disabled if there's no root
                 hasUserClaimed || // or if the user has already claimed
-                pointsEarned === 0 // or if there are no points to claim
+                pointsEarned === 0 || // or if there are no points to claim
+                !proof // or if proof isn't ready yet.
               }
-              checked={selectedEpochs.includes(proposalGroup[0].id)}
-              onCheckedChange={(newState) =>
-                setEpochSelected(proposalGroup[0].id, newState as boolean)
-              }
+              checked={isClaimSelected(tree)}
+              onCheckedChange={(newState) => {
+                setClaimSelected(
+                  {
+                    proof: proof!,
+                    tree,
+                    value: pointsEarned,
+                  },
+                  newState as boolean,
+                );
+              }}
             />
           )}
         </div>

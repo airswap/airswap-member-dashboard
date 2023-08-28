@@ -48,6 +48,7 @@ export const useGroupClaimStatus = ({
       hasUserClaimed: hasClaimed,
       claimStatusLoading,
       pointsEarned,
+      tree: groupHash,
     };
-  }, [userVotes, proposalGroup, hasClaimed, claimStatusLoading]);
+  }, [userVotes, proposalGroup, hasClaimed, claimStatusLoading, groupHash]);
 };
