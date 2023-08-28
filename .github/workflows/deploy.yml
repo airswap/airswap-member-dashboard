@@ -44,7 +44,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: "build"
+          path: "dist"
 
       - name: Deploy to GitHub Pages
         id: deployment
@@ -53,7 +53,7 @@ jobs:
       - name: IPFS Deploy
         uses: aquiladev/ipfs-action@master
         with:
-          path: ./build
+          path: ./dist
           service: infura
           infuraProjectId: ${{ secrets.INFURA_PROJECT_ID }}
           infuraProjectSecret: ${{ secrets.INFURA_PROJECT_SECRET }}

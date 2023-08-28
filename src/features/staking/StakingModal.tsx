@@ -21,7 +21,6 @@ import { StatusStaking } from "./types/StakingTypes";
 import { buttonStatusText } from "./utils/buttonStatusText";
 import { modalHeadline } from "./utils/headline";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
-import { format } from "@greypixel_/nicenumbers";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>;
@@ -59,7 +58,7 @@ const StakingModal: FC<StakingModalInterface> = ({
     },
   );
 
-  const { data: astAllowanceData, refetch: refetchAllowance } = useContractRead(
+  const { refetch: refetchAllowance } = useContractRead(
     {
       address: AirSwapToken.address,
       abi: astAbi,
@@ -97,8 +96,6 @@ const StakingModal: FC<StakingModalInterface> = ({
       }
     },
   });
-
-  const astAllowance = format(astAllowanceData, { tokenDecimals: 4 });
 
   const needsApproval = +astBalance < +stakingAmount;
 
