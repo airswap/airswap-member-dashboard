@@ -5,11 +5,10 @@ import "../../../index.css";
 import { calculateTokenProportions } from "../utils/calculateTokenProportions";
 
 /**
- *
  * @param unstakable - balance of sAST available to unstake
  * @param staked - total amount of SAST
  * @param stakable - amount of available AST
- * @returns
+ * @returns component that displays a visual representation of available token balances
  */
 export const StakableBar = () => {
   const {

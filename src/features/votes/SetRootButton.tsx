@@ -55,7 +55,7 @@ export const SetRootButton = ({
     alwaysUseDefault: false,
   });
 
-  const { config, status: prepareWriteStatus } = usePrepareContractWrite({
+  const { config } = usePrepareContractWrite({
     ...airswapPool,
     abi: AirSwapPoolAbi,
     functionName: "enable",
