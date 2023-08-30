@@ -32,19 +32,11 @@ const StakingModal: FC<StakingModalInterface> = ({
     StakeOrUnstake.STAKE,
   );
 
-  const {
-    register,
-    watch,
-    setValue,
-    // formState: { errors },
-  } = useForm<{ stakingAmount: number }>();
+  const { register, watch, setValue } = useForm<{ stakingAmount: number }>();
   const stakingAmount = watch("stakingAmount") || 0;
 
   const { astAllowanceFormatted: astAllowance } = useAstAllowance();
-  const {
-    // sAstBalanceFormatted,
-    ustakableSAstBalanceFormatted,
-  } = useTokenBalances();
+  const { ustakableSAstBalanceFormatted } = useTokenBalances();
 
   const needsApproval =
     stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > 0
@@ -140,13 +132,6 @@ const StakingModal: FC<StakingModalInterface> = ({
         />
       ) : null}
 
-      {/* {isRenderPendingTransaction ? (
-        <PendingTransaction
-          statusStaking={statusStaking}
-          statusUnstake={statusUnstake}
-        />
-      ) : null} */}
-
       {isRenderApproveSuccess ? (
         <ApproveSuccess
           stakeOrUnstake={stakeOrUnstake}
@@ -157,15 +142,6 @@ const StakingModal: FC<StakingModalInterface> = ({
           transactionHashUnstake={transactionReceiptUnstake?.transactionHash}
         />
       ) : null}
-
-      {/* {shouldRenderTransactionFailed ? (
-        <TransactionFailed
-          chainId={chainId}
-          transactionHashApprove={transactionReceiptUnstake?.transactionHash}
-          transactionHashStake={transactionReceiptApprove?.transactionHash}
-          transactionHashUnstake={transactionReceiptApprove?.transactionHash}
-        />
-      ) : null} */}
 
       <Button
         className={twJoin([
