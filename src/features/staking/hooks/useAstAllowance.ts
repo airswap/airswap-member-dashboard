@@ -1,16 +1,17 @@
 import { format } from "@greypixel_/nicenumbers";
-import { useAccount, useContractRead } from "wagmi";
+import { useAccount, useContractRead, useNetwork } from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
 
 export const useAstAllowance = () => {
   const { address } = useAccount();
-  const [AirSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
+  const { chain } = useNetwork();
+  const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
     defaultChainId: 1,
     useDefaultAsFallback: true,
   });
-  const [AirSwapStaking] = useContractAddresses(
+  const [airSwapStaking] = useContractAddresses(
     [ContractTypes.AirSwapStaking],
     {
       defaultChainId: 1,
@@ -19,12 +20,14 @@ export const useAstAllowance = () => {
   );
 
   const { data: astAllowance } = useContractRead({
-    address: AirSwapToken.address,
+    address: airSwapToken.address,
     abi: astAbi,
     functionName: "allowance",
-    args: [address as `0x${string}`, AirSwapStaking.address as `0x${string}`],
+    args: [address!, airSwapStaking.address!],
     watch: true,
-    staleTime: 300_000, // 5 minutes,
+    staleTime: 60_000, // 1 minutes,
+    chainId: chain?.id || 1,
+    enabled: !!address && !!airSwapStaking.address,
   });
 
   const astAllowanceFormatted = format(astAllowance, { tokenDecimals: 4 });

@@ -1,12 +1,12 @@
 import { FC } from "react";
 import { twJoin } from "tailwind-merge";
 import loadingSpinner from "../../../assets/loading-spinner.svg";
-import { WagmiLoadingStatus } from "../types/StakingTypes";
+import { Status } from "../types/StakingTypes";
 
 interface PendingTransactionProps {
-  statusApprove: WagmiLoadingStatus;
-  statusStaking: WagmiLoadingStatus;
-  statusUnstake: WagmiLoadingStatus;
+  statusApprove: Status;
+  statusStaking: Status;
+  statusUnstake: Status;
 }
 
 const PendingTransaction: FC<PendingTransactionProps> = ({

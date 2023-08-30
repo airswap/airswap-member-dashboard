@@ -1,6 +1,6 @@
 import { UseFormSetValue } from "react-hook-form";
 import { WriteContractResult } from "wagmi/actions";
-import { StakeOrUnstake, WagmiLoadingStatus } from "../types/StakingTypes";
+import { StakeOrUnstake, Status } from "../types/StakingTypes";
 
 export const buttonStatusText = ({
   stakeOrUnstake,
@@ -11,9 +11,9 @@ export const buttonStatusText = ({
 }: {
   stakeOrUnstake: StakeOrUnstake;
   needsApproval: boolean;
-  statusApprove: WagmiLoadingStatus;
-  statusStake: WagmiLoadingStatus;
-  statusUnstake: WagmiLoadingStatus;
+  statusApprove: Status;
+  statusStake: Status;
+  statusUnstake: Status;
 }) => {
   const unstaking = stakeOrUnstake === StakeOrUnstake.UNSTAKE;
   if (unstaking && statusUnstake === "idle") {
@@ -44,9 +44,9 @@ export const buttonLoadingSpinner = ({
 }: {
   stakeOrUnstake: StakeOrUnstake;
   needsApproval: boolean;
-  statusApprove: WagmiLoadingStatus;
-  statusStake: WagmiLoadingStatus;
-  statusUnstake: WagmiLoadingStatus;
+  statusApprove: Status;
+  statusStake: Status;
+  statusUnstake: Status;
 }) => {
   const unstaking = stakeOrUnstake === StakeOrUnstake.UNSTAKE;
   if (needsApproval && statusApprove === "loading") {
@@ -65,8 +65,8 @@ export const modalHeadline = ({
   statusStake,
   statusUnstake,
 }: {
-  statusStake: WagmiLoadingStatus;
-  statusUnstake: WagmiLoadingStatus;
+  statusStake: Status;
+  statusUnstake: Status;
 }) => {
   if (statusStake === "success" || statusUnstake === "success") {
     return "Transaction successful";
@@ -104,8 +104,8 @@ export const handleButtonActions = ({
 }: {
   stakeOrUnstake: StakeOrUnstake;
   needsApproval: boolean;
-  statusStake: WagmiLoadingStatus;
-  statusUnstake: WagmiLoadingStatus;
+  statusStake: Status;
+  statusUnstake: Status;
   resetStake: () => void;
   resetUnstake: () => void;
   canUnstake: boolean;

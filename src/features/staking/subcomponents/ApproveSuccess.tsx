@@ -1,12 +1,12 @@
 import { FC } from "react";
 import { IoMdOpen } from "react-icons/io";
 import greenCheck from "../../../assets/check-green.svg";
-import { StakeOrUnstake, WagmiLoadingStatus } from "../types/StakingTypes";
+import { StakeOrUnstake, Status } from "../types/StakingTypes";
 import { etherscanLink } from "../utils/helpers";
 
 interface ApproveSuccessProps {
-  stakeOrUnstake: "stake" | "unstake";
-  statusUnstake: WagmiLoadingStatus;
+  stakeOrUnstake: StakeOrUnstake;
+  statusUnstake: Status;
   amount: string;
   chainId: number;
   transactionHashStake?: string | undefined;
@@ -20,24 +20,18 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
   transactionHashStake,
   transactionHashUnstake,
 }) => {
-  const handleMessage = () => {
-    if (stakeOrUnstake === StakeOrUnstake.STAKE) {
-      return "You've successfully staked";
-    } else {
-      return "You've successfully unstaked";
-    }
-  };
-  const message = handleMessage();
+  const message =
+    stakeOrUnstake === StakeOrUnstake.STAKE
+      ? "You've successfully staked"
+      : "You've successfully unstaked";
 
-  const asset = stakeOrUnstake === "stake" ? "AST" : "sAST";
+  const asset = stakeOrUnstake === StakeOrUnstake.STAKE ? "AST" : "sAST";
 
   const handleBlockExplorerLink = () => {
-    let userAction;
-    if (stakeOrUnstake === StakeOrUnstake.STAKE) {
-      userAction = transactionHashStake;
-    } else {
-      userAction = transactionHashUnstake;
-    }
+    const userAction = StakeOrUnstake.STAKE
+      ? transactionHashStake
+      : transactionHashUnstake;
+
     return (
       <a
         href={etherscanLink(chainId || 1, userAction)}

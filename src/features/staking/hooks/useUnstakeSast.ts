@@ -19,16 +19,16 @@ export const useUnstakeSast = ({
   unstakingAmount: number;
   canUnstake: boolean;
 }) => {
-  const [AirSwapStaking] = useContractAddresses(
+  const [airSwapStaking] = useContractAddresses(
     [ContractTypes.AirSwapStaking],
     {
       defaultChainId: 1,
-      useDefaultAsFallback: true,
+      useDefaultAsFallback: false,
     },
   );
 
   const { config: configUnstake } = usePrepareContractWrite({
-    address: AirSwapStaking.address,
+    address: airSwapStaking.address,
     abi: stakingAbi,
     functionName: "unstake",
     args: [BigInt(unstakingAmount * Math.pow(10, 4))],

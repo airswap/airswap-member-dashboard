@@ -1,6 +1,8 @@
+import { useQuery } from "wagmi";
+
 export enum StakeOrUnstake {
   STAKE = "stake",
   UNSTAKE = "unstake",
 }
 
-export type WagmiLoadingStatus = "error" | "idle" | "success" | "loading";
+export type Status = ReturnType<typeof useQuery>["status"];

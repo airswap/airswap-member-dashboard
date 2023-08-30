@@ -5,7 +5,7 @@ import { VscChromeClose } from "react-icons/vsc";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
-import { useApproveToken } from "./hooks/useApproveToken";
+import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useStakeAst } from "./hooks/useStakeAst";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
@@ -56,15 +56,15 @@ const StakingModal: FC<StakingModalInterface> = ({
       ? stakingAmount <= Number(ustakableSAstBalanceFormatted)
       : false;
 
-  const { approve, statusApprove } = useApproveToken({
+  const { approve, statusApprove } = useApproveAst({
     stakingAmount,
-    needsApproval,
+    enabled: needsApproval,
   });
 
   const { stake, resetStake, transactionReceiptStake, statusStake } =
     useStakeAst({
       stakingAmount,
-      needsApproval,
+      enabled: !needsApproval,
     });
 
   const { unstake, resetUnstake, statusUnstake, transactionReceiptUnstake } =
@@ -116,24 +116,6 @@ const StakingModal: FC<StakingModalInterface> = ({
     setValue("stakingAmount", 0);
   };
 
-  // key variables in handleButtonActions function (delete)
-  console.log(
-    "statusStake:",
-    statusStake,
-    "\n",
-    "statusApprove:",
-    statusApprove,
-    "\n",
-    "needsApproval:",
-    needsApproval,
-    "\n",
-    "canUnstake:",
-    canUnstake,
-    "\n",
-    "statusUnstake:",
-    statusUnstake,
-  );
-
   return (
     <dialog
       className={twJoin([
@@ -168,7 +150,6 @@ const StakingModal: FC<StakingModalInterface> = ({
       {isRenderApproveSuccess ? (
         <ApproveSuccess
           stakeOrUnstake={stakeOrUnstake}
-          // statusStaking={statusStaking}
           statusUnstake={statusUnstake}
           amount={stakingAmount.toString()}
           chainId={chainId}

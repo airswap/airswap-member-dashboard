@@ -1,4 +1,5 @@
 import {
+  useAccount,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
@@ -7,37 +8,34 @@ import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
 
-export const useApproveToken = ({
+export const useApproveAst = ({
   stakingAmount,
-  needsApproval,
+  enabled = true,
 }: {
   stakingAmount: number;
-  needsApproval: boolean;
+  enabled?: boolean;
 }) => {
-  const [AirSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
+  const { address } = useAccount();
+  const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
     defaultChainId: 1,
-    useDefaultAsFallback: true,
+    useDefaultAsFallback: false,
   });
 
-  const [AirSwapStaking] = useContractAddresses(
+  const [airSwapStaking] = useContractAddresses(
     [ContractTypes.AirSwapStaking],
     {
       defaultChainId: 1,
-      useDefaultAsFallback: true,
+      useDefaultAsFallback: false,
     },
   );
 
   const { config: configApprove } = usePrepareContractWrite({
-    address: AirSwapToken.address,
+    address: airSwapToken.address,
     abi: astAbi,
     functionName: "approve",
-    staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
-    args: [
-      AirSwapStaking.address as `0x${string}`,
-      BigInt(+stakingAmount * Math.pow(10, 4)),
-    ],
-    enabled: needsApproval,
+    args: [airSwapStaking.address!, BigInt(+stakingAmount * Math.pow(10, 4))],
+    enabled: enabled && stakingAmount > 0 && !!address,
   });
 
   const {
@@ -49,7 +47,7 @@ export const useApproveToken = ({
   const { data: transactionReceiptApprove, status: statusApprove } =
     useWaitForTransaction({
       hash: dataApprove?.hash,
-      cacheTime: 300_000, // 1 minute
+      cacheTime: 60_000, // 1 minute
       onSuccess() {
         resetApprove();
       },

@@ -9,27 +9,27 @@ import { stakingAbi } from "../../../contracts/stakingAbi";
 
 export const useStakeAst = ({
   stakingAmount,
-  needsApproval,
+  enabled = true,
 }: {
   stakingAmount: number;
-  needsApproval: boolean;
+  enabled?: boolean;
 }) => {
-  const [AirSwapStaking] = useContractAddresses(
+  const [airSwapStaking] = useContractAddresses(
     [ContractTypes.AirSwapStaking],
     {
       defaultChainId: 1,
-      useDefaultAsFallback: true,
+      useDefaultAsFallback: false,
     },
   );
 
   const { config: configStake } = usePrepareContractWrite({
-    address: AirSwapStaking.address,
+    address: airSwapStaking.address,
     abi: stakingAbi,
     functionName: "stake",
     args: [BigInt(+stakingAmount * Math.pow(10, 4))],
     staleTime: 300_000, // 5 minutes,
     cacheTime: Infinity,
-    enabled: !needsApproval && stakingAmount > 0,
+    enabled: enabled && stakingAmount > 0,
   });
 
   const {

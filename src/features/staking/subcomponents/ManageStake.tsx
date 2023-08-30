@@ -5,7 +5,7 @@ import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../../hooks/useTokenBalances";
 import { Button } from "../../common/Button";
 import LineBreak from "../../common/LineBreak";
-import { StakeOrUnstake, WagmiLoadingStatus } from "../types/StakingTypes";
+import { StakeOrUnstake, Status } from "../types/StakingTypes";
 import { StakableBar } from "./StakableBar";
 
 interface ManageStakeProps {
@@ -13,7 +13,7 @@ interface ManageStakeProps {
   setValue: UseFormSetValue<{ stakingAmount: number }>;
   stakeOrUnstake: StakeOrUnstake;
   setStakeOrUnstake: Dispatch<StakeOrUnstake>;
-  loadingStatus: WagmiLoadingStatus[];
+  loadingStatus: Status[];
 }
 
 const ManageStake: FC<ManageStakeProps> = ({
