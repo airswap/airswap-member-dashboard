@@ -4,7 +4,7 @@ import "../../../index.css";
 import { calculateTokenProportions } from "../utils/calculateTokenProportions";
 
 /**
- * @remarks the additional 3% flexBasis for unstakablePercent and stakablePercent is to keep a border radius in case either of those values are equal to 0
+
  * @param unstakable - balance of sAST available to unstake
  * @param staked - total amount of SAST
  * @param stakable - amount of available AST
@@ -28,16 +28,16 @@ export const StakableBar = () => {
     <div className="flex w-full flex-col space-y-3">
       <div className="m-auto mt-6 flex h-3 w-full flex-row rounded-full">
         <div
-          style={{ flexBasis: `${unstakablePercent + 3}%` }}
-          className="checkered-blue rounded-l-full"
+          style={{ flexBasis: `${unstakablePercent}%` }}
+          className="checkered-blue rounded-l-full min-w-[3%]"
         ></div>
         <div
           style={{ flexBasis: `${stakedPercent}%` }}
           className="bg-accent-blue"
         ></div>
         <div
-          style={{ flexBasis: `${stakablePercent + 3}%` }}
-          className="rounded-r-full bg-accent-gray"
+          style={{ flexBasis: `${stakablePercent}%` }}
+          className="rounded-r-full bg-accent-gray min-w-[3%]"
         ></div>
       </div>
       <div className="flex flex-row items-center">
