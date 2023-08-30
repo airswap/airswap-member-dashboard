@@ -2,10 +2,10 @@ import { FC, useState } from "react";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
+import { useTokenBalances } from "../../../hooks/useTokenBalances";
 import { Button } from "../../common/Button";
 import LineBreak from "../../common/LineBreak";
 import { StakableBar } from "./StakableBar";
-import { useTokenBalances } from "../../../hooks/useTokenBalances";
 
 interface ManageStakeProps {
   register: UseFormRegister<{ stakingAmount: number }>;
@@ -22,7 +22,7 @@ const ManageStake: FC<ManageStakeProps> = ({ register, setValue }) => {
   return (
     <>
       <LineBreak />
-      <StakableBar mode={stakeOrUnstake} />
+      <StakableBar />
       <LineBreak />
       <div className="font-lg pointer-cursor mt-6 rounded-md font-semibold">
         <Button
