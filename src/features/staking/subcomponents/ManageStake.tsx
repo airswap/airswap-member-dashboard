@@ -10,7 +10,7 @@ import { NumberInput } from "./NumberInput";
 interface ManageStakeProps {
   sAstBalance: string;
   astBalance: string;
-  formMethods: UseFormReturn<FieldValues>;
+  formReturn: UseFormReturn<FieldValues>;
 }
 
 export type stakeOptions = "stake" | "unstake";
@@ -18,7 +18,7 @@ export type stakeOptions = "stake" | "unstake";
 const ManageStake: FC<ManageStakeProps> = ({
   sAstBalance,
   astBalance,
-  formMethods,
+  formReturn,
 }) => {
   const [stakeOrUnstake, setStakeOrUnstake] = useState<stakeOptions>("stake");
 
@@ -95,7 +95,7 @@ const ManageStake: FC<ManageStakeProps> = ({
           <div>
             <NumberInput
               astBalance={astBalance}
-              formMethods={formMethods}
+              formReturn={formReturn}
               name="stakingAmount"
             />
           </div>

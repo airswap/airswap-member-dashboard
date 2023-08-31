@@ -39,8 +39,8 @@ const StakingModal: FC<StakingModalInterface> = ({
   const [statusStaking, setStatusStaking] =
     useState<StatusStaking>("unapproved");
 
-  const formMethods = useForm();
-  const { watch, setValue } = formMethods;
+  const formReturn = useForm();
+  const { watch, setValue } = formReturn;
 
   const stakingAmount = watch("stakingAmount") || "0";
 
@@ -213,7 +213,7 @@ const StakingModal: FC<StakingModalInterface> = ({
         <ManageStake
           sAstBalance={sAstBalance}
           astBalance={astBalance}
-          formMethods={formMethods}
+          formReturn={formReturn}
         />
       ) : null}
 

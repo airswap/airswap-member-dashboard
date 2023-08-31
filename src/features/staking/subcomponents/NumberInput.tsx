@@ -4,16 +4,16 @@ import { twJoin } from "tailwind-merge";
 
 interface NumberInputProps {
   astBalance: string;
-  formMethods: UseFormReturn<FieldValues>;
+  formReturn: UseFormReturn<FieldValues>;
   name: string;
 }
 
 export const NumberInput: FC<NumberInputProps> = ({
   astBalance,
-  formMethods,
+  formReturn,
   name,
 }) => {
-  const { register, setValue } = formMethods;
+  const { register, setValue } = formReturn;
 
   return (
     <input
