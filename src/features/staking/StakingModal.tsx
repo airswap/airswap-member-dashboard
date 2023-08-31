@@ -43,6 +43,7 @@ const StakingModal: FC<StakingModalInterface> = ({
   const { watch, setValue } = formReturn;
 
   const stakingAmount = watch("stakingAmount") || "0";
+  console.log(Number(stakingAmount) > 0);
 
   const [AirSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
     defaultChainId: 1,
