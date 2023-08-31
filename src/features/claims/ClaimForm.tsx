@@ -13,6 +13,7 @@ import { poolAbi } from "../../contracts/poolAbi";
 import { Button } from "../common/Button";
 import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
 import { ClaimableTokensLineItem } from "./ClaimableTokensLineItem";
+import { useResetClaimStatus } from "./hooks/useResetClaimStatus";
 
 // FIXME: this should not be the source - probably a json file instead,
 // with goerli and mainnet.
@@ -28,6 +29,10 @@ export const ClaimForm = ({}: {}) => {
 
   const [pointsClaimableByEpoch, selectedClaims] = useClaimSelectionStore(
     (state) => [state.pointsClaimableByEpoch, state.selectedClaims],
+  );
+
+  const resetClaimStatuses = useResetClaimStatus(
+    selectedClaims.map((c) => c.tree),
   );
 
   const totalPointsClaimable = Object.values(pointsClaimableByEpoch).reduce(
@@ -64,8 +69,7 @@ export const ClaimForm = ({}: {}) => {
     ],
     enabled: !!selection,
     onSuccess(data) {
-      // TODO: reset balance of claimed token in pool
-      // TODO: reset claim status for used claim.
+      resetClaimStatuses();
       // TODO: close modal.
       // TODO: show toast.
     },
