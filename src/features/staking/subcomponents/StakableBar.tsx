@@ -1,5 +1,4 @@
 import { BsCircleFill } from "react-icons/bs";
-import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../../hooks/useTokenBalances";
 import "../../../index.css";
 import { calculateTokenProportions } from "../utils/calculateTokenProportions";
@@ -30,18 +29,15 @@ export const StakableBar = () => {
       <div className="m-auto mt-6 flex h-3 w-full flex-row rounded-full">
         <div
           style={{ flexBasis: `${unstakablePercent}%` }}
-          className="checkered-blue rounded-l-full"
+          className="checkered-blue rounded-l-full min-w-[3%]"
         ></div>
         <div
           style={{ flexBasis: `${stakedPercent}%` }}
-          className={"bg-accent-blue"}
+          className="bg-accent-blue"
         ></div>
         <div
           style={{ flexBasis: `${stakablePercent}%` }}
-          className={twJoin([
-            "bg-accent-gray",
-            `${stakablePercent === 100 ? "rounded-full" : "rounded-r-full"}`,
-          ])}
+          className="rounded-r-full bg-accent-gray min-w-[3%]"
         ></div>
       </div>
       <div className="flex flex-row items-center">
