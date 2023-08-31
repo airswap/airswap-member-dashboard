@@ -1,4 +1,9 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  QueryKey,
+} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { WagmiConfig, configureChains, createConfig, mainnet } from "wagmi";
@@ -12,6 +17,7 @@ import { publicProvider } from "wagmi/providers/public";
 import App from "./App.tsx";
 import AirSwapLogo from "./assets/airswap-logo.svg";
 import "./index.css";
+import { isPlainObject } from "./utils/isPlainObject.ts";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli],
@@ -29,7 +35,29 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   },
 );
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      queryKeyHashFn: function hashQueryKey(queryKey: QueryKey): string {
+        return JSON.stringify(queryKey, (_, val) =>
+          typeof val === "bigint"
+            ? val.toString()
+            : isPlainObject(val)
+            ? Object.keys(val)
+                .sort()
+                .reduce(
+                  (result, key) => {
+                    result[key] = val[key];
+                    return result;
+                  },
+                  {} as Record<string, unknown>,
+                )
+            : val,
+        );
+      },
+    },
+  },
+});
 
 const config = createConfig({
   autoConnect: true,
@@ -60,7 +88,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <WagmiConfig config={config}>
         <App />
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        <ReactQueryDevtools initialIsOpen={false} />
       </WagmiConfig>
     </QueryClientProvider>
   </React.StrictMode>,
