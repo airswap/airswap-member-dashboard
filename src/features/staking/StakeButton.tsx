@@ -1,12 +1,11 @@
-import { format } from "@greypixel_/nicenumbers";
 import { useRef } from "react";
 import { twJoin } from "tailwind-merge";
+import { zeroAddress } from "viem";
 import { useAccount, useBalance, useNetwork } from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { Button } from "../common/Button";
 import StakingModal from "./StakingModal";
-import { zeroAddress } from "viem";
 
 export const StakeButton = ({}: {}) => {
   const { address, isConnected } = useAccount();
@@ -27,17 +26,6 @@ export const StakeButton = ({}: {}) => {
       stakingModalRef.current && stakingModalRef.current.showModal();
     }
   };
-
-  const { data: sAstBalance } = useBalance({
-    token: stakedAst.address,
-    address,
-    staleTime: 300_000, // 5 minutes,
-    cacheTime: Infinity,
-    chainId: stakedAst.chainId,
-  });
-
-  const formattedBalance =
-    format(sAstBalance?.value, { tokenDecimals: 4 }) + " sAST";
 
   return (
     <>
