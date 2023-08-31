@@ -32,7 +32,7 @@ export const useApproveAst = ({
     abi: astAbi,
     functionName: "approve",
     args: [airSwapStaking.address!, BigInt(+stakingAmount * Math.pow(10, 4))],
-    enabled: enabled && stakingAmount > 0 && !!airSwapToken.address,
+    enabled: enabled && stakingAmount > 0 && !!airSwapStaking.address,
   });
 
   const {
