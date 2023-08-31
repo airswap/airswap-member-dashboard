@@ -27,9 +27,17 @@ export const ClaimForm = ({}: {}) => {
   const [pool] = useContractAddresses([ContractTypes.AirSwapPool], {});
   const { address: connectedAccount } = useAccount();
 
-  const [pointsClaimableByEpoch, selectedClaims] = useClaimSelectionStore(
-    (state) => [state.pointsClaimableByEpoch, state.selectedClaims],
-  );
+  const [
+    pointsClaimableByEpoch,
+    selectedClaims,
+    clearSelectedClaims,
+    setShowClaimModal,
+  ] = useClaimSelectionStore((state) => [
+    state.pointsClaimableByEpoch,
+    state.selectedClaims,
+    state.clearSelectedClaims,
+    state.setShowClaimModal,
+  ]);
 
   const resetClaimStatuses = useResetClaimStatus(
     selectedClaims.map((c) => c.tree),
@@ -70,7 +78,8 @@ export const ClaimForm = ({}: {}) => {
     enabled: !!selection,
     onSuccess(data) {
       resetClaimStatuses();
-      // TODO: close modal.
+      clearSelectedClaims();
+      setShowClaimModal(false);
       // TODO: show toast.
     },
   });
