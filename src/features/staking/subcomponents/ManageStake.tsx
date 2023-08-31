@@ -5,7 +5,7 @@ import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import { Button } from "../../common/Button";
 import LineBreak from "../../common/LineBreak";
-import NumberInput from "./NumberInput";
+import { NumberInput } from "./NumberInput";
 
 interface ManageStakeProps {
   sAstBalance: string;
@@ -93,7 +93,11 @@ const ManageStake: FC<ManageStakeProps> = ({
         <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8 " />
         <div className="flex flex-col text-right  uppercase">
           <div>
-            <NumberInput astBalance={astBalance} formMethods={formMethods} />
+            <NumberInput
+              astBalance={astBalance}
+              formMethods={formMethods}
+              name="stakingAmount"
+            />
           </div>
           <span className="text-xs">{astBalance} stakable</span>
         </div>

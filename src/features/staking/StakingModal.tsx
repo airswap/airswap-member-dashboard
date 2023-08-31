@@ -199,7 +199,7 @@ const StakingModal: FC<StakingModalInterface> = ({
     <dialog
       className={twJoin(
         "content-center border border-border-darkGray bg-black p-6 text-white",
-        ["w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/5"],
+        ["w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3"],
       )}
       ref={stakingModalRef}
     >
