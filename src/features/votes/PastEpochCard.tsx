@@ -60,8 +60,10 @@ export const PastEpochCard = ({
   });
 
   useEffect(() => {
-    if (root) {
+    if (root && !hasUserClaimed) {
       setPointsClaimableForEpoch(proposalGroup[0].id, pointsEarned);
+    } else {
+      setPointsClaimableForEpoch(proposalGroup[0].id, 0);
     }
   }, [
     proposalGroup,
@@ -113,16 +115,21 @@ export const PastEpochCard = ({
         className={twJoin([
           "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
           "flex flex-row items-center gap-2 ring-1 ring-border-dark",
-          hasUserClaimed && "text-font-secondary",
+          hasUserClaimed && "text-gray-500",
         ])}
       >
+        {hasUserClaimed && (
+          <span className="text-accent-lightgreen">
+            <CheckMark size={20} />
+          </span>
+        )}
         {/* TODO: small numbers of points probably don't need decimals. */}
         {format(pointsEarned, {
           tokenDecimals: 0,
           significantFigures: 3,
           minDecimalPlaces: 0,
         })}
-        &nbsp; Points
+        &nbsp; Points {hasUserClaimed && " claimed "}
       </div>
     </div>
   );
