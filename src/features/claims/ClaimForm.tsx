@@ -76,15 +76,17 @@ export const ClaimForm = ({}: {}) => {
       connectedAccount!,
     ],
     enabled: !!selection,
-    onSuccess(data) {
+  });
+
+  const { data, write } = useContractWrite({
+    ...claimTxConfig,
+    onSuccess: (data) => {
       resetClaimStatuses();
       clearSelectedClaims();
       setShowClaimModal(false);
       // TODO: show toast.
     },
   });
-
-  const { data, write } = useContractWrite(claimTxConfig);
 
   const {} = useWaitForTransaction({
     chainId: pool.chainId,
