@@ -17,13 +17,15 @@ export type SelectedClaimState = {
    * via claim modal.
    */
   selectedClaims: Claim[];
+  allClaims: Claim[];
   /** Amount of points claimable by epoch - set by the past epoch card when the
    * claim is loaded, and used by the claim float to determine the total number
    * of points available for claiming.
    */
   pointsClaimableByEpoch: Record<string, number>;
   setPointsClaimableForEpoch: (epoch: string, points: number) => void;
-
+  addClaim: (claim: Claim) => void;
+  removeClaimForTree: (tree: `0x${string}`) => void;
   setClaimSelected: (claim: Claim, selected: boolean) => void;
   toggleClaimSelected: (claim: Claim) => void;
   clearSelectedClaims: () => void;
@@ -34,8 +36,24 @@ export type SelectedClaimState = {
 export const useClaimSelectionStore = create<SelectedClaimState>(
   (set, get) => ({
     selectedClaims: [],
+    allClaims: [],
     pointsClaimableByEpoch: {},
     showClaimModal: false,
+    addClaim(claim: Claim) {
+      set((state) => {
+        // only add claim if it doesn't already exist (check `tree`)
+        const allClaims = state.allClaims.find((c) => c.tree === claim.tree)
+          ? state.allClaims
+          : [...state.allClaims, claim];
+        return { allClaims };
+      });
+    },
+    removeClaimForTree(tree: `0x${string}`) {
+      set((state) => {
+        const allClaims = state.allClaims.filter((c) => c.tree !== tree);
+        return { allClaims };
+      });
+    },
     setPointsClaimableForEpoch(epoch: string, points: number) {
       set((state) => {
         const pointsClaimableByEpoch = {

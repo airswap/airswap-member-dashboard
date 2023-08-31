@@ -29,18 +29,22 @@ export const ClaimForm = ({}: {}) => {
 
   const [
     pointsClaimableByEpoch,
+    allClaims,
     selectedClaims,
     clearSelectedClaims,
     setShowClaimModal,
   ] = useClaimSelectionStore((state) => [
     state.pointsClaimableByEpoch,
+    state.allClaims,
     state.selectedClaims,
     state.clearSelectedClaims,
     state.setShowClaimModal,
   ]);
 
+  const _selectedClaims = selectedClaims.length ? selectedClaims : allClaims;
+
   const resetClaimStatuses = useResetClaimStatus(
-    selectedClaims.map((c) => c.tree),
+    _selectedClaims.map((c) => c.tree),
   );
 
   const totalPointsClaimable = Object.values(pointsClaimableByEpoch).reduce(
@@ -48,7 +52,7 @@ export const ClaimForm = ({}: {}) => {
     0,
   );
 
-  const pointsSelected = selectedClaims.reduce(
+  const pointsSelected = _selectedClaims.reduce(
     (acc, { value }) => acc + value,
     0,
   );
@@ -65,7 +69,7 @@ export const ClaimForm = ({}: {}) => {
     functionName: "withdraw",
     args: [
       // claims
-      selectedClaims.map((claim) => ({
+      _selectedClaims.map((claim) => ({
         ...claim,
         value: BigInt(
           new BigNumber(claim.value).multipliedBy(10 ** 4).toFixed(0),

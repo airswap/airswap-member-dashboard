@@ -1,5 +1,5 @@
 import { format } from "@greypixel_/nicenumbers";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { MdClose, MdOpenInNew } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { useAccount } from "wagmi";
@@ -28,11 +28,15 @@ export const PastEpochCard = ({
     setClaimSelected,
     selectedClaims,
     setPointsClaimableForEpoch,
+    addClaim,
+    removeClaimForTree,
   ] = useClaimSelectionStore((state) => [
     state.isClaimSelected,
     state.setClaimSelected,
     state.selectedClaims,
     state.setPointsClaimableForEpoch,
+    state.addClaim,
+    state.removeClaimForTree,
   ]);
 
   const {
@@ -59,11 +63,22 @@ export const PastEpochCard = ({
     treeIds: [treeId],
   });
 
+  const claim = useMemo(
+    () => ({
+      proof: proof!,
+      tree,
+      value: pointsEarned,
+    }),
+    [pointsEarned, proof, tree],
+  );
+
   useEffect(() => {
     if (root && !hasUserClaimed) {
       setPointsClaimableForEpoch(proposalGroup[0].id, pointsEarned);
+      addClaim(claim);
     } else {
       setPointsClaimableForEpoch(proposalGroup[0].id, 0);
+      removeClaimForTree(tree);
     }
   }, [
     proposalGroup,
@@ -94,14 +109,7 @@ export const PastEpochCard = ({
               }
               checked={isClaimSelected(tree)}
               onCheckedChange={(newState) => {
-                setClaimSelected(
-                  {
-                    proof: proof!,
-                    tree,
-                    value: pointsEarned,
-                  },
-                  newState as boolean,
-                );
+                setClaimSelected(claim, newState as boolean);
               }}
             />
           )}
