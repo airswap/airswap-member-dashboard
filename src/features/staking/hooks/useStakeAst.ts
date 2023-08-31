@@ -27,8 +27,6 @@ export const useStakeAst = ({
     abi: stakingAbi,
     functionName: "stake",
     args: [BigInt(+stakingAmount * Math.pow(10, 4))],
-    staleTime: 300_000, // 5 minutes,
-    cacheTime: Infinity,
     enabled: enabled && stakingAmount > 0,
   });
 
@@ -39,10 +37,7 @@ export const useStakeAst = ({
   } = useContractWrite(configStake);
 
   const { data: transactionReceiptStake, status: statusStake } =
-    useWaitForTransaction({
-      hash: data?.hash,
-      staleTime: 300_000, // 5 minutes
-    });
+    useWaitForTransaction({ hash: data?.hash });
 
   return { stake, resetStake, transactionReceiptStake, statusStake };
 };

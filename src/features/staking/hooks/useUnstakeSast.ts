@@ -32,8 +32,6 @@ export const useUnstakeSast = ({
     abi: stakingAbi,
     functionName: "unstake",
     args: [BigInt(unstakingAmount * Math.pow(10, 4))],
-    staleTime: 300_000, // 5 minutes,
-    cacheTime: Infinity,
     enabled: canUnstake,
   });
 
@@ -44,10 +42,7 @@ export const useUnstakeSast = ({
   } = useContractWrite(configUnstake);
 
   const { data: transactionReceiptUnstake, status: statusUnstake } =
-    useWaitForTransaction({
-      hash: data?.hash,
-      staleTime: 300_000, // 5 minutes
-    });
+    useWaitForTransaction({ hash: data?.hash });
 
   return {
     unstake,

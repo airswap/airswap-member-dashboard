@@ -25,7 +25,6 @@ export const useAstAllowance = () => {
     functionName: "allowance",
     args: [address!, airSwapStaking.address!],
     watch: true,
-    staleTime: 60_000, // 1 minutes,
     chainId: chain?.id || 1,
     enabled: !!address && !!airSwapStaking.address,
   });

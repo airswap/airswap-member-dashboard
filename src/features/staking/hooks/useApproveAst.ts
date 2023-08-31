@@ -1,5 +1,4 @@
 import {
-  useAccount,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
@@ -15,7 +14,6 @@ export const useApproveAst = ({
   stakingAmount: number;
   enabled?: boolean;
 }) => {
-  const { address } = useAccount();
   const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
     defaultChainId: 1,
     useDefaultAsFallback: false,
@@ -33,9 +31,8 @@ export const useApproveAst = ({
     address: airSwapToken.address,
     abi: astAbi,
     functionName: "approve",
-    cacheTime: Infinity,
     args: [airSwapStaking.address!, BigInt(+stakingAmount * Math.pow(10, 4))],
-    enabled: enabled && stakingAmount > 0 && !!address,
+    enabled: enabled && stakingAmount > 0 && !!airSwapToken.address,
   });
 
   const {
@@ -47,7 +44,6 @@ export const useApproveAst = ({
   const { data: transactionReceiptApprove, status: statusApprove } =
     useWaitForTransaction({
       hash: dataApprove?.hash,
-      cacheTime: 60_000, // 1 minute
       onSuccess() {
         resetApprove();
       },
