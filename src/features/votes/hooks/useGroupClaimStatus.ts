@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useAccount } from "wagmi";
+import { useGroupHash } from "./useGroupHash";
 import { Proposal } from "./useGroupedProposals";
 import { useHasClaimedForTree } from "./useHasClaimedForTree";
 import { useUserVotes } from "./useUserVotes";
@@ -15,6 +16,7 @@ export const useGroupClaimStatus = ({
   voterAddress?: `0x${string}`;
 }) => {
   const { address: connectedAccount } = useAccount();
+  const groupHash = useGroupHash(proposalGroup);
   const address = _voterAddress || connectedAccount;
   const { data: hasClaimed, isLoading: claimStatusLoading } =
     useHasClaimedForTree({
