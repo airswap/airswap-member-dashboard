@@ -1,5 +1,5 @@
 import { Dispatch, FC } from "react";
-import { UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { FieldValues, UseFormReturn } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../../hooks/useTokenBalances";
@@ -7,19 +7,17 @@ import { Button } from "../../common/Button";
 import LineBreak from "../../common/LineBreak";
 import { StakeOrUnstake, Status } from "../types/StakingTypes";
 import { StakableBar } from "./StakableBar";
+import { NumberInput } from "./NumberInput";
 
 interface ManageStakeProps {
-  register: UseFormRegister<{ stakingAmount: number }>;
-  setValue: UseFormSetValue<{ stakingAmount: number }>;
+  formReturn: UseFormReturn<FieldValues>;
   stakeOrUnstake: StakeOrUnstake;
   setStakeOrUnstake: Dispatch<StakeOrUnstake>;
   loadingStatus: Status[];
 }
 
-const ManageStake: FC<ManageStakeProps> = ({
-  // TODO: props were refactored in branch `feature/29-BalanceInput`. Override these with that branch
-  register,
-  setValue,
+export const ManageStake: FC<ManageStakeProps> = ({
+  formReturn,
   stakeOrUnstake,
   setStakeOrUnstake,
   loadingStatus,
@@ -72,18 +70,10 @@ const ManageStake: FC<ManageStakeProps> = ({
         <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8 " />
         <div className="flex flex-col text-right  uppercase">
           <div>
-            <input
-              placeholder="0"
-              {...register("stakingAmount", {
-                required: true,
-                min: 0,
-                max: astBalance,
-                validate: (val: number) => val > 0,
-                onChange: (e) => setValue("stakingAmount", e.target.value),
-              })}
-              className={twJoin(
-                "items-right w-1/5 bg-black text-right text-white",
-              )}
+            <NumberInput
+              astBalance={astBalance}
+              formReturn={formReturn}
+              name="stakingAmount"
             />
           </div>
           <span className="text-xs">{astBalance} stakable</span>
@@ -92,5 +82,3 @@ const ManageStake: FC<ManageStakeProps> = ({
     </>
   );
 };
-
-export default ManageStake;

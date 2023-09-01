@@ -2,6 +2,7 @@ import { FC, RefObject, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImSpinner8 } from "react-icons/im";
 import { VscChromeClose } from "react-icons/vsc";
+import { useForm } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -10,7 +11,7 @@ import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useStakeAst } from "./hooks/useStakeAst";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
 import ApproveSuccess from "./subcomponents/ApproveSuccess";
-import ManageStake from "./subcomponents/ManageStake";
+import { ManageStake } from "./subcomponents/ManageStake";
 import { StakeOrUnstake } from "./types/StakingTypes";
 import {
   buttonLoadingSpinner,
@@ -32,8 +33,9 @@ const StakingModal: FC<StakingModalInterface> = ({
     StakeOrUnstake.STAKE,
   );
 
-  const { register, watch, setValue } = useForm<{ stakingAmount: number }>();
-  const stakingAmount = watch("stakingAmount") || 0;
+  const formReturn = useForm();
+  const { watch, setValue } = formReturn;
+  const stakingAmount = watch("stakingAmount") || "0";
 
   const { astAllowanceFormatted: astAllowance } = useAstAllowance();
   const { ustakableSAstBalanceFormatted } = useTokenBalances();
@@ -124,8 +126,7 @@ const StakingModal: FC<StakingModalInterface> = ({
       </div>
       {isRenderManageStake ? (
         <ManageStake
-          register={register}
-          setValue={setValue}
+          formReturn={formReturn}
           stakeOrUnstake={stakeOrUnstake}
           setStakeOrUnstake={setStakeOrUnstake}
           loadingStatus={[statusApprove, statusStake, statusUnstake]}
