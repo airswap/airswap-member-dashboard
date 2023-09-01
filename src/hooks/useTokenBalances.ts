@@ -1,9 +1,9 @@
-import { useAccount, useContractReads } from "wagmi";
-import { useContractAddresses } from "../config/hooks/useContractAddress";
-import { ContractTypes } from "../config/ContractAddresses";
-import { stakingAbi } from "../contracts/stakingAbi";
-import { astAbi } from "../contracts/astAbi";
 import { format } from "@greypixel_/nicenumbers";
+import { useAccount, useContractReads } from "wagmi";
+import { ContractTypes } from "../config/ContractAddresses";
+import { useContractAddresses } from "../config/hooks/useContractAddress";
+import { astAbi } from "../contracts/astAbi";
+import { stakingAbi } from "../contracts/stakingAbi";
 
 export const useTokenBalances = () => {
   const { address, isConnected } = useAccount();
@@ -12,13 +12,13 @@ export const useTokenBalances = () => {
     useDefaultAsFallback: true,
   });
 
-  const [AirSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
+  const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
     defaultChainId: 1,
     useDefaultAsFallback: true,
   });
   const airSwapTokenContract = {
-    address: AirSwapToken.address,
-    chain: AirSwapToken.chainId,
+    address: airSwapToken.address,
+    chain: airSwapToken.chainId,
     abi: astAbi,
   };
 
@@ -33,17 +33,17 @@ export const useTokenBalances = () => {
       {
         ...airSwapStakingContract,
         functionName: "available",
-        args: [address as `0x${string}`],
+        args: [address!],
       },
       {
         ...airSwapStakingContract,
         functionName: "balanceOf",
-        args: [address as `0x${string}`],
+        args: [address!],
       },
       {
         ...airSwapTokenContract,
         functionName: "balanceOf",
-        args: [address as `0x${string}`],
+        args: [address!],
       },
     ],
     enabled: !!isConnected,

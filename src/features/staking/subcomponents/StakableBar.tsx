@@ -4,7 +4,6 @@ import "../../../index.css";
 import { calculateTokenProportions } from "../utils/calculateTokenProportions";
 
 /**
-
  * @param unstakable - balance of sAST available to unstake
  * @param staked - total amount of SAST
  * @param stakable - amount of available AST
@@ -24,6 +23,7 @@ export const StakableBar = () => {
       stakable: +stakable,
     });
 
+  // TODO: fix rounded edges if `unstakablePercent` is small and insignificant
   return (
     <div className="flex w-full flex-col space-y-3">
       <div className="m-auto mt-6 flex h-3 w-full flex-row rounded-full">

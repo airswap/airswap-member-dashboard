@@ -1,23 +1,32 @@
-import { FC, useState } from "react";
+import { Dispatch, FC } from "react";
 import { UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../../hooks/useTokenBalances";
 import { Button } from "../../common/Button";
 import LineBreak from "../../common/LineBreak";
+import { StakeOrUnstake, Status } from "../types/StakingTypes";
 import { StakableBar } from "./StakableBar";
 
 interface ManageStakeProps {
   register: UseFormRegister<{ stakingAmount: number }>;
   setValue: UseFormSetValue<{ stakingAmount: number }>;
+  stakeOrUnstake: StakeOrUnstake;
+  setStakeOrUnstake: Dispatch<StakeOrUnstake>;
+  loadingStatus: Status[];
 }
 
-const ManageStake: FC<ManageStakeProps> = ({ register, setValue }) => {
-  const [stakeOrUnstake, setStakeOrUnstake] = useState<"stake" | "unstake">(
-    "stake",
-  );
-
+const ManageStake: FC<ManageStakeProps> = ({
+  // TODO: props were refactored in branch `feature/29-BalanceInput`. Override these with that branch
+  register,
+  setValue,
+  stakeOrUnstake,
+  setStakeOrUnstake,
+  loadingStatus,
+}) => {
   const { astBalanceFormatted: astBalance } = useTokenBalances();
+
+  const isButtonDisabled = loadingStatus.some((status) => status === "loading");
 
   return (
     <>
@@ -26,12 +35,14 @@ const ManageStake: FC<ManageStakeProps> = ({ register, setValue }) => {
       <LineBreak />
       <div className="font-lg pointer-cursor mt-6 rounded-md font-semibold">
         <Button
-          className={twJoin(
+          className={twJoin([
             "rounded-none rounded-l-md",
             "w-1/2 text-sm uppercase",
             `${stakeOrUnstake === "stake" && "bg-bg-darkShaded"}`,
-          )}
-          onClick={() => setStakeOrUnstake("stake")}
+            `${isButtonDisabled && "opacity-50"}`,
+          ])}
+          onClick={() => setStakeOrUnstake(StakeOrUnstake.STAKE)}
+          disabled={isButtonDisabled}
         >
           Stake
         </Button>
@@ -41,7 +52,8 @@ const ManageStake: FC<ManageStakeProps> = ({ register, setValue }) => {
             "w-1/2 text-sm uppercase",
             `${stakeOrUnstake === "unstake" && "bg-bg-darkShaded"}`,
           )}
-          onClick={() => setStakeOrUnstake("unstake")}
+          onClick={() => setStakeOrUnstake(StakeOrUnstake.UNSTAKE)}
+          disabled={isButtonDisabled}
         >
           Unstake
         </Button>
@@ -61,7 +73,7 @@ const ManageStake: FC<ManageStakeProps> = ({ register, setValue }) => {
         <div className="flex flex-col text-right  uppercase">
           <div>
             <input
-              placeholder={astBalance.toString()}
+              placeholder="0"
               {...register("stakingAmount", {
                 required: true,
                 min: 0,
