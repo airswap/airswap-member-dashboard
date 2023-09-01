@@ -13,7 +13,7 @@ interface ApproveSuccessProps {
   transactionHashUnstake?: string | undefined;
 }
 
-const ApproveSuccess: FC<ApproveSuccessProps> = ({
+export const ApproveSuccess: FC<ApproveSuccessProps> = ({
   stakeOrUnstake,
   amount,
   chainId,
@@ -61,5 +61,3 @@ const ApproveSuccess: FC<ApproveSuccessProps> = ({
     </div>
   );
 };
-
-export default ApproveSuccess;

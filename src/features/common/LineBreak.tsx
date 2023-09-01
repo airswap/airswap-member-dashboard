@@ -4,7 +4,7 @@ import { twJoin } from "tailwind-merge";
 interface LineBreakProps {
   className?: string;
 }
-const LineBreak: FC<LineBreakProps> = ({ className }) => {
+export const LineBreak: FC<LineBreakProps> = ({ className }) => {
   return (
     <hr
       className={twJoin([
@@ -14,5 +14,3 @@ const LineBreak: FC<LineBreakProps> = ({ className }) => {
     />
   );
 };
-
-export default LineBreak;
