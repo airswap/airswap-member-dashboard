@@ -20,6 +20,9 @@ const buttonVariants = tv({
       true: "rounded-full",
       false: "rounded-none",
     },
+    size: {
+      small: "text-xs py-1 px-3",
+    },
   },
   defaultVariants: {
     rounded: true,
@@ -33,6 +36,7 @@ export const Button = ({
   children,
   className,
   rounded,
+  size,
   color,
   ...rest
 }: {
@@ -45,7 +49,7 @@ export const Button = ({
   ButtonVariants) => {
   return (
     <button
-      className={twMerge(buttonVariants({ color, rounded }), className)}
+      className={twMerge(buttonVariants({ color, rounded, size }), className)}
       {...rest}
     >
       {children}

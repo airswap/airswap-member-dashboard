@@ -4,8 +4,13 @@ import { keccak256 } from "viem";
 import { generateMerkleLeaf } from "../utils/merkleUtils";
 import { useProposalGroupVotes } from "./useProposalGroupVotes";
 
-export const useGroupMerkleTree = (proposalIds: string[]) => {
-  const { data: votes } = useProposalGroupVotes(proposalIds);
+export const useGroupMerkleTree = (
+  proposalIds: string[],
+  options?: { enabled: boolean },
+) => {
+  const { data: votes } = useProposalGroupVotes(proposalIds, {
+    enabled: options?.enabled ?? true,
+  });
 
   return useMemo(() => {
     if (!votes) return;

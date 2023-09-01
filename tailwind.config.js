@@ -39,6 +39,7 @@ module.exports = {
           orange: "hsl(42, 100%, 59%)",
           green: "hsl(122, 100%, 69%)",
           red: "hsl(0, 100%, 50%)",
+          gray: "hsl(220, 9%, 46%)",
         },
         border: {
           dark: "hsl(216, 18%, 18%)",

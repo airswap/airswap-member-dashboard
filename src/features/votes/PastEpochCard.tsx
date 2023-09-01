@@ -6,7 +6,9 @@ import { useAccount } from "wagmi";
 import { Accordion } from "../common/Accordion";
 import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
+import { SetRootButton } from "./SetRootButton";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
+import { useGroupHash } from "./hooks/useGroupHash";
 import { Proposal } from "./hooks/useGroupedProposals";
 import { useEpochSelectionStore } from "./store/useEpochSelectionStore";
 import { getEpochName } from "./utils/getEpochName";
@@ -40,14 +42,16 @@ export const PastEpochCard = ({
   const { isConnected: isWalletConnected } = useAccount();
 
   const proposalGroupTitle = getEpochName(proposalGroup[0]) + " Epoch";
-  const itemId = getEpochName(proposalGroup[0]).replace(" ", "-").toLowerCase();
+  const groupId = useGroupHash(proposalGroup);
 
   const SNAPSHOT_WEB = import.meta.env.VITE_SNAPSHOT_WEB;
   const SNAPSHOT_SPACE = import.meta.env.VITE_SNAPSHOT_SPACE;
 
   const trigger = (
     <div className="flex w-full items-center justify-between pr-4 font-semibold">
+      {/* Checkbox and title. */}
       <div className="flex items-center">
+        {/* Checkbox */}
         <div className="align-center -mt-1 ml-0.5 mr-4 items-center ">
           {!proposalGroupState.hasUserClaimed && (
             <Checkbox
@@ -66,19 +70,25 @@ export const PastEpochCard = ({
         {/* Title */}
         <div className="font-bold">{proposalGroupTitle}</div>
       </div>
-      <div
-        className={twJoin([
-          "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
-          "flex flex-row items-center gap-2 ring-1 ring-border-dark",
-          proposalGroupState.hasUserClaimed && "text-font-secondary",
-        ])}
-      >
-        {format(proposalGroupState.pointsEarned, {
-          tokenDecimals: 0,
-          significantFigures: 3,
-          minDecimalPlaces: 0,
-        })}
-        &nbsp; Points
+
+      {/* Points */}
+      <div className="flex flex-row gap-4">
+        <SetRootButton groupId={groupId} proposalGroup={proposalGroup} />
+        <div
+          className={twJoin([
+            "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
+            "flex flex-row items-center gap-2 ring-1 ring-border-dark",
+            proposalGroupState.hasUserClaimed && "text-font-secondary",
+          ])}
+        >
+          {/* TODO: small numbers of points probably don't need decimals. */}
+          {format(proposalGroupState.pointsEarned, {
+            tokenDecimals: 0,
+            significantFigures: 3,
+            minDecimalPlaces: 0,
+          })}
+          &nbsp; Points
+        </div>
       </div>
     </div>
   );
@@ -122,7 +132,7 @@ export const PastEpochCard = ({
     <Accordion
       rootStyles="w-full items-center border border-border-dark rounded"
       trigger={trigger}
-      itemId={itemId}
+      itemId={groupId}
       content={content}
     />
   );
