@@ -2,7 +2,6 @@ import { FC, RefObject, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImSpinner8 } from "react-icons/im";
 import { VscChromeClose } from "react-icons/vsc";
-import { useForm } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
