@@ -1,4 +1,4 @@
-import { UseFormSetValue } from "react-hook-form";
+import { FieldValues, UseFormSetValue } from "react-hook-form";
 import { WriteContractResult } from "wagmi/actions";
 import { StakeOrUnstake, Status } from "../types/StakingTypes";
 
@@ -112,7 +112,7 @@ export const handleButtonActions = ({
   approve: (() => Promise<WriteContractResult>) | undefined;
   stake: (() => void) | undefined;
   unstake: (() => void) | undefined;
-  setValue: UseFormSetValue<{ stakingAmount: number }>;
+  setValue: UseFormSetValue<FieldValues>;
 }) => {
   const stakeMode = stakeOrUnstake === StakeOrUnstake.STAKE;
 
