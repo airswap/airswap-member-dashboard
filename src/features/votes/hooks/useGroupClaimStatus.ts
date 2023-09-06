@@ -52,7 +52,7 @@ export const useGroupClaimStatus = ({
       hasUserClaimed: hasClaimed,
       claimStatusLoading,
       pointsEarned,
-      tree: groupHash,
+      treeId: groupHash,
     };
   }, [userVotes, proposalGroup, hasClaimed, claimStatusLoading, groupHash]);
 };
