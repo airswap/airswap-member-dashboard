@@ -3,7 +3,7 @@ import { twJoin } from "tailwind-merge";
 import { useAccount, useNetwork } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
-import StakingModal from "./StakingModal";
+import { StakingModal } from "./StakingModal";
 
 export const StakeButton = ({}: {}) => {
   const { address, isConnected } = useAccount();

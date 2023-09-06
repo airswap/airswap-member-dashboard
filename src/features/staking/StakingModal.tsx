@@ -2,7 +2,6 @@ import { FC, RefObject, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImSpinner8 } from "react-icons/im";
 import { VscChromeClose } from "react-icons/vsc";
-import { useForm } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -10,7 +9,7 @@ import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useStakeAst } from "./hooks/useStakeAst";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
-import ApproveSuccess from "./subcomponents/ApproveSuccess";
+import { ApproveSuccess } from "./subcomponents/ApproveSuccess";
 import { ManageStake } from "./subcomponents/ManageStake";
 import { StakeOrUnstake } from "./types/StakingTypes";
 import {
@@ -25,7 +24,7 @@ interface StakingModalInterface {
   chainId: number;
 }
 
-const StakingModal: FC<StakingModalInterface> = ({
+export const StakingModal: FC<StakingModalInterface> = ({
   stakingModalRef,
   chainId,
 }) => {
@@ -172,5 +171,3 @@ const StakingModal: FC<StakingModalInterface> = ({
     </dialog>
   );
 };
-
-export default StakingModal;

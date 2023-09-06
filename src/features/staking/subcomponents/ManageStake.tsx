@@ -4,10 +4,10 @@ import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../../hooks/useTokenBalances";
 import { Button } from "../../common/Button";
-import LineBreak from "../../common/LineBreak";
+import { LineBreak } from "../../common/LineBreak";
 import { StakeOrUnstake, Status } from "../types/StakingTypes";
-import { StakableBar } from "./StakableBar";
 import { NumberInput } from "./NumberInput";
+import { StakableBar } from "./StakableBar";
 
 interface ManageStakeProps {
   formReturn: UseFormReturn<FieldValues>;
@@ -71,7 +71,7 @@ export const ManageStake: FC<ManageStakeProps> = ({
         <div className="flex flex-col text-right  uppercase">
           <div>
             <NumberInput
-              astBalance={astBalance}
+              astBalance={astBalance.toString()}
               formReturn={formReturn}
               name="stakingAmount"
             />
