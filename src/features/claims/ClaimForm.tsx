@@ -1,12 +1,7 @@
 import BigNumber from "bignumber.js";
 import { useState } from "react";
 import { zeroAddress } from "viem";
-import {
-  useAccount,
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from "wagmi";
+import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { poolAbi } from "../../contracts/poolAbi";
@@ -90,11 +85,6 @@ export const ClaimForm = ({}: {}) => {
       setShowClaimModal(false);
       // TODO: show toast.
     },
-  });
-
-  const {} = useWaitForTransaction({
-    chainId: pool.chainId,
-    hash: data?.hash,
   });
 
   return (
