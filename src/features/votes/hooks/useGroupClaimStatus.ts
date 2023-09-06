@@ -40,7 +40,9 @@ export const useGroupClaimStatus = ({
     const hasStarted = proposalGroup[0].start * 1000 < Date.now();
 
     const totalVps = vpsByVote.reduce((acc: number, vp) => acc + (vp || 0), 0);
-    const pointsEarned = totalVps / proposalGroup.length;
+    const pointsEarned = votedOnAllProposals
+      ? totalVps / proposalGroup.length
+      : 0;
 
     return {
       votedForProposal,
