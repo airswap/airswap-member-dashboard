@@ -39,7 +39,7 @@ export const SetRootButton = ({
   // Calculate the root when we have one
   const { data: merkleRoot } = useGroupMerkleRoot(
     proposalGroup.map((p) => p.id),
-    { enabled: existingRoot === null },
+    { enabled: !!isPoolAdmin && existingRoot === null },
   );
 
   // Write the root
