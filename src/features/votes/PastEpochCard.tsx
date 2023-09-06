@@ -7,7 +7,6 @@ import { Accordion } from "../common/Accordion";
 import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
-import { useGroupHash } from "./hooks/useGroupHash";
 import { useGroupMerkleProof } from "./hooks/useGroupMerkleProof";
 import { Proposal } from "./hooks/useGroupedProposals";
 import { useTreeRoots } from "./hooks/useTreeRoots";
@@ -44,7 +43,7 @@ export const PastEpochCard = ({
     hasUserClaimed,
     votedForProposal,
     votedOnAllProposals,
-    tree,
+    treeId,
   } = useGroupClaimStatus({
     proposalGroup,
   });
@@ -58,19 +57,17 @@ export const PastEpochCard = ({
     },
   });
 
-  const treeId = useGroupHash(proposalGroup);
   const [{ data: root }] = useTreeRoots({
     treeIds: [treeId],
   });
 
-  const claim = useMemo(
-    () => ({
+  const claim = useMemo(() => {
+    return {
       proof: proof!,
-      tree,
+      tree: treeId,
       value: pointsEarned,
-    }),
-    [pointsEarned, proof, tree],
-  );
+    };
+  }, [pointsEarned, proof, treeId]);
 
   useEffect(() => {
     if (root && !hasUserClaimed) {
@@ -78,13 +75,13 @@ export const PastEpochCard = ({
       addClaim(claim);
     } else {
       setPointsClaimableForEpoch(proposalGroup[0].id, 0);
-      removeClaimForTree(tree);
+      removeClaimForTree(treeId);
     }
   }, [
     addClaim,
     claim,
     removeClaimForTree,
-    tree,
+    treeId,
     proposalGroup,
     pointsEarned,
     hasUserClaimed,
@@ -111,7 +108,7 @@ export const PastEpochCard = ({
                 pointsEarned === 0 || // or if there are no points to claim
                 !proof // or if proof isn't ready yet.
               }
-              checked={isClaimSelected(tree)}
+              checked={isClaimSelected(treeId)}
               onCheckedChange={(newState) => {
                 setClaimSelected(claim, newState as boolean);
               }}
