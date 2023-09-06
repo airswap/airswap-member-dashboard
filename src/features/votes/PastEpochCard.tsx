@@ -81,6 +81,10 @@ export const PastEpochCard = ({
       removeClaimForTree(tree);
     }
   }, [
+    addClaim,
+    claim,
+    removeClaimForTree,
+    tree,
     proposalGroup,
     pointsEarned,
     hasUserClaimed,
