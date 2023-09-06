@@ -1,0 +1,185 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Claims flow",
+  "steps": [
+    {
+      "file": "src/features/votes/hooks/useSnapshotConfig.ts",
+      "description": "Here we configure the snapshot space and endpoint based on the selected chain.",
+      "line": 5,
+      "title": "Configure snapshot hook"
+    },
+    {
+      "file": "src/features/votes/hooks/useGroupedProposals.ts",
+      "description": "In this hook we fetch proposals from snapshot using the snapshot graphQL API",
+      "line": 46,
+      "title": "Get proposals from snapshot"
+    },
+    {
+      "file": "src/features/votes/hooks/useGroupedProposals.ts",
+      "description": "Our voting mechanism is defined in such a way that proposals with the same start and end times are considered as a single group.\n\nVoters must vote on every proposal in a group to be eligible for a reward.\n\nAs a result, when we fetch proposals, we batch them up into their groups, as these will be critical later on.",
+      "line": 56,
+      "title": "Group proposals"
+    },
+    {
+      "file": "src/features/votes/hooks/useTreeRoots.ts",
+      "description": "When users vote on all 3 proposals, their address and the amount of points they earned are used as the data for each leaf of a merkle tree.\n\nAdmins can then generate the root of this tree and submit it to the contract, thus \"enabling\" claims for the group of votes.\n\nThis hook fetches these roots, given either a set of proposals or a set of `treeIds`. (The tree ID is simply all of the IDS in a proposal group hashed together).",
+      "line": 16,
+      "title": "useTreeRoots hook"
+    },
+    {
+      "file": "src/features/votes/hooks/useTreeRoots.ts",
+      "description": "Note that we are using `useQueries` here allowing us to cache each tree root separately. The fetch function is a simple contract read.",
+      "line": 60,
+      "title": "multiple queries"
+    },
+    {
+      "file": "src/features/votes/VoteList.tsx",
+      "description": "The `VoteList` component is the main component on the vote page.\n\nAs the designs specify that a vote should be shown in the top \"active\" section until claims have been enabled (i.e. the root has been set), the first thing we need to know is which of the proposals have the roots set, so we use the hook we just covered for this.",
+      "line": 19,
+      "title": "VoteList sorting"
+    },
+    {
+      "file": "src/features/votes/VoteList.tsx",
+      "description": "Instead of \"popping\" the UI as various elements load, this boolean lets us know if any of the root queries are still loading.\n\nWhen this boolean is true we should show a skeleton layout (TBD).",
+      "line": 24,
+      "title": "Votelist loading state"
+    },
+    {
+      "file": "src/features/votes/VoteList.tsx",
+      "description": "Segment based on whether the root is set (the end date check is probably redundant now).",
+      "line": 28,
+      "title": "Splitting the votelist array"
+    },
+    {
+      "file": "src/features/votes/VoteList.tsx",
+      "description": "For votes with no root, we render a `LiveVoteCard`, for votes with a root, we render a `PastEpochCard`.",
+      "line": 53
+    },
+    {
+      "file": "src/features/votes/LiveVoteCard.tsx",
+      "description": "Given we know we're only rendering `LiveVoteCard` if the vote has no root, the status if the vote has ended can be `Awaiting Finalization`, which is our slightly nicer way of saying \"Waiting for the admin to set the merkle root for the tree\".",
+      "line": 59
+    },
+    {
+      "file": "src/features/votes/VoteList.tsx",
+      "description": "Next to each proposal group we render the `SetRootButton` component.",
+      "line": 55
+    },
+    {
+      "file": "src/features/votes/SetRootButton.tsx",
+      "description": "This button is useless to non-admins, so if the user isn't an admin we want to do as little as possible.\n\n`isPoolAdmin` will be passed to `enable` disable any hooks that would otherwise automatically run. The hooks that don't have this flag in their `enable` will be disabled for other reasons (normally some dependent query being disabled and hence returning `undefined` in its data)",
+      "line": 28
+    },
+    {
+      "file": "src/features/votes/SetRootButton.tsx",
+      "description": "This is where the merkle root is generated - let's follow the flow.\n\nFirst, we call `useGroupMerkleRoot`, passing the IDs of the proposals in the group.",
+      "line": 40
+    },
+    {
+      "file": "src/features/votes/hooks/useGroupMerkleRoot.ts",
+      "description": "`useGroupMerkleRoot` passes the proposalIds to `useGroupMerkleTree` to get the tree, which is all that is needed to generate the root(see the query function below).",
+      "line": 8
+    },
+    {
+      "file": "src/features/votes/hooks/useGroupMerkleTree.ts",
+      "description": "`useProposalGroupVotes` in turn passes the `proposalIds` to `useProposalGroupVotes`",
+      "line": 11
+    },
+    {
+      "file": "src/features/votes/hooks/useProposalGroupVotes.ts",
+      "description": "`useProposalGroupVotes` fetches the votes from snapshot using the graphQL API.",
+      "line": 47
+    },
+    {
+      "file": "src/features/votes/hooks/useGroupMerkleTree.ts",
+      "description": "This `useMemo` function counts up the votes. It filters users who have not voted on every proposal, and also takes the average vote weight for users who did vote on all 3.\n\nLeaves are then generated by hashing the voter's account and the points they earned. The tree is then built from all of these leaves.\n\n(it's likely that their weight is equal for all votes but not impossible given the snapshots are possibly taken in slightly different blocks -- snapshot block is separate to start and end time, and is based on the time the vote was created using the snapshot API, _not_ the time the voting started)",
+      "line": 15
+    },
+    {
+      "file": "src/features/votes/SetRootButton.tsx",
+      "description": "After setting the root, we refetch the root to update the admin user's UI reflecting the change.",
+      "line": 69
+    },
+    {
+      "file": "src/features/votes/PastEpochCard.tsx",
+      "description": "To display the correct information in the `PastEpochCard`, we need a bunch of info about the user's activity on the proposalGroup.\n\nThe hook we use for this is `useGroupClaimStatus`",
+      "line": 48
+    },
+    {
+      "file": "src/features/votes/hooks/useGroupClaimStatus.ts",
+      "description": "`useGroupClaimStatus` checks if a user has claimed for a given tree - `useHasClaimedForTree` is a fairly simple contract read hook.",
+      "line": 22
+    },
+    {
+      "file": "src/features/votes/hooks/useGroupClaimStatus.ts",
+      "description": "This memo function checks if the user voted, and how many points they earned (using the same logic as `useGroupMerkleTree`), as well as some properties to help build a useful UI.",
+      "line": 30
+    },
+    {
+      "file": "src/features/votes/PastEpochCard.tsx",
+      "description": "If the user has qualified to earn points we generate a proof that they can submit to the contract. The contract then checks this proof against the root to validate the claim.",
+      "line": 52
+    },
+    {
+      "file": "src/features/votes/PastEpochCard.tsx",
+      "description": "Because this is the place where we aggregate all the data use to determine whether or not a user can claim, and how many points they earned, etc, once we have the information, we pass it up to a `zustand` store so that it can be used by the `ClaimFloat` and the claim modal.",
+      "line": 77
+    },
+    {
+      "file": "src/features/votes/store/useClaimSelectionStore.tsx",
+      "description": "The `zustand` store is fairly simple/standard and stores the transitory UI state like which claims are selected, and whether or not to show the claim modal.\n\nWe also store the `Claim` objects including value and proof so we can submit them later.",
+      "line": 13
+    },
+    {
+      "file": "src/features/votes/ClaimFloat.tsx",
+      "description": "`ClaimFloat` uses the information to decide whether to show itself (if any points are claimable, and if the modal is not visible).",
+      "line": 12
+    },
+    {
+      "file": "src/features/votes/VoteList.tsx",
+      "description": "When the user clicks claim, we simply have to show the modal.\n\nBecause of the `zustand` store, the modal can get all of the info it needs itself, so we don't need to pass anything in.",
+      "line": 72
+    },
+    {
+      "file": "src/features/votes/VoteList.tsx",
+      "description": "The modal simply renders a `ClaimForm`",
+      "line": 77
+    },
+    {
+      "file": "src/features/claims/ClaimForm.tsx",
+      "description": "The `ClaimForm`'s job is to display a list of claimable tokens within the reward pool, and the amount of tokens the user can withdraw given the points they have selected.",
+      "line": 26
+    },
+    {
+      "file": "src/features/claims/ClaimForm.tsx",
+      "description": "Most of the info required for the claim modal comes from the selected claims in the zustand store.",
+      "line": 36
+    },
+    {
+      "file": "src/features/claims/ClaimForm.tsx",
+      "description": "The user can claim any token that the contract has a balance of, but figuring out which tokens the contract holds is extremely work-intensive.\n\nAs a result we will manually maintain a list of tokens that we'll check the contract's balance of. This is likely to be fairly easy to maintain as users will only really be interested in the top 5-10 token balances when claiming, and these will tend to be the more commonly traded coins such as stables and \"bluechips\".\n\nIf it becomes a bottleneck alternative solutions incl. APIs could be considered in future.",
+      "line": 20
+    },
+    {
+      "file": "src/features/claims/ClaimForm.tsx",
+      "description": "For each of the tokens we show a `ClaimableTokensLineItem`.",
+      "line": 116
+    },
+    {
+      "file": "src/features/claims/ClaimableTokensLineItem.tsx",
+      "description": "This component simply checks the amount claimable given the number of points the user is claiming with using a simple contract read hook `useClaimableAmount`, and displays a checkbox to let the user select the token as the one they wish to withdraw.",
+      "line": 5
+    },
+    {
+      "file": "src/features/claims/ClaimForm.tsx",
+      "description": "After we've submitted the tx, we clear the selection in zustand, and trigger a reset of the claims queries for the user.",
+      "line": 83
+    },
+    {
+      "file": "src/features/claims/hooks/useResetClaimStatus.tsx",
+      "description": "Here we are resetting any query calling a function `claimed` and passing a first arg contained within the array of `treeId`s passed to this hook, and a second arg of the user's address.\n\nIn this way we can bulk reset queries for a given set of `treeId`s.\n\nFor reference, here's the queryKey of one such contract read:\n\n```json\n[\n  {\n    \"entity\": \"readContract\",\n    \"account\": null,\n    \"address\": \"0xFeEFD5F62A10277fF8082a80735a8380033439d0\",\n    \"args\": [\n      \"0x932e62806398261366b98d1fba53da28754f8d25d7fa4f6df65834668214c9ee\", // treeId\n      \"---removed my address---\" // account\n    ],\n    \"blockNumber\": null,\n    \"blockTag\": null,\n    \"chainId\": 5,\n    \"functionName\": \"claimed\",\n    \"scopeKey\": null\n  }\n]\n```",
+      "line": 9
+    }
+  ],
+  "ref": "feat/claims-flow"
+}
