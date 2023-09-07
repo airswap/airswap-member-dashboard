@@ -37,10 +37,13 @@ export const Modal = ({
       }}
       className={twMerge(
         "backdrop:bg-slate-900/50 backdrop:backdrop-blur-[2px]",
+        "bg-transparent",
         className,
       )}
     >
-      <div className="p-4">{children}</div>
+      <div className="px-6 py-7 bg-gray-900 border border-[#1F2937] rounded-lg">
+        {children}
+      </div>
     </dialog>
   );
 };

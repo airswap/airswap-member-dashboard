@@ -1,51 +1,97 @@
 import { format } from "@greypixel_/nicenumbers";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { MdClose, MdOpenInNew } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { useAccount } from "wagmi";
 import { Accordion } from "../common/Accordion";
 import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
-import { SetRootButton } from "./SetRootButton";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
-import { useGroupHash } from "./hooks/useGroupHash";
+import { useGroupMerkleProof } from "./hooks/useGroupMerkleProof";
 import { Proposal } from "./hooks/useGroupedProposals";
-import { useEpochSelectionStore } from "./store/useEpochSelectionStore";
+import { useTreeRoots } from "./hooks/useTreeRoots";
+import { useClaimSelectionStore } from "./store/useClaimSelectionStore";
 import { getEpochName } from "./utils/getEpochName";
+
+const SNAPSHOT_WEB = import.meta.env.VITE_SNAPSHOT_WEB;
+const SNAPSHOT_SPACE = import.meta.env.VITE_SNAPSHOT_SPACE;
 
 export const PastEpochCard = ({
   proposalGroup,
-  proposalGroupState,
 }: {
   proposalGroup: Proposal[];
-  proposalGroupState: ReturnType<typeof useGroupClaimStatus>;
 }) => {
-  const [setEpochSelected, selectedEpochs, setPointsClaimableForEpoch] =
-    useEpochSelectionStore((state) => [
-      state.setEpochSelected,
-      state.selectedEpochs,
-      state.setPointsClaimableForEpoch,
-    ]);
+  const { address: connectedAccount } = useAccount();
+  const [
+    isClaimSelected,
+    setClaimSelected,
+    selectedClaims,
+    setPointsClaimableForEpoch,
+    addClaim,
+    removeClaimForTree,
+  ] = useClaimSelectionStore((state) => [
+    state.isClaimSelected,
+    state.setClaimSelected,
+    state.selectedClaims,
+    state.setPointsClaimableForEpoch,
+    state.addClaim,
+    state.removeClaimForTree,
+  ]);
+
+  const {
+    pointsEarned,
+    hasUserClaimed,
+    votedForProposal,
+    votedOnAllProposals,
+    treeId,
+  } = useGroupClaimStatus({
+    proposalGroup,
+  });
+
+  const proof = useGroupMerkleProof({
+    proposalIds: proposalGroup.map((p) => p.id),
+    enabled: !!connectedAccount && !hasUserClaimed && votedOnAllProposals,
+    vote: {
+      voter: connectedAccount!,
+      vp: pointsEarned,
+    },
+  });
+
+  const [{ data: root }] = useTreeRoots({
+    treeIds: [treeId],
+  });
+
+  const claim = useMemo(() => {
+    return {
+      proof: proof!,
+      tree: treeId,
+      value: pointsEarned,
+    };
+  }, [pointsEarned, proof, treeId]);
 
   useEffect(() => {
-    setPointsClaimableForEpoch(
-      proposalGroup[0].id,
-      proposalGroupState.pointsEarned,
-    );
+    if (root && !hasUserClaimed) {
+      setPointsClaimableForEpoch(proposalGroup[0].id, pointsEarned);
+      addClaim(claim);
+    } else {
+      setPointsClaimableForEpoch(proposalGroup[0].id, 0);
+      removeClaimForTree(treeId);
+    }
   }, [
+    addClaim,
+    claim,
+    removeClaimForTree,
+    treeId,
     proposalGroup,
-    proposalGroupState.pointsEarned,
-    proposalGroupState.hasUserClaimed,
+    pointsEarned,
+    hasUserClaimed,
     setPointsClaimableForEpoch,
+    root,
   ]);
 
   const { isConnected: isWalletConnected } = useAccount();
 
   const proposalGroupTitle = getEpochName(proposalGroup[0]) + " Epoch";
-  const groupId = useGroupHash(proposalGroup);
-
-  const SNAPSHOT_WEB = import.meta.env.VITE_SNAPSHOT_WEB;
-  const SNAPSHOT_SPACE = import.meta.env.VITE_SNAPSHOT_SPACE;
 
   const trigger = (
     <div className="flex w-full items-center justify-between pr-4 font-semibold">
@@ -53,17 +99,19 @@ export const PastEpochCard = ({
       <div className="flex items-center">
         {/* Checkbox */}
         <div className="align-center -mt-1 ml-0.5 mr-4 items-center ">
-          {!proposalGroupState.hasUserClaimed && (
+          {!hasUserClaimed && (
             <Checkbox
               className={twJoin(!isWalletConnected && "invisible")}
               disabled={
-                proposalGroupState.hasUserClaimed ||
-                proposalGroupState.pointsEarned === 0
+                !root || // disabled if there's no root
+                hasUserClaimed || // or if the user has already claimed
+                pointsEarned === 0 || // or if there are no points to claim
+                !proof // or if proof isn't ready yet.
               }
-              checked={selectedEpochs.includes(proposalGroup[0].id)}
-              onCheckedChange={(newState) =>
-                setEpochSelected(proposalGroup[0].id, newState as boolean)
-              }
+              checked={isClaimSelected(treeId)}
+              onCheckedChange={(newState) => {
+                setClaimSelected(claim, newState as boolean);
+              }}
             />
           )}
         </div>
@@ -72,23 +120,25 @@ export const PastEpochCard = ({
       </div>
 
       {/* Points */}
-      <div className="flex flex-row gap-4">
-        <SetRootButton groupId={groupId} proposalGroup={proposalGroup} />
-        <div
-          className={twJoin([
-            "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
-            "flex flex-row items-center gap-2 ring-1 ring-border-dark",
-            proposalGroupState.hasUserClaimed && "text-font-secondary",
-          ])}
-        >
-          {/* TODO: small numbers of points probably don't need decimals. */}
-          {format(proposalGroupState.pointsEarned, {
-            tokenDecimals: 0,
-            significantFigures: 3,
-            minDecimalPlaces: 0,
-          })}
-          &nbsp; Points
-        </div>
+      <div
+        className={twJoin([
+          "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
+          "flex flex-row items-center gap-2 ring-1 ring-border-dark",
+          hasUserClaimed && "text-gray-500",
+        ])}
+      >
+        {hasUserClaimed && (
+          <span className="text-accent-lightgreen">
+            <CheckMark size={20} />
+          </span>
+        )}
+        {/* TODO: small numbers of points probably don't need decimals. */}
+        {format(pointsEarned, {
+          tokenDecimals: 0,
+          significantFigures: 3,
+          minDecimalPlaces: 0,
+        })}
+        &nbsp; Points {hasUserClaimed && " claimed "}
       </div>
     </div>
   );
@@ -102,7 +152,7 @@ export const PastEpochCard = ({
       key={proposal.id}
     >
       <div className="justify-self-center p-4">
-        {proposalGroupState.votedForProposal[i] ? (
+        {votedForProposal[i] ? (
           <span className="text-accent-lightgreen">
             <CheckMark size={20} />
           </span>
@@ -132,7 +182,7 @@ export const PastEpochCard = ({
     <Accordion
       rootStyles="w-full items-center border border-border-dark rounded"
       trigger={trigger}
-      itemId={groupId}
+      itemId={treeId}
       content={content}
     />
   );

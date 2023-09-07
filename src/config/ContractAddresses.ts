@@ -17,6 +17,6 @@ export const contractAddressesByChain: Record<number, ContractList> = {
     [ContractTypes.AirSwapToken]: "0x1a1ec25DC08e98e5E93F1104B5e5cdD298707d31",
     [ContractTypes.AirSwapStaking]:
       "0x51F372bE64F0612532F28142cECF8F204B272622",
-    [ContractTypes.AirSwapPool]: "0xdC5A7e47248C1d22E5A9770E5A94D041F6725EbA",
+    [ContractTypes.AirSwapPool]: "0xFeEFD5F62A10277fF8082a80735a8380033439d0",
   },
 };

@@ -49,6 +49,10 @@ export const useGroupMerkleTree = (
         voter: userData.address,
       }));
 
+    if (!qualifyingVoters.length) {
+      console.warn(`No qualifying voters for proposal set!`);
+      return;
+    }
     const leaves = qualifyingVoters.map(generateMerkleLeaf);
     return new MerkleTree(leaves, keccak256, { sort: true });
   }, [votes, proposalIds.length]);

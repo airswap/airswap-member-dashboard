@@ -4,47 +4,42 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
-import { AirSwapPoolAbi } from "../../abi/AirSwapPool";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
+import { poolAbi } from "../../contracts/poolAbi";
 import { Button } from "../common/Button";
+import { useGroupHash } from "./hooks/useGroupHash";
 import { useGroupMerkleRoot } from "./hooks/useGroupMerkleRoot";
 import { Proposal } from "./hooks/useGroupedProposals";
 import { useIsPoolAdmin } from "./hooks/useIsPoolAdmin";
-import { useRootByTree } from "./hooks/useRootByTree";
+import { useTreeRoots } from "./hooks/useTreeRoots";
 
-const EMPTY_ROOT =
-  "0x0000000000000000000000000000000000000000000000000000000000000000";
 /**
  * Button to set the root for a proposal. Only shown to pool admins.
  */
 export const SetRootButton = ({
   className,
-  groupId,
   proposalGroup,
 }: {
   className?: string;
-  groupId: `0x${string}`;
   proposalGroup: Proposal[];
 }) => {
   // Only admins can submit roots
   const { data: isPoolAdmin } = useIsPoolAdmin();
-  // We only want to show the submit root button if there isn't already a root set
-  const {
-    data: existingRoot,
-    isLoading: existingRootLoading,
-    refetch: refetchRoot,
-  } = useRootByTree({
-    treeId: groupId,
-    enabled: isPoolAdmin,
-  });
+  const groupHash = useGroupHash(proposalGroup);
 
-  const hasRoot = !existingRootLoading && existingRoot !== EMPTY_ROOT;
+  const hasEnded = proposalGroup[0].end * 1000 < Date.now();
+
+  // We only want to show the submit root button if there isn't already a root set
+  const [{ data: existingRoot, refetch: refetchRoot, isError }] = useTreeRoots({
+    treeIds: [groupHash],
+    enabled: isPoolAdmin && hasEnded,
+  });
 
   // Calculate the root when we have one
   const { data: merkleRoot } = useGroupMerkleRoot(
     proposalGroup.map((p) => p.id),
-    { enabled: !hasRoot },
+    { enabled: !!isPoolAdmin && existingRoot === null },
   );
 
   // Write the root
@@ -57,10 +52,10 @@ export const SetRootButton = ({
 
   const { config } = usePrepareContractWrite({
     ...airswapPool,
-    abi: AirSwapPoolAbi,
+    abi: poolAbi,
     functionName: "enable",
-    args: [groupId, merkleRoot!],
-    enabled: !!merkleRoot && merkleRoot !== "0x",
+    args: [groupHash, merkleRoot!],
+    enabled: !!merkleRoot,
   });
   const { write: sendRoot, data: sendRootTxData } = useContractWrite(config);
 
@@ -76,7 +71,7 @@ export const SetRootButton = ({
   });
 
   // If the root is already set, or we don't have one to set yet, show nothing.
-  if (!isPoolAdmin || hasRoot || !merkleRoot || merkleRoot === "0x")
+  if (!hasEnded || !isPoolAdmin || existingRoot !== null || !merkleRoot)
     return null;
 
   return (
