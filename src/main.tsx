@@ -3,7 +3,6 @@ import {
   QueryClientProvider,
   QueryKey,
 } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { WagmiConfig, configureChains, createConfig, mainnet } from "wagmi";
@@ -12,7 +11,7 @@ import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
-import { alchemyProvider } from "wagmi/providers/alchemy";
+import { infuraProvider } from "wagmi/providers/infura";
 import { publicProvider } from "wagmi/providers/public";
 import App from "./App.tsx";
 import AirSwapLogo from "./assets/airswap-logo.svg";
@@ -22,7 +21,7 @@ import { isPlainObject } from "./utils/isPlainObject.ts";
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli],
   [
-    alchemyProvider({ apiKey: import.meta.env.VITE_ALCHEMY_API_KEY || "" }),
+    infuraProvider({ apiKey: import.meta.env.VITE_INFURA_API_KEY || "" }),
     publicProvider(),
   ],
   {
