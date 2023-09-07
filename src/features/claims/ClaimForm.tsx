@@ -79,7 +79,7 @@ export const ClaimForm = ({}: {}) => {
 
   const { data, write } = useContractWrite({
     ...claimTxConfig,
-    onSuccess: (data) => {
+    onSuccess: () => {
       resetClaimStatuses();
       clearSelectedClaims();
       setShowClaimModal(false);
