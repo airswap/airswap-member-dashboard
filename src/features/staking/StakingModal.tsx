@@ -1,199 +1,120 @@
-import { FC, RefObject, useCallback, useEffect, useState } from "react";
+import { FC, RefObject, useState } from "react";
 import { useForm } from "react-hook-form";
+import { ImSpinner8 } from "react-icons/im";
 import { VscChromeClose } from "react-icons/vsc";
 import { twJoin } from "tailwind-merge";
-import {
-  useContractRead,
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from "wagmi";
-import { ContractTypes } from "../../config/ContractAddresses";
-import { useContractAddresses } from "../../config/hooks/useContractAddress";
-import { astAbi } from "../../contracts/astAbi";
-import { stakingAbi } from "../../contracts/stakingAbi";
-import { Button } from "../common/Button";
-import ApproveSuccess from "./subcomponents/ApproveSuccess";
-import ManageStake from "./subcomponents/ManageStake";
-import PendingTransaction from "./subcomponents/PendingTransaction";
-import TransactionFailed from "./subcomponents/TransactionFailed";
-import { StatusStaking } from "./types/StakingTypes";
-import { buttonStatusText } from "./utils/buttonStatusText";
-import { modalHeadline } from "./utils/headline";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
+import { Button } from "../common/Button";
+import { useApproveAst } from "./hooks/useApproveAst";
+import { useAstAllowance } from "./hooks/useAstAllowance";
+import { useStakeAst } from "./hooks/useStakeAst";
+import { useUnstakeSast } from "./hooks/useUnstakeSast";
+import { ApproveSuccess } from "./subcomponents/ApproveSuccess";
+import { ManageStake } from "./subcomponents/ManageStake";
+import { StakeOrUnstake } from "./types/StakingTypes";
+import {
+  buttonLoadingSpinner,
+  buttonStatusText,
+  handleButtonActions,
+  modalHeadline,
+} from "./utils/helpers";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>;
-  address: `0x${string}`;
   chainId: number;
 }
 
-const StakingModal: FC<StakingModalInterface> = ({
+export const StakingModal: FC<StakingModalInterface> = ({
   stakingModalRef,
-  address,
   chainId,
 }) => {
-  const [statusStaking, setStatusStaking] =
-    useState<StatusStaking>("unapproved");
+  const [stakeOrUnstake, setStakeOrUnstake] = useState<StakeOrUnstake>(
+    StakeOrUnstake.STAKE,
+  );
 
-  const {
-    register,
-    watch,
-    setValue,
-    // formState: { errors },
-  } = useForm<{ stakingAmount: number }>();
+  const formReturn = useForm();
+  const { watch, setValue } = formReturn;
   const stakingAmount = watch("stakingAmount") || "0";
 
-  const { astBalanceFormatted: astBalance } = useTokenBalances();
+  const { astAllowanceFormatted: astAllowance } = useAstAllowance();
+  const { ustakableSAstBalanceFormatted } = useTokenBalances();
 
-  const [AirSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
-    defaultChainId: 1,
-    useDefaultAsFallback: true,
-  });
-  const [AirSwapStaking] = useContractAddresses(
-    [ContractTypes.AirSwapStaking],
-    {
-      defaultChainId: 1,
-      useDefaultAsFallback: true,
-    },
-  );
+  const needsApproval =
+    stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > 0
+      ? Number(astAllowance) < stakingAmount
+      : false;
 
-  const { refetch: refetchAllowance } = useContractRead(
-    {
-      address: AirSwapToken.address,
-      abi: astAbi,
-      functionName: "allowance",
-      args: [address, AirSwapStaking.address as `0x${string}`],
-      watch: true,
-      staleTime: 300_000, // 5 minutes,
-    },
-  );
+  const canUnstake =
+    stakeOrUnstake === StakeOrUnstake.UNSTAKE && stakingAmount > 0
+      ? stakingAmount <= Number(ustakableSAstBalanceFormatted)
+      : false;
 
-  // Start approve functionse
-  const { config: configApprove } = usePrepareContractWrite({
-    address: AirSwapToken.address,
-    abi: astAbi,
-    functionName: "approve",
-    staleTime: 300_000, // 5 minutes,
-    cacheTime: Infinity,
-    args: [
-      AirSwapStaking.address as `0x${string}`,
-      BigInt(+stakingAmount * Math.pow(10, 4)),
-    ],
-    enabled: !!stakingAmount,
-  });
-  const { writeAsync: approve, data: dataApprove } =
-    useContractWrite(configApprove);
-
-  // TODO: code below can probably be refactored
-  // check transaction status and hash
-  const { data: hashApprove, status: statusApprove } = useWaitForTransaction({
-    hash: dataApprove?.hash,
-    onSettled() {
-      // putting this logic into useEffect hook will never allow statusApprove to not equal "success"
-      if (statusApprove === "success") {
-        setStatusStaking("approved");
-      }
-    },
+  const { approve, statusApprove } = useApproveAst({
+    stakingAmount,
+    enabled: needsApproval,
   });
 
-  const needsApproval = +astBalance < +stakingAmount;
+  const { stake, resetStake, transactionReceiptStake, statusStake } =
+    useStakeAst({
+      stakingAmount,
+      enabled: !needsApproval,
+    });
 
-  const handleClickApprove = useCallback(async () => {
-    if (approve) {
-      const receipt = await approve();
-      await receipt;
-      refetchAllowance();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [approve]);
+  const { unstake, resetUnstake, statusUnstake, transactionReceiptUnstake } =
+    useUnstakeSast({
+      unstakingAmount: stakingAmount,
+      canUnstake,
+    });
 
-  // start staking funtion
-  const { config: configStake } = usePrepareContractWrite({
-    address: AirSwapStaking.address,
-    abi: stakingAbi,
-    functionName: "stake",
-    args: [BigInt(+stakingAmount * Math.pow(10, 4))],
-    staleTime: 300_000, // 5 minutes,
-    cacheTime: Infinity,
-    enabled: !needsApproval && +stakingAmount > 0,
+  const buttonText = buttonStatusText({
+    stakeOrUnstake,
+    needsApproval,
+    statusApprove,
+    statusStake,
+    statusUnstake,
   });
 
-  const { writeAsync: stake, data: dataStakeFunction } =
-    useContractWrite(configStake);
-
-  // TODO: code below can probably be refactored
-  // check transaction status and hash
-  const { data: hashStake, status: statusStakeAst } = useWaitForTransaction({
-    hash: dataStakeFunction?.hash,
-    onSettled() {
-      if (statusStakeAst === "success") {
-        setStatusStaking("success");
-      }
-    },
-    onError(err) {
-      console.log("Error", err);
-      setStatusStaking("failed");
-    },
+  const isLoadingSpinner = buttonLoadingSpinner({
+    stakeOrUnstake,
+    needsApproval,
+    statusApprove,
+    statusStake,
+    statusUnstake,
   });
 
-  const handleClickStake = useCallback(async () => {
-    if (stake) {
-      const receipt = await stake();
-      await receipt;
-      await console.log(receipt);
-    }
-  }, [stake]);
+  const isButtonDisabled =
+    stakingAmount <= 0 ||
+    buttonText === "Approving..." ||
+    buttonText === "Staking..." ||
+    buttonText === "Unstaking...";
 
-  const headline = modalHeadline(statusStaking);
+  const headline = modalHeadline({ statusStake, statusUnstake });
 
-  // button should not render on certain components
-  const shouldRenderBtn = () => {
-    if (
-      statusStaking === "approving" ||
-      statusStaking === "approved" ||
-      statusStaking === "staking"
-    ) {
+  const renderManageStake = () => {
+    if (statusStake === "success") {
+      return false;
+    } else if (statusUnstake === "success") {
+      return false;
+    } else {
       return true;
     }
   };
-  const isShouldRenderBtn = shouldRenderBtn();
+  const isRenderManageStake = renderManageStake();
 
-  const buttonText = buttonStatusText(statusStaking);
-
-  const buttonAction = () => {
-    if (statusStaking === "unapproved") {
-      return approve && handleClickApprove();
-    } else if (statusStaking === "readyToStake") {
-      return stake && handleClickStake();
-    } else if (statusStaking === "success") {
-      setStatusStaking("unapproved");
-    }
-  };
+  const isRenderApproveSuccess =
+    statusStake === "success" || statusUnstake === "success";
 
   const handleCloseModal = () => {
     stakingModalRef.current && stakingModalRef.current.close();
     setValue("stakingAmount", 0);
   };
 
-  useEffect(() => {
-    // putting this into `onSettled` in `useWaitForTransaction` will cause too much lag
-    if (statusApprove === "loading") {
-      setStatusStaking("approving");
-    }
-
-    if (statusStakeAst === "loading") {
-      setStatusStaking("staking");
-    }
-    console.log("statusStaking", statusStaking);
-  }, [stakingAmount, statusApprove, statusStaking, statusStakeAst]);
-
   return (
     <dialog
-      className={twJoin(
+      className={twJoin([
         "content-center border border-border-darkGray bg-black p-6 text-white",
-        ["w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/5"],
-      )}
+        "w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3",
+      ])}
       ref={stakingModalRef}
     >
       <div className="flex justify-between">
@@ -202,44 +123,51 @@ const StakingModal: FC<StakingModalInterface> = ({
           <VscChromeClose />
         </div>
       </div>
-      {statusStaking === "unapproved" || statusStaking === "readyToStake" ? (
-        <ManageStake register={register} setValue={setValue} />
+      {isRenderManageStake ? (
+        <ManageStake
+          formReturn={formReturn}
+          stakeOrUnstake={stakeOrUnstake}
+          setStakeOrUnstake={setStakeOrUnstake}
+          loadingStatus={[statusApprove, statusStake, statusUnstake]}
+        />
       ) : null}
 
-      {statusStaking === "approving" || statusStaking === "staking" ? (
-        <PendingTransaction statusStaking={statusStaking} />
-      ) : null}
-
-      {statusStaking === "approved" || statusStaking === "success" ? (
+      {isRenderApproveSuccess ? (
         <ApproveSuccess
-          statusStaking={statusStaking}
-          setStatusStaking={setStatusStaking}
-          amountApproved={stakingAmount.toString()}
-          amountStaked={stakingAmount.toString()}
+          stakeOrUnstake={stakeOrUnstake}
+          statusUnstake={statusUnstake}
+          amount={stakingAmount.toString()}
           chainId={chainId}
-          transactionHashApprove={hashApprove?.transactionHash}
-          transactionHashStake={hashStake?.transactionHash}
+          transactionHashStake={transactionReceiptStake?.transactionHash}
+          transactionHashUnstake={transactionReceiptUnstake?.transactionHash}
         />
       ) : null}
 
-      {statusStaking === "failed" ? (
-        <TransactionFailed
-          setStatusStaking={setStatusStaking}
-          chainId={chainId}
-          transactionHash="0x"
-        />
-      ) : null}
-
-      {!isShouldRenderBtn && (
-        <Button
-          className="mb-2 mt-10 w-full rounded-sm bg-accent-blue font-semibold uppercase"
-          onClick={buttonAction}
-        >
-          {buttonText}
-        </Button>
-      )}
+      <Button
+        className={twJoin([
+          "flex flex-row items-center mb-2 mt-10 w-full rounded-sm bg-accent-blue font-semibold uppercase justify-center",
+          `${isButtonDisabled && "opacity-50"}`,
+        ])}
+        onClick={() => {
+          handleButtonActions({
+            stakeOrUnstake,
+            needsApproval,
+            statusStake,
+            statusUnstake,
+            resetStake,
+            resetUnstake,
+            canUnstake,
+            approve,
+            stake,
+            unstake,
+            setValue,
+          });
+        }}
+        disabled={isButtonDisabled}
+      >
+        {isLoadingSpinner && <ImSpinner8 className="animate-spin mr-2 " />}
+        <span>{buttonText}</span>
+      </Button>
     </dialog>
   );
 };
-
-export default StakingModal;

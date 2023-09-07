@@ -1,81 +1,63 @@
-import { Dispatch, FC } from "react";
+import { FC } from "react";
 import { IoMdOpen } from "react-icons/io";
 import greenCheck from "../../../assets/check-green.svg";
-import { etherscanLink } from "../../../utils/constants";
-import { StatusStaking } from "../types/StakingTypes";
+import { StakeOrUnstake, Status } from "../types/StakingTypes";
+import { etherscanLink } from "../utils/helpers";
 
 interface ApproveSuccessProps {
-  statusStaking: StatusStaking;
-  setStatusStaking: Dispatch<StatusStaking>;
-  amountApproved?: string;
-  amountStaked?: string;
+  stakeOrUnstake: StakeOrUnstake;
+  statusUnstake: Status;
+  amount: string;
   chainId: number;
-  transactionHashApprove?: string | undefined;
   transactionHashStake?: string | undefined;
+  transactionHashUnstake?: string | undefined;
 }
 
-const ApproveSuccess: FC<ApproveSuccessProps> = ({
-  statusStaking,
-  setStatusStaking,
-  amountApproved,
-  amountStaked,
+export const ApproveSuccess: FC<ApproveSuccessProps> = ({
+  stakeOrUnstake,
+  amount,
   chainId,
-  transactionHashApprove,
   transactionHashStake,
+  transactionHashUnstake,
 }) => {
-  const handleCloseMessage = () => {
-    if (statusStaking === "approved") {
-      setStatusStaking("readyToStake");
-    } else if (statusStaking === "success") {
-      setStatusStaking("unapproved");
-    }
-  };
+  const message =
+    stakeOrUnstake === StakeOrUnstake.STAKE
+      ? "You've successfully staked"
+      : "You've successfully unstaked";
 
-  const message = () => {
-    if (statusStaking === "approved") {
-      return "You successfully approved";
-    } else if (statusStaking === "success") {
-      return "You successfully staked";
-    }
+  const asset = stakeOrUnstake === StakeOrUnstake.STAKE ? "AST" : "sAST";
+
+  const handleBlockExplorerLink = () => {
+    const userAction = StakeOrUnstake.STAKE
+      ? transactionHashStake
+      : transactionHashUnstake;
+
+    return (
+      <a
+        href={etherscanLink(chainId || 1, userAction)}
+        target="_"
+        className="flex flex-row items-center text-font-darkSubtext"
+      >
+        <span className="mr-1">View on Etherscan</span>
+        <IoMdOpen />
+      </a>
+    );
   };
+  const blockExplorerLink = handleBlockExplorerLink();
 
   return (
     <div className="flex flex-col items-center p-6">
       <div className="rounded-full border border-border-darkShaded bg-black p-2">
-        <img src={greenCheck} alt="green check" onClick={handleCloseMessage} />
+        <img src={greenCheck} alt="green check" />
       </div>
       <div className="my-4 text-font-darkSubtext">
-        <span>{message()}</span>
+        <span>{message}</span>
         <span className="ml-1 font-medium text-white">
-          <span>
-            {statusStaking === "approved" ? amountApproved : amountStaked}
-          </span>
-          <span className="ml-1">AST</span>
+          <span>{amount}</span>
+          <span className="ml-1">{asset}</span>
         </span>
       </div>
-      <div className="flex items-center text-font-darkSubtext">
-        <span>View on Etherscan</span>
-        <div className="ml-2">
-          {statusStaking === "approved" && (
-            <a
-              href={etherscanLink(chainId || 1, transactionHashApprove)}
-              target="_"
-            >
-              <IoMdOpen />
-            </a>
-          )}
-          {statusStaking === "staking" && (
-            <a
-              href={etherscanLink(chainId || 1, transactionHashStake)}
-              target="_"
-            >
-              <IoMdOpen />
-            </a>
-          )}
-        </div>
-      </div>
+      <div>{blockExplorerLink}</div>
     </div>
   );
 };
-
-export default ApproveSuccess;

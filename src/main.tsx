@@ -88,7 +88,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <WagmiConfig config={config}>
         <App />
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </WagmiConfig>
     </QueryClientProvider>
   </React.StrictMode>,
