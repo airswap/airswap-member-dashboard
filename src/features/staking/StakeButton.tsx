@@ -1,13 +1,12 @@
 import { useRef } from "react";
 import { twJoin } from "tailwind-merge";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { StakingModal } from "./StakingModal";
 
 export const StakeButton = ({}: {}) => {
   const { address, isConnected } = useAccount();
-  const { chain } = useNetwork();
 
   const stakingModalRef = useRef<HTMLDialogElement | null>(null);
 
@@ -32,10 +31,7 @@ export const StakeButton = ({}: {}) => {
       </div>
 
       {isConnected && address && (
-        <StakingModal
-          stakingModalRef={stakingModalRef}
-          chainId={chain?.id || 1}
-        />
+        <StakingModal stakingModalRef={stakingModalRef} />
       )}
     </>
   );

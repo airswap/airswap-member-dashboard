@@ -1,5 +1,7 @@
 import { FieldValues, UseFormSetValue } from "react-hook-form";
+import { Hash } from "viem";
 import { WriteContractResult } from "wagmi/actions";
+import { ChainId } from "../types/Chains";
 import { StakeOrUnstake, Status } from "../types/StakingTypes";
 
 export const buttonStatusText = ({
@@ -77,15 +79,15 @@ export const modalHeadline = ({
 };
 
 export const etherscanLink = (
-  chainId: number,
-  transactionHash: string | undefined,
+  chainId: number | undefined,
+  transactionHash: Hash | undefined,
 ) => {
-  const chainUrls: { [x: number]: string } = {
-    1: "https://etherscan.io/tx/",
-    5: "https://goerli.etherscan.io/tx/",
+  const chainUrls: { [key in ChainId]: string } = {
+    [ChainId.Mainnet]: "https://etherscan.io/tx/",
+    [ChainId.Goerli]: "https://goerli.etherscan.io/tx/",
   };
 
-  return `${chainUrls[chainId]}${transactionHash}`;
+  return `${chainUrls[(chainId as ChainId) || 1]}${transactionHash}`;
 };
 
 export const handleButtonActions = ({

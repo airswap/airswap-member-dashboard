@@ -41,13 +41,17 @@ export const useUnstakeSast = ({
     reset: resetUnstake,
   } = useContractWrite(configUnstake);
 
-  const { data: transactionReceiptUnstake, status: statusUnstake } =
-    useWaitForTransaction({ hash: data?.hash });
+  const {
+    data: transactionReceiptUnstake,
+    status: statusUnstake,
+    isError: isErrorUnstake,
+  } = useWaitForTransaction({ hash: data?.hash });
 
   return {
     unstake,
     resetUnstake,
     statusUnstake,
     transactionReceiptUnstake,
+    isErrorUnstake,
   };
 };

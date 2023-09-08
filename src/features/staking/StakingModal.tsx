@@ -5,12 +5,12 @@ import { VscChromeClose } from "react-icons/vsc";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
+import { ManageStake } from "./ManageStake";
+import { TransactionTracker } from "./TransactionTracker";
 import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useStakeAst } from "./hooks/useStakeAst";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
-import { ApproveSuccess } from "./subcomponents/ApproveSuccess";
-import { ManageStake } from "./subcomponents/ManageStake";
 import { StakeOrUnstake } from "./types/StakingTypes";
 import {
   buttonLoadingSpinner,
@@ -21,12 +21,10 @@ import {
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>;
-  chainId: number;
 }
 
 export const StakingModal: FC<StakingModalInterface> = ({
   stakingModalRef,
-  chainId,
 }) => {
   const [stakeOrUnstake, setStakeOrUnstake] = useState<StakeOrUnstake>(
     StakeOrUnstake.STAKE,
@@ -49,22 +47,32 @@ export const StakingModal: FC<StakingModalInterface> = ({
       ? stakingAmount <= Number(ustakableSAstBalanceFormatted)
       : false;
 
-  const { approve, statusApprove } = useApproveAst({
+  const { approve, statusApprove, isErrorApprove } = useApproveAst({
     stakingAmount,
     enabled: needsApproval,
   });
 
-  const { stake, resetStake, transactionReceiptStake, statusStake } =
-    useStakeAst({
-      stakingAmount,
-      enabled: !needsApproval,
-    });
+  const {
+    stake,
+    resetStake,
+    transactionReceiptStake,
+    statusStake,
+    isErrorStake,
+  } = useStakeAst({
+    stakingAmount,
+    enabled: !needsApproval,
+  });
 
-  const { unstake, resetUnstake, statusUnstake, transactionReceiptUnstake } =
-    useUnstakeSast({
-      unstakingAmount: stakingAmount,
-      canUnstake,
-    });
+  const {
+    unstake,
+    resetUnstake,
+    statusUnstake,
+    transactionReceiptUnstake,
+    isErrorUnstake,
+  } = useUnstakeSast({
+    unstakingAmount: stakingAmount,
+    canUnstake,
+  });
 
   const buttonText = buttonStatusText({
     stakeOrUnstake,
@@ -101,9 +109,6 @@ export const StakingModal: FC<StakingModalInterface> = ({
   };
   const isRenderManageStake = renderManageStake();
 
-  const isRenderApproveSuccess =
-    statusStake === "success" || statusUnstake === "success";
-
   const handleCloseModal = () => {
     stakingModalRef.current && stakingModalRef.current.close();
     setValue("stakingAmount", 0);
@@ -132,16 +137,18 @@ export const StakingModal: FC<StakingModalInterface> = ({
         />
       ) : null}
 
-      {isRenderApproveSuccess ? (
-        <ApproveSuccess
-          stakeOrUnstake={stakeOrUnstake}
-          statusUnstake={statusUnstake}
-          amount={stakingAmount.toString()}
-          chainId={chainId}
-          transactionHashStake={transactionReceiptStake?.transactionHash}
-          transactionHashUnstake={transactionReceiptUnstake?.transactionHash}
-        />
-      ) : null}
+      <TransactionTracker
+        stakeOrUnstake={stakeOrUnstake}
+        stakingAmount={stakingAmount}
+        statusApprove={statusApprove}
+        statusStake={statusStake}
+        statusUnstake={statusUnstake}
+        isErrorArrays={[isErrorApprove, isErrorStake, isErrorUnstake]}
+        transactionHashArray={[
+          transactionReceiptStake,
+          transactionReceiptUnstake,
+        ]}
+      />
 
       <Button
         className={twJoin([

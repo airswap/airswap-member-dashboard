@@ -1,13 +1,13 @@
 import { Dispatch, FC } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
-import AirSwapLogo from "../../../assets/airswap-logo.svg";
-import { useTokenBalances } from "../../../hooks/useTokenBalances";
-import { Button } from "../../common/Button";
-import { LineBreak } from "../../common/LineBreak";
-import { StakeOrUnstake, Status } from "../types/StakingTypes";
+import AirSwapLogo from "../../assets/airswap-logo.svg";
+import { useTokenBalances } from "../../hooks/useTokenBalances";
+import { Button } from "../common/Button";
+import { LineBreak } from "../common/LineBreak";
 import { NumberInput } from "./NumberInput";
 import { StakableBar } from "./StakableBar";
+import { StakeOrUnstake, Status } from "./types/StakingTypes";
 
 interface ManageStakeProps {
   formReturn: UseFormReturn<FieldValues>;

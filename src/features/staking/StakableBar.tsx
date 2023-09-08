@@ -1,7 +1,7 @@
 import { BsCircleFill } from "react-icons/bs";
-import { useTokenBalances } from "../../../hooks/useTokenBalances";
-import "../../../index.css";
-import { calculateTokenProportions } from "../utils/calculateTokenProportions";
+import { useTokenBalances } from "../../hooks/useTokenBalances";
+import "../../index.css";
+import { calculateTokenProportions } from "./utils/calculateTokenProportions";
 
 /**
  * @param unstakable - balance of sAST available to unstake
