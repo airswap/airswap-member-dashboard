@@ -12,12 +12,10 @@ import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useStakeAst } from "./hooks/useStakeAst";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
 import { StakeOrUnstake } from "./types/StakingTypes";
-import {
-  buttonLoadingSpinner,
-  buttonStatusText,
-  handleButtonActions,
-  modalHeadline,
-} from "./utils/helpers";
+import { buttonStatusText } from "./utils/buttonStatusText";
+import { handleButtonActions } from "./utils/handleButtonActions";
+import { modalHeadline } from "./utils/modalHeadline";
+import { renderButtonLoadingSpinner } from "./utils/renderButtonLoadingSpinner";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>;
@@ -47,10 +45,11 @@ export const StakingModal: FC<StakingModalInterface> = ({
       ? stakingAmount <= Number(ustakableSAstBalanceFormatted)
       : false;
 
-  const { approve, statusApprove, isErrorApprove } = useApproveAst({
-    stakingAmount,
-    enabled: needsApproval,
-  });
+  const { approve, statusApprove, isErrorApprove, transactionReceiptApprove } =
+    useApproveAst({
+      stakingAmount,
+      enabled: needsApproval,
+    });
 
   const {
     stake,
@@ -82,7 +81,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
     statusUnstake,
   });
 
-  const isLoadingSpinner = buttonLoadingSpinner({
+  const isLoadingSpinner = renderButtonLoadingSpinner({
     stakeOrUnstake,
     needsApproval,
     statusApprove,
@@ -143,11 +142,12 @@ export const StakingModal: FC<StakingModalInterface> = ({
         statusApprove={statusApprove}
         statusStake={statusStake}
         statusUnstake={statusUnstake}
-        isErrorArrays={[isErrorApprove, isErrorStake, isErrorUnstake]}
-        transactionHashArray={[
-          transactionReceiptStake,
-          transactionReceiptUnstake,
-        ]}
+        isErrorApprove={isErrorApprove}
+        isErrorStake={isErrorStake}
+        isErrorUnstake={isErrorUnstake}
+        transactionHashApprove={transactionReceiptApprove}
+        transactionHashStake={transactionReceiptStake}
+        transactionHashUnstake={transactionReceiptUnstake}
       />
 
       <Button

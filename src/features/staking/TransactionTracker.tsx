@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { twJoin } from "tailwind-merge";
 import { Hash, TransactionReceipt } from "viem";
 import { useNetwork } from "wagmi";
@@ -7,23 +7,18 @@ import closeRed from "../../../src/assets/close-red.svg";
 import loadingSpinner from "../../../src/assets/loading-spinner.svg";
 import { EtherscanUrl } from "../common/EtherscanUrl";
 import { LineBreak } from "../common/LineBreak";
-import { StakeOrUnstake, Status } from "./types/StakingTypes";
-import { etherscanLink } from "./utils/helpers";
+import { trackerStatusTransactionType } from "../votes/utils/trackerStatusTransactionType";
+import {
+  StakeOrUnstake,
+  Status,
+  TransactionTrackerStatus,
+} from "./types/StakingTypes";
+import { etherscanLink } from "./utils/etherscanLink";
 import {
   TransactionTrackerHeadline,
   transactionTrackerDescription,
   transactionTrackerMessages,
 } from "./utils/transactionTrackerMessages";
-
-type TransactionTrackerStatus =
-  | "ApprovePending"
-  | "ApproveSuccess"
-  | "StakePending"
-  | "StakeSuccess"
-  | "UnstakePending"
-  | "UnstakeSuccess"
-  | "Failed"
-  | undefined;
 
 interface TransactionTrackerProps {
   stakeOrUnstake: StakeOrUnstake;
@@ -31,8 +26,12 @@ interface TransactionTrackerProps {
   statusApprove: Status;
   statusStake: Status;
   statusUnstake: Status;
-  isErrorArrays: boolean[];
-  transactionHashArray: (TransactionReceipt | undefined)[];
+  isErrorApprove: boolean;
+  isErrorStake: boolean;
+  isErrorUnstake: boolean;
+  transactionHashApprove: TransactionReceipt | undefined;
+  transactionHashStake: TransactionReceipt | undefined;
+  transactionHashUnstake: TransactionReceipt | undefined;
 }
 
 /**
@@ -42,8 +41,12 @@ interface TransactionTrackerProps {
  * @param statusApprove indicates if `approve` transaction is taking place
  * @param statusStake indicates if `stake` transaction is taking place
  * @param statusUnstake indicates if `unstake` transaction is taking place
- * @param isErrorArrays array is `isError` boolean returned from useWaitForTransaction wagmi hooks in various custom hooks
- * @param transactionHashArray array of transaction hashes or undefined values. Values originate from `data` return object from useWaitForTransaction wagmi hook, in 'useApproveAst', 'useStakeAst' and 'useUnstakeAst' hooks
+ * @param isErrorApprove boolean indicates if `approve` function returns error
+ * @param isErrorStake boolean indicates if `stake` function returns error
+ * @param isErrorUnstake boolean indicates if `unstake` function returns error
+ * @param transactionHashApprove returns an object containing transaction hash from `approve` function
+ * @param transactionHashStake returns an object containing transaction hash from `stake` function
+ * @param transactionHashUnstake returns an object containing transaction hash from `unstake` function
  * @returns component which renders state about pending, approved, or failed transactions for approval, staking, or unstaking transactions
  */
 
@@ -53,42 +56,37 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
   statusApprove,
   statusStake,
   statusUnstake,
-  isErrorArrays,
-  transactionHashArray,
+  isErrorApprove,
+  isErrorStake,
+  isErrorUnstake,
+  transactionHashApprove,
+  transactionHashStake,
+  transactionHashUnstake,
 }) => {
-  const [trackerStatus, setTrackerStatus] =
-    useState<TransactionTrackerStatus>(undefined);
+  const [trackerStatus, setTrackerStatus] = useState<
+    TransactionTrackerStatus | undefined
+  >(undefined);
   const [transactionHash, setTransactionHash] = useState<Hash | undefined>(
     undefined,
   );
   const { chain } = useNetwork();
 
-  const isError = isErrorArrays.some((isError) => isError);
+  const isError = isErrorApprove || isErrorStake || isErrorUnstake;
 
   const asset = stakeOrUnstake === StakeOrUnstake.STAKE ? "AST" : "sAST";
 
   const headline = trackerStatus && TransactionTrackerHeadline[trackerStatus];
-
   const message = trackerStatus && transactionTrackerMessages[trackerStatus];
-
   const description =
     trackerStatus && transactionTrackerDescription[trackerStatus];
 
+  // Only display "amount staked" etc, if transaction is successful
   const shouldRenderTokenAmount =
     statusApprove === "success" ||
     statusStake === "success" ||
     statusUnstake === "success";
 
   const shouldRenderEtherscanUrl = shouldRenderTokenAmount || isError;
-
-  const filterDefinedTransactionHash = useMemo(() => {
-    return (
-      transactionHashArray.filter(
-        (transactionHash: TransactionReceipt | undefined) =>
-          transactionHash && !!transactionHash.transactionHash,
-      ) || []
-    );
-  }, [transactionHashArray]);
 
   const blockExplorerLink = etherscanLink(chain?.id, transactionHash);
   const etherscanUrl = EtherscanUrl(blockExplorerLink);
@@ -110,71 +108,61 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
       case "Failed":
         return closeRed;
       default:
-        return "";
+        return undefined;
     }
   };
   const icon = renderIcon();
 
   useEffect(() => {
     // set status of component
-    if (statusApprove === "loading") {
-      setTrackerStatus("ApprovePending");
-    } else if (statusApprove === "success") {
-      setTrackerStatus("ApproveSuccess");
-    } else if (statusStake === "loading") {
-      setTrackerStatus("StakePending");
-    } else if (statusStake === "success") {
-      setTrackerStatus("StakeSuccess");
-    } else if (statusUnstake === "loading") {
-      setTrackerStatus("UnstakePending");
-    } else if (statusUnstake === "success") {
-      setTrackerStatus("UnstakeSuccess");
-    } else if (isError) {
-      setTrackerStatus("Failed");
-    } else {
-      setTrackerStatus(undefined);
-    }
+    trackerStatusTransactionType({
+      statusApprove,
+      statusStake,
+      statusUnstake,
+      isError,
+      setTrackerStatus,
+    });
 
     // set etherscan URL
-    if (filterDefinedTransactionHash.length > 0) {
-      setTransactionHash(filterDefinedTransactionHash[0]?.transactionHash);
+    if (transactionHashApprove) {
+      setTransactionHash(transactionHashApprove.transactionHash);
+    } else if (transactionHashStake) {
+      setTransactionHash(transactionHashStake.transactionHash);
+    } else if (transactionHashUnstake) {
+      setTransactionHash(transactionHashUnstake.transactionHash);
     }
   }, [
     statusApprove,
     statusStake,
     statusUnstake,
     isError,
-    filterDefinedTransactionHash,
+    transactionHashApprove,
+    transactionHashStake,
+    transactionHashUnstake,
   ]);
 
   return (
     <>
-      {!trackerStatus ? (
+      {trackerStatus ? (
         <div className="flex flex-col items-center p-6">
           <h2 className="font-semibold">{headline}</h2>
           <div className="my-2">
             <LineBreak />
           </div>
 
-          {icon === greenCheck && (
-            <div className="rounded-full border border-border-darkShaded bg-black p-2">
-              <img src={greenCheck} alt="green check" />
-            </div>
-          )}
-          {icon === loadingSpinner && (
-            <div className="m-auto animate-spin p-2">
-              <img src={loadingSpinner} alt="loading spinner" />
-            </div>
-          )}
-          {icon === closeRed && (
-            <div className="rounded-full border border-border-darkShaded bg-black p-2">
-              <img src={closeRed} alt="green check" />
-            </div>
-          )}
+          <div
+            className={twJoin([
+              `${icon && "none"}`,
+              "rounded-full border border-border-darkShaded bg-black p-2",
+              `${icon === loadingSpinner && "m-auto animate-spin"}`,
+            ])}
+          >
+            <img src={icon} alt={icon?.toString()} />
+          </div>
 
           <div className="my-4 text-font-darkSubtext">
             <span className="flex flex-row">
-              <span>{"message"}</span>
+              <span>{message}</span>
               {shouldRenderTokenAmount && (
                 <span className="ml-1 font-medium text-white">
                   <span>{stakingAmount}</span>
