@@ -1,6 +1,6 @@
 import { FieldValues, UseFormSetValue } from "react-hook-form";
 import { WriteContractResult } from "wagmi/actions";
-import { StakeOrUnstake, Status } from "../types/StakingTypes";
+import { Status } from "../types/StakingTypes";
 
 /**
  *
@@ -8,7 +8,6 @@ import { StakeOrUnstake, Status } from "../types/StakingTypes";
  */
 
 export const handleButtonActions = ({
-  stakeOrUnstake,
   needsApproval,
   statusStake,
   statusUnstake,
@@ -20,7 +19,6 @@ export const handleButtonActions = ({
   unstake,
   setValue,
 }: {
-  stakeOrUnstake: StakeOrUnstake;
   needsApproval: boolean;
   statusStake: Status;
   statusUnstake: Status;
@@ -32,19 +30,17 @@ export const handleButtonActions = ({
   unstake: (() => void) | undefined;
   setValue: UseFormSetValue<FieldValues>;
 }) => {
-  const stakeMode = stakeOrUnstake === StakeOrUnstake.STAKE;
-
-  if (stakeMode && statusStake === "success") {
+  if (statusStake === "success") {
     setValue("stakingAmount", 0);
     return resetStake && resetStake();
-  } else if (!stakeMode && statusUnstake === "success") {
+  } else if (statusUnstake === "success") {
     setValue("stakingAmount", 0);
     return resetUnstake && resetUnstake();
-  } else if (stakeMode && needsApproval) {
+  } else if (needsApproval) {
     return approve && approve();
-  } else if (stakeMode && !needsApproval) {
-    return stake && stake();
-  } else if (!stakeMode && canUnstake) {
+  } else if (canUnstake) {
     return unstake && unstake();
+  } else if (!needsApproval) {
+    return stake && stake();
   }
 };

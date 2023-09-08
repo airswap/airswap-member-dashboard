@@ -33,7 +33,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const stakingAmount = watch("stakingAmount") || "0";
 
   const { astAllowanceFormatted: astAllowance } = useAllowance();
-  const { ustakableSAstBalanceFormatted } = useTokenBalances();
+  const { ustakableSAstBalanceFormatted: unstakableSAst } = useTokenBalances();
 
   const needsApproval =
     stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > 0
@@ -42,7 +42,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
 
   const canUnstake =
     stakeOrUnstake === StakeOrUnstake.UNSTAKE && stakingAmount > 0
-      ? stakingAmount <= Number(ustakableSAstBalanceFormatted)
+      ? stakingAmount <= Number(unstakableSAst)
       : false;
 
   const { approve, statusApprove, isErrorApprove, transactionReceiptApprove } =
@@ -88,8 +88,6 @@ export const StakingModal: FC<StakingModalInterface> = ({
     buttonText === "Unstaking...";
 
   const isLoadingSpinner = renderButtonLoadingSpinner({
-    stakeOrUnstake,
-    needsApproval,
     statusApprove,
     statusStake,
     statusUnstake,
@@ -174,7 +172,6 @@ export const StakingModal: FC<StakingModalInterface> = ({
         ])}
         onClick={() => {
           handleButtonActions({
-            stakeOrUnstake,
             needsApproval,
             statusStake,
             statusUnstake,

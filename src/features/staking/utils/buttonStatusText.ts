@@ -20,12 +20,10 @@ export const buttonStatusText = ({
   const unstaking = stakeOrUnstake === StakeOrUnstake.UNSTAKE;
   if (unstaking && statusUnstake === "idle") {
     return "Unstake";
-  } else if (unstaking && statusUnstake === "loading") {
+  } else if (statusUnstake === "loading") {
     return "Unstaking...";
-  } else if (unstaking && statusUnstake === "success") {
+  } else if (statusUnstake === "success" || statusStake === "success") {
     return "Manage stake";
-  } else if (statusStake === "success") {
-    return "Manage Stake";
   } else if (needsApproval && statusApprove === "idle") {
     return "Approve token";
   } else if (needsApproval && statusApprove === "loading") {
