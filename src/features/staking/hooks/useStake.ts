@@ -7,7 +7,7 @@ import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { stakingAbi } from "../../../contracts/stakingAbi";
 
-export const useStakeAst = ({
+export const useStake = ({
   stakingAmount,
   enabled = true,
 }: {

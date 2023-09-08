@@ -144,7 +144,7 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
   return (
     <>
       {trackerStatus ? (
-        <div className="flex flex-col items-center p-6">
+        <div className="flex flex-col items-center px-6">
           <h2 className="font-semibold">{headline}</h2>
           <div className="my-2">
             <LineBreak />
@@ -153,7 +153,7 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
           <div
             className={twJoin([
               `${icon && "none"}`,
-              "rounded-full border border-border-darkShaded bg-black p-2",
+              "rounded-full border border-border-darkShaded bg-black p-2 mt-6",
               `${icon === loadingSpinner && "m-auto animate-spin"}`,
             ])}
           >
@@ -163,15 +163,15 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
           <div className="my-4 text-font-darkSubtext">
             <span className="flex flex-row">
               <span>{message}</span>
-              {shouldRenderTokenAmount && (
+              {shouldRenderTokenAmount ? (
                 <span className="ml-1 font-medium text-white">
                   <span>{stakingAmount}</span>
                   <span className="ml-1">{asset}</span>
                 </span>
-              )}
+              ) : null}
             </span>
           </div>
-          {shouldRenderEtherscanUrl && <div>{etherscanUrl}</div>}
+          {shouldRenderEtherscanUrl ? <div>{etherscanUrl}</div> : null}
           <div
             className={twJoin(
               "rounded px-4 py-3 text-sm",

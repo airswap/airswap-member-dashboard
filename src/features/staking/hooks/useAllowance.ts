@@ -4,7 +4,7 @@ import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
 
-export const useAstAllowance = () => {
+export const useAllowance = () => {
   const { address } = useAccount();
   const { chain } = useNetwork();
   const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
