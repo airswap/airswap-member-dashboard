@@ -22,7 +22,10 @@ export const ManageStake: FC<ManageStakeProps> = ({
   setStakeOrUnstake,
   loadingStatus,
 }) => {
-  const { astBalanceFormatted: astBalance } = useTokenBalances();
+  const {
+    astBalanceFormatted: astBalance,
+    ustakableSAstBalanceFormatted: unstakableSAstBalance,
+  } = useTokenBalances();
 
   const isButtonDisabled = loadingStatus.some((status) => status === "loading");
 
@@ -76,7 +79,18 @@ export const ManageStake: FC<ManageStakeProps> = ({
               name="stakingAmount"
             />
           </div>
-          <span className="text-xs">{astBalance} stakable</span>
+          <div className="text-xs space-x-1">
+            <span>
+              {stakeOrUnstake === StakeOrUnstake.STAKE
+                ? astBalance
+                : unstakableSAstBalance}
+            </span>
+            <span>
+              {stakeOrUnstake === StakeOrUnstake.STAKE
+                ? "stakable"
+                : "unstakable"}
+            </span>
+          </div>
         </div>
       </div>
     </>

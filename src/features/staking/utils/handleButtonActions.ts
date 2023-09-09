@@ -30,17 +30,31 @@ export const handleButtonActions = ({
   unstake: (() => void) | undefined;
   setValue: UseFormSetValue<FieldValues>;
 }) => {
-  if (statusStake === "success") {
-    setValue("stakingAmount", 0);
-    return resetStake && resetStake();
-  } else if (statusUnstake === "success") {
-    setValue("stakingAmount", 0);
-    return resetUnstake && resetUnstake();
-  } else if (needsApproval) {
-    return approve && approve();
-  } else if (canUnstake) {
-    return unstake && unstake();
-  } else if (!needsApproval) {
-    return stake && stake();
+  const handleReset = (status: Status, resetFunc: (() => void) | undefined) => {
+    if (status === "success") {
+      setValue("stakingAmount", 0);
+      resetFunc && resetFunc();
+      return true;
+    }
+    return false;
+  };
+
+  if (
+    handleReset(statusStake, resetStake) ||
+    handleReset(statusUnstake, resetUnstake)
+  ) {
+    return;
+  }
+
+  if (needsApproval && approve) {
+    return approve();
+  }
+
+  if (canUnstake && unstake) {
+    return unstake();
+  }
+
+  if (!needsApproval && stake) {
+    return stake();
   }
 };

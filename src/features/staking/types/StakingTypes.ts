@@ -12,11 +12,13 @@ export enum ChainId {
   Goerli = 5,
 }
 
-export type TransactionTrackerStatus =
-  | "ApprovePending"
-  | "ApproveSuccess"
-  | "StakePending"
-  | "StakeSuccess"
-  | "UnstakePending"
-  | "UnstakeSuccess"
-  | "Failed";
+export enum TransactionState {
+  ApprovePending = "ApprovePending",
+  ApproveSuccess = "ApproveSuccess",
+  StakePending = "StakePending",
+  StakeSuccess = "StakeSuccess",
+  UnstakePending = "UnstakePending",
+  UnstakeSuccess = "UnstakeSuccess",
+  Failed = "Failed",
+  Idle = "Idle",
+}

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { Dispatch, FC, useEffect, useState } from "react";
 import { twJoin } from "tailwind-merge";
 import { Hash, TransactionReceipt } from "viem";
 import { useNetwork } from "wagmi";
@@ -8,20 +8,14 @@ import loadingSpinner from "../../../src/assets/loading-spinner.svg";
 import { EtherscanUrl } from "../common/EtherscanUrl";
 import { LineBreak } from "../common/LineBreak";
 import { trackerStatusTransactionType } from "../votes/utils/trackerStatusTransactionType";
-import {
-  StakeOrUnstake,
-  Status,
-  TransactionTrackerStatus,
-} from "./types/StakingTypes";
+import { StakeOrUnstake, Status, TransactionState } from "./types/StakingTypes";
 import { etherscanLink } from "./utils/etherscanLink";
-import {
-  TransactionTrackerHeadline,
-  transactionTrackerDescription,
-  transactionTrackerMessages,
-} from "./utils/transactionTrackerMessages";
+import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
 
 interface TransactionTrackerProps {
   stakeOrUnstake: StakeOrUnstake;
+  trackerStatus: TransactionState;
+  setTrackerStatus: Dispatch<TransactionState>;
   stakingAmount: string;
   statusApprove: Status;
   statusStake: Status;
@@ -52,6 +46,8 @@ interface TransactionTrackerProps {
 
 export const TransactionTracker: FC<TransactionTrackerProps> = ({
   stakeOrUnstake,
+  trackerStatus,
+  setTrackerStatus,
   stakingAmount,
   statusApprove,
   statusStake,
@@ -63,9 +59,6 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
   transactionHashStake,
   transactionHashUnstake,
 }) => {
-  const [trackerStatus, setTrackerStatus] = useState<
-    TransactionTrackerStatus | undefined
-  >(undefined);
   const [transactionHash, setTransactionHash] = useState<Hash | undefined>(
     undefined,
   );
@@ -75,10 +68,11 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
 
   const asset = stakeOrUnstake === StakeOrUnstake.STAKE ? "AST" : "sAST";
 
-  const headline = trackerStatus && TransactionTrackerHeadline[trackerStatus];
-  const message = trackerStatus && transactionTrackerMessages[trackerStatus];
-  const description =
-    trackerStatus && transactionTrackerDescription[trackerStatus];
+  // const message = transactionTrackerMessages[trackerStatus];
+  // const description = transactionTrackerDescription[trackerStatus];
+  const trackerDetails = transactionTrackerMessages[trackerStatus];
+  const message = trackerDetails.message;
+  const description = trackerDetails.description;
 
   // Only display "amount staked" etc, if transaction is successful
   const shouldRenderTokenAmount =
@@ -136,6 +130,7 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
     statusStake,
     statusUnstake,
     isError,
+    setTrackerStatus,
     transactionHashApprove,
     transactionHashStake,
     transactionHashUnstake,
@@ -143,16 +138,16 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
 
   return (
     <>
-      {trackerStatus ? (
+      {/* `trackrStatus === "Idle"` indicates that no transactions are happening  */}
+      {trackerStatus !== "Idle" ? (
         <div className="flex flex-col items-center px-6">
-          <h2 className="font-semibold">{headline}</h2>
           <div className="my-2">
             <LineBreak />
           </div>
 
           <div
             className={twJoin([
-              `${icon && "none"}`,
+              `${!icon && "none"}`,
               "rounded-full border border-border-darkShaded bg-black p-2 mt-6",
               `${icon === loadingSpinner && "m-auto animate-spin"}`,
             ])}
@@ -176,6 +171,13 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
             className={twJoin(
               "rounded px-4 py-3 text-sm",
               "dark:bg-bg-darkShaded",
+              `${
+                trackerStatus === "StakeSuccess" ||
+                trackerStatus === "UnstakeSuccess" ||
+                trackerStatus === "ApproveSuccess"
+                  ? "hidden"
+                  : null
+              }`,
             )}
           >
             {description}

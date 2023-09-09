@@ -1,8 +1,5 @@
 import { Dispatch } from "react";
-import {
-  Status,
-  TransactionTrackerStatus,
-} from "../../staking/types/StakingTypes";
+import { Status, TransactionState } from "../../staking/types/StakingTypes";
 
 /**
  *
@@ -19,23 +16,23 @@ export const trackerStatusTransactionType = ({
   statusStake: Status;
   statusUnstake: Status;
   isError: boolean;
-  setTrackerStatus: Dispatch<TransactionTrackerStatus | undefined>;
+  setTrackerStatus: Dispatch<TransactionState>;
 }) => {
   if (statusApprove === "loading") {
-    setTrackerStatus("ApprovePending");
+    setTrackerStatus(TransactionState.ApprovePending);
   } else if (statusApprove === "success") {
-    setTrackerStatus("ApproveSuccess");
+    setTrackerStatus(TransactionState.ApproveSuccess);
   } else if (statusStake === "loading") {
-    setTrackerStatus("StakePending");
+    setTrackerStatus(TransactionState.StakePending);
   } else if (statusStake === "success") {
-    setTrackerStatus("StakeSuccess");
+    setTrackerStatus(TransactionState.StakeSuccess);
   } else if (statusUnstake === "loading") {
-    setTrackerStatus("UnstakePending");
+    setTrackerStatus(TransactionState.UnstakePending);
   } else if (statusUnstake === "success") {
-    setTrackerStatus("UnstakeSuccess");
+    setTrackerStatus(TransactionState.UnstakeSuccess);
   } else if (isError) {
-    setTrackerStatus("Failed");
+    setTrackerStatus(TransactionState.Failed);
   } else {
-    setTrackerStatus(undefined);
+    setTrackerStatus(TransactionState.Idle);
   }
 };

@@ -11,11 +11,11 @@ import { useAllowance } from "./hooks/useAllowance";
 import { useApprove } from "./hooks/useApprove";
 import { useStake } from "./hooks/useStake";
 import { useUnstake } from "./hooks/useUnstake";
-import { StakeOrUnstake } from "./types/StakingTypes";
+import { StakeOrUnstake, TransactionState } from "./types/StakingTypes";
 import { buttonStatusText } from "./utils/buttonStatusText";
 import { handleButtonActions } from "./utils/handleButtonActions";
-import { modalHeadline } from "./utils/modalHeadline";
 import { renderButtonLoadingSpinner } from "./utils/renderButtonLoadingSpinner";
+import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
 
 interface StakingModalInterface {
   stakingModalRef: RefObject<HTMLDialogElement>;
@@ -27,6 +27,9 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const [stakeOrUnstake, setStakeOrUnstake] = useState<StakeOrUnstake>(
     StakeOrUnstake.STAKE,
   );
+  const [trackerStatus, setTrackerStatus] = useState<TransactionState>(
+    TransactionState.Idle,
+  );
 
   const formReturn = useForm();
   const { watch, setValue } = formReturn;
@@ -35,15 +38,8 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const { astAllowanceFormatted: astAllowance } = useAllowance();
   const { ustakableSAstBalanceFormatted: unstakableSAst } = useTokenBalances();
 
-  const needsApproval =
-    stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > 0
-      ? Number(astAllowance) < stakingAmount
-      : false;
-
-  const canUnstake =
-    stakeOrUnstake === StakeOrUnstake.UNSTAKE && stakingAmount > 0
-      ? stakingAmount <= Number(unstakableSAst)
-      : false;
+  const needsApproval = stakingAmount > +astAllowance;
+  const canUnstake = stakingAmount <= +unstakableSAst;
 
   const { approve, statusApprove, isErrorApprove, transactionReceiptApprove } =
     useApprove({
@@ -81,11 +77,12 @@ export const StakingModal: FC<StakingModalInterface> = ({
     statusUnstake,
   });
 
+  // button disabled if input is empty, or any transaction is pending
   const isButtonDisabled =
     stakingAmount <= 0 ||
-    buttonText === "Approving..." ||
-    buttonText === "Staking..." ||
-    buttonText === "Unstaking...";
+    statusApprove === "loading" ||
+    statusStake === "loading" ||
+    statusUnstake === "loading";
 
   const isLoadingSpinner = renderButtonLoadingSpinner({
     statusApprove,
@@ -93,7 +90,8 @@ export const StakingModal: FC<StakingModalInterface> = ({
     statusUnstake,
   });
 
-  const headline = modalHeadline({ statusStake, statusUnstake });
+  const trackerDetails = transactionTrackerMessages[trackerStatus];
+  const headline = trackerDetails.headline;
 
   // const renderManageStake = () => {
   //   if (statusStake === "success") {
@@ -106,16 +104,11 @@ export const StakingModal: FC<StakingModalInterface> = ({
   // };
   // const isRenderManageStake = renderManageStake();
 
-  // FIXME: this might need to be fixed/replaced after a UX discussion takes place
+  const relevantStatuses = ["loading", "error", "success"];
   const onlyShowTransactionTracker =
-    statusApprove === "loading" ||
-    statusApprove === "error" ||
-    statusStake === "loading" ||
-    statusStake === "error" ||
-    statusStake === "success" ||
-    statusUnstake === "loading" ||
-    statusUnstake === "error" ||
-    statusUnstake === "success";
+    relevantStatuses.includes(statusApprove) ||
+    relevantStatuses.includes(statusStake) ||
+    relevantStatuses.includes(statusUnstake);
 
   const handleCloseModal = () => {
     stakingModalRef.current && stakingModalRef.current.close();
@@ -131,11 +124,9 @@ export const StakingModal: FC<StakingModalInterface> = ({
       ref={stakingModalRef}
     >
       <div className="flex justify-between">
-        {!onlyShowTransactionTracker && (
-          <h2 className="font-semibold">{headline}</h2>
-        )}
+        <h2 className="font-semibold">{headline}</h2>
 
-        <div className="hover:cursor-pointer" onClick={handleCloseModal}>
+        <div className="hover:cursor-pointer  " onClick={handleCloseModal}>
           <VscChromeClose />
         </div>
       </div>
@@ -153,6 +144,8 @@ export const StakingModal: FC<StakingModalInterface> = ({
 
       <TransactionTracker
         stakeOrUnstake={stakeOrUnstake}
+        trackerStatus={trackerStatus}
+        setTrackerStatus={setTrackerStatus}
         stakingAmount={stakingAmount}
         statusApprove={statusApprove}
         statusStake={statusStake}
