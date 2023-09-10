@@ -10,6 +10,7 @@ import { StakableBar } from "./StakableBar";
 import { StakeOrUnstake, Status } from "./types/StakingTypes";
 
 interface ManageStakeProps {
+  displayManageStake: boolean;
   formReturn: UseFormReturn<FieldValues>;
   stakeOrUnstake: StakeOrUnstake;
   setStakeOrUnstake: Dispatch<StakeOrUnstake>;
@@ -17,6 +18,7 @@ interface ManageStakeProps {
 }
 
 export const ManageStake: FC<ManageStakeProps> = ({
+  displayManageStake = true,
   formReturn,
   stakeOrUnstake,
   setStakeOrUnstake,
@@ -30,7 +32,7 @@ export const ManageStake: FC<ManageStakeProps> = ({
   const isButtonDisabled = loadingStatus.some((status) => status === "loading");
 
   return (
-    <>
+    <div className={`${!displayManageStake && "hidden"}`}>
       <LineBreak />
       <StakableBar />
       <LineBreak />
@@ -93,6 +95,6 @@ export const ManageStake: FC<ManageStakeProps> = ({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };

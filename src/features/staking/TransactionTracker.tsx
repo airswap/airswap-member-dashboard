@@ -65,17 +65,16 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
   const { chain } = useNetwork();
 
   const isError = isErrorApprove || isErrorStake || isErrorUnstake;
-
-  const asset = stakeOrUnstake === StakeOrUnstake.STAKE ? "AST" : "sAST";
-
-  const message = transactionTrackerMessages[trackerStatus].message;
-  const description = transactionTrackerMessages[trackerStatus].description;
-
   // Only display "amount staked" etc, if transaction is successful
   const transactionSuccess =
     statusApprove === "success" ||
     statusStake === "success" ||
     statusUnstake === "success";
+
+  const asset = stakeOrUnstake === StakeOrUnstake.STAKE ? "AST" : "sAST";
+
+  const message = transactionTrackerMessages[trackerStatus].message;
+  const description = transactionTrackerMessages[trackerStatus].description;
 
   const shouldRenderEtherscanUrl = transactionSuccess || isError;
 

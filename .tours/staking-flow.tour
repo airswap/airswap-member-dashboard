@@ -9,8 +9,13 @@
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
-      "description": "trackerStatus corresponds to where the user is in the StakingFlow. These values change based on variables like `statusApprove`, `statusStake` and `statusUnstake` (these variables get declared later in this file)",
+      "description": "trackerStatus corresponds to where the user is in the StakingFlow. Custom hooks useApprove, useStake, and useUnstake return variables: statusApprove, statusStake, and statusUnstake, respectively. These 3 variables (each from Wagmi library), only return the following: \"idle\" || \"loading\" || \"success\" || \"error\". These extra details make it eaiser to manage the current state of transactions. `setTrackerStatus` eventually gets passed into `trackerStatusTransactionType`, which managed in a `useEffect` hook in TransactionTracker.tsx",
       "line": 29
+    },
+    {
+      "file": "src/features/staking/TransactionTracker.tsx",
+      "description": "This function manages the state of `trackerStatus`, which gets passed down as a prop from StakingModal.tsx",
+      "line": 109
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
@@ -30,22 +35,12 @@
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "handleButtonActions returns various functions depending on where a user is in the flow. For example, if a user wants to approve their tokens, this function will return the `approve` write function rather than the `stake` write function",
-      "line": 162
+      "line": 161
     },
     {
       "file": "src/features/staking/TransactionTracker.tsx",
       "description": "We only want the token amount to display after a successful transaction",
-      "line": 75
-    },
-    {
-      "file": "src/features/staking/ManageStake.tsx",
-      "description": "We want to disable the \"Stake\" and \"Unstake\" buttons if a transaction is in pending state",
-      "line": 30
-    },
-    {
-      "file": "src/features/staking/TransactionTracker.tsx",
-      "description": "Custom hooks useApprove, useStake, and useUnstake return variables: statusApprove, statusStake, and statusUnstake, respectively. These 3 variables (each from Wagmi library), only return the following: \"idle\" || \"loading\" || \"success\" || \"error\". By adding more details to the `TransactionState`, it becomes eaiser to manage the current state of transactions.",
-      "line": 109
+      "line": 69
     },
     {
       "file": "src/features/staking/TransactionTracker.tsx",

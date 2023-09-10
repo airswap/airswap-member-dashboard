@@ -127,14 +127,13 @@ export const StakingModal: FC<StakingModalInterface> = ({
       </div>
       {
         // isRenderManageStake ||
-        !onlyShowTransactionTracker ? (
-          <ManageStake
-            formReturn={formReturn}
-            stakeOrUnstake={stakeOrUnstake}
-            setStakeOrUnstake={setStakeOrUnstake}
-            loadingStatus={[statusApprove, statusStake, statusUnstake]}
-          />
-        ) : null
+        <ManageStake
+          displayManageStake={!onlyShowTransactionTracker}
+          formReturn={formReturn}
+          stakeOrUnstake={stakeOrUnstake}
+          setStakeOrUnstake={setStakeOrUnstake}
+          loadingStatus={[statusApprove, statusStake, statusUnstake]}
+        />
       }
 
       <TransactionTracker
