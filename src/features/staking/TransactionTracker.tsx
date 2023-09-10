@@ -84,19 +84,19 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
     switch (trackerStatus) {
       case "ApprovePending":
         // TODO: (remove comment or add back LoadingSpinner) - loadingSpinner was removed because the button already has a loading spinner
-        return null;
+        return "";
       // return loadingSpinner;
       case "ApproveSuccess":
         return greenCheck;
       case "StakePending":
         // TODO: (remove comment or add back LoadingSpinner) - loadingSpinner was removed because the button already has a loading spinner
-        return null;
+        return "";
       // return loadingSpinner;
       case "StakeSuccess":
         return greenCheck;
       case "UnstakePending":
         // TODO: (remove comment or add back LoadingSpinner) - loadingSpinner was removed because the button already has a loading spinner
-        return null;
+        return "";
       // return loadingSpinner;
       case "UnstakeSuccess":
         return greenCheck;
