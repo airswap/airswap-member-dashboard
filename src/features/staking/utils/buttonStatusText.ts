@@ -17,8 +17,6 @@ export const buttonStatusText = ({
   statusStake: Status;
   statusUnstake: Status;
 }) => {
-  // FIXME: can probably organize the following if else statements better
-
   // if statusApprove === "loading" && !needsApproval, button should still read "staking"
   if (stakeOrUnstake === StakeOrUnstake.UNSTAKE) {
     if (statusUnstake === "idle") {

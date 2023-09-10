@@ -14,7 +14,6 @@ import { useUnstake } from "./hooks/useUnstake";
 import { StakeOrUnstake, TransactionState } from "./types/StakingTypes";
 import { buttonStatusText } from "./utils/buttonStatusText";
 import { handleButtonActions } from "./utils/handleButtonActions";
-import { renderButtonLoadingSpinner } from "./utils/renderButtonLoadingSpinner";
 import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
 
 interface StakingModalInterface {
@@ -77,21 +76,17 @@ export const StakingModal: FC<StakingModalInterface> = ({
     statusUnstake,
   });
 
-  // button disabled if input is empty, or any transaction is pending
-  const isButtonDisabled =
-    stakingAmount <= 0 ||
+  const loadingTransactions =
     statusApprove === "loading" ||
     statusStake === "loading" ||
     statusUnstake === "loading";
 
-  const isLoadingSpinner = renderButtonLoadingSpinner({
-    statusApprove,
-    statusStake,
-    statusUnstake,
-  });
+  // button disabled if input is empty, or any transaction is pending
+  const isButtonDisabled = stakingAmount <= 0 || loadingTransactions;
 
-  const trackerDetails = transactionTrackerMessages[trackerStatus];
-  const headline = trackerDetails.headline;
+  const isLoadingSpinner = loadingTransactions;
+
+  const headline = transactionTrackerMessages[trackerStatus].headline;
 
   // const renderManageStake = () => {
   //   if (statusStake === "success") {

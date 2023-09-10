@@ -68,19 +68,16 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
 
   const asset = stakeOrUnstake === StakeOrUnstake.STAKE ? "AST" : "sAST";
 
-  // const message = transactionTrackerMessages[trackerStatus];
-  // const description = transactionTrackerDescription[trackerStatus];
-  const trackerDetails = transactionTrackerMessages[trackerStatus];
-  const message = trackerDetails.message;
-  const description = trackerDetails.description;
+  const message = transactionTrackerMessages[trackerStatus].message;
+  const description = transactionTrackerMessages[trackerStatus].description;
 
   // Only display "amount staked" etc, if transaction is successful
-  const shouldRenderTokenAmount =
+  const transactionSuccess =
     statusApprove === "success" ||
     statusStake === "success" ||
     statusUnstake === "success";
 
-  const shouldRenderEtherscanUrl = shouldRenderTokenAmount || isError;
+  const shouldRenderEtherscanUrl = transactionSuccess || isError;
 
   const blockExplorerLink = etherscanLink(chain?.id, transactionHash);
   const etherscanUrl = EtherscanUrl(blockExplorerLink);
@@ -137,53 +134,52 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
   ]);
 
   return (
-    <>
-      {/* `trackrStatus === "Idle"` indicates that no transactions are happening  */}
-      {trackerStatus !== "Idle" ? (
-        <div className="flex flex-col items-center px-6">
-          <div className="my-2">
-            <LineBreak />
-          </div>
+    <div
+      className={twJoin([
+        "flex flex-col items-center px-6",
+        `${trackerStatus === "Idle" && "hidden"}`,
+      ])}
+    >
+      <div className="my-2">
+        <LineBreak />
+      </div>
+      <div
+        className={twJoin([
+          `${!icon && "none"}`,
+          "rounded-full border border-border-darkShaded bg-black p-2 mt-6",
+          `${icon === loadingSpinner && "m-auto animate-spin"}`,
+        ])}
+      >
+        <img src={icon} alt={icon?.toString()} />
+      </div>
 
-          <div
-            className={twJoin([
-              `${!icon && "none"}`,
-              "rounded-full border border-border-darkShaded bg-black p-2 mt-6",
-              `${icon === loadingSpinner && "m-auto animate-spin"}`,
-            ])}
-          >
-            <img src={icon} alt={icon?.toString()} />
-          </div>
-
-          <div className="my-4 text-font-darkSubtext">
-            <span className="flex flex-row">
-              <span>{message}</span>
-              {shouldRenderTokenAmount ? (
-                <span className="ml-1 font-medium text-white">
-                  <span>{stakingAmount}</span>
-                  <span className="ml-1">{asset}</span>
-                </span>
-              ) : null}
+      <div className="my-4 text-font-darkSubtext">
+        <span className="flex flex-row">
+          <span>{message}</span>
+          {transactionSuccess ? (
+            <span className="ml-1 font-medium text-white">
+              <span>{stakingAmount}</span>
+              <span className="ml-1">{asset}</span>
             </span>
-          </div>
-          {shouldRenderEtherscanUrl ? <div>{etherscanUrl}</div> : null}
-          <div
-            className={twJoin(
-              "rounded px-4 py-3 text-sm",
-              "dark:bg-bg-darkShaded",
-              `${
-                trackerStatus === "StakeSuccess" ||
-                trackerStatus === "UnstakeSuccess" ||
-                trackerStatus === "ApproveSuccess"
-                  ? "hidden"
-                  : null
-              }`,
-            )}
-          >
-            {description}
-          </div>
-        </div>
-      ) : null}
-    </>
+          ) : null}
+        </span>
+      </div>
+      {shouldRenderEtherscanUrl ? <div>{etherscanUrl}</div> : null}
+      <div
+        className={twJoin(
+          "rounded px-4 py-3 text-sm",
+          "dark:bg-bg-darkShaded",
+          `${
+            trackerStatus === "StakeSuccess" ||
+            trackerStatus === "UnstakeSuccess" ||
+            trackerStatus === "ApproveSuccess"
+              ? "hidden"
+              : null
+          }`,
+        )}
+      >
+        {description}
+      </div>
+    </div>
   );
 };
