@@ -15,7 +15,7 @@
     {
       "file": "src/features/staking/TransactionTracker.tsx",
       "description": "This function manages the state of `trackerStatus`, which gets passed down as a prop from StakingModal.tsx",
-      "line": 109
+      "line": 113
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
@@ -45,7 +45,7 @@
     {
       "file": "src/features/staking/TransactionTracker.tsx",
       "description": "Different icons should render depending on where the user is in the staking flow",
-      "line": 85
+      "line": 83
     },
     {
       "file": "src/features/staking/StakingModal.tsx",

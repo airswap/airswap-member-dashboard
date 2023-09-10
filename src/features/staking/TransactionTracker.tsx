@@ -4,7 +4,6 @@ import { Hash, TransactionReceipt } from "viem";
 import { useNetwork } from "wagmi";
 import greenCheck from "../../../src/assets/check-green.svg";
 import closeRed from "../../../src/assets/close-red.svg";
-import loadingSpinner from "../../../src/assets/loading-spinner.svg";
 import { EtherscanUrl } from "../common/EtherscanUrl";
 import { LineBreak } from "../common/LineBreak";
 import { trackerStatusTransactionType } from "../votes/utils/trackerStatusTransactionType";
@@ -84,15 +83,21 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
   const renderIcon = () => {
     switch (trackerStatus) {
       case "ApprovePending":
-        return loadingSpinner;
+        // TODO: (remove comment or add back LoadingSpinner) - loadingSpinner was removed because the button already has a loading spinner
+        return null;
+      // return loadingSpinner;
       case "ApproveSuccess":
         return greenCheck;
       case "StakePending":
-        return loadingSpinner;
+        // TODO: (remove comment or add back LoadingSpinner) - loadingSpinner was removed because the button already has a loading spinner
+        return null;
+      // return loadingSpinner;
       case "StakeSuccess":
         return greenCheck;
       case "UnstakePending":
-        return loadingSpinner;
+        // TODO: (remove comment or add back LoadingSpinner) - loadingSpinner was removed because the button already has a loading spinner
+        return null;
+      // return loadingSpinner;
       case "UnstakeSuccess":
         return greenCheck;
       case "Failed":
@@ -146,7 +151,7 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
         className={twJoin([
           `${!icon && "none"}`,
           "rounded-full border border-border-darkShaded bg-black p-2 mt-6",
-          `${icon === loadingSpinner && "m-auto animate-spin"}`,
+          // `${icon === loadingSpinner && "m-auto animate-spin"}`,
         ])}
       >
         <img src={icon} alt={icon?.toString()} />
