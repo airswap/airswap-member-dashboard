@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import {
   useContractWrite,
   usePrepareContractWrite,
@@ -31,7 +32,10 @@ export const useUnstakeSast = ({
     address: airSwapStaking.address,
     abi: stakingAbi,
     functionName: "unstake",
-    args: [BigInt(unstakingAmount * Math.pow(10, 4))],
+    // args: [BigInt(+unstakingAmount * Math.pow(10, 4))],
+    args: [
+      BigInt(new BigNumber(unstakingAmount).multipliedBy(10 ** 4).toFixed(0)),
+    ],
     enabled: canUnstake,
   });
 

@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import {
   useContractWrite,
   usePrepareContractWrite,
@@ -26,8 +27,11 @@ export const useStakeAst = ({
     address: airSwapStaking.address,
     abi: stakingAbi,
     functionName: "stake",
-    args: [BigInt(+stakingAmount * Math.pow(10, 4))],
-    enabled: enabled && stakingAmount > 0,
+    // args: [BigInt(+stakingAmount * Math.pow(10, 4))],
+    args: [
+      BigInt(new BigNumber(+stakingAmount).multipliedBy(10 ** 4).toFixed(0)),
+    ],
+    enabled: enabled,
   });
 
   const {
