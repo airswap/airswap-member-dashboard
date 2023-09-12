@@ -41,7 +41,7 @@ export const NumberInput: FC<NumberInputProps> = ({
       })}
       className={twMerge(
         "items-right w-1/4 bg-black text-right text-white",
-        `${isDisabled && `text-dark-inactive`}`,
+        `${!isDisabled && `opacity-80`}`,
       )}
       // Input should be disabled if a transaction is loading
       disabled={isDisabled}
