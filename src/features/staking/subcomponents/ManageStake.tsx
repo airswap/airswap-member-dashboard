@@ -82,8 +82,8 @@ export const ManageStake: FC<ManageStakeProps> = ({
           <div>
             <NumberInput
               stakeOrUnstake={stakeOrUnstake}
-              astBalance={astBalance.toString()}
-              unstakableSAstBalance={unstakableSAstBalance.toString()}
+              astBalance={+astBalance}
+              unstakableSAstBalance={+unstakableSAstBalance}
               formReturn={formReturn}
               name="stakingAmount"
               isDisabled={!!isTransactionLoading}

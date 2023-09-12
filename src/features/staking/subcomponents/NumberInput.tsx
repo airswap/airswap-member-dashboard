@@ -1,24 +1,21 @@
-import { FC } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 import { StakeOrUnstake } from "../types/StakingTypes";
 
-interface NumberInputProps {
-  stakeOrUnstake: StakeOrUnstake;
-  astBalance: string;
-  unstakableSAstBalance: string;
-  formReturn: UseFormReturn<FieldValues>;
-  name: string;
-  isDisabled: boolean;
-}
-
-export const NumberInput: FC<NumberInputProps> = ({
+export const NumberInput = ({
   stakeOrUnstake,
   astBalance,
   unstakableSAstBalance,
   formReturn,
   name,
   isDisabled,
+}: {
+  stakeOrUnstake: StakeOrUnstake;
+  astBalance: number;
+  unstakableSAstBalance: number;
+  formReturn: UseFormReturn<FieldValues>;
+  name: string;
+  isDisabled: boolean;
 }) => {
   const { register, setValue } = formReturn;
 
@@ -34,16 +31,19 @@ export const NumberInput: FC<NumberInputProps> = ({
           stakeOrUnstake === StakeOrUnstake.STAKE
             ? astBalance
             : unstakableSAstBalance,
-        validate: (val) => typeof val === "number" && val > 0,
+        validate: (val) => !isNaN(val) && val > 0,
         onChange: (e) => {
+          if (isNaN(e.target.value) && e.target.value !== ".") {
+            setValue(name, "");
+          }
+
           setValue(name, e.target.value);
         },
       })}
       className={twMerge(
         "items-right w-1/4 bg-black text-right text-white",
-        `${!isDisabled && `opacity-80`}`,
+        !isDisabled && "opacity-80",
       )}
-      // Input should be disabled if a transaction is loading
       disabled={isDisabled}
     />
   );
