@@ -1,6 +1,6 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
-import { twJoin } from "tailwind-merge";
+import { twMerge } from "tailwind-merge";
 import { StakeOrUnstake } from "../types/StakingTypes";
 
 interface NumberInputProps {
@@ -9,6 +9,7 @@ interface NumberInputProps {
   unstakableSAstBalance: string;
   formReturn: UseFormReturn<FieldValues>;
   name: string;
+  isDisabled: boolean;
 }
 
 export const NumberInput: FC<NumberInputProps> = ({
@@ -17,10 +18,9 @@ export const NumberInput: FC<NumberInputProps> = ({
   unstakableSAstBalance,
   formReturn,
   name,
+  isDisabled,
 }) => {
-  const { register, setValue, getValues } = formReturn;
-  const [insufficientBalance, setInsufficientBalance] = useState(false);
-  const stakingAmount = getValues().stakingAmount;
+  const { register, setValue } = formReturn;
 
   return (
     <input
@@ -36,29 +36,15 @@ export const NumberInput: FC<NumberInputProps> = ({
             : unstakableSAstBalance,
         validate: (val) => typeof val === "number" && val > 0,
         onChange: (e) => {
-          if (stakingAmount > 0 && stakingAmount <= 0.00001) {
-            setValue(name, 0);
-          } else {
-            setValue(name, e.target.value);
-          }
-          if (stakeOrUnstake === StakeOrUnstake.STAKE) {
-            +e.target.value > +astBalance
-              ? setInsufficientBalance(true)
-              : setInsufficientBalance(false);
-          } else {
-            +e.target.value > +unstakableSAstBalance
-              ? setInsufficientBalance(true)
-              : setInsufficientBalance(false);
-          }
+          setValue(name, e.target.value);
         },
       })}
-      className={twJoin(
-        "items-right w-1/5 bg-black text-right text-white min-w-fit",
-        `${insufficientBalance ? "border-2 border-red-500" : "border-none"}`,
-        `${
-          insufficientBalance ? "border-2 focus:border-red-500" : "border-none"
-        }`,
+      className={twMerge(
+        "items-right w-1/4 bg-black text-right text-white",
+        `${isDisabled && `text-dark-inactive`}`,
       )}
+      // Input should be disabled if a transaction is loading
+      disabled={isDisabled}
     />
   );
 };

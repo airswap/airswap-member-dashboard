@@ -23,14 +23,16 @@ export const useStakeAst = ({
     },
   );
 
+  const stakingAmountConversion = new BigNumber(stakingAmount)
+    .multipliedBy(10 ** 4)
+    .integerValue()
+    .toString();
+
   const { config: configStake } = usePrepareContractWrite({
     address: airSwapStaking.address,
     abi: stakingAbi,
     functionName: "stake",
-    // args: [BigInt(+stakingAmount * Math.pow(10, 4))],
-    args: [
-      BigInt(new BigNumber(+stakingAmount).multipliedBy(10 ** 4).toFixed(0)),
-    ],
+    args: [BigInt(stakingAmountConversion)],
     enabled: enabled,
   });
 

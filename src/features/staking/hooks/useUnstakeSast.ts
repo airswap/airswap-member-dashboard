@@ -28,14 +28,16 @@ export const useUnstakeSast = ({
     },
   );
 
+  const unstakingAmountConversion = new BigNumber(unstakingAmount)
+    .multipliedBy(10 ** 4)
+    .integerValue()
+    .toString();
+
   const { config: configUnstake } = usePrepareContractWrite({
     address: airSwapStaking.address,
     abi: stakingAbi,
     functionName: "unstake",
-    // args: [BigInt(+unstakingAmount * Math.pow(10, 4))],
-    args: [
-      BigInt(new BigNumber(unstakingAmount).multipliedBy(10 ** 4).toFixed(0)),
-    ],
+    args: [BigInt(unstakingAmountConversion)],
     enabled: canUnstake,
   });
 

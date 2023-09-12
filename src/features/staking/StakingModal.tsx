@@ -43,9 +43,9 @@ export const StakingModal: FC<StakingModalInterface> = ({
   } = useTokenBalances();
 
   const needsApproval =
-    stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > 0
-      ? +astAllowance < +stakingAmount
-      : false;
+    stakeOrUnstake === StakeOrUnstake.STAKE &&
+    stakingAmount > 0 &&
+    +astAllowance < +stakingAmount;
 
   const canStake =
     !needsApproval && +stakingAmount <= +astBalance && +stakingAmount > 0;
@@ -137,7 +137,9 @@ export const StakingModal: FC<StakingModalInterface> = ({
           formReturn={formReturn}
           stakeOrUnstake={stakeOrUnstake}
           setStakeOrUnstake={setStakeOrUnstake}
-          loadingStatus={[statusApprove, statusStake, statusUnstake]}
+          statusApprove={statusApprove}
+          statusStake={statusStake}
+          statusUnstake={statusUnstake}
         />
       ) : null}
 
