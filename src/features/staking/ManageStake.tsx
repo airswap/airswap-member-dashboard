@@ -1,4 +1,4 @@
-import { Dispatch, FC } from "react";
+import { Dispatch } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../assets/airswap-logo.svg";
@@ -9,20 +9,18 @@ import { NumberInput } from "./NumberInput";
 import { StakableBar } from "./StakableBar";
 import { StakeOrUnstake, Status } from "./types/StakingTypes";
 
-interface ManageStakeProps {
-  displayManageStake: boolean;
-  formReturn: UseFormReturn<FieldValues>;
-  stakeOrUnstake: StakeOrUnstake;
-  setStakeOrUnstake: Dispatch<StakeOrUnstake>;
-  loadingStatus: Status[];
-}
-
-export const ManageStake: FC<ManageStakeProps> = ({
+export const ManageStake = ({
   displayManageStake = true,
   formReturn,
   stakeOrUnstake,
   setStakeOrUnstake,
   loadingStatus,
+}: {
+  displayManageStake: boolean;
+  formReturn: UseFormReturn<FieldValues>;
+  stakeOrUnstake: StakeOrUnstake;
+  setStakeOrUnstake: Dispatch<StakeOrUnstake>;
+  loadingStatus: Status[];
 }) => {
   const {
     astBalanceFormatted: astBalance,

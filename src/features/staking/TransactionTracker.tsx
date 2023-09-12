@@ -1,4 +1,4 @@
-import { Dispatch, FC, useEffect, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
 import { twJoin } from "tailwind-merge";
 import { Hash, TransactionReceipt } from "viem";
 import { useNetwork } from "wagmi";
@@ -10,22 +10,6 @@ import { trackerStatusTransactionType } from "../votes/utils/trackerStatusTransa
 import { StakeOrUnstake, Status, TransactionState } from "./types/StakingTypes";
 import { etherscanLink } from "./utils/etherscanLink";
 import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
-
-interface TransactionTrackerProps {
-  stakeOrUnstake: StakeOrUnstake;
-  trackerStatus: TransactionState;
-  setTrackerStatus: Dispatch<TransactionState>;
-  stakingAmount: string;
-  statusApprove: Status;
-  statusStake: Status;
-  statusUnstake: Status;
-  isErrorApprove: boolean;
-  isErrorStake: boolean;
-  isErrorUnstake: boolean;
-  transactionHashApprove: TransactionReceipt | undefined;
-  transactionHashStake: TransactionReceipt | undefined;
-  transactionHashUnstake: TransactionReceipt | undefined;
-}
 
 /**
  *
@@ -43,7 +27,7 @@ interface TransactionTrackerProps {
  * @returns component which renders state about pending, approved, or failed transactions for approval, staking, or unstaking transactions
  */
 
-export const TransactionTracker: FC<TransactionTrackerProps> = ({
+export const TransactionTracker = ({
   stakeOrUnstake,
   trackerStatus,
   setTrackerStatus,
@@ -57,6 +41,20 @@ export const TransactionTracker: FC<TransactionTrackerProps> = ({
   transactionHashApprove,
   transactionHashStake,
   transactionHashUnstake,
+}: {
+  stakeOrUnstake: StakeOrUnstake;
+  trackerStatus: TransactionState;
+  setTrackerStatus: Dispatch<TransactionState>;
+  stakingAmount: string;
+  statusApprove: Status;
+  statusStake: Status;
+  statusUnstake: Status;
+  isErrorApprove: boolean;
+  isErrorStake: boolean;
+  isErrorUnstake: boolean;
+  transactionHashApprove: TransactionReceipt | undefined;
+  transactionHashStake: TransactionReceipt | undefined;
+  transactionHashUnstake: TransactionReceipt | undefined;
 }) => {
   const [transactionHash, setTransactionHash] = useState<Hash | undefined>(
     undefined,
