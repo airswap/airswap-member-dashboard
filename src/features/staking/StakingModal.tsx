@@ -1,6 +1,5 @@
 import { FC, RefObject, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ImSpinner8 } from "react-icons/im";
 import { VscChromeClose } from "react-icons/vsc";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
@@ -13,7 +12,6 @@ import { ApproveSuccess } from "./subcomponents/ApproveSuccess";
 import { ManageStake } from "./subcomponents/ManageStake";
 import { StakeOrUnstake } from "./types/StakingTypes";
 import {
-  buttonLoadingSpinner,
   buttonStatusText,
   handleButtonActions,
   modalHeadline,
@@ -73,14 +71,6 @@ export const StakingModal: FC<StakingModalInterface> = ({
     });
 
   const buttonText = buttonStatusText({
-    stakeOrUnstake,
-    needsApproval,
-    statusApprove,
-    statusStake,
-    statusUnstake,
-  });
-
-  const isLoadingSpinner = buttonLoadingSpinner({
     stakeOrUnstake,
     needsApproval,
     statusApprove,
@@ -159,6 +149,14 @@ export const StakingModal: FC<StakingModalInterface> = ({
           "flex flex-row items-center mb-2 mt-10 w-full rounded-sm bg-accent-blue font-semibold uppercase justify-center",
           `${isButtonDisabled && "opacity-50"}`,
         ])}
+        isDisabled={isButtonDisabled}
+        loadingSpinnerArgs={{
+          stakeOrUnstake,
+          needsApproval,
+          statusApprove,
+          statusStake,
+          statusUnstake,
+        }}
         onClick={() => {
           handleButtonActions({
             stakeOrUnstake,
@@ -174,9 +172,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
             setValue,
           });
         }}
-        disabled={isButtonDisabled}
       >
-        {isLoadingSpinner && <ImSpinner8 className="animate-spin mr-2 " />}
         <span>{buttonText}</span>
       </Button>
     </dialog>

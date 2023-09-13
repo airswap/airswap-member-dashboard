@@ -23,7 +23,6 @@ export const StakableBar = () => {
       stakable: +stakable,
     });
 
-  // TODO: fix rounded edges if `unstakablePercent` is small and insignificant
   return (
     <div className="flex w-full flex-col space-y-3">
       <div className="m-auto mt-6 flex h-3 w-full flex-row rounded-full">
@@ -36,7 +35,7 @@ export const StakableBar = () => {
           className="bg-accent-blue"
         ></div>
         <div
-          style={{ flexBasis: `${stakablePercent}%` }}
+          style={{ flexBasis: `${stakablePercent ? stakablePercent : 100}%` }}
           className="rounded-r-full bg-accent-gray min-w-[3%]"
         ></div>
       </div>
