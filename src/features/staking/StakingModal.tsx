@@ -111,7 +111,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
   return (
     <dialog
       className={twJoin([
-        "content-center border border-gray-800 bg-gray-900 p-6 text-white rounded-lg",
+        "border border-gray-800 bg-gray-900 p-6 text-white rounded-lg ",
         "w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3 max-w-[360px]",
       ])}
       ref={stakingModalRef}

@@ -74,8 +74,8 @@ export const ManageStake: FC<ManageStakeProps> = ({
         weeks.
       </div>
       <div className="flex items-center justify-between rounded border border-gray-800 bg-gray-950 px-5 py-3">
-        <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8 " />
-        <div className="flex flex-col text-right uppercase w-full">
+        <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8" />
+        <div className="flex flex-col items-end uppercase w-full overflow-hidden">
           <div>
             <NumberInput
               stakeOrUnstake={stakeOrUnstake}
