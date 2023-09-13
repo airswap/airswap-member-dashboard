@@ -37,16 +37,22 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const stakingAmount = watch("stakingAmount") || "0";
 
   const { astAllowanceFormatted: astAllowance } = useAstAllowance();
-  const { ustakableSAstBalanceFormatted } = useTokenBalances();
+  const {
+    ustakableSAstBalanceFormatted: unstakableSAstBalance,
+    astBalanceFormatted: astBalance,
+  } = useTokenBalances();
 
   const needsApproval =
-    stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > 0
-      ? Number(astAllowance) < stakingAmount
-      : false;
+    stakeOrUnstake === StakeOrUnstake.STAKE &&
+    stakingAmount > 0 &&
+    +astAllowance < +stakingAmount;
+
+  const canStake =
+    !needsApproval && +stakingAmount <= +astBalance && +stakingAmount > 0;
 
   const canUnstake =
     stakeOrUnstake === StakeOrUnstake.UNSTAKE && stakingAmount > 0
-      ? stakingAmount <= Number(ustakableSAstBalanceFormatted)
+      ? +stakingAmount <= +unstakableSAstBalance
       : false;
 
   const { approve, statusApprove } = useApproveAst({
@@ -57,7 +63,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const { stake, resetStake, transactionReceiptStake, statusStake } =
     useStakeAst({
       stakingAmount,
-      enabled: !needsApproval,
+      enabled: canStake,
     });
 
   const { unstake, resetUnstake, statusUnstake, transactionReceiptUnstake } =
@@ -83,6 +89,9 @@ export const StakingModal: FC<StakingModalInterface> = ({
   });
 
   const isButtonDisabled =
+    (stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > astBalance) ||
+    (stakeOrUnstake === StakeOrUnstake.UNSTAKE &&
+      stakingAmount > unstakableSAstBalance) ||
     stakingAmount <= 0 ||
     buttonText === "Approving..." ||
     buttonText === "Staking..." ||
@@ -128,7 +137,9 @@ export const StakingModal: FC<StakingModalInterface> = ({
           formReturn={formReturn}
           stakeOrUnstake={stakeOrUnstake}
           setStakeOrUnstake={setStakeOrUnstake}
-          loadingStatus={[statusApprove, statusStake, statusUnstake]}
+          statusApprove={statusApprove}
+          statusStake={statusStake}
+          statusUnstake={statusUnstake}
         />
       ) : null}
 
