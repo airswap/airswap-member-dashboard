@@ -1,6 +1,9 @@
 import { ReactNode } from "react";
+import { ImSpinner8 } from "react-icons/im";
 import { twMerge } from "tailwind-merge";
 import { tv, type VariantProps } from "tailwind-variants";
+import { StakeOrUnstake, Status } from "../staking/types/StakingTypes";
+import { buttonLoadingSpinner } from "../staking/utils/helpers";
 
 // TODO: this button needs more work, including
 // - disabled states, hover states, pressed states, focus-visible states, etc.
@@ -32,26 +35,46 @@ const buttonVariants = tv({
 
 type ButtonVariants = VariantProps<typeof buttonVariants>;
 
+type LoadingSpinnerArgs = {
+  stakeOrUnstake: StakeOrUnstake;
+  needsApproval: boolean;
+  statusApprove: Status;
+  statusStake: Status;
+  statusUnstake: Status;
+};
+
+interface ButtonProps {
+  children?: ReactNode;
+  className?: string;
+  isDisabled?: boolean;
+  loadingSpinnerArgs?: LoadingSpinnerArgs;
+}
+
 export const Button = ({
   children,
   className,
   rounded,
   size,
   color,
+  isDisabled = false,
+  loadingSpinnerArgs,
   ...rest
-}: {
-  children?: ReactNode;
-  className?: string;
-} & React.DetailedHTMLProps<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
-> &
+}: ButtonProps &
+  React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > &
   ButtonVariants) => {
+  const isLoadingSpinner =
+    loadingSpinnerArgs && buttonLoadingSpinner(loadingSpinnerArgs);
+
   return (
     <button
       className={twMerge(buttonVariants({ color, rounded, size }), className)}
       {...rest}
+      disabled={isDisabled}
     >
+      {isLoadingSpinner && <ImSpinner8 className="animate-spin mr-2 " />}
       {children}
     </button>
   );

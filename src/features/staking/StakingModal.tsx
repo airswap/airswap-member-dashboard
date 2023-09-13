@@ -1,7 +1,7 @@
 import { FC, RefObject, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImSpinner8 } from "react-icons/im";
-import { MdClose } from "react-icons/md";
+import { VscChromeClose } from "react-icons/vsc";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -13,7 +13,6 @@ import { ApproveSuccess } from "./subcomponents/ApproveSuccess";
 import { ManageStake } from "./subcomponents/ManageStake";
 import { StakeOrUnstake } from "./types/StakingTypes";
 import {
-  buttonLoadingSpinner,
   buttonStatusText,
   handleButtonActions,
   modalHeadline,
@@ -37,16 +36,22 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const stakingAmount = watch("stakingAmount") || "0";
 
   const { astAllowanceFormatted: astAllowance } = useAstAllowance();
-  const { ustakableSAstBalanceFormatted } = useTokenBalances();
+  const {
+    ustakableSAstBalanceFormatted: unstakableSAstBalance,
+    astBalanceFormatted: astBalance,
+  } = useTokenBalances();
 
   const needsApproval =
-    stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > 0
-      ? Number(astAllowance) < stakingAmount
-      : false;
+    stakeOrUnstake === StakeOrUnstake.STAKE &&
+    stakingAmount > 0 &&
+    +astAllowance < +stakingAmount;
+
+  const canStake =
+    !needsApproval && +stakingAmount <= +astBalance && +stakingAmount > 0;
 
   const canUnstake =
     stakeOrUnstake === StakeOrUnstake.UNSTAKE && stakingAmount > 0
-      ? stakingAmount <= Number(ustakableSAstBalanceFormatted)
+      ? +stakingAmount <= +unstakableSAstBalance
       : false;
 
   const { approve, statusApprove } = useApproveAst({
@@ -57,7 +62,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const { stake, resetStake, transactionReceiptStake, statusStake } =
     useStakeAst({
       stakingAmount,
-      enabled: !needsApproval,
+      enabled: canStake,
     });
 
   const { unstake, resetUnstake, statusUnstake, transactionReceiptUnstake } =
@@ -74,15 +79,10 @@ export const StakingModal: FC<StakingModalInterface> = ({
     statusUnstake,
   });
 
-  const isLoadingSpinner = buttonLoadingSpinner({
-    stakeOrUnstake,
-    needsApproval,
-    statusApprove,
-    statusStake,
-    statusUnstake,
-  });
-
   const isButtonDisabled =
+    (stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > astBalance) ||
+    (stakeOrUnstake === StakeOrUnstake.UNSTAKE &&
+      stakingAmount > unstakableSAstBalance) ||
     stakingAmount <= 0 ||
     buttonText === "Approving..." ||
     buttonText === "Staking..." ||
@@ -128,7 +128,9 @@ export const StakingModal: FC<StakingModalInterface> = ({
           formReturn={formReturn}
           stakeOrUnstake={stakeOrUnstake}
           setStakeOrUnstake={setStakeOrUnstake}
-          loadingStatus={[statusApprove, statusStake, statusUnstake]}
+          statusApprove={statusApprove}
+          statusStake={statusStake}
+          statusUnstake={statusUnstake}
         />
       ) : null}
 
@@ -149,6 +151,14 @@ export const StakingModal: FC<StakingModalInterface> = ({
           "flex flex-row items-center mb-2 mt-6 w-full !rounded-sm bg-airswap-blue font-semibold uppercase justify-center",
           `${isButtonDisabled && "opacity-50"}`,
         ])}
+        isDisabled={isButtonDisabled}
+        loadingSpinnerArgs={{
+          stakeOrUnstake,
+          needsApproval,
+          statusApprove,
+          statusStake,
+          statusUnstake,
+        }}
         onClick={() => {
           handleButtonActions({
             stakeOrUnstake,
@@ -164,9 +174,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
             setValue,
           });
         }}
-        disabled={isButtonDisabled}
       >
-        {isLoadingSpinner && <ImSpinner8 className="animate-spin mr-2 " />}
         <span>{buttonText}</span>
       </Button>
     </dialog>

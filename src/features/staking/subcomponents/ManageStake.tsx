@@ -13,18 +13,28 @@ interface ManageStakeProps {
   formReturn: UseFormReturn<FieldValues>;
   stakeOrUnstake: StakeOrUnstake;
   setStakeOrUnstake: Dispatch<StakeOrUnstake>;
-  loadingStatus: Status[];
+  statusApprove: Status;
+  statusStake: Status;
+  statusUnstake: Status;
 }
 
 export const ManageStake: FC<ManageStakeProps> = ({
   formReturn,
   stakeOrUnstake,
   setStakeOrUnstake,
-  loadingStatus,
+  statusApprove,
+  statusStake,
+  statusUnstake,
 }) => {
-  const { astBalanceFormatted: astBalance } = useTokenBalances();
+  const {
+    astBalanceFormatted: astBalance,
+    ustakableSAstBalanceFormatted: unstakableSAstBalance,
+  } = useTokenBalances();
 
-  const isButtonDisabled = loadingStatus.some((status) => status === "loading");
+  const isTransactionLoading =
+    statusApprove === "loading" ||
+    statusStake === "loading" ||
+    statusUnstake === "loading";
 
   return (
     <>
@@ -37,9 +47,10 @@ export const ManageStake: FC<ManageStakeProps> = ({
             "rounded-none rounded-l-md",
             "w-1/2 text-xs uppercase",
             `${stakeOrUnstake === "stake" ? "bg-gray-800" : "text-gray-500"}`,
+            `${isTransactionLoading && "opacity-50"}`,
           ])}
           onClick={() => setStakeOrUnstake(StakeOrUnstake.STAKE)}
-          disabled={isButtonDisabled}
+          disabled={isTransactionLoading}
         >
           Stake
         </Button>
@@ -50,7 +61,7 @@ export const ManageStake: FC<ManageStakeProps> = ({
             `${stakeOrUnstake === "unstake" ? "bg-gray-800" : "text-gray-500"}`,
           )}
           onClick={() => setStakeOrUnstake(StakeOrUnstake.UNSTAKE)}
-          disabled={isButtonDisabled}
+          disabled={isTransactionLoading}
         >
           Unstake
         </Button>
@@ -67,16 +78,24 @@ export const ManageStake: FC<ManageStakeProps> = ({
       </div>
       <div className="flex items-center justify-between rounded border border-gray-800 bg-gray-950 px-5 py-3">
         <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8 " />
-        <div className="flex flex-col text-right  uppercase">
+        <div className="flex flex-col text-right uppercase w-full">
           <div>
             <NumberInput
-              astBalance={astBalance.toString()}
+              stakeOrUnstake={stakeOrUnstake}
+              astBalance={+astBalance}
+              unstakableSAstBalance={+unstakableSAstBalance}
               formReturn={formReturn}
               name="stakingAmount"
+              isDisabled={!!isTransactionLoading}
             />
           </div>
           <span className="text-xs font-medium leading-4 text-gray-500">
-            {astBalance} stakable
+            {stakeOrUnstake === StakeOrUnstake.STAKE
+              ? astBalance
+              : unstakableSAstBalance}{" "}
+            {stakeOrUnstake === StakeOrUnstake.STAKE
+              ? "stakable"
+              : "unstakable"}
           </span>
         </div>
       </div>

@@ -3,12 +3,6 @@ import { useTokenBalances } from "../../../hooks/useTokenBalances";
 import "../../../index.css";
 import { calculateTokenProportions } from "../utils/calculateTokenProportions";
 
-/**
- * @param unstakable - balance of sAST available to unstake
- * @param staked - total amount of SAST
- * @param stakable - amount of available AST
- * @returns component that displays a visual representation of available token balances
- */
 export const StakableBar = () => {
   const {
     ustakableSAstBalanceFormatted: unstakable,
@@ -23,7 +17,6 @@ export const StakableBar = () => {
       stakable: +stakable,
     });
 
-  // TODO: fix rounded edges if `unstakablePercent` is small and insignificant
   return (
     <div className="flex w-full flex-col gap-4">
       <div className="m-auto flex h-2 mb-2 w-full flex-row rounded-full">
