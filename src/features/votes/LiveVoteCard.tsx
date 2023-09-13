@@ -15,17 +15,17 @@ export const LiveVoteCard = ({ proposal }: { proposal: Proposal }) => {
 
   const { isConnected: isWalletConnected } = useAccount();
   return (
-    <div className="flex flex-row gap-4 ring-1 ring-border-dark px-6 py-5 items-center rounded">
+    <div className="flex flex-row gap-5 ring-1 ring-gray-800 px-5 py-4 items-center rounded">
       {/* Status light */}
       {isWalletConnected && (
         <div
           className={twJoin([
-            "w-3 h-3 rounded-full",
+            "w-3 h-3 rounded-full mx-1.5",
             hasStarted
               ? hasEnded
-                ? "bg-accent-red"
-                : "bg-accent-green"
-              : "bg-accent-orange",
+                ? "bg-red-600"
+                : "bg-green-400"
+              : "bg-yellow-500",
           ])}
         />
       )}
@@ -35,7 +35,7 @@ export const LiveVoteCard = ({ proposal }: { proposal: Proposal }) => {
         className={twJoin(
           "flex-1 text-base font-bold",
           // TODO: FIX color
-          (hasUserVoted || hasEnded) && "text-zinc-500",
+          (hasUserVoted || hasEnded) && "text-gray-500",
         )}
       >
         {proposal.title}
@@ -45,7 +45,7 @@ export const LiveVoteCard = ({ proposal }: { proposal: Proposal }) => {
       <div
         className={twJoin([
           "text-xs leading-6 uppercase font-bold px-4 py-1 rounded-full",
-          "ring-1 ring-border-dark flex flex-row gap-2 items-center",
+          "ring-1 ring-gray-800 flex flex-row gap-2 items-center",
           hasUserVoted && "text-font-secondary",
         ])}
       >
@@ -54,7 +54,7 @@ export const LiveVoteCard = ({ proposal }: { proposal: Proposal }) => {
             <CheckMark />
           </span>
         )}
-        <span className={twMerge(hasEnded && "text-zinc-500")}>
+        <span className={twMerge(hasEnded && "text-gray-500")}>
           {hasEnded
             ? "Awaiting finalization"
             : hasUserVoted

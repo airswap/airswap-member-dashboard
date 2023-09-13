@@ -25,11 +25,11 @@ export const StakableBar = () => {
 
   // TODO: fix rounded edges if `unstakablePercent` is small and insignificant
   return (
-    <div className="flex w-full flex-col space-y-3">
-      <div className="m-auto mt-6 flex h-3 w-full flex-row rounded-full">
+    <div className="flex w-full flex-col gap-4">
+      <div className="m-auto flex h-2 mb-2 w-full flex-row rounded-full">
         <div
           style={{ flexBasis: `${unstakablePercent}%` }}
-          className="checkered-blue rounded-l-full min-w-[3%]"
+          className="checkered-blue rounded-l-full"
         ></div>
         <div
           style={{ flexBasis: `${stakedPercent}%` }}
@@ -37,23 +37,27 @@ export const StakableBar = () => {
         ></div>
         <div
           style={{ flexBasis: `${stakablePercent}%` }}
-          className="rounded-r-full bg-accent-gray min-w-[3%]"
+          className="rounded-r-full bg-accent-gray"
         ></div>
       </div>
-      <div className="flex flex-row items-center">
-        <div className="checkered-blue rounded-full">
-          <BsCircleFill className="text-transparent" />
+
+      {/* TODO: monospaced font for numbers */}
+      <div className="flex flex-row items-center leading-none text-[15px]">
+        <div className="checkered-blue rounded-full mr-2.5">
+          <BsCircleFill className="text-transparent" size={14} />
         </div>
-        <span className="mx-2">{unstakable}</span>
-        unstakable
+        <span className="font-medium">{unstakable}&nbsp;</span>
+        <span className="text-gray-400">unstakable</span>
       </div>
-      <div className="flex flex-row items-center">
-        <BsCircleFill className="text-blue-500" />
-        <span className="mx-2">{staked}</span>staked
+      <div className="flex flex-row items-center leading-none text-[15px]">
+        <BsCircleFill className="text-blue-500 mr-2.5" size={14} />
+        <span className="font-medium">{staked}&nbsp;</span>
+        <span className="text-gray-400">staked</span>
       </div>
-      <div className="flex flex-row items-center">
-        <BsCircleFill className="text-accent-gray" />
-        <span className="mx-2">{stakable}</span>stakable
+      <div className="flex flex-row items-center leading-none text-[15px]">
+        <BsCircleFill className="text-accent-gray mr-2.5" size={14} />
+        <span className="font-medium">{stakable}&nbsp;</span>
+        <span className="text-gray-400">stakable</span>
       </div>
     </div>
   );

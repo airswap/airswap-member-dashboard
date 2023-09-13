@@ -12,6 +12,9 @@ module.exports = {
         xs: "425px",
       },
       colors: {
+        airswap: {
+          blue: "#2B71FF",
+        },
         dark: {
           inactive: "hsla(220, 10%, 48%, 1)",
           checkbox: "hsl(220, 11%, 11%)",

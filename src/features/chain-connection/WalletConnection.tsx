@@ -29,7 +29,7 @@ const WalletConnection = ({}: {}) => {
         ])}
         onClick={() => handleModalOpening()}
       >
-        <div className="h-3 w-3 rounded-full bg-accent-green"></div>
+        <div className="h-3 w-3 rounded-full bg-[#60FF66]"></div>
         <span className="font-medium">
           {isConnected
             ? ensName || truncateEthAddress(address || "")

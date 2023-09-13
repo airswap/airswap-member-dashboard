@@ -1,7 +1,7 @@
 import { FC, RefObject, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ImSpinner8 } from "react-icons/im";
-import { VscChromeClose } from "react-icons/vsc";
+import { MdClose } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -112,15 +112,15 @@ export const StakingModal: FC<StakingModalInterface> = ({
   return (
     <dialog
       className={twJoin([
-        "content-center border border-border-darkGray bg-black p-6 text-white",
-        "w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3",
+        "content-center border border-gray-800 bg-gray-900 p-6 text-white rounded-lg",
+        "w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3 max-w-[360px]",
       ])}
       ref={stakingModalRef}
     >
-      <div className="flex justify-between">
-        <h2 className="font-semibold">{headline}</h2>
-        <div className="hover:cursor-pointer" onClick={handleCloseModal}>
-          <VscChromeClose />
+      <div className="flex justify-between items-center">
+        <h2 className="font-semibold text-xl pb-4">{headline}</h2>
+        <div className="hover:cursor-pointer pb-4" onClick={handleCloseModal}>
+          <MdClose className="text-gray-500" size={26} />
         </div>
       </div>
       {isRenderManageStake ? (
@@ -143,9 +143,10 @@ export const StakingModal: FC<StakingModalInterface> = ({
         />
       ) : null}
 
+      {/* TODO: border radius not rendering correctly. */}
       <Button
         className={twJoin([
-          "flex flex-row items-center mb-2 mt-10 w-full rounded-sm bg-accent-blue font-semibold uppercase justify-center",
+          "flex flex-row items-center mb-2 mt-6 w-full !rounded-sm bg-airswap-blue font-semibold uppercase justify-center",
           `${isButtonDisabled && "opacity-50"}`,
         ])}
         onClick={() => {

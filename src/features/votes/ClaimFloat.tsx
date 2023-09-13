@@ -43,13 +43,13 @@ export const ClaimFloat = ({
           className={twJoin(
             // position at bottom of container.
             "absolute bottom-4 right-0 left-0",
-            "bg-[#101217] flex flex-row justify-between p-5 rounded-md",
-            "border border-border-dark",
+            "bg-gray-900 flex flex-row justify-between p-5 rounded-md",
+            "border border-gray-800",
             "shadow-[0_0_10px_8px] shadow-[#060607]",
           )}
         >
           <div className="flex flex-col">
-            <span className="text-dark-inactive font-bold text-xs uppercase">
+            <span className="text-gray-500 font-bold text-xs uppercase">
               Total {selectedClaims.length ? "Selected" : "Available"}
             </span>
 

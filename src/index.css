@@ -44,7 +44,7 @@
 }
 
 :root {
-  @apply bg-bg-dark text-white;
+  @apply bg-gray-950 text-white;
   color-scheme: light dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -74,6 +74,6 @@
     );
   background-position:
     0 0,
-    4px 4px;
-  background-size: 8px 8px;
+    1a4499px 1a4499px;
+  background-size: 2px 2px;
 }

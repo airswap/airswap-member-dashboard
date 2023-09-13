@@ -18,7 +18,7 @@ const buttonVariants = tv({
     },
     rounded: {
       true: "rounded-full",
-      false: "rounded-none",
+      false: "rounded-[3px]",
     },
     size: {
       small: "text-xs py-1 px-3",

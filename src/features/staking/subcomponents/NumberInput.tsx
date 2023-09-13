@@ -29,8 +29,9 @@ export const NumberInput: FC<NumberInputProps> = ({
           setValue(name, e.target.value);
         },
       })}
+      // FIXME: monospace font per designs.
       className={twJoin(
-        "items-right w-1/5 bg-black text-right text-white min-w-fit",
+        "items-right w-1/5 bg-transparent text-right text-white min-w-fit font-medium text-[20px]",
       )}
     />
   );
