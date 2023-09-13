@@ -6,8 +6,7 @@ import { StakeOrUnstake, Status } from "../staking/types/StakingTypes";
 import { buttonLoadingSpinner } from "../staking/utils/helpers";
 
 // TODO: this button needs more work, including
-// - disabled states, hover states, pressed states, focus-visible states, etc.
-// - a `loading` boolean prop that disables the button and shows a spinner
+// - hover states, pressed states, focus-visible states, etc.
 // - More variants
 
 const buttonVariants = tv({

@@ -30,7 +30,7 @@ export const Accordion = ({
         <RadixAccordion.Header className="flex py-4 pl-5 pr-4">
           {trigger}
           <RadixAccordion.Trigger
-            className={"align-end align-end w-fit"}
+            className="align-end w-fit"
             onClick={toggleAccordion}
           >
             {!isAccordionOpen ? (

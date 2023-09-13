@@ -1,7 +1,6 @@
 import { FC, RefObject, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ImSpinner8 } from "react-icons/im";
-import { VscChromeClose } from "react-icons/vsc";
+import { MdClose } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -123,6 +122,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
           <MdClose className="text-gray-500" size={26} />
         </div>
       </div>
+
       {isRenderManageStake ? (
         <ManageStake
           formReturn={formReturn}

@@ -27,7 +27,7 @@ const WalletConnection = ({}: {}) => {
           "flex flex-row items-center gap-2",
           isConnected && "cursor-default",
         ])}
-        onClick={() => handleModalOpening()}
+        onClick={handleModalOpening}
       >
         <div className="h-3 w-3 rounded-full bg-[#60FF66]"></div>
         <span className="font-medium">
