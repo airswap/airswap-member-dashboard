@@ -12,7 +12,7 @@ import { stakingAbi } from "../../../contracts/stakingAbi";
  * @param unstakingAmount - takes in stakingAmount from react-hook-form-register
  * @param canUnstake - boolean value, true if unstakingAmount (stakingAmount) > 0 and if unstakigAmount (stakingAmount) <= sAST balance
  */
-export const useUnstakeAst = ({
+export const useUnstakeSast = ({
   unstakingAmount,
   canUnstake,
 }: {

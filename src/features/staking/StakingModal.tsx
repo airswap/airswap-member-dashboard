@@ -10,7 +10,7 @@ import { TransactionTracker } from "./TransactionTracker";
 import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useStakeAst } from "./hooks/useStakeAst";
-import { useUnstakeAst } from "./hooks/useUnstakeAst";
+import { useUnstakeSast } from "./hooks/useUnstakeSast";
 import { StakeOrUnstake, TransactionState } from "./types/StakingTypes";
 import { buttonStatusText } from "./utils/buttonStatusText";
 import { handleButtonActions } from "./utils/handleButtonActions";
@@ -63,7 +63,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
     statusUnstake,
     transactionReceiptUnstake,
     isErrorUnstake,
-  } = useUnstakeAst({
+  } = useUnstakeSast({
     unstakingAmount: stakingAmount,
     canUnstake,
   });
