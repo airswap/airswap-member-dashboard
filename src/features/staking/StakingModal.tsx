@@ -7,10 +7,10 @@ import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { ManageStake } from "./ManageStake";
 import { TransactionTracker } from "./TransactionTracker";
-import { useAllowance } from "./hooks/useAllowance";
-import { useApprove } from "./hooks/useApprove";
-import { useStake } from "./hooks/useStake";
-import { useUnstake } from "./hooks/useUnstake";
+import { useApproveAst } from "./hooks/useApproveAst";
+import { useAstAllowance } from "./hooks/useAstAllowance";
+import { useStakeAst } from "./hooks/useStakeAst";
+import { useUnstakeAst } from "./hooks/useUnstakeAst";
 import { StakeOrUnstake, TransactionState } from "./types/StakingTypes";
 import { buttonStatusText } from "./utils/buttonStatusText";
 import { handleButtonActions } from "./utils/handleButtonActions";
@@ -34,14 +34,14 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const { watch, setValue } = formReturn;
   const stakingAmount = watch("stakingAmount") || "0";
 
-  const { astAllowanceFormatted: astAllowance } = useAllowance();
+  const { astAllowanceFormatted: astAllowance } = useAstAllowance();
   const { ustakableSAstBalanceFormatted: unstakableSAst } = useTokenBalances();
 
   const needsApproval = stakingAmount > +astAllowance;
   const canUnstake = stakingAmount <= +unstakableSAst;
 
   const { approve, statusApprove, isErrorApprove, transactionReceiptApprove } =
-    useApprove({
+    useApproveAst({
       stakingAmount,
       enabled: needsApproval,
     });
@@ -52,7 +52,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
     transactionReceiptStake,
     statusStake,
     isErrorStake,
-  } = useStake({
+  } = useStakeAst({
     stakingAmount,
     enabled: !needsApproval,
   });
@@ -63,7 +63,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
     statusUnstake,
     transactionReceiptUnstake,
     isErrorUnstake,
-  } = useUnstake({
+  } = useUnstakeAst({
     unstakingAmount: stakingAmount,
     canUnstake,
   });
