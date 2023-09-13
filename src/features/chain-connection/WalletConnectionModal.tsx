@@ -48,7 +48,7 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({
       ref={modalRef}
       onClick={handleCloseOnOutsideClick}
     >
-      <div className="color-white flex w-[360px] flex-col space-y-3 bg-bg-dark px-6 pb-6 pt-4 font-bold">
+      <div className="color-white flex w-[360px] flex-col space-y-3 border border-gray-800 bg-gray-900 px-6 pb-6 pt-4 font-bold">
         <div
           className={twJoin(
             "flex flex-row justify-between pb-1",
@@ -65,7 +65,10 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({
           .map((connector: Connector) => {
             return (
               <button
-                className="flex flex-row items-center rounded border-2 border-border-dark p-2 disabled:cursor-not-allowed"
+                className={twJoin([
+                  "flex flex-row items-center rounded border border-gray-800 bg-gray-900 p-4",
+                  "hover:bg-gray-800 disabled:cursor-not-allowed",
+                ])}
                 disabled={!connector.ready}
                 onClick={() => connect({ connector })}
                 key={connector.id}
