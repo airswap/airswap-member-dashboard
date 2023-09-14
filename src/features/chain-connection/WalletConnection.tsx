@@ -23,14 +23,23 @@ const WalletConnection = ({}: {}) => {
   return (
     <>
       <Button
-        className={twJoin([
+        className={twJoin(
           "flex flex-row items-center gap-2",
-          isConnected && "cursor-default",
-        ])}
-        onClick={() => handleModalOpening()}
+          isConnected && "cursor-default hover:bg-gray-900",
+        )}
+        rounded={true}
+        onClick={handleModalOpening}
+        color={isConnected ? "transparent" : "primary"}
       >
-        <div className="h-3 w-3 rounded-full bg-accent-green"></div>
-        <span className="font-medium">
+        {isConnected && (
+          <div className="h-3 w-3 rounded-full bg-[#60FF66]"></div>
+        )}
+        <span
+          className={twJoin(
+            isConnected ? "font-medium" : "font-bold px-1",
+            "whitespace-nowrap",
+          )}
+        >
           {isConnected
             ? ensName || truncateEthAddress(address || "")
             : "Connect"}

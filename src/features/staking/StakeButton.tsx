@@ -20,10 +20,16 @@ export const StakeButton = ({}: {}) => {
 
   return (
     <>
-      <div className={twJoin("flex flex-row items-center gap-4 py-3")}>
-        <span className="hidden font-medium xs:flex">{`${sAstBalance} sAST`}</span>
+      <div
+        className={twJoin(
+          "flex flex-row items-center gap-4 ring-1 ring-gray-800 rounded-full sm:pl-5",
+        )}
+      >
+        <span className="hidden sm:flex font-medium ">{`${sAstBalance} sAST`}</span>
         <Button
-          className="-my-3 -mr-5 bg-accent-blue font-bold uppercase"
+          className="-mr-5 -my-px"
+          rounded={true}
+          color="primary"
           onClick={handleOpenStakingModal}
         >
           Stake

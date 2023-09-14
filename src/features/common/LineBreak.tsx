@@ -1,16 +1,13 @@
-import { FC } from "react";
 import { twJoin } from "tailwind-merge";
 
-interface LineBreakProps {
-  className?: string;
-}
-export const LineBreak: FC<LineBreakProps> = ({ className }) => {
+export const LineBreak = ({ className }: { className?: string }) => {
   return (
-    <hr
-      className={twJoin([
-        "border-t-1 absolute left-0 my-2 w-full border-border-darkGray",
+    <div
+      className={twJoin(
+        // FIXME: border-b should be less hacky
+        "min-w-full bg-gray-800 h-0.5 border-b border-gray-900",
         className,
-      ])}
+      )}
     />
   );
 };

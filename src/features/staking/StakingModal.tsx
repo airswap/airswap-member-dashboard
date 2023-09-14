@@ -1,7 +1,6 @@
 import { FC, RefObject, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ImSpinner8 } from "react-icons/im";
-import { VscChromeClose } from "react-icons/vsc";
+import { MdClose } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -35,10 +34,21 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const stakingAmount = watch("stakingAmount") || "0";
 
   const { astAllowanceFormatted: astAllowance } = useAstAllowance();
-  const { ustakableSAstBalanceFormatted: unstakableSAst } = useTokenBalances();
 
-  const needsApproval = stakingAmount > +astAllowance;
-  const canUnstake = stakingAmount <= +unstakableSAst;
+  const {
+    ustakableSAstBalanceFormatted: unstakableSAstBalance,
+    astBalanceFormatted: astBalance,
+  } = useTokenBalances();
+
+  const canUnstake = stakingAmount <= +unstakableSAstBalance;
+
+  const needsApproval =
+    stakeOrUnstake === StakeOrUnstake.STAKE &&
+    stakingAmount > 0 &&
+    +astAllowance < +stakingAmount;
+
+  const canStake =
+    !needsApproval && +stakingAmount <= +astBalance && +stakingAmount > 0;
 
   const { approve, statusApprove, isErrorApprove, transactionReceiptApprove } =
     useApproveAst({
@@ -54,7 +64,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
     isErrorStake,
   } = useStakeAst({
     stakingAmount,
-    enabled: !needsApproval,
+    enabled: canStake,
   });
 
   const {
@@ -82,22 +92,14 @@ export const StakingModal: FC<StakingModalInterface> = ({
     statusUnstake === "loading";
 
   // button disabled if input is empty, or any transaction is pending
-  const isButtonDisabled = stakingAmount <= 0 || loadingTransactions;
-
-  const isLoadingSpinner = loadingTransactions;
+  const isButtonDisabled =
+    stakingAmount <= 0 ||
+    (stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > astBalance) ||
+    (stakeOrUnstake === StakeOrUnstake.UNSTAKE &&
+      stakingAmount > unstakableSAstBalance) ||
+    loadingTransactions;
 
   const headline = transactionTrackerMessages[trackerStatus].headline;
-
-  // const renderManageStake = () => {
-  //   if (statusStake === "success") {
-  //     return false;
-  //   } else if (statusUnstake === "success") {
-  //     return false;
-  //   } else {
-  //     return true;
-  //   }
-  // };
-  // const isRenderManageStake = renderManageStake();
 
   const relevantStatuses = ["loading", "error", "success"];
   const onlyShowTransactionTracker =
@@ -110,31 +112,33 @@ export const StakingModal: FC<StakingModalInterface> = ({
     setValue("stakingAmount", 0);
   };
 
+  // TODO: replace this with our `Modal` component so it inherits the close
+  // to click etc.
   return (
     <dialog
-      className={twJoin([
-        "content-center border border-border-darkGray bg-black p-6 text-white",
-        "w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3",
-      ])}
+      className={twJoin(
+        "bg-gray-900 p-6 text-white",
+        "w-full max-w-none xs:max-w-[360px]",
+        "border border-gray-800 rounded-none xs:rounded-lg",
+        "backdrop:bg-gray-950 backdrop:bg-opacity-[85%] backdrop:backdrop-blur-[2px]",
+      )}
       ref={stakingModalRef}
     >
-      <div className="flex justify-between">
-        <h2 className="font-semibold">{headline}</h2>
-
-        <div className="hover:cursor-pointer  " onClick={handleCloseModal}>
-          <VscChromeClose />
+      <div className="flex justify-between items-center mb-7 mt-1">
+        <h2 className="font-semibold text-xl">{headline}</h2>
+        <div className="hover:cursor-pointer" onClick={handleCloseModal}>
+          <MdClose className="text-gray-500" size={26} />
         </div>
       </div>
-      {
-        // isRenderManageStake ||
-        <ManageStake
-          displayManageStake={!onlyShowTransactionTracker}
-          formReturn={formReturn}
-          stakeOrUnstake={stakeOrUnstake}
-          setStakeOrUnstake={setStakeOrUnstake}
-          loadingStatus={[statusApprove, statusStake, statusUnstake]}
-        />
-      }
+      <ManageStake
+        displayManageStake={!onlyShowTransactionTracker}
+        formReturn={formReturn}
+        stakeOrUnstake={stakeOrUnstake}
+        setStakeOrUnstake={setStakeOrUnstake}
+        statusApprove={statusApprove}
+        statusStake={statusStake}
+        statusUnstake={statusUnstake}
+      />
 
       <TransactionTracker
         stakeOrUnstake={stakeOrUnstake}
@@ -152,11 +156,15 @@ export const StakingModal: FC<StakingModalInterface> = ({
         transactionHashUnstake={transactionReceiptUnstake}
       />
 
+      {/* TODO: border radius not rendering correctly. */}
       <Button
-        className={twJoin([
-          "flex flex-row items-center mb-2 mt-10 w-full rounded-sm bg-accent-blue font-semibold uppercase justify-center",
+        className={twJoin(
+          "mt-6 w-full !rounded-sm",
           `${isButtonDisabled && "opacity-50"}`,
-        ])}
+        )}
+        color="primary"
+        rounded={false}
+        isDisabled={isButtonDisabled}
         onClick={() => {
           handleButtonActions({
             needsApproval,
@@ -171,9 +179,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
             setValue,
           });
         }}
-        disabled={isButtonDisabled}
       >
-        {isLoadingSpinner && <ImSpinner8 className="animate-spin mr-2 " />}
         <span>{buttonText}</span>
       </Button>
     </dialog>
