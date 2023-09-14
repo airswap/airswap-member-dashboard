@@ -118,19 +118,16 @@ export const TransactionTracker = ({
       >
         <img src={icon} alt={icon} />
       </div>
-      <div className="my-4">
-        <span className="flex flex-row">
-          <span>{message}</span>
-          {transactionSuccess ? (
-            <span className="ml-2 font-medium text-white">
-              <span>
-                {stakingAmount}
-                {asset}
-              </span>
-              <span className="ml-1">{asset}</span>
-            </span>
-          ) : null}
-        </span>
+      <div className="flex flex-row my-4 flex-wrap">
+        {/* <span className="flex flex-row"> */}
+        <span>{message}</span>
+        {transactionSuccess ? (
+          <span className="ml-2 font-medium text-white">
+            <span>{stakingAmount}</span>
+            <span className="ml-1">{asset}</span>
+          </span>
+        ) : null}
+        {/* </span> */}
       </div>
       {shouldRenderEtherscanUrl ? <div>{etherscanUrl}</div> : null}
       <div

@@ -41,6 +41,7 @@ interface ButtonProps {
   children?: ReactNode;
   className?: string;
   isDisabled?: boolean;
+  isHidden?: boolean;
 }
 
 export const Button = ({
@@ -50,6 +51,7 @@ export const Button = ({
   size,
   color,
   isDisabled,
+  isHidden = false,
   ...rest
 }: ButtonProps &
   React.DetailedHTMLProps<
@@ -59,7 +61,11 @@ export const Button = ({
   ButtonVariants) => {
   return (
     <button
-      className={twMerge(buttonVariants({ color, rounded, size }), className)}
+      className={twMerge(
+        buttonVariants({ color, rounded, size }),
+        isHidden && "hidden",
+        className,
+      )}
       {...rest}
       disabled={isDisabled}
     >

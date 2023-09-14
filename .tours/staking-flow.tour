@@ -9,63 +9,63 @@
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
-      "description": "trackerStatus corresponds to where the user is in the StakingFlow. Custom hooks useApprove, useStake, and useUnstake return variables: statusApprove, statusStake, and statusUnstake, respectively. These 3 variables (each from Wagmi library), only return the following: \"idle\" || \"loading\" || \"success\" || \"error\". These extra details make it eaiser to manage the current state of transactions. `setTrackerStatus` eventually gets passed into `trackerStatusTransactionType`, which managed in a `useEffect` hook in TransactionTracker.tsx",
+      "description": "trackerStatus tracks where the user is in the Staking Flow. It controls what gets rendered in TransactionTracker.tsx.",
       "line": 29
     },
     {
-      "file": "src/features/staking/TransactionTracker.tsx",
-      "description": "This function manages the state of `trackerStatus`, which gets passed down as a prop from StakingModal.tsx",
-      "line": 113
+      "file": "src/features/staking/StakingModal.tsx",
+      "description": "\n\nThere are 3 main hooks: \n- useApproveAst \n- useStakeAst \n- useUnstakeSast\n\n These hooks return similar variables for their respective functions: statusApprove, statusStake, and statusUnstake. These variables can be equal to 1 of 4 states: \"idle\" || \"loading\" || \"success\" || \"error\". This makes it eaiser to manage the current state of transactions. \n\n`setTrackerStatus` eventually gets passed into `trackerStatusTransactionType`, which is handled in a useEffect hook in TransactionTracker.tsx",
+      "line": 60
     },
     {
-      "file": "src/features/staking/StakingModal.tsx",
-      "description": "Overview: `useApprove` custom hook calls several hooks from Wagmi library. Similar logic applies to the `useStake` and `useUnstake` hooks below.\n\n- `approve` is a contract write function that approves the spending of the connected user's AST. \n- `statusApprove` returns the state of the `approve` function, and these variables facilitate the tracking of various UI changes (button text changes, `TransactionTracker` component changes).\n- `isErrorApprove` indicates an error when the user calls `approve`\n- `transactionReceiptApprove` returns a transaction hash which gets passed into TransactionTracker.tsx",
-      "line": 44
+      "file": "src/features/staking/TransactionTracker.tsx",
+      "description": "This function manages the state of `trackerStatus`",
+      "line": 78
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "ManageStake.tsx has buttons which let users toggle between \"stake\" and \"unstake\". Also contains NumberInput.tsx where users can enter the amount they with to stake or unstake.",
-      "line": 131
+      "line": 138
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
-      "description": "TransactionTracker.tsx displays transient states about where users are in the staking flow. Will give user feedback if they're transaction is pending, approved, or failed",
-      "line": 140
+      "description": "TransactionTracker.tsx displays to the user various states of blockchain transactions. Possible states are: pending, approved, failed, idle",
+      "line": 148
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "handleButtonActions returns various functions depending on where a user is in the flow. For example, if a user wants to approve their tokens, this function will return the `approve` write function rather than the `stake` write function",
-      "line": 161
+      "line": 175
     },
     {
       "file": "src/features/staking/TransactionTracker.tsx",
       "description": "We only want the token amount to display after a successful transaction",
-      "line": 69
+      "line": 55
     },
     {
       "file": "src/features/staking/TransactionTracker.tsx",
       "description": "Different icons should render depending on where the user is in the staking flow",
-      "line": 83
+      "line": 65
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "this function abstracts logic on what text should be displayed on the \"stake\" button. This text gives feedback to the user about which step of the flow they're in",
-      "line": 71
+      "line": 87
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "Boolean value gets passed into Button.tsx and determines if disabled. `takingAmount <= 0` indicates that a user has not entered a value into the form. Button is disabled during \"loading\" states to prevent disruption of flow",
-      "line": 85
+      "line": 99
     },
     {
-      "file": "src/features/staking/StakingModal.tsx",
+      "file": "src/features/staking/TransactionTracker.tsx",
       "description": "Extracts the correct message to be displayed in TransactionTracker depending on the status of a transaction",
-      "line": 89
+      "line": 57
     },
     {
-      "file": "src/features/staking/StakingModal.tsx",
-      "description": "TransactionTracker.tsx should not render unless certain conditions are met",
-      "line": 103
+      "file": "src/features/staking/TransactionTracker.tsx",
+      "description": "Component should not render if transaction state is idle",
+      "line": 109
     }
   ]
 }

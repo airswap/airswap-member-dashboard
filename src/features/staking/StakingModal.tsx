@@ -29,7 +29,6 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const [trackerStatus, setTrackerStatus] = useState<TransactionState>(
     TransactionState.Idle,
   );
-  console.log("trackerStatus", trackerStatus);
 
   const formReturn = useForm();
   const { watch, setValue } = formReturn;
@@ -91,7 +90,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
     needsApproval,
   });
 
-  const loadingTransactions =
+  const isLoadingTransactions =
     statusApprove === "loading" ||
     statusStake === "loading" ||
     statusUnstake === "loading";
@@ -102,7 +101,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
     (stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > astBalance) ||
     (stakeOrUnstake === StakeOrUnstake.UNSTAKE &&
       stakingAmount > unstakableSAstBalance) ||
-    loadingTransactions;
+    isLoadingTransactions;
 
   const headline = transactionTrackerMessages[trackerStatus].headline;
 
@@ -171,6 +170,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
         color="primary"
         rounded={false}
         isDisabled={isStakeButtonDisabled}
+        isHidden={isLoadingTransactions}
         onClick={() => {
           handleButtonActions({
             needsApproval,
