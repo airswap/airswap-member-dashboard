@@ -53,9 +53,6 @@ export const useApproveAst = ({
     isError: isErrorApprove,
   } = useWaitForTransaction({
     hash: dataApprove?.hash,
-    onSuccess() {
-      resetApprove();
-    },
   });
 
   return {

@@ -2,10 +2,10 @@ import { TransactionState } from "../types/StakingTypes";
 
 export const transactionTrackerMessages = {
   [TransactionState.ApprovePending]: {
-    headline: "Approve token",
-    message: "Token approval pending",
+    headline: "Approving",
+    message: "Approval transaction pending",
     description:
-      "To stake your AST you will have to approve the token spent. Please the transaction in your wallet, your wallet should open. If your wallet doesn’t open please try again.",
+      "Staking your AST involves two steps: First, allow the AirSwap Staking contract to access your tokens. Then, stake your tokens to the contract. Your approval transaction is currently in progress. Please wait, and if it fails, try again.",
   },
   [TransactionState.ApproveSuccess]: {
     headline: "Approve successful",
@@ -13,21 +13,21 @@ export const transactionTrackerMessages = {
     description: null,
   },
   [TransactionState.StakePending]: {
-    headline: "Pending transaction",
-    message: "Transaction sign pending",
+    headline: "Staking",
+    message: "Staking transaction pending",
     description:
-      "To stake your AST please sign the transaction in your wallet.  Your wallet should open, if your wallet doesn’t open please try again.",
+      "The transaction to stake your AST tokens is pending. Upon completion, you'll see a green checkmark and a link to Etherscan. Please wait, and if it fails, try again.",
   },
   [TransactionState.StakeSuccess]: {
-    headline: "Transaction successful",
+    headline: "Staking successful",
     message: "You've successfully staked",
     description: null,
   },
   [TransactionState.UnstakePending]: {
-    headline: "Pending transaction",
-    message: "Transaction sign pending",
+    headline: "Unstaking",
+    message: "Unstaking transaction pending",
     description:
-      "To unstake your sAST please sign the transaction in your wallet.  Your wallet should open, if your wallet doesn’t open please try again.",
+      "The transaction to unstake your aAST tokens is pending. Upon completion, you'll see a green checkmark and a link to Etherscan. Please wait, and if it fails, try again.",
   },
   [TransactionState.UnstakeSuccess]: {
     headline: "Transaction successful",

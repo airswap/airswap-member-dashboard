@@ -4,6 +4,7 @@ import { MdClose } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
+import { LineBreak } from "../common/LineBreak";
 import { ManageStake } from "./ManageStake";
 import { TransactionTracker } from "./TransactionTracker";
 import { useApproveAst } from "./hooks/useApproveAst";
@@ -50,11 +51,16 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const canStake =
     !needsApproval && +stakingAmount <= +astBalance && +stakingAmount > 0;
 
-  const { approve, statusApprove, isErrorApprove, transactionReceiptApprove } =
-    useApproveAst({
-      stakingAmount,
-      enabled: needsApproval,
-    });
+  const {
+    approve,
+    statusApprove,
+    isErrorApprove,
+    transactionReceiptApprove,
+    resetApprove,
+  } = useApproveAst({
+    stakingAmount,
+    enabled: needsApproval,
+  });
 
   const {
     stake,
@@ -91,13 +97,20 @@ export const StakingModal: FC<StakingModalInterface> = ({
     statusStake === "loading" ||
     statusUnstake === "loading";
 
-  // button disabled if input is empty, or any transaction is pending
-  const isButtonDisabled =
+  const successfulTransactions =
+    statusApprove === "success" ||
+    statusStake === "success" ||
+    statusUnstake === "success";
+
+  // button disabled if input is empty, input amount exceeds balance, transaction is pending, or transaction is successful
+  // if transaction is successful, user must click on `icon` button in TransactionTracker to progress
+  const isStakeButtonDisabled =
     stakingAmount <= 0 ||
     (stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > astBalance) ||
     (stakeOrUnstake === StakeOrUnstake.UNSTAKE &&
       stakingAmount > unstakableSAstBalance) ||
-    loadingTransactions;
+    loadingTransactions ||
+    successfulTransactions;
 
   const headline = transactionTrackerMessages[trackerStatus].headline;
 
@@ -130,6 +143,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
           <MdClose className="text-gray-500" size={26} />
         </div>
       </div>
+      <LineBreak className="mb-4 -mx-6" />
       <ManageStake
         displayManageStake={!onlyShowTransactionTracker}
         formReturn={formReturn}
@@ -154,17 +168,20 @@ export const StakingModal: FC<StakingModalInterface> = ({
         transactionHashApprove={transactionReceiptApprove}
         transactionHashStake={transactionReceiptStake}
         transactionHashUnstake={transactionReceiptUnstake}
+        resetApprove={resetApprove}
+        resetStake={resetStake}
+        resetUnstake={resetUnstake}
       />
 
       {/* TODO: border radius not rendering correctly. */}
       <Button
         className={twJoin(
           "mt-6 w-full !rounded-sm",
-          `${isButtonDisabled && "opacity-50"}`,
+          `${isStakeButtonDisabled && "opacity-50"}`,
         )}
         color="primary"
         rounded={false}
-        isDisabled={isButtonDisabled}
+        isDisabled={isStakeButtonDisabled}
         onClick={() => {
           handleButtonActions({
             needsApproval,

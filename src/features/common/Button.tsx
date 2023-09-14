@@ -14,6 +14,7 @@ const buttonVariants = tv({
     color: {
       primary: "bg-airswap-blue text-white hover:border-white",
       transparent: "border border-gray-800 hover:border-white",
+      black: "bg-black border border-gray-800 hover:border-white",
     },
     rounded: {
       true: "rounded-full",
@@ -48,7 +49,7 @@ export const Button = ({
   rounded,
   size,
   color,
-  isDisabled = false,
+  isDisabled,
   ...rest
 }: ButtonProps &
   React.DetailedHTMLProps<
@@ -58,7 +59,11 @@ export const Button = ({
   ButtonVariants) => {
   return (
     <button
-      className={twMerge(buttonVariants({ color, rounded, size }), className)}
+      className={twMerge(
+        buttonVariants({ color, rounded, size }),
+        className,
+        isDisabled && "hidden",
+      )}
       {...rest}
       disabled={isDisabled}
     >

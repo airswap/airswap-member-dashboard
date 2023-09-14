@@ -4,11 +4,13 @@ import { Hash, TransactionReceipt } from "viem";
 import { useNetwork } from "wagmi";
 import greenCheck from "../../../src/assets/check-green.svg";
 import closeRed from "../../../src/assets/close-red.svg";
+import loadingSpinner from "../../../src/assets/loading-spinner.svg";
+import { Button } from "../common/Button";
 import { EtherscanUrl } from "../common/EtherscanUrl";
-import { LineBreak } from "../common/LineBreak";
 import { trackerStatusTransactionType } from "../votes/utils/trackerStatusTransactionType";
 import { StakeOrUnstake, Status, TransactionState } from "./types/StakingTypes";
 import { etherscanLink } from "./utils/etherscanLink";
+import { iconButtonActions } from "./utils/iconButtonActions";
 import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
 
 /**
@@ -41,6 +43,9 @@ export const TransactionTracker = ({
   transactionHashApprove,
   transactionHashStake,
   transactionHashUnstake,
+  resetApprove,
+  resetStake,
+  resetUnstake,
 }: {
   stakeOrUnstake: StakeOrUnstake;
   trackerStatus: TransactionState;
@@ -55,6 +60,9 @@ export const TransactionTracker = ({
   transactionHashApprove: TransactionReceipt | undefined;
   transactionHashStake: TransactionReceipt | undefined;
   transactionHashUnstake: TransactionReceipt | undefined;
+  resetApprove: () => void;
+  resetStake: () => void;
+  resetUnstake: () => void;
 }) => {
   const [transactionHash, setTransactionHash] = useState<Hash | undefined>(
     undefined,
@@ -78,33 +86,28 @@ export const TransactionTracker = ({
   const blockExplorerLink = etherscanLink(chain?.id, transactionHash);
   const etherscanUrl = EtherscanUrl(blockExplorerLink);
 
-  const renderIcon = () => {
-    switch (trackerStatus) {
-      case "ApprovePending":
-        // TODO: (remove comment or add back LoadingSpinner) - loadingSpinner was removed because the button already has a loading spinner
-        return "";
-      // return loadingSpinner;
-      case "ApproveSuccess":
-        return greenCheck;
-      case "StakePending":
-        // TODO: (remove comment or add back LoadingSpinner) - loadingSpinner was removed because the button already has a loading spinner
-        return "";
-      // return loadingSpinner;
-      case "StakeSuccess":
-        return greenCheck;
-      case "UnstakePending":
-        // TODO: (remove comment or add back LoadingSpinner) - loadingSpinner was removed because the button already has a loading spinner
-        return "";
-      // return loadingSpinner;
-      case "UnstakeSuccess":
-        return greenCheck;
-      case "Failed":
-        return closeRed;
-      default:
-        return undefined;
-    }
+  const statusIconMap: { [k: string]: string } = {
+    ApprovePending: loadingSpinner,
+    ApproveSuccess: greenCheck,
+    StakePending: loadingSpinner,
+    StakeSuccess: greenCheck,
+    UnstakePending: loadingSpinner,
+    UnstakeSuccess: greenCheck,
+    Failed: closeRed,
   };
-  const icon = renderIcon();
+  const icon = statusIconMap[trackerStatus];
+
+  const iconButtonAction = iconButtonActions({
+    statusApprove,
+    statusStake,
+    statusUnstake,
+    isErrorApprove,
+    isErrorStake,
+    isErrorUnstake,
+    resetApprove,
+    resetStake,
+    resetUnstake,
+  });
 
   useEffect(() => {
     // set status of component
@@ -138,28 +141,28 @@ export const TransactionTracker = ({
   return (
     <div
       className={twJoin([
-        "flex flex-col items-center px-6",
+        "flex flex-col items-center text-gray-500 pt-4 pb-6",
         `${trackerStatus === "Idle" && "hidden"}`,
       ])}
     >
-      <div className="my-2">
-        <LineBreak />
-      </div>
-      <div
-        className={twJoin([
+      <Button
+        className={twJoin(
           `${!icon && "none"}`,
-          "rounded-full border border-border-darkShaded bg-black p-2 mt-6",
-          // `${icon === loadingSpinner && "m-auto animate-spin"}`,
-        ])}
+          "bg-black p-2",
+          icon === loadingSpinner && "m-auto animate-spin p-0",
+        )}
+        rounded={true}
+        color="black"
+        onClick={() => iconButtonAction}
       >
-        <img src={icon} alt={icon?.toString()} />
-      </div>
+        <img src={icon} alt={icon} />
+      </Button>
 
-      <div className="my-4 text-font-darkSubtext">
+      <div className="my-4">
         <span className="flex flex-row">
           <span>{message}</span>
           {transactionSuccess ? (
-            <span className="ml-1 font-medium text-white">
+            <span className="ml-2 font-medium text-white">
               <span>{stakingAmount}</span>
               <span className="ml-1">{asset}</span>
             </span>
@@ -169,15 +172,8 @@ export const TransactionTracker = ({
       {shouldRenderEtherscanUrl ? <div>{etherscanUrl}</div> : null}
       <div
         className={twJoin(
-          "rounded px-4 py-3 text-sm",
-          "dark:bg-bg-darkShaded",
-          `${
-            trackerStatus === "StakeSuccess" ||
-            trackerStatus === "UnstakeSuccess" ||
-            trackerStatus === "ApproveSuccess"
-              ? "hidden"
-              : null
-          }`,
+          "rounded px-4 py-3 text-sm bg-gray-800 text-gray-400",
+          `${transactionSuccess ? "hidden" : null}`,
         )}
       >
         {description}

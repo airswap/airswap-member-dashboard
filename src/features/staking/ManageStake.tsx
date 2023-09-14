@@ -38,7 +38,6 @@ export const ManageStake = ({
 
   return (
     <div className={`${!displayManageStake && "hidden"}`}>
-      <LineBreak className="relative -mx-6" />
       <StakableBar className="my-6" />
       <LineBreak className="relative mb-4 -mx-6" />
       <div className="font-lg pointer-cursor rounded-md font-semibold">
