@@ -1,10 +1,10 @@
 import { BsCircleFill } from "react-icons/bs";
+import { twMerge } from "tailwind-merge";
 import { useTokenBalances } from "../../../hooks/useTokenBalances";
 import "../../../index.css";
-import { LineBreak } from "../../common/LineBreak";
 import { calculateTokenProportions } from "../utils/calculateTokenProportions";
 
-export const StakableBar = () => {
+export const StakableBar = ({ className }: { className?: string }) => {
   const {
     ustakableSAstBalanceFormatted: unstakable,
     sAstBalanceFormatted: staked,
@@ -19,8 +19,7 @@ export const StakableBar = () => {
     });
 
   return (
-    <div className="flex w-full flex-col gap-4">
-      <LineBreak className="relative -ml-6 -mr-6" />
+    <div className={twMerge("flex w-full flex-col gap-4", className)}>
       <div className="m-auto flex h-2 mb-2 w-full flex-row rounded-full">
         <div
           style={{ flexBasis: `${unstakablePercent}%` }}
@@ -54,7 +53,6 @@ export const StakableBar = () => {
         <span className="font-medium">{stakable}&nbsp;</span>
         <span className="text-gray-400">stakable</span>
       </div>
-      <LineBreak className="relative mb-4 -ml-6 -mr-6" />
     </div>
   );
 };

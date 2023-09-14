@@ -4,6 +4,7 @@ import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../../hooks/useTokenBalances";
 import { Button } from "../../common/Button";
+import { LineBreak } from "../../common/LineBreak";
 import { StakeOrUnstake, Status } from "../types/StakingTypes";
 import { NumberInput } from "./NumberInput";
 import { StakableBar } from "./StakableBar";
@@ -37,7 +38,9 @@ export const ManageStake: FC<ManageStakeProps> = ({
 
   return (
     <>
-      <StakableBar />
+      <LineBreak className="relative -mx-6" />
+      <StakableBar className="my-6" />
+      <LineBreak className="relative mb-4 -mx-6" />
       <div className="font-lg pointer-cursor rounded-md font-semibold">
         <Button
           className={twJoin([

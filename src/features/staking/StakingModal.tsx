@@ -108,18 +108,21 @@ export const StakingModal: FC<StakingModalInterface> = ({
     setValue("stakingAmount", 0);
   };
 
+  // TODO: replace this with our `Modal` component so it inherits the close
+  // to click etc.
   return (
     <dialog
       className={twJoin(
         "bg-gray-900 p-6 text-white",
         "w-full max-w-none xs:max-w-[360px]",
         "border border-gray-800 rounded-none xs:rounded-lg",
+        "backdrop:bg-gray-950 backdrop:bg-opacity-[85%] backdrop:backdrop-blur-[2px]",
       )}
       ref={stakingModalRef}
     >
-      <div className="flex justify-between items-center">
-        <h2 className="font-semibold text-xl pb-4">{headline}</h2>
-        <div className="hover:cursor-pointer pb-4" onClick={handleCloseModal}>
+      <div className="flex justify-between items-center mb-7 mt-1">
+        <h2 className="font-semibold text-xl">{headline}</h2>
+        <div className="hover:cursor-pointer" onClick={handleCloseModal}>
           <MdClose className="text-gray-500" size={26} />
         </div>
       </div>
@@ -149,7 +152,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
       {/* TODO: border radius not rendering correctly. */}
       <Button
         className={twJoin(
-          "mt-8 w-full !rounded-sm",
+          "mt-6 w-full !rounded-sm",
           `${isButtonDisabled && "opacity-50"}`,
         )}
         color="primary"

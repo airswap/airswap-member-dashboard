@@ -1,7 +1,8 @@
 import { FC, MouseEvent, RefObject, useEffect } from "react";
-import { VscChromeClose } from "react-icons/vsc";
+import { MdClose } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { Connector, useAccount, useConnect } from "wagmi";
+import { LineBreak } from "../common/LineBreak";
 import coinbaseWalletLogo from "./assets/wallet-logos/coinbase-wallet.svg";
 import frameLogo from "./assets/wallet-logos/frame-logo.png";
 import metamaskLogo from "./assets/wallet-logos/metamask-logo.svg";
@@ -42,52 +43,57 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({
     }
   }, [isConnected, isConnecting, modalRef]);
 
+  // TODO: use modal component instead.
   return (
     <dialog
       className="rounded-md border-0 p-0 text-white"
       ref={modalRef}
       onClick={handleCloseOnOutsideClick}
     >
-      <div className="color-white flex w-[360px] flex-col space-y-3 border border-gray-800 bg-gray-900 px-6 pb-6 pt-4 font-bold">
+      <div className="color-white flex w-[360px] flex-col border border-gray-800 bg-gray-900 p-6 font-bold">
         <div
           className={twJoin(
-            "flex flex-row justify-between pb-1",
+            "flex flex-row justify-between mb-6 items-center",
             "hover:cursor-pointer",
           )}
         >
-          <span>Select Wallet</span>
+          <h2 className="font-bold text-[20px]">Select Wallet</h2>
           <button onClick={() => handleCloseModalButton()}>
-            <VscChromeClose size={20} />
+            <MdClose size={24} className="text-gray-500" />
           </button>
         </div>
-        {connectors
-          .sort((c) => (c.ready ? -1 : 1))
-          .map((connector: Connector) => {
-            return (
-              <button
-                className={twJoin(
-                  "flex flex-row items-center rounded border border-gray-800 bg-gray-900 p-4",
-                  "hover:bg-gray-800 disabled:cursor-not-allowed",
-                )}
-                disabled={!connector.ready}
-                onClick={() => connect({ connector })}
-                key={connector.id}
-              >
-                <img
-                  src={walletLogos[connector.name.toLowerCase()]}
-                  alt={`${connector.name} logo`}
-                  className="mr-4 h-8 w-8"
-                />
-                <span className={twJoin(!connector.ready && "opacity-50")}>
-                  {connector.name}
-                  {!connector.ready && " (unsupported)"}
-                  {isLoading &&
-                    connector.id === pendingConnector?.id &&
-                    " (connecting)"}
-                </span>
-              </button>
-            );
-          })}
+        <LineBreak className="-mx-6 mb-6" />
+        <div className="flex flex-col gap-2">
+          {connectors
+            .filter((connector) => connector.ready)
+            // .sort((c) => (c.ready ? -1 : 1))
+            .map((connector: Connector) => {
+              return (
+                <button
+                  className={twJoin(
+                    "flex flex-row items-center rounded border border-gray-800 bg-gray-900 p-4",
+                    "hover:bg-gray-800 disabled:cursor-not-allowed font-medium",
+                  )}
+                  disabled={!connector.ready}
+                  onClick={() => connect({ connector })}
+                  key={connector.id}
+                >
+                  <img
+                    src={walletLogos[connector.name.toLowerCase()]}
+                    alt={`${connector.name} logo`}
+                    className="mr-5 h-10 w-10"
+                  />
+                  <span className={twJoin(!connector.ready && "opacity-50")}>
+                    {connector.name}
+                    {/* {!connector.ready && " (unsupported)"} */}
+                    {isLoading &&
+                      connector.id === pendingConnector?.id &&
+                      " (connecting)"}
+                  </span>
+                </button>
+              );
+            })}
+        </div>
       </div>
     </dialog>
   );

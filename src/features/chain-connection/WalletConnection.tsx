@@ -31,8 +31,15 @@ const WalletConnection = ({}: {}) => {
         onClick={handleModalOpening}
         color={isConnected ? "transparent" : "primary"}
       >
-        <div className="h-3 w-3 rounded-full bg-[#60FF66]"></div>
-        <span className="font-medium whitespace-nowrap">
+        {isConnected && (
+          <div className="h-3 w-3 rounded-full bg-[#60FF66]"></div>
+        )}
+        <span
+          className={twJoin(
+            isConnected ? "font-medium" : "font-bold px-1",
+            "whitespace-nowrap",
+          )}
+        >
           {isConnected
             ? ensName || truncateEthAddress(address || "")
             : "Connect"}
