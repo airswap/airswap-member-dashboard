@@ -27,11 +27,11 @@ export const StakableBar = ({ className }: { className?: string }) => {
         ></div>
         <div
           style={{ flexBasis: `${stakedPercent}%` }}
-          className="bg-accent-blue"
+          className="bg-airswap-blue"
         ></div>
         <div
           style={{ flexBasis: `${stakablePercent}%` }}
-          className="rounded-r-full bg-accent-gray min-w[3px]"
+          className="rounded-r-full bg-gray-500 min-w[3px]"
         ></div>
       </div>
 
@@ -49,7 +49,7 @@ export const StakableBar = ({ className }: { className?: string }) => {
         <span className="text-gray-400">staked</span>
       </div>
       <div className="flex flex-row items-center leading-none text-[15px]">
-        <BsCircleFill className="text-accent-gray mr-2.5" size={14} />
+        <BsCircleFill className="text-gray-500 mr-2.5" size={14} />
         <span className="font-medium">{stakable}&nbsp;</span>
         <span className="text-gray-400">stakable</span>
       </div>

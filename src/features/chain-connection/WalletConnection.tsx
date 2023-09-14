@@ -25,7 +25,7 @@ const WalletConnection = ({}: {}) => {
       <Button
         className={twJoin(
           "flex flex-row items-center gap-2",
-          isConnected && "cursor-default",
+          isConnected && "cursor-default hover:bg-gray-900",
         )}
         rounded={true}
         onClick={handleModalOpening}

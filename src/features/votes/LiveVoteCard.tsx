@@ -50,7 +50,7 @@ export const LiveVoteCard = ({ proposal }: { proposal: Proposal }) => {
         ])}
       >
         {!hasEnded && hasUserVoted && (
-          <span className={twJoin("text-accent-lightgreen")}>
+          <span className={twJoin("text-green-400")}>
             <CheckMark />
           </span>
         )}

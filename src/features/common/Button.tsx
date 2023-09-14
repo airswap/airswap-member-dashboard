@@ -15,8 +15,8 @@ const buttonVariants = tv({
     "disabled:pointer-events-none disabled:cursor-not-allowed",
   variants: {
     color: {
-      primary: "bg-accent-blue text-white hover:border-white",
-      transparent: "border border-border-dark hover:border-white",
+      primary: "bg-airswap-blue text-white hover:border-white",
+      transparent: "border border-gray-800 hover:border-white",
     },
     rounded: {
       true: "rounded-full",
