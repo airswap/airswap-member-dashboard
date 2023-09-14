@@ -111,8 +111,8 @@ export const StakingModal: FC<StakingModalInterface> = ({
   return (
     <dialog
       className={twJoin([
-        "border border-gray-800 bg-gray-900 p-6 text-white rounded-lg ",
-        "w-fit xs:w-4/5 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3 max-w-[360px]",
+        "bg-gray-900 p-6 text-white w-full max-w-[360px]",
+        "border border-gray-800 rounded-none xs:rounded-xs sm:rounded-lg",
       ])}
       ref={stakingModalRef}
     >
@@ -148,9 +148,11 @@ export const StakingModal: FC<StakingModalInterface> = ({
       {/* TODO: border radius not rendering correctly. */}
       <Button
         className={twJoin([
-          "flex flex-row items-center mb-2 mt-6 w-full !rounded-sm bg-airswap-blue font-semibold uppercase justify-center",
+          "mt-6 w-full !rounded-sm",
           `${isButtonDisabled && "opacity-50"}`,
         ])}
+        color="primary"
+        rounded={false}
         isDisabled={isButtonDisabled}
         loadingSpinnerArgs={{
           stakeOrUnstake,

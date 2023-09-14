@@ -28,7 +28,9 @@ export const StakeButton = ({}: {}) => {
       >
         <span className="hidden font-medium xs:flex">{`${sAstBalance} sAST`}</span>
         <Button
-          className="-mr-5 bg-airswap-blue font-bold uppercase -my-px"
+          className="-mr-5 -my-px"
+          rounded={true}
+          color="primary"
           onClick={handleOpenStakingModal}
         >
           Stake

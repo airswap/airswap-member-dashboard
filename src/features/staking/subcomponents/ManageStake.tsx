@@ -41,11 +41,11 @@ export const ManageStake: FC<ManageStakeProps> = ({
       <div className="font-lg pointer-cursor rounded-md font-semibold">
         <Button
           className={twJoin([
-            "rounded-none rounded-l-md",
-            "w-1/2 text-xs uppercase",
+            "w-1/2 p-2",
             `${stakeOrUnstake === "stake" ? "bg-gray-800" : "text-gray-500"}`,
-            `${isTransactionLoading && "opacity-50"}`,
           ])}
+          rounded="leftFalse"
+          size="small"
           onClick={() => setStakeOrUnstake(StakeOrUnstake.STAKE)}
           disabled={isTransactionLoading}
         >
@@ -53,10 +53,12 @@ export const ManageStake: FC<ManageStakeProps> = ({
         </Button>
         <Button
           className={twJoin(
-            "rounded-none rounded-r-md",
-            "w-1/2 text-xs uppercase",
+            "w-1/2 p-2",
             `${stakeOrUnstake === "unstake" ? "bg-gray-800" : "text-gray-500"}`,
           )}
+          rounded="rightFalse"
+          size="small"
+          color="transparent"
           onClick={() => setStakeOrUnstake(StakeOrUnstake.UNSTAKE)}
           disabled={isTransactionLoading}
         >

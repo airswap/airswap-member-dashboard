@@ -28,6 +28,7 @@ const WalletConnection = ({}: {}) => {
           isConnected && "cursor-default",
         ])}
         onClick={handleModalOpening}
+        color={isConnected ? "transparent" : "primary"}
       >
         <div className="h-3 w-3 rounded-full bg-[#60FF66]"></div>
         <span className="font-medium">

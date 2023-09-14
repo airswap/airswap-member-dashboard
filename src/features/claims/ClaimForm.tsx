@@ -119,7 +119,6 @@ export const ClaimForm = ({}: {}) => {
         ))}
       </div>
 
-      {/* TODO: loading spinner when preparing and claiming */}
       <Button color="primary" rounded={false} className="mt-7" onClick={write}>
         Claim
       </Button>
