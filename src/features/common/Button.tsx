@@ -6,22 +6,26 @@ import { StakeOrUnstake, Status } from "../staking/types/StakingTypes";
 import { buttonLoadingSpinner } from "../staking/utils/helpers";
 
 // TODO: this button needs more work, including
-// - disabled states, hover states, pressed states, focus-visible states, etc.
-// - a `loading` boolean prop that disables the button and shows a spinner
+// - hover states, pressed states, focus-visible states, etc.
 // - More variants
 
 const buttonVariants = tv({
   base:
-    "font-bold px-5 py-3 transition-colors duration-150" +
-    " disabled:pointer-events-none disabled:cursor-not-allowed",
+    "font-bold px-5 py-3 uppercase transition-colors duration-150" +
+    "disabled:pointer-events-none disabled:cursor-not-allowed",
   variants: {
     color: {
-      primary: "bg-accent-blue text-white hover:border-white",
-      transparent: "border border-border-dark hover:border-white",
+      primary: "bg-airswap-blue text-white hover:border-white",
+      transparent: "border border-gray-800 hover:border-white",
     },
     rounded: {
       true: "rounded-full",
-      false: "rounded-none",
+      false: "rounded-[3px]",
+      leftTrue: "rounded-l-[3px]",
+      leftFalse: "rounded-l-[3px]",
+      rightTrue: "rounded-r-[3px]",
+      rightFalse: "rounded-r-[3px]",
+      none: "rounded-none",
     },
     size: {
       small: "text-xs py-1 px-3",

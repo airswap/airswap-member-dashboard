@@ -42,9 +42,11 @@ export const VoteList = ({}: {}) => {
   return (
     <div className="flex flex-col gap-4 p-4 relative flex-1 overflow-hidden">
       {/* Active Votes */}
-      <div className="flex flex-row items-center gap-4">
-        <h3 className="text-xs font-bold uppercase">Live votes</h3>
-        <div className="h-px flex-1 bg-border-dark"></div>
+      <div className="flex flex-row items-center gap-2">
+        <h3 className="text-xs font-bold uppercase text-gray-500">
+          Live votes
+        </h3>
+        <div className="h-px flex-1 bg-gray-800"></div>
       </div>
       {liveProposalGroups?.map((group) => {
         return (
@@ -59,10 +61,12 @@ export const VoteList = ({}: {}) => {
 
       {/* Inactive Votes */}
       <div className="flex flex-row items-center gap-4">
-        <h3 className="text-xs font-bold uppercase">Past Epochs</h3>
-        <div className="h-px flex-1 bg-border-dark"></div>
+        <h3 className="text-xs font-bold uppercase text-gray-500">
+          Past Epochs
+        </h3>
+        <div className="h-px flex-1 bg-gray-800"></div>
       </div>
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-2">
         {pastProposalGroups?.map((group) => (
           <PastEpochCard proposalGroup={group} key={group[0].id} />
         ))}

@@ -1,7 +1,7 @@
 import { format } from "@greypixel_/nicenumbers";
 import { useEffect, useMemo } from "react";
 import { MdClose, MdOpenInNew } from "react-icons/md";
-import { twJoin } from "tailwind-merge";
+import { twJoin, twMerge } from "tailwind-merge";
 import { useAccount } from "wagmi";
 import { Accordion } from "../common/Accordion";
 import { Checkbox } from "../common/Checkbox";
@@ -98,37 +98,39 @@ export const PastEpochCard = ({
       {/* Checkbox and title. */}
       <div className="flex items-center">
         {/* Checkbox */}
-        <div className="align-center -mt-1 ml-0.5 mr-4 items-center ">
-          {!hasUserClaimed && (
-            <Checkbox
-              className={twJoin(!isWalletConnected && "invisible")}
-              disabled={
-                !root || // disabled if there's no root
-                hasUserClaimed || // or if the user has already claimed
-                pointsEarned === 0 || // or if there are no points to claim
-                !proof // or if proof isn't ready yet.
-              }
-              checked={isClaimSelected(treeId)}
-              onCheckedChange={(newState) => {
-                setClaimSelected(claim, newState as boolean);
-              }}
-            />
-          )}
+        <div className="align-center -mt-1 mr-5 items-center ">
+          <Checkbox
+            className={twJoin(!isWalletConnected && "invisible")}
+            disabled={
+              !root || // disabled if there's no root
+              hasUserClaimed || // or if the user has already claimed
+              pointsEarned === 0 || // or if there are no points to claim
+              !proof // or if proof isn't ready yet.
+            }
+            checked={isClaimSelected(treeId)}
+            onCheckedChange={(newState) => {
+              setClaimSelected(claim, newState as boolean);
+            }}
+          />
         </div>
         {/* Title */}
-        <div className="font-bold">{proposalGroupTitle}</div>
+        <div
+          className={twMerge("font-bold", hasUserClaimed && "text-gray-500")}
+        >
+          {proposalGroupTitle}
+        </div>
       </div>
 
       {/* Points */}
       <div
         className={twJoin([
           "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
-          "flex flex-row items-center gap-2 ring-1 ring-border-dark",
+          "flex flex-row items-center gap-2 ring-1 ring-gray-800",
           hasUserClaimed && "text-gray-500",
         ])}
       >
         {hasUserClaimed && (
-          <span className="text-accent-lightgreen">
+          <span className="text-green-400">
             <CheckMark size={20} />
           </span>
         )}
@@ -146,27 +148,27 @@ export const PastEpochCard = ({
   const content = proposalGroup.map((proposal, i) => (
     <div
       className={twJoin([
-        "grid grid-cols-[auto,1fr,auto,auto]",
-        "items-center border border-border-dark",
+        "grid grid-cols-[auto,1fr,auto,auto] border-t border-gray-800",
+        "items-center",
       ])}
       key={proposal.id}
     >
-      <div className="justify-self-center p-4">
+      <div className="justify-self-center py-3.5 grid place-items-center w-6 mx-5">
         {votedForProposal[i] ? (
-          <span className="text-accent-lightgreen">
+          <span className="text-green-400">
             <CheckMark size={20} />
           </span>
         ) : (
-          <span className="text-accent-lightred">
+          <span className="text-red-600">
             <MdClose size={20} />
           </span>
         )}
       </div>
-      <div className="text-font-secondary text-sm font-medium">
+      <div className="text-font-secondary text-sm leading-6 font-medium text-gray-500">
         {proposal.title}
       </div>
       <div></div>
-      <div className="self-end justify-self-center p-5">
+      <div className="grid place-items-center w-8 h-8 mr-4">
         <a
           href={`${SNAPSHOT_WEB}#/${SNAPSHOT_SPACE}/proposal/${proposal.id}`}
           target="_blank"
@@ -180,7 +182,7 @@ export const PastEpochCard = ({
 
   return (
     <Accordion
-      rootStyles="w-full items-center border border-border-dark rounded"
+      className="w-full items-center border border-gray-800 rounded"
       trigger={trigger}
       itemId={treeId}
       content={content}

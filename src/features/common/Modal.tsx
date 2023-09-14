@@ -36,7 +36,7 @@ export const Modal = ({
         }
       }}
       className={twMerge(
-        "backdrop:bg-slate-900/50 backdrop:backdrop-blur-[2px]",
+        "backdrop:bg-gray-900 backdrop:bg-opacity-[85%] backdrop:backdrop-blur-[2px]",
         "bg-transparent",
         className,
       )}

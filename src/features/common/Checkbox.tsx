@@ -15,13 +15,13 @@ export const Checkbox = ({
     <RadixCheckbox.Root
       className={twMerge([
         "group",
-        "w-6 h-6 border border-dark-inactive rounded-sm bg-dark-checkbox relative",
+        "w-6 h-6 border border-gray-500 rounded-sm bg-gray-950 relative",
         "transition-colors duration-150 touch-none",
-        !isOptionButton && "data-[state=checked]:border-accent-blue",
+        !isOptionButton && "data-[state=checked]:border-airswap-blue",
         !isOptionButton &&
-          "data-[state=unchecked]:active:bg-accent-blue data-[state=unchecked]:active:bg-opacity-50 data-[state=unchecked]:transition-none",
-        "!outline-none focus-visible:ring-1 ring-accent-blue ring-offset-2 ring-offset-bg-dark",
-        "disabled:bg-dark-checkbox-bg-inactive disabled:border-dark-checkbox-border-inactive disabled:pointer-events-none",
+          "data-[state=unchecked]:active:bg-airswap-blue data-[state=unchecked]:active:bg-opacity-50 data-[state=unchecked]:transition-none",
+        "!outline-none focus-visible:ring-1 ring-airswap-blue ring-offset-2 ring-offset-gray-950",
+        "disabled:bg-gray-950 disabled:border-gray-800 disabled:pointer-events-none",
         isOptionButton && "rounded-full",
         className,
       ])}
@@ -32,14 +32,14 @@ export const Checkbox = ({
       {!isOptionButton && (
         <div
           className={twJoin([
-            "absolute inset-0 bg-dark-checkbox-hovered flex items-center justify-center pointer-events-none",
+            "absolute inset-0 bg-gray-900 flex items-center justify-center pointer-events-none",
             "group-hover:opacity-100 opacity-0", // Appear on hover
             "transition-opacity duration-150",
             "group-active:bg-opacity-0 transition-none", // so we can see through to the "pressed" state of the parent
           ])}
         >
           <svg
-            className="absolute inset-[5px] text-dark-inactive"
+            className="absolute inset-[5px] text-gray-500"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="none"
@@ -58,8 +58,8 @@ export const Checkbox = ({
         <div
           className={twJoin([
             "absolute inset-1 rounded-full transition-all duration-150",
-            "bg-dark-checkbox-hovered group-hover:opacity-100 opacity-0 scale-75 group-hover:scale-100",
-            "group-active:bg-accent-blue/50",
+            "bg-gray-700 group-hover:opacity-100 opacity-0 scale-75 group-hover:scale-100",
+            "group-active:bg-airswap-blue/50",
           ])}
         />
       )}
@@ -74,7 +74,7 @@ export const Checkbox = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.09 }}
             className={twJoin([
-              "absolute inset-0 bg-accent-blue flex items-center justify-center pointer-events-none",
+              "absolute inset-0 bg-airswap-blue flex items-center justify-center pointer-events-none",
               "group-active:bg-opacity-50 group-data-[state=unchecked]:bg-opacity-50",
               "transition-colors duration-100",
               isOptionButton && "rounded-full inset-1",
