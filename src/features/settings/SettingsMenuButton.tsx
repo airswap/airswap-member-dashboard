@@ -11,7 +11,7 @@ export const SettingsMenuButton = ({}: {}) => {
   return (
     <>
       <Button
-        className="relative aspect-square"
+        className="relative aspect-square p-4"
         onClick={(e) => {
           e.stopPropagation();
           toggle();

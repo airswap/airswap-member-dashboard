@@ -148,10 +148,10 @@ export const StakingModal: FC<StakingModalInterface> = ({
 
       {/* TODO: border radius not rendering correctly. */}
       <Button
-        className={twJoin([
+        className={twJoin(
           "mt-8 w-full !rounded-sm",
           `${isButtonDisabled && "opacity-50"}`,
-        ])}
+        )}
         color="primary"
         rounded={false}
         isDisabled={isButtonDisabled}

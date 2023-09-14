@@ -65,10 +65,10 @@ const WalletConnectionModal: FC<WalletConnectionModalProps> = ({
           .map((connector: Connector) => {
             return (
               <button
-                className={twJoin([
+                className={twJoin(
                   "flex flex-row items-center rounded border border-gray-800 bg-gray-900 p-4",
                   "hover:bg-gray-800 disabled:cursor-not-allowed",
-                ])}
+                )}
                 disabled={!connector.ready}
                 onClick={() => connect({ connector })}
                 key={connector.id}
