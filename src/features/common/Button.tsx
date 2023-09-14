@@ -25,6 +25,7 @@ const buttonVariants = tv({
       leftFalse: "rounded-l-[3px]",
       rightTrue: "rounded-r-[3px]",
       rightFalse: "rounded-r-[3px]",
+      none: "rounded-none",
     },
     size: {
       small: "text-xs py-1 px-3",

@@ -24,7 +24,7 @@ export const StakableBar = () => {
       <div className="m-auto flex h-2 mb-2 w-full flex-row rounded-full">
         <div
           style={{ flexBasis: `${unstakablePercent}%` }}
-          className="checkered-blue rounded-l-full"
+          className="checkered-blue rounded-l-full min-w-[3px]"
         ></div>
         <div
           style={{ flexBasis: `${stakedPercent}%` }}
@@ -32,7 +32,7 @@ export const StakableBar = () => {
         ></div>
         <div
           style={{ flexBasis: `${stakablePercent}%` }}
-          className="rounded-r-full bg-accent-gray"
+          className="rounded-r-full bg-accent-gray min-w[3px]"
         ></div>
       </div>
 
