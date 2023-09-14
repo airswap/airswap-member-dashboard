@@ -110,11 +110,11 @@ export const StakingModal: FC<StakingModalInterface> = ({
 
   return (
     <dialog
-      className={twJoin([
+      className={twJoin(
         "bg-gray-900 p-6 text-white",
         "w-full max-w-none xs:max-w-[360px]",
         "border border-gray-800 rounded-none xs:rounded-lg",
-      ])}
+      )}
       ref={stakingModalRef}
     >
       <div className="flex justify-between items-center">
@@ -149,7 +149,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
       {/* TODO: border radius not rendering correctly. */}
       <Button
         className={twJoin([
-          "mt-6 w-full !rounded-sm",
+          "mt-8 w-full !rounded-sm",
           `${isButtonDisabled && "opacity-50"}`,
         ])}
         color="primary"

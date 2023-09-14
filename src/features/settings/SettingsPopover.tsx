@@ -94,7 +94,7 @@ const SettingsPopover: FC<SettingsPopoverProps> = ({
           );
         })}
       </div>
-      <LineBreak />
+      <LineBreak className="-ml-4 -mr-4" />
       <footer className="border-width-full flex content-center text-xs">
         <div className="my-4 flex items-center">
           <a

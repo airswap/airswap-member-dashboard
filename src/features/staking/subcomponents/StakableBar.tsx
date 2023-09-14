@@ -20,7 +20,7 @@ export const StakableBar = () => {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <LineBreak className="" />
+      <LineBreak className="relative -ml-6 -mr-6" />
       <div className="m-auto flex h-2 mb-2 w-full flex-row rounded-full">
         <div
           style={{ flexBasis: `${unstakablePercent}%` }}
@@ -54,7 +54,7 @@ export const StakableBar = () => {
         <span className="font-medium">{stakable}&nbsp;</span>
         <span className="text-gray-400">stakable</span>
       </div>
-      <LineBreak className="mb-4" />
+      <LineBreak className="relative mb-4 -ml-6 -mr-6" />
     </div>
   );
 };
