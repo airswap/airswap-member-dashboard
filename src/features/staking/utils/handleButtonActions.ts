@@ -9,41 +9,43 @@ import { Status } from "../types/StakingTypes";
 
 export const handleButtonActions = ({
   needsApproval,
+  canUnstake,
+  statusApprove,
   statusStake,
   statusUnstake,
+  resetApprove,
   resetStake,
   resetUnstake,
-  canUnstake,
   approve,
   stake,
   unstake,
   setValue,
 }: {
   needsApproval: boolean;
+  canUnstake: boolean;
+  statusApprove: Status;
   statusStake: Status;
   statusUnstake: Status;
+  resetApprove: () => void;
   resetStake: () => void;
   resetUnstake: () => void;
-  canUnstake: boolean;
   approve: (() => Promise<WriteContractResult>) | undefined;
   stake: (() => void) | undefined;
   unstake: (() => void) | undefined;
   setValue: UseFormSetValue<FieldValues>;
 }) => {
-  const handleReset = (status: Status, resetFunc: (() => void) | undefined) => {
-    if (status === "success") {
-      setValue("stakingAmount", 0);
-      resetFunc && resetFunc();
-      return true;
-    }
-    return false;
-  };
+  if (statusApprove === "success" && resetApprove) {
+    return resetApprove();
+  }
 
-  if (
-    handleReset(statusStake, resetStake) ||
-    handleReset(statusUnstake, resetUnstake)
-  ) {
-    return;
+  if (statusStake === "success" && resetStake) {
+    setValue("stakingAmount", 0);
+    return resetStake();
+  }
+
+  if (statusUnstake === "success" && resetUnstake) {
+    setValue("stakingAmount", 0);
+    return resetUnstake();
   }
 
   if (needsApproval && approve) {

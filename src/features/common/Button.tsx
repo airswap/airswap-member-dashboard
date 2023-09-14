@@ -59,11 +59,7 @@ export const Button = ({
   ButtonVariants) => {
   return (
     <button
-      className={twMerge(
-        buttonVariants({ color, rounded, size }),
-        className,
-        isDisabled && "hidden",
-      )}
+      className={twMerge(buttonVariants({ color, rounded, size }), className)}
       {...rest}
       disabled={isDisabled}
     >

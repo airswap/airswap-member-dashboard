@@ -1,4 +1,4 @@
-import { StakeOrUnstake, Status } from "../types/StakingTypes";
+import { StakeOrUnstake, TransactionState } from "../types/StakingTypes";
 
 /**
  *
@@ -6,47 +6,36 @@ import { StakeOrUnstake, Status } from "../types/StakingTypes";
  */
 export const buttonStatusText = ({
   stakeOrUnstake,
+  trackerStatus,
   needsApproval,
-  statusApprove,
-  statusStake,
-  statusUnstake,
 }: {
   stakeOrUnstake: StakeOrUnstake;
+  trackerStatus: TransactionState;
   needsApproval: boolean;
-  statusApprove: Status;
-  statusStake: Status;
-  statusUnstake: Status;
 }) => {
-  // if statusApprove === "loading" && !needsApproval, button should still read "staking"
-  if (stakeOrUnstake === StakeOrUnstake.UNSTAKE) {
-    if (statusUnstake === "idle") {
-      return "Unstake";
-    } else if (statusUnstake === "loading") {
-      return "Unstaking...";
-    } else if (statusUnstake === "success") {
-      return "Manage stake";
-    }
-  }
-
-  // without `statusApprove !== "loading"`, the text will flash from "Staking..." to "Stake" during intermittent state changes of `statusApprove
-  if (!needsApproval && statusApprove !== "loading") {
-    if (statusStake === "idle") {
-      return "Stake";
-    } else if (statusStake === "loading") {
-      return "Staking...";
-    } else if (statusStake === "success") {
-      return "Manage stake";
-    }
-  }
-
-  // after `statusStake === "success"`, `needsApproval` will reset to true
-  if (needsApproval) {
-    if (statusStake === "success") {
-      return "Manage stake";
-    } else if (statusApprove === "idle") {
-      return "Approve token";
-    } else if (statusApprove === "loading") {
-      return "Approving...";
-    }
+  switch (trackerStatus) {
+    case TransactionState.ApprovePending:
+      return "Approving";
+    case TransactionState.ApproveSuccess:
+      return "Manage Stake";
+    case TransactionState.StakePending:
+      return "Staking";
+    case TransactionState.StakeSuccess:
+      return "Manage Stake";
+    case TransactionState.UnstakePending:
+      return "Unstaking";
+    case TransactionState.Failed:
+      return "Manage Stake";
+    case TransactionState.UnstakeSuccess:
+      return "manage stake";
+    case TransactionState.Idle:
+      if (stakeOrUnstake === StakeOrUnstake.UNSTAKE) {
+        return "Unstake";
+      }
+      if (needsApproval && stakeOrUnstake === StakeOrUnstake.STAKE) {
+        return "Approve";
+      } else {
+        return "Stake";
+      }
   }
 };

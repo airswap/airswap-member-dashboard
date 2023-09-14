@@ -29,6 +29,7 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const [trackerStatus, setTrackerStatus] = useState<TransactionState>(
     TransactionState.Idle,
   );
+  console.log("trackerStatus", trackerStatus);
 
   const formReturn = useForm();
   const { watch, setValue } = formReturn;
@@ -86,10 +87,8 @@ export const StakingModal: FC<StakingModalInterface> = ({
 
   const buttonText = buttonStatusText({
     stakeOrUnstake,
+    trackerStatus,
     needsApproval,
-    statusApprove,
-    statusStake,
-    statusUnstake,
   });
 
   const loadingTransactions =
@@ -97,20 +96,13 @@ export const StakingModal: FC<StakingModalInterface> = ({
     statusStake === "loading" ||
     statusUnstake === "loading";
 
-  const successfulTransactions =
-    statusApprove === "success" ||
-    statusStake === "success" ||
-    statusUnstake === "success";
-
   // button disabled if input is empty, input amount exceeds balance, transaction is pending, or transaction is successful
-  // if transaction is successful, user must click on `icon` button in TransactionTracker to progress
   const isStakeButtonDisabled =
     stakingAmount <= 0 ||
     (stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > astBalance) ||
     (stakeOrUnstake === StakeOrUnstake.UNSTAKE &&
       stakingAmount > unstakableSAstBalance) ||
-    loadingTransactions ||
-    successfulTransactions;
+    loadingTransactions;
 
   const headline = transactionTrackerMessages[trackerStatus].headline;
 
@@ -168,9 +160,6 @@ export const StakingModal: FC<StakingModalInterface> = ({
         transactionHashApprove={transactionReceiptApprove}
         transactionHashStake={transactionReceiptStake}
         transactionHashUnstake={transactionReceiptUnstake}
-        resetApprove={resetApprove}
-        resetStake={resetStake}
-        resetUnstake={resetUnstake}
       />
 
       {/* TODO: border radius not rendering correctly. */}
@@ -185,8 +174,10 @@ export const StakingModal: FC<StakingModalInterface> = ({
         onClick={() => {
           handleButtonActions({
             needsApproval,
+            statusApprove,
             statusStake,
             statusUnstake,
+            resetApprove,
             resetStake,
             resetUnstake,
             canUnstake,
