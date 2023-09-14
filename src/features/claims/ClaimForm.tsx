@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js";
 import { useState } from "react";
+import { MdClose } from "react-icons/md";
 import { zeroAddress } from "viem";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
@@ -89,7 +90,14 @@ export const ClaimForm = ({}: {}) => {
 
   return (
     <div className="flex flex-col w-[304px]">
-      <h2 className="font-semibold text-xl mb-1 text-white">Claim</h2>
+      <div className="flex flex-row justify-between items-center mb-1 text-xl font-bold">
+        <h2 className="text-white">Claim</h2>
+        <MdClose
+          className="text-gray-500"
+          size={24}
+          onClick={() => setShowClaimModal(false)}
+        />
+      </div>
       <h3 className="text-gray-400">
         Using {pointsSelected} out of {totalPointsClaimable} points
       </h3>

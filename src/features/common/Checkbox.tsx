@@ -15,7 +15,7 @@ export const Checkbox = ({
     <RadixCheckbox.Root
       className={twMerge([
         "group",
-        "w-6 h-6 border border-dark-inactive rounded-sm bg-dark-checkbox relative",
+        "w-6 h-6 border border-gray-800 rounded-sm bg-gray-950 relative",
         "transition-colors duration-150 touch-none",
         !isOptionButton && "data-[state=checked]:border-accent-blue",
         !isOptionButton &&
@@ -32,14 +32,14 @@ export const Checkbox = ({
       {!isOptionButton && (
         <div
           className={twJoin([
-            "absolute inset-0 bg-dark-checkbox-hovered flex items-center justify-center pointer-events-none",
+            "absolute inset-0 bg-gray-900 flex items-center justify-center pointer-events-none",
             "group-hover:opacity-100 opacity-0", // Appear on hover
             "transition-opacity duration-150",
             "group-active:bg-opacity-0 transition-none", // so we can see through to the "pressed" state of the parent
           ])}
         >
           <svg
-            className="absolute inset-[5px] text-dark-inactive"
+            className="absolute inset-[5px] text-gray-500"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="none"
@@ -58,7 +58,7 @@ export const Checkbox = ({
         <div
           className={twJoin([
             "absolute inset-1 rounded-full transition-all duration-150",
-            "bg-dark-checkbox-hovered group-hover:opacity-100 opacity-0 scale-75 group-hover:scale-100",
+            "bg-gray-700 group-hover:opacity-100 opacity-0 scale-75 group-hover:scale-100",
             "group-active:bg-accent-blue/50",
           ])}
         />
