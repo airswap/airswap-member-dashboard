@@ -2,26 +2,25 @@ import BigNumber from "bignumber.js";
 import { useState } from "react";
 import { MdClose } from "react-icons/md";
 import { zeroAddress } from "viem";
-import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import {
+  useAccount,
+  useChainId,
+  useContractWrite,
+  usePrepareContractWrite,
+} from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { poolAbi } from "../../contracts/poolAbi";
 import { Button } from "../common/Button";
 import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
 import { ClaimableTokensLineItem } from "./ClaimableTokensLineItem";
+import { useClaimableAmounts } from "./hooks/useClaimableAmounts";
 import { useResetClaimStatus } from "./hooks/useResetClaimStatus";
-
-// FIXME: this should not be the source - probably a json file instead,
-// with goerli and mainnet.
-const stakerTokens: `0x${string}`[] = [
-  "0x326c977e6efc84e512bb9c30f76e30c160ed06fb", // link
-  "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984", // uni
-  "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6", // weth
-];
 
 export const ClaimForm = ({}: {}) => {
   const [pool] = useContractAddresses([ContractTypes.AirSwapPool], {});
   const { address: connectedAccount } = useAccount();
+  const chainId = useChainId();
 
   const [
     pointsClaimableByEpoch,
@@ -52,6 +51,8 @@ export const ClaimForm = ({}: {}) => {
     (acc, { value }) => acc + value,
     0,
   );
+
+  const claimable = useClaimableAmounts(pointsSelected || totalPointsClaimable);
 
   const [selection, setSelection] = useState<{
     index: number;
@@ -104,27 +105,43 @@ export const ClaimForm = ({}: {}) => {
 
       <hr className="border-gray-800 -mx-6 my-6" />
 
+      {/* TODO: needs a loading state */}
       <div
         className="grid items-center gap-x-5 gap-y-4"
         style={{
           gridTemplateColumns: "auto 1fr auto",
         }}
       >
-        {stakerTokens.map((stakerToken, i) => (
-          <ClaimableTokensLineItem
-            isSelected={selection?.index === i}
-            onSelect={(amount) =>
-              setSelection({
-                amount,
-                index: i,
-                tokenAddress: stakerTokens[i],
-              })
-            }
-            numPoints={pointsSelected}
-            tokenAddress={stakerToken}
-            key={stakerToken}
-          />
-        ))}
+        {claimable
+          .filter(
+            ({ claimableAmount, price, tokenInfo }) =>
+              tokenInfo?.decimals &&
+              claimableAmount &&
+              price &&
+              tokenInfo.symbol,
+          )
+          .map((claimOption, i) => (
+            <ClaimableTokensLineItem
+              isSelected={selection?.index === i}
+              onSelect={() => {
+                if (
+                  !claimOption.claimableAmount ||
+                  !claimOption.tokenInfo?.address
+                )
+                  return;
+                setSelection({
+                  amount: claimOption.claimableAmount,
+                  index: i,
+                  tokenAddress: claimOption.tokenInfo.address,
+                });
+              }}
+              amount={claimOption.claimableAmount || 0n}
+              decimals={claimOption.tokenInfo?.decimals || 18}
+              symbol={claimOption.tokenInfo?.symbol || "N/A"}
+              value={claimOption.claimableValue || 0}
+              key={claimOption.tokenInfo?.address || i}
+            />
+          ))}
       </div>
 
       <Button color="primary" rounded={false} className="mt-7" onClick={write}>
