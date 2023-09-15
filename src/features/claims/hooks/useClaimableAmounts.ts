@@ -13,7 +13,7 @@ export const useClaimableAmounts = (points: number) => {
   const tokenList =
     claimableTokens[chainId === 1 ? "mainnet" : chainId] || empty;
 
-  const { data: claimableAmounts } = useClaimCalculations(
+  const { data: claimableAmounts, refetch } = useClaimCalculations(
     points,
     tokenList.map((token) => token.address),
   );
@@ -28,7 +28,7 @@ export const useClaimableAmounts = (points: number) => {
   );
 
   return useMemo(() => {
-    return tokenList
+    const data = tokenList
       .map((_, index) => {
         const tokenInfo = tokenInfoResults[index].data;
         const price = prices?.[index].price;
@@ -50,5 +50,6 @@ export const useClaimableAmounts = (points: number) => {
         };
       })
       .sort((a, b) => (b.claimableValue || 0) - (a.claimableValue || 0));
-  }, [prices, tokenInfoResults, claimableAmounts, tokenList]);
+    return { data, refetch };
+  }, [prices, tokenInfoResults, claimableAmounts, tokenList, refetch]);
 };

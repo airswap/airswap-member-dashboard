@@ -2,12 +2,7 @@ import BigNumber from "bignumber.js";
 import { useState } from "react";
 import { MdClose } from "react-icons/md";
 import { zeroAddress } from "viem";
-import {
-  useAccount,
-  useChainId,
-  useContractWrite,
-  usePrepareContractWrite,
-} from "wagmi";
+import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { poolAbi } from "../../contracts/poolAbi";
@@ -20,7 +15,6 @@ import { useResetClaimStatus } from "./hooks/useResetClaimStatus";
 export const ClaimForm = ({}: {}) => {
   const [pool] = useContractAddresses([ContractTypes.AirSwapPool], {});
   const { address: connectedAccount } = useAccount();
-  const chainId = useChainId();
 
   const [
     pointsClaimableByEpoch,
@@ -52,7 +46,9 @@ export const ClaimForm = ({}: {}) => {
     0,
   );
 
-  const claimable = useClaimableAmounts(pointsSelected || totalPointsClaimable);
+  const { data: claimable, refetch: refetchClaimable } = useClaimableAmounts(
+    pointsSelected || totalPointsClaimable,
+  );
 
   const [selection, setSelection] = useState<{
     index: number;
@@ -84,6 +80,7 @@ export const ClaimForm = ({}: {}) => {
     onSuccess: () => {
       resetClaimStatuses();
       clearSelectedClaims();
+      refetchClaimable();
       setShowClaimModal(false);
       // TODO: show toast.
     },
