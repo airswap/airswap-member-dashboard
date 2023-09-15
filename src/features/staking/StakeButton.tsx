@@ -1,21 +1,15 @@
-import { useRef } from "react";
 import { twJoin } from "tailwind-merge";
 import { useAccount } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { StakingModal } from "./StakingModal";
+import { useStakingModalStore } from "./store/useStakingModalStore";
 
 export const StakeButton = ({}: {}) => {
+  const [setShowStakingModal] = useStakingModalStore((state) => [
+    state.setShowStakingModal,
+  ]);
   const { address, isConnected } = useAccount();
-
-  const stakingModalRef = useRef<HTMLDialogElement | null>(null);
-
-  const handleOpenStakingModal = () => {
-    if (isConnected) {
-      stakingModalRef.current && stakingModalRef.current.showModal();
-    }
-  };
-
   const { sAstBalanceFormatted: sAstBalance } = useTokenBalances();
 
   return (
@@ -30,15 +24,13 @@ export const StakeButton = ({}: {}) => {
           className="-mr-5 -my-px"
           rounded={true}
           color="primary"
-          onClick={handleOpenStakingModal}
+          onClick={() => setShowStakingModal(true)}
         >
           Stake
         </Button>
       </div>
 
-      {isConnected && address && (
-        <StakingModal stakingModalRef={stakingModalRef} />
-      )}
+      {isConnected && address && <StakingModal />}
     </>
   );
 };

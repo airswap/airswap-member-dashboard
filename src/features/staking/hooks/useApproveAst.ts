@@ -42,24 +42,24 @@ export const useApproveAst = ({
   });
 
   const {
-    writeAsync: approve,
-    data: dataApprove,
-    reset: resetApprove,
+    writeAsync: approveAst,
+    data: dataApproveAst,
+    reset: resetApproveAst,
   } = useContractWrite(configApprove);
 
   const {
     data: transactionReceiptApprove,
-    status: statusApprove,
-    isError: isErrorApprove,
+    status: statusApproveAst,
+    isError: isErrorApproveAst,
   } = useWaitForTransaction({
-    hash: dataApprove?.hash,
+    hash: dataApproveAst?.hash,
   });
 
   return {
-    approve,
-    resetApprove,
+    approveAst,
+    resetApproveAst,
     transactionReceiptApprove,
-    statusApprove,
-    isErrorApprove,
+    statusApproveAst,
+    isErrorApproveAst,
   };
 };

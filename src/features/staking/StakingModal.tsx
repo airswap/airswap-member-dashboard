@@ -1,34 +1,43 @@
-import { FC, RefObject, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdClose } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { LineBreak } from "../common/LineBreak";
+import { Modal } from "../common/Modal";
 import { ManageStake } from "./ManageStake";
 import { TransactionTracker } from "./TransactionTracker";
 import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useStakeAst } from "./hooks/useStakeAst";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
-import { StakeOrUnstake, TransactionState } from "./types/StakingTypes";
+import { useStakingModalStore } from "./store/useStakingModalStore";
+import {
+  StakeOrUnstake,
+  TransactionErrorLookup,
+  TransactionHashLookup,
+  TransactionStatusLookup,
+} from "./types/StakingTypes";
 import { buttonStatusText } from "./utils/buttonStatusText";
 import { handleButtonActions } from "./utils/handleButtonActions";
 import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
 
-interface StakingModalInterface {
-  stakingModalRef: RefObject<HTMLDialogElement>;
-}
-
-export const StakingModal: FC<StakingModalInterface> = ({
-  stakingModalRef,
-}) => {
-  const [stakeOrUnstake, setStakeOrUnstake] = useState<StakeOrUnstake>(
-    StakeOrUnstake.STAKE,
-  );
-  const [trackerStatus, setTrackerStatus] = useState<TransactionState>(
-    TransactionState.Idle,
-  );
+export const StakingModal = () => {
+  const [
+    showStakingModal,
+    setShowStakingModal,
+    stakeOrUnstake,
+    setStakeOrUnstake,
+    trackerStatus,
+    setTrackerStatus,
+  ] = useStakingModalStore((state) => [
+    state.showStakingModal,
+    state.setShowStakingModal,
+    state.stakeOrUnstake,
+    state.setStakeOrUnstake,
+    state.trackerStatus,
+    state.setTrackerStatus,
+  ]);
 
   const formReturn = useForm();
   const { watch, setValue } = formReturn;
@@ -37,11 +46,11 @@ export const StakingModal: FC<StakingModalInterface> = ({
   const { astAllowanceFormatted: astAllowance } = useAstAllowance();
 
   const {
-    ustakableSAstBalanceFormatted: unstakableSAstBalance,
+    ustakableSAstBalanceFormatted: unstakableSastBalance,
     astBalanceFormatted: astBalance,
   } = useTokenBalances();
 
-  const canUnstake = stakingAmount <= +unstakableSAstBalance;
+  const canUnstake = stakingAmount <= +unstakableSastBalance;
 
   const needsApproval =
     stakeOrUnstake === StakeOrUnstake.STAKE &&
@@ -52,37 +61,55 @@ export const StakingModal: FC<StakingModalInterface> = ({
     !needsApproval && +stakingAmount <= +astBalance && +stakingAmount > 0;
 
   const {
-    approve,
-    statusApprove,
-    isErrorApprove,
+    approveAst,
+    statusApproveAst,
+    isErrorApproveAst,
     transactionReceiptApprove,
-    resetApprove,
+    resetApproveAst,
   } = useApproveAst({
     stakingAmount,
     enabled: needsApproval,
   });
 
   const {
-    stake,
-    resetStake,
-    transactionReceiptStake,
-    statusStake,
-    isErrorStake,
+    stakeAst,
+    resetStakeAst,
+    transactionReceiptStakeAst,
+    statusStakeAst,
+    isErrorStakeAst,
   } = useStakeAst({
     stakingAmount,
     enabled: canStake,
   });
 
   const {
-    unstake,
-    resetUnstake,
-    statusUnstake,
-    transactionReceiptUnstake,
-    isErrorUnstake,
+    unstakeSast,
+    resetUnstakeSast,
+    statusUnstakeSast,
+    transactionReceiptUnstakeSast,
+    isErrorUnstakeSast,
   } = useUnstakeSast({
     unstakingAmount: stakingAmount,
     canUnstake,
   });
+
+  const transactionStatusLookup: TransactionStatusLookup = {
+    statusApproveAst,
+    statusStakeAst,
+    statusUnstakeSast,
+  };
+
+  const transactionHashLookup: TransactionHashLookup = {
+    transactionReceiptApprove,
+    transactionReceiptStakeAst,
+    transactionReceiptUnstakeSast,
+  };
+
+  const transactionErrorLookup: TransactionErrorLookup = {
+    isErrorApproveAst,
+    isErrorStakeAst,
+    isErrorUnstakeSast,
+  };
 
   const buttonText = buttonStatusText({
     stakeOrUnstake,
@@ -91,105 +118,86 @@ export const StakingModal: FC<StakingModalInterface> = ({
   });
 
   const isLoadingTransactions =
-    statusApprove === "loading" ||
-    statusStake === "loading" ||
-    statusUnstake === "loading";
+    statusApproveAst === "loading" ||
+    statusStakeAst === "loading" ||
+    statusUnstakeSast === "loading";
 
   // button disabled if input is empty, input amount exceeds balance, transaction is pending, or transaction is successful
   const isStakeButtonDisabled =
     stakingAmount <= 0 ||
     (stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > astBalance) ||
     (stakeOrUnstake === StakeOrUnstake.UNSTAKE &&
-      stakingAmount > unstakableSAstBalance) ||
+      stakingAmount > unstakableSastBalance) ||
     isLoadingTransactions;
 
   const headline = transactionTrackerMessages[trackerStatus].headline;
 
   const relevantStatuses = ["loading", "error", "success"];
   const onlyShowTransactionTracker =
-    relevantStatuses.includes(statusApprove) ||
-    relevantStatuses.includes(statusStake) ||
-    relevantStatuses.includes(statusUnstake);
+    relevantStatuses.includes(statusApproveAst) ||
+    relevantStatuses.includes(statusStakeAst) ||
+    relevantStatuses.includes(statusUnstakeSast);
 
-  const handleCloseModal = () => {
-    stakingModalRef.current && stakingModalRef.current.close();
-    setValue("stakingAmount", 0);
-  };
-
-  // TODO: replace this with our `Modal` component so it inherits the close
-  // to click etc.
   return (
-    <dialog
-      className={twJoin(
-        "bg-gray-900 p-6 text-white",
-        "w-full max-w-none xs:max-w-[360px]",
-        "border border-gray-800 rounded-none xs:rounded-lg",
-        "backdrop:bg-gray-950 backdrop:bg-opacity-[85%] backdrop:backdrop-blur-[2px]",
+    <>
+      {showStakingModal && (
+        <Modal
+          className="w-full max-w-none xs:max-w-[360px]"
+          onCloseRequest={() => setShowStakingModal(false)}
+        >
+          <div className="flex justify-between items-center mb-7 mt-1">
+            <h2 className="font-semibold text-xl">{headline}</h2>
+            <div
+              className="hover:cursor-pointer"
+              onClick={() => setShowStakingModal(false)}
+            >
+              <MdClose className="text-gray-500" size={26} />
+            </div>
+          </div>
+          <LineBreak className="mb-4 -mx-6" />
+          {!onlyShowTransactionTracker && (
+            <ManageStake
+              formReturn={formReturn}
+              transactionStatusLookup={transactionStatusLookup}
+            />
+          )}
+
+          <TransactionTracker
+            stakingAmount={stakingAmount}
+            transactionStatusLookup={transactionStatusLookup}
+            transactionHashLookup={transactionHashLookup}
+            transactionErrorLookup={transactionErrorLookup}
+          />
+
+          {/* TODO: border radius not rendering correctly. */}
+          <Button
+            className={twJoin(
+              "mt-6 w-full !rounded-sm",
+              `${isStakeButtonDisabled && "opacity-50"}`,
+            )}
+            color="primary"
+            rounded={false}
+            isDisabled={isStakeButtonDisabled}
+            isHidden={isLoadingTransactions}
+            onClick={() => {
+              handleButtonActions({
+                needsApproval,
+                transactionStatusLookup,
+                resetApproveAst,
+                resetStakeAst,
+                resetUnstakeSast,
+                canUnstake,
+                approveAst,
+                stakeAst,
+                unstakeSast,
+                setValue,
+              });
+            }}
+          >
+            <span>{buttonText}</span>
+          </Button>
+        </Modal>
       )}
-      ref={stakingModalRef}
-    >
-      <div className="flex justify-between items-center mb-7 mt-1">
-        <h2 className="font-semibold text-xl">{headline}</h2>
-        <div className="hover:cursor-pointer" onClick={handleCloseModal}>
-          <MdClose className="text-gray-500" size={26} />
-        </div>
-      </div>
-      <LineBreak className="mb-4 -mx-6" />
-      <ManageStake
-        displayManageStake={!onlyShowTransactionTracker}
-        formReturn={formReturn}
-        stakeOrUnstake={stakeOrUnstake}
-        setStakeOrUnstake={setStakeOrUnstake}
-        statusApprove={statusApprove}
-        statusStake={statusStake}
-        statusUnstake={statusUnstake}
-      />
-
-      <TransactionTracker
-        stakeOrUnstake={stakeOrUnstake}
-        trackerStatus={trackerStatus}
-        setTrackerStatus={setTrackerStatus}
-        stakingAmount={stakingAmount}
-        statusApprove={statusApprove}
-        statusStake={statusStake}
-        statusUnstake={statusUnstake}
-        isErrorApprove={isErrorApprove}
-        isErrorStake={isErrorStake}
-        isErrorUnstake={isErrorUnstake}
-        transactionHashApprove={transactionReceiptApprove}
-        transactionHashStake={transactionReceiptStake}
-        transactionHashUnstake={transactionReceiptUnstake}
-      />
-
-      {/* TODO: border radius not rendering correctly. */}
-      <Button
-        className={twJoin(
-          "mt-6 w-full !rounded-sm",
-          `${isStakeButtonDisabled && "opacity-50"}`,
-        )}
-        color="primary"
-        rounded={false}
-        isDisabled={isStakeButtonDisabled}
-        isHidden={isLoadingTransactions}
-        onClick={() => {
-          handleButtonActions({
-            needsApproval,
-            statusApprove,
-            statusStake,
-            statusUnstake,
-            resetApprove,
-            resetStake,
-            resetUnstake,
-            canUnstake,
-            approve,
-            stake,
-            unstake,
-            setValue,
-          });
-        }}
-      >
-        <span>{buttonText}</span>
-      </Button>
-    </dialog>
+    </>
   );
 };

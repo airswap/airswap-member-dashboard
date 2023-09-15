@@ -1,6 +1,6 @@
 import { FieldValues, UseFormSetValue } from "react-hook-form";
 import { WriteContractResult } from "wagmi/actions";
-import { Status } from "../types/StakingTypes";
+import { TransactionStatusLookup } from "../types/StakingTypes";
 
 /**
  *
@@ -10,53 +10,55 @@ import { Status } from "../types/StakingTypes";
 export const handleButtonActions = ({
   needsApproval,
   canUnstake,
-  statusApprove,
-  statusStake,
-  statusUnstake,
-  resetApprove,
-  resetStake,
-  resetUnstake,
-  approve,
-  stake,
-  unstake,
+  transactionStatusLookup,
+  resetApproveAst,
+  resetStakeAst,
+  resetUnstakeSast,
+  approveAst,
+  stakeAst,
+  unstakeSast,
   setValue,
 }: {
   needsApproval: boolean;
   canUnstake: boolean;
-  statusApprove: Status;
-  statusStake: Status;
-  statusUnstake: Status;
-  resetApprove: () => void;
-  resetStake: () => void;
-  resetUnstake: () => void;
-  approve: (() => Promise<WriteContractResult>) | undefined;
-  stake: (() => void) | undefined;
-  unstake: (() => void) | undefined;
+  transactionStatusLookup: TransactionStatusLookup;
+  resetApproveAst: () => void;
+  resetStakeAst: () => void;
+  resetUnstakeSast: () => void;
+  approveAst: (() => Promise<WriteContractResult>) | undefined;
+  stakeAst: (() => void) | undefined;
+  unstakeSast: (() => void) | undefined;
   setValue: UseFormSetValue<FieldValues>;
 }) => {
-  if (statusApprove === "success" && resetApprove) {
-    return resetApprove();
+  if (
+    transactionStatusLookup.statusApproveAst === "success" &&
+    resetApproveAst
+  ) {
+    return resetApproveAst();
   }
 
-  if (statusStake === "success" && resetStake) {
+  if (transactionStatusLookup.statusStakeAst === "success" && resetStakeAst) {
     setValue("stakingAmount", 0);
-    return resetStake();
+    return resetStakeAst();
   }
 
-  if (statusUnstake === "success" && resetUnstake) {
+  if (
+    transactionStatusLookup.statusUnstakeSast === "success" &&
+    resetUnstakeSast
+  ) {
     setValue("stakingAmount", 0);
-    return resetUnstake();
+    return resetUnstakeSast();
   }
 
-  if (needsApproval && approve) {
-    return approve();
+  if (needsApproval && approveAst) {
+    return approveAst();
   }
 
-  if (canUnstake && unstake) {
-    return unstake();
+  if (canUnstake && unstakeSast) {
+    return unstakeSast();
   }
 
-  if (!needsApproval && stake) {
-    return stake();
+  if (!needsApproval && stakeAst) {
+    return stakeAst();
   }
 };

@@ -1,22 +1,24 @@
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
+import { useStakingModalStore } from "./store/useStakingModalStore";
 import { StakeOrUnstake } from "./types/StakingTypes";
 
 export const NumberInput = ({
-  stakeOrUnstake,
   astBalance,
   unstakableSAstBalance,
   formReturn,
   name,
   isDisabled,
 }: {
-  stakeOrUnstake: StakeOrUnstake;
   astBalance: number;
   unstakableSAstBalance: number;
   formReturn: UseFormReturn<FieldValues>;
   name: string;
   isDisabled: boolean;
 }) => {
+  const [stakeOrUnstake] = useStakingModalStore((state) => [
+    state.stakeOrUnstake,
+  ]);
   const { register, setValue } = formReturn;
 
   return (

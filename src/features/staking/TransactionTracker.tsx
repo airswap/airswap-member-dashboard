@@ -1,56 +1,59 @@
-import { Dispatch, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { twJoin } from "tailwind-merge";
-import { Hash, TransactionReceipt } from "viem";
+import { Hash } from "viem";
 import { useNetwork } from "wagmi";
 import greenCheck from "../../../src/assets/check-green.svg";
 import closeRed from "../../../src/assets/close-red.svg";
 import loadingSpinner from "../../../src/assets/loading-spinner.svg";
 import { EtherscanUrl } from "../common/EtherscanUrl";
-import { trackerStatusTransactionType } from "../votes/utils/trackerStatusTransactionType";
-import { StakeOrUnstake, Status, TransactionState } from "./types/StakingTypes";
+import { handleTrackerStatus } from "../votes/utils/handleTrackerStatus";
+import { useStakingModalStore } from "./store/useStakingModalStore";
+import {
+  StakeOrUnstake,
+  TransactionErrorLookup,
+  TransactionHashLookup,
+  TransactionStatusLookup,
+} from "./types/StakingTypes";
 import { etherscanLink } from "./utils/etherscanLink";
 import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
 
 export const TransactionTracker = ({
-  stakeOrUnstake,
-  trackerStatus,
-  setTrackerStatus,
   stakingAmount,
-  statusApprove,
-  statusStake,
-  statusUnstake,
-  isErrorApprove,
-  isErrorStake,
-  isErrorUnstake,
-  transactionHashApprove,
-  transactionHashStake,
-  transactionHashUnstake,
+  transactionStatusLookup,
+  transactionHashLookup,
+  transactionErrorLookup,
 }: {
-  stakeOrUnstake: StakeOrUnstake;
-  trackerStatus: TransactionState;
-  setTrackerStatus: Dispatch<TransactionState>;
   stakingAmount: string;
-  statusApprove: Status;
-  statusStake: Status;
-  statusUnstake: Status;
-  isErrorApprove: boolean;
-  isErrorStake: boolean;
-  isErrorUnstake: boolean;
-  transactionHashApprove: TransactionReceipt | undefined;
-  transactionHashStake: TransactionReceipt | undefined;
-  transactionHashUnstake: TransactionReceipt | undefined;
+  transactionStatusLookup: TransactionStatusLookup;
+  transactionHashLookup: TransactionHashLookup;
+  transactionErrorLookup: TransactionErrorLookup;
 }) => {
+  const [stakeOrUnstake, trackerStatus, setTrackerStatus] =
+    useStakingModalStore((state) => [
+      state.stakeOrUnstake,
+      state.trackerStatus,
+      state.setTrackerStatus,
+    ]);
   const [transactionHash, setTransactionHash] = useState<Hash | undefined>(
     undefined,
   );
   const { chain } = useNetwork();
 
-  const isError = isErrorApprove || isErrorStake || isErrorUnstake;
-  // Only display "amount staked" etc, if transaction is successful
+  const isError =
+    transactionErrorLookup.isErrorApprove ||
+    transactionErrorLookup.isErrorStake ||
+    transactionErrorLookup.isErrorUnstake;
+
+  handleTrackerStatus({
+    transactionStatusLookup,
+    isError,
+    setTrackerStatus,
+  });
+
   const transactionSuccess =
-    statusApprove === "success" ||
-    statusStake === "success" ||
-    statusUnstake === "success";
+    transactionStatusLookup.statusApprove === "success" ||
+    transactionStatusLookup.statusStake === "success" ||
+    transactionStatusLookup.statusUnstake === "success";
 
   const asset = stakeOrUnstake === StakeOrUnstake.STAKE ? "AST" : "sAST";
 
@@ -74,32 +77,34 @@ export const TransactionTracker = ({
   const icon = statusIconMap[trackerStatus];
 
   useEffect(() => {
-    // set status of component
-    trackerStatusTransactionType({
-      statusApprove,
-      statusStake,
-      statusUnstake,
-      isError,
-      setTrackerStatus,
-    });
+    // handleTrackerStatus({
+    //   transactionStatusLookup,
+    //   isError,
+    //   setTrackerStatus,
+    // });
 
     // set etherscan URL
-    if (transactionHashApprove) {
-      setTransactionHash(transactionHashApprove.transactionHash);
-    } else if (transactionHashStake) {
-      setTransactionHash(transactionHashStake.transactionHash);
-    } else if (transactionHashUnstake) {
-      setTransactionHash(transactionHashUnstake.transactionHash);
+    if (transactionHashLookup.transactionHashApprove) {
+      setTransactionHash(
+        transactionHashLookup.transactionHashApprove.transactionHash,
+      );
+    } else if (transactionHashLookup.transactionHashStake) {
+      setTransactionHash(
+        transactionHashLookup.transactionHashStake.transactionHash,
+      );
+    } else if (transactionHashLookup.transactionHashUnstake) {
+      setTransactionHash(
+        transactionHashLookup.transactionHashUnstake.transactionHash,
+      );
     }
   }, [
-    statusApprove,
-    statusStake,
-    statusUnstake,
+    transactionStatusLookup.statusApproveAst,
+    transactionHashLookup.transactionHashApprove,
+    transactionHashLookup.transactionHashStake,
+    transactionHashLookup.transactionHashUnstake,
+    transactionStatusLookup,
     isError,
     setTrackerStatus,
-    transactionHashApprove,
-    transactionHashStake,
-    transactionHashUnstake,
   ]);
 
   return (
@@ -119,7 +124,6 @@ export const TransactionTracker = ({
         <img src={icon} alt={icon} />
       </div>
       <div className="flex flex-row my-4 flex-wrap">
-        {/* <span className="flex flex-row"> */}
         <span>{message}</span>
         {transactionSuccess ? (
           <span className="ml-2 font-medium text-white">
@@ -127,7 +131,6 @@ export const TransactionTracker = ({
             <span className="ml-1">{asset}</span>
           </span>
         ) : null}
-        {/* </span> */}
       </div>
       {shouldRenderEtherscanUrl ? <div>{etherscanUrl}</div> : null}
       <div

@@ -42,22 +42,22 @@ export const useUnstakeSast = ({
   });
 
   const {
-    write: unstake,
+    write: unstakeSast,
     data,
-    reset: resetUnstake,
+    reset: resetUnstakeSast,
   } = useContractWrite(configUnstake);
 
   const {
-    data: transactionReceiptUnstake,
-    status: statusUnstake,
-    isError: isErrorUnstake,
+    data: transactionReceiptUnstakeSast,
+    status: statusUnstakeSast,
+    isError: isErrorUnstakeSast,
   } = useWaitForTransaction({ hash: data?.hash });
 
   return {
-    unstake,
-    resetUnstake,
-    statusUnstake,
-    transactionReceiptUnstake,
-    isErrorUnstake,
+    unstakeSast,
+    resetUnstakeSast,
+    statusUnstakeSast,
+    transactionReceiptUnstakeSast,
+    isErrorUnstakeSast,
   };
 };

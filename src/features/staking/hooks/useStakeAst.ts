@@ -37,22 +37,22 @@ export const useStakeAst = ({
   });
 
   const {
-    write: stake,
+    write: stakeAst,
     data,
-    reset: resetStake,
+    reset: resetStakeAst,
   } = useContractWrite(configStake);
 
   const {
-    data: transactionReceiptStake,
-    status: statusStake,
-    isError: isErrorStake,
+    data: transactionReceiptStakeAst,
+    status: statusStakeAst,
+    isError: isErrorStakeAst,
   } = useWaitForTransaction({ hash: data?.hash });
 
   return {
-    stake,
-    resetStake,
-    transactionReceiptStake,
-    statusStake,
-    isErrorStake,
+    stakeAst,
+    resetStakeAst,
+    transactionReceiptStakeAst,
+    statusStakeAst,
+    isErrorStakeAst,
   };
 };

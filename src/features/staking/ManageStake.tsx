@@ -1,4 +1,3 @@
-import { Dispatch } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../assets/airswap-logo.svg";
@@ -7,37 +6,33 @@ import { Button } from "../common/Button";
 import { LineBreak } from "../common/LineBreak";
 import { NumberInput } from "./NumberInput";
 import { StakableBar } from "./StakableBar";
-import { StakeOrUnstake, Status } from "./types/StakingTypes";
+import { useStakingModalStore } from "./store/useStakingModalStore";
+import { StakeOrUnstake, TransactionStatusLookup } from "./types/StakingTypes";
 
 export const ManageStake = ({
-  displayManageStake = true,
   formReturn,
-  stakeOrUnstake,
-  setStakeOrUnstake,
-  statusApprove,
-  statusStake,
-  statusUnstake,
+  transactionStatusLookup,
 }: {
-  displayManageStake: boolean;
   formReturn: UseFormReturn<FieldValues>;
-  stakeOrUnstake: StakeOrUnstake;
-  setStakeOrUnstake: Dispatch<StakeOrUnstake>;
-  statusApprove: Status;
-  statusStake: Status;
-  statusUnstake: Status;
+  transactionStatusLookup: TransactionStatusLookup;
 }) => {
+  const [stakeOrUnstake, setStakeOrUnstake] = useStakingModalStore((state) => [
+    state.stakeOrUnstake,
+    state.setStakeOrUnstake,
+  ]);
+
   const {
     astBalanceFormatted: astBalance,
     ustakableSAstBalanceFormatted: unstakableSAstBalance,
   } = useTokenBalances();
 
   const isTransactionLoading =
-    statusApprove === "loading" ||
-    statusStake === "loading" ||
-    statusUnstake === "loading";
+    transactionStatusLookup.statusApprove === "loading" ||
+    transactionStatusLookup.statusStake === "loading" ||
+    transactionStatusLookup.statusUnstake === "loading";
 
   return (
-    <div className={`${!displayManageStake && "hidden"}`}>
+    <div>
       <StakableBar className="my-6" />
       <LineBreak className="relative mb-4 -mx-6" />
       <div className="font-lg pointer-cursor rounded-md font-semibold">
@@ -82,7 +77,6 @@ export const ManageStake = ({
         <div className="flex flex-col items-end uppercase w-full overflow-hidden">
           <div>
             <NumberInput
-              stakeOrUnstake={stakeOrUnstake}
               astBalance={+astBalance}
               unstakableSAstBalance={+unstakableSAstBalance}
               formReturn={formReturn}
