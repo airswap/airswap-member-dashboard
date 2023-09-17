@@ -5,11 +5,9 @@ import { Button } from "../common/Button";
 import { StakingModal } from "./StakingModal";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 
-export const StakeButton = ({}: {}) => {
-  const [setShowStakingModal] = useStakingModalStore((state) => [
-    state.setShowStakingModal,
-  ]);
-  const { address, isConnected } = useAccount();
+export const StakeButton = () => {
+  const { showStakingModal, setShowStakingModal } = useStakingModalStore();
+  const { isConnected } = useAccount();
   const { sAstBalanceFormatted: sAstBalance } = useTokenBalances();
 
   return (
@@ -29,8 +27,7 @@ export const StakeButton = ({}: {}) => {
           Stake
         </Button>
       </div>
-
-      {isConnected && address && <StakingModal />}
+      {isConnected && showStakingModal && <StakingModal />}
     </>
   );
 };

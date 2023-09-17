@@ -1,43 +1,59 @@
+import { Hash } from "viem";
 import { create } from "zustand";
 
-export enum StakeOrUnstake {
+export enum TxType {
   STAKE = "stake",
   UNSTAKE = "unstake",
-}
-
-export enum TransactionState {
-  ApprovePending = "ApprovePending",
-  ApproveSuccess = "ApproveSuccess",
-  StakePending = "StakePending",
-  StakeSuccess = "StakeSuccess",
-  UnstakePending = "UnstakePending",
-  UnstakeSuccess = "UnstakeSuccess",
-  Failed = "Failed",
-  Idle = "Idle",
 }
 
 type StakingModalStore = {
   showStakingModal: boolean;
   setShowStakingModal: (show: boolean) => void;
-  stakeOrUnstake: StakeOrUnstake;
-  setStakeOrUnstake: (change: StakeOrUnstake) => void;
-  trackerStatus: TransactionState;
-  setTrackerStatus: (change: TransactionState) => void;
+  txType: TxType;
+  setTxType: (change: TxType) => void;
+  txHash: Hash | undefined;
+  setTxHash: (hash: Hash | undefined) => void;
 };
 
-export const useStakingModalStore = create<StakingModalStore>((set) => ({
+const stakingModalStore = create<StakingModalStore>((set) => ({
   showStakingModal: false,
   setShowStakingModal(show: boolean) {
     set({ showStakingModal: show });
   },
 
-  stakeOrUnstake: StakeOrUnstake.STAKE,
-  setStakeOrUnstake(change: StakeOrUnstake) {
-    set({ stakeOrUnstake: change });
+  txType: TxType.STAKE,
+  setTxType(change: TxType) {
+    set({ txType: change });
   },
 
-  trackerStatus: TransactionState.Idle,
-  setTrackerStatus(change: TransactionState) {
-    set({ trackerStatus: change });
+  txHash: undefined,
+  setTxHash(hash: Hash | undefined) {
+    set({ txHash: hash });
   },
 }));
+
+export const useStakingModalStore = () => {
+  const [
+    showStakingModal,
+    setShowStakingModal,
+    txType,
+    setTxType,
+    txHash,
+    setTxHash,
+  ] = stakingModalStore((state) => [
+    state.showStakingModal,
+    state.setShowStakingModal,
+    state.txType,
+    state.setTxType,
+    state.txHash,
+    state.setTxHash,
+  ]);
+  return {
+    showStakingModal,
+    setShowStakingModal,
+    txType,
+    setTxType,
+    txHash,
+    setTxHash,
+  };
+};

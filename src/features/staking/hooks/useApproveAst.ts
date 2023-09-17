@@ -1,9 +1,5 @@
 import BigNumber from "bignumber.js";
-import {
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from "wagmi";
+import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
@@ -47,19 +43,9 @@ export const useApproveAst = ({
     reset: resetApproveAst,
   } = useContractWrite(configApprove);
 
-  const {
-    data: transactionReceiptApprove,
-    status: statusApproveAst,
-    isError: isErrorApproveAst,
-  } = useWaitForTransaction({
-    hash: dataApproveAst?.hash,
-  });
-
   return {
     approveAst,
     resetApproveAst,
-    transactionReceiptApprove,
-    statusApproveAst,
-    isErrorApproveAst,
+    dataApproveAst,
   };
 };

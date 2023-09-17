@@ -6,30 +6,21 @@ import { Button } from "../common/Button";
 import { LineBreak } from "../common/LineBreak";
 import { NumberInput } from "./NumberInput";
 import { StakableBar } from "./StakableBar";
-import { useStakingModalStore } from "./store/useStakingModalStore";
-import { StakeOrUnstake, TransactionStatusLookup } from "./types/StakingTypes";
+import { TxType, useStakingModalStore } from "./store/useStakingModalStore";
 
 export const ManageStake = ({
   formReturn,
-  transactionStatusLookup,
 }: {
   formReturn: UseFormReturn<FieldValues>;
-  transactionStatusLookup: TransactionStatusLookup;
 }) => {
-  const [stakeOrUnstake, setStakeOrUnstake] = useStakingModalStore((state) => [
-    state.stakeOrUnstake,
-    state.setStakeOrUnstake,
-  ]);
+  const { txType, setTxType } = useStakingModalStore();
+  const { getValues } = formReturn;
+  const stakingAmount = getValues().stakingAmount;
 
   const {
     astBalanceFormatted: astBalance,
     ustakableSAstBalanceFormatted: unstakableSAstBalance,
   } = useTokenBalances();
-
-  const isTransactionLoading =
-    transactionStatusLookup.statusApprove === "loading" ||
-    transactionStatusLookup.statusStake === "loading" ||
-    transactionStatusLookup.statusUnstake === "loading";
 
   return (
     <div>
@@ -39,25 +30,24 @@ export const ManageStake = ({
         <Button
           className={twJoin([
             "w-1/2 p-2",
-            `${stakeOrUnstake === "stake" ? "bg-gray-800" : "text-gray-500"}`,
+            `${txType === "stake" ? "bg-gray-800" : "text-gray-500"}`,
           ])}
           rounded="leftFalse"
           size="small"
-          onClick={() => setStakeOrUnstake(StakeOrUnstake.STAKE)}
-          disabled={isTransactionLoading}
+          onClick={() => setTxType(TxType.STAKE)}
         >
           Stake
         </Button>
         <Button
           className={twJoin(
             "w-1/2 p-2",
-            `${stakeOrUnstake === "unstake" ? "bg-gray-800" : "text-gray-500"}`,
+            `${txType === "unstake" ? "bg-gray-800" : "text-gray-500"}`,
           )}
           rounded="rightFalse"
           size="small"
           color="transparent"
-          onClick={() => setStakeOrUnstake(StakeOrUnstake.UNSTAKE)}
-          disabled={isTransactionLoading}
+          onClick={() => setTxType(TxType.UNSTAKE)}
+          disabled={stakingAmount <= 0}
         >
           Unstake
         </Button>
@@ -81,16 +71,11 @@ export const ManageStake = ({
               unstakableSAstBalance={+unstakableSAstBalance}
               formReturn={formReturn}
               name="stakingAmount"
-              isDisabled={!!isTransactionLoading}
             />
           </div>
           <span className="text-xs font-medium leading-4 text-gray-500">
-            {stakeOrUnstake === StakeOrUnstake.STAKE
-              ? astBalance
-              : unstakableSAstBalance}{" "}
-            {stakeOrUnstake === StakeOrUnstake.STAKE
-              ? "stakable"
-              : "unstakable"}
+            {txType === TxType.STAKE ? astBalance : unstakableSAstBalance}{" "}
+            {txType === TxType.STAKE ? "stakable" : "unstakable"}
           </span>
         </div>
       </div>

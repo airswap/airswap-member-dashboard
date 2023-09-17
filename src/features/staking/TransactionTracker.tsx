@@ -1,145 +1,86 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect } from "react";
 import { twJoin } from "tailwind-merge";
 import { Hash } from "viem";
-import { useNetwork } from "wagmi";
-import greenCheck from "../../../src/assets/check-green.svg";
-import closeRed from "../../../src/assets/close-red.svg";
-import loadingSpinner from "../../../src/assets/loading-spinner.svg";
+import { useWaitForTransaction } from "wagmi";
+import loadingSpinner from "../../assets/loading-spinner.svg";
+import { Button } from "../common/Button";
 import { EtherscanUrl } from "../common/EtherscanUrl";
-import { handleTrackerStatus } from "../votes/utils/handleTrackerStatus";
 import { useStakingModalStore } from "./store/useStakingModalStore";
-import {
-  StakeOrUnstake,
-  TransactionErrorLookup,
-  TransactionHashLookup,
-  TransactionStatusLookup,
-} from "./types/StakingTypes";
-import { etherscanLink } from "./utils/etherscanLink";
-import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
+import { ActionButton } from "./types/StakingTypes";
+import { transactionTrackerIcon } from "./utils/iconTransactionTracker";
 
 export const TransactionTracker = ({
+  actionDescription,
+  successText,
+  actionButtons,
   stakingAmount,
-  transactionStatusLookup,
-  transactionHashLookup,
-  transactionErrorLookup,
+  txHash,
 }: {
+  actionDescription: string | ReactNode;
+  successText: string | ReactNode;
+  actionButtons: ActionButton;
   stakingAmount: string;
-  transactionStatusLookup: TransactionStatusLookup;
-  transactionHashLookup: TransactionHashLookup;
-  transactionErrorLookup: TransactionErrorLookup;
+  txHash: Hash | undefined;
 }) => {
-  const [stakeOrUnstake, trackerStatus, setTrackerStatus] =
-    useStakingModalStore((state) => [
-      state.stakeOrUnstake,
-      state.trackerStatus,
-      state.setTrackerStatus,
-    ]);
-  const [transactionHash, setTransactionHash] = useState<Hash | undefined>(
-    undefined,
-  );
-  const { chain } = useNetwork();
-
-  const isError =
-    transactionErrorLookup.isErrorApprove ||
-    transactionErrorLookup.isErrorStake ||
-    transactionErrorLookup.isErrorUnstake;
-
-  handleTrackerStatus({
-    transactionStatusLookup,
-    isError,
-    setTrackerStatus,
+  const { setTxHash } = useStakingModalStore();
+  const { data, status, isError } = useWaitForTransaction({
+    hash: txHash,
+    enabled: !!txHash,
   });
 
-  const transactionSuccess =
-    transactionStatusLookup.statusApprove === "success" ||
-    transactionStatusLookup.statusStake === "success" ||
-    transactionStatusLookup.statusUnstake === "success";
+  const icon = transactionTrackerIcon(status);
+  const etherscanUrl = EtherscanUrl(txHash);
 
-  const asset = stakeOrUnstake === StakeOrUnstake.STAKE ? "AST" : "sAST";
+  const shouldRenderActionDescription =
+    status === "loading" || status === "error";
+  const shouldButtonRender = status === "success" || status === "error";
 
-  const message = transactionTrackerMessages[trackerStatus].message;
-  const description = transactionTrackerMessages[trackerStatus].description;
-
-  const shouldRenderEtherscanUrl = transactionSuccess || isError;
-
-  const blockExplorerLink = etherscanLink(chain?.id, transactionHash);
-  const etherscanUrl = EtherscanUrl(blockExplorerLink);
-
-  const statusIconMap: { [k: string]: string } = {
-    ApprovePending: loadingSpinner,
-    ApproveSuccess: greenCheck,
-    StakePending: loadingSpinner,
-    StakeSuccess: greenCheck,
-    UnstakePending: loadingSpinner,
-    UnstakeSuccess: greenCheck,
-    Failed: closeRed,
+  const buttonContents = () => {
+    if (actionDescription === "success") {
+      return {
+        text: actionButtons.afterSuccess.label,
+        action: actionButtons.afterSuccess.callback,
+      };
+    }
+    if (actionDescription === "error") {
+      return {
+        text: actionButtons.afterFailure.label,
+        action: actionButtons.afterFailure.callback,
+      };
+    }
   };
-  const icon = statusIconMap[trackerStatus];
+  const buttonContent = buttonContents();
 
   useEffect(() => {
-    // handleTrackerStatus({
-    //   transactionStatusLookup,
-    //   isError,
-    //   setTrackerStatus,
-    // });
-
-    // set etherscan URL
-    if (transactionHashLookup.transactionHashApprove) {
-      setTransactionHash(
-        transactionHashLookup.transactionHashApprove.transactionHash,
-      );
-    } else if (transactionHashLookup.transactionHashStake) {
-      setTransactionHash(
-        transactionHashLookup.transactionHashStake.transactionHash,
-      );
-    } else if (transactionHashLookup.transactionHashUnstake) {
-      setTransactionHash(
-        transactionHashLookup.transactionHashUnstake.transactionHash,
-      );
-    }
-  }, [
-    transactionStatusLookup.statusApproveAst,
-    transactionHashLookup.transactionHashApprove,
-    transactionHashLookup.transactionHashStake,
-    transactionHashLookup.transactionHashUnstake,
-    transactionStatusLookup,
-    isError,
-    setTrackerStatus,
-  ]);
+    // if txHash exists, update Zustand store
+    txHash ? setTxHash(data?.blockHash) : setTxHash(undefined);
+  }, [txHash, setTxHash, data]);
 
   return (
-    <div
-      className={twJoin([
-        "flex flex-col items-center text-gray-500 pt-4 pb-6",
-        `${trackerStatus === "Idle" && "hidden"}`,
-      ])}
-    >
+    <div className="flex flex-col items-center text-gray-500 pt-4 pb-6">
       <div
         className={twJoin(
-          `${!icon && "none"}`,
           icon === loadingSpinner ? "m-auto animate-spin p-0" : "p-2",
           "bg-black rounded-full",
         )}
       >
-        <img src={icon} alt={icon} />
+        {icon && <img src={icon} alt={icon} />}
       </div>
-      <div className="flex flex-row my-4 flex-wrap">
-        <span>{message}</span>
-        {transactionSuccess ? (
-          <span className="ml-2 font-medium text-white">
-            <span>{stakingAmount}</span>
-            <span className="ml-1">{asset}</span>
-          </span>
+      <div className="flex flex-row my-4 flex-wrap">{actionDescription}</div>
+      {txHash && <div>{etherscanUrl}</div>}
+      <div className="rounded px-4 py-3 text-sm bg-gray-800 text-gray-400">
+        {actionDescription}
+      </div>
+      <div>
+        {shouldButtonRender ? (
+          <Button
+            onClick={buttonContent?.action}
+            color="primary"
+            rounded={false}
+          >
+            {buttonContent?.text}
+          </Button>
         ) : null}
-      </div>
-      {shouldRenderEtherscanUrl ? <div>{etherscanUrl}</div> : null}
-      <div
-        className={twJoin(
-          "rounded px-4 py-3 text-sm bg-gray-800 text-gray-400",
-          `${transactionSuccess ? "hidden" : null}`,
-        )}
-      >
-        {description}
       </div>
     </div>
   );
