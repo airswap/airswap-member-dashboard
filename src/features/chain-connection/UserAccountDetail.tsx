@@ -53,7 +53,7 @@ export const UserAccountDetail = ({
       <div className="flex flex-col text-left semibold font-loos">
         <span className="text-gray-500 text-xs">{chain?.name}</span>
         <span>
-          {isError
+          {!isError
             ? `${Number(data?.formatted).toFixed(4)} ${data?.symbol}`
             : "Error fetching balance"}
         </span>
