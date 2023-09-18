@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useWaitForTransaction } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { Modal } from "../common/Modal";
@@ -11,12 +12,10 @@ import { useUnstakeSast } from "./hooks/useUnstakeSast";
 import { TxType, useStakingModalStore } from "./store/useStakingModalStore";
 import { AmountStakedText } from "./subcomponents/AmountStakedText";
 import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
+import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
 
 export const StakingModal = () => {
-  const { setShowStakingModal, txHash, txType, setTxType } =
-    useStakingModalStore();
-
-  console.log(txHash);
+  const { setShowStakingModal, txType, setTxType } = useStakingModalStore();
 
   const formReturn = useForm();
   const { watch } = formReturn;
@@ -53,6 +52,15 @@ export const StakingModal = () => {
     canUnstake,
   });
 
+  const activeTxHash =
+    dataApproveAst?.hash || dataStakeAst?.hash || dataUnstakeSast?.hash;
+
+  // if transaction is processing, return it's status
+  const { status: txStatus } = useWaitForTransaction({
+    hash: activeTxHash,
+    enabled: !!activeTxHash,
+  });
+
   const modalButtonAction = modalButtonActionsAndText({
     txType,
     needsApproval,
@@ -68,7 +76,21 @@ export const StakingModal = () => {
     (txType === TxType.STAKE && stakingAmount > astBalance) ||
     (txType === TxType.UNSTAKE && stakingAmount > unstakableSastBalance);
 
-  <AmountStakedText />;
+  const successText = <AmountStakedText stakingAmount={stakingAmount} />;
+  const actionDescription = transactionTrackerMessages({ txType, txStatus });
+  const transactionHashes =
+    dataApproveAst?.hash || dataStakeAst?.hash || dataUnstakeSast?.hash;
+
+  const actionButtons = {
+    afterSuccess: {
+      label: "Manage Stake",
+      callback: resetStakeAst,
+    },
+    afterFailure: {
+      label: "Try again",
+      callback: resetUnstakeSast,
+    },
+  };
 
   return (
     <Modal
@@ -76,25 +98,12 @@ export const StakingModal = () => {
       modalHeadline={"Manage stake"}
       onCloseRequest={() => setShowStakingModal(false)}
     >
-      {txHash ? (
+      {transactionHashes ? (
         <TransactionTracker
-          actionDescription="error"
-          successText={"success"}
           actionDescription={actionDescription}
-          actionButtons={{
-            afterSuccess: {
-              label: "Manage Stake",
-              callback: resetStakeAst,
-            },
-            afterFailure: {
-              label: "Try again",
-              callback: resetUnstakeSast,
-            },
-          }}
-          stakingAmount={stakingAmount}
-          txHash={
-            dataApproveAst?.hash || dataStakeAst?.hash || dataUnstakeSast?.hash
-          }
+          successText={successText}
+          actionButtons={actionButtons}
+          txHash={transactionHashes}
         />
       ) : (
         <>

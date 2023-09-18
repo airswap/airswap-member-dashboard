@@ -6,20 +6,18 @@ import loadingSpinner from "../../assets/loading-spinner.svg";
 import { Button } from "../common/Button";
 import { EtherscanUrl } from "../common/EtherscanUrl";
 import { useStakingModalStore } from "./store/useStakingModalStore";
-import { ActionButton } from "./types/StakingTypes";
+import { ActionButton, Status } from "./types/StakingTypes";
 import { transactionTrackerIcon } from "./utils/iconTransactionTracker";
 
 export const TransactionTracker = ({
   actionDescription,
   successText,
   actionButtons,
-  stakingAmount,
   txHash,
 }: {
-  actionDescription: string | ReactNode;
+  actionDescription: string | undefined;
   successText: string | ReactNode;
   actionButtons: ActionButton;
-  stakingAmount: string;
   txHash: Hash | undefined;
 }) => {
   const { setTxHash } = useStakingModalStore();
@@ -31,25 +29,23 @@ export const TransactionTracker = ({
   const icon = transactionTrackerIcon(status);
   const etherscanUrl = EtherscanUrl(txHash);
 
-  const shouldRenderActionDescription =
-    status === "loading" || status === "error";
   const shouldButtonRender = status === "success" || status === "error";
 
-  const buttonContents = () => {
-    if (actionDescription === "success") {
+  const buttonContents = (status: Status) => {
+    if (status === "success") {
       return {
         text: actionButtons.afterSuccess.label,
         action: actionButtons.afterSuccess.callback,
       };
     }
-    if (actionDescription === "error") {
+    if (status === "error") {
       return {
         text: actionButtons.afterFailure.label,
         action: actionButtons.afterFailure.callback,
       };
     }
   };
-  const buttonContent = buttonContents();
+  const buttonContent = buttonContents(status);
 
   useEffect(() => {
     // if txHash exists, update Zustand store
@@ -57,7 +53,7 @@ export const TransactionTracker = ({
   }, [txHash, setTxHash, data]);
 
   return (
-    <div className="flex flex-col items-center text-gray-500 pt-4 pb-6">
+    <div className="flex flex-col items-center text-gray-500 pt-4">
       <div
         className={twJoin(
           icon === loadingSpinner ? "m-auto animate-spin p-0" : "p-2",
@@ -66,17 +62,20 @@ export const TransactionTracker = ({
       >
         {icon && <img src={icon} alt={icon} />}
       </div>
-      <div className="flex flex-row my-4 flex-wrap">{actionDescription}</div>
+      {successText && <div>{successText}</div>}
       {txHash && <div>{etherscanUrl}</div>}
-      <div className="rounded px-4 py-3 text-sm bg-gray-800 text-gray-400">
-        {actionDescription}
-      </div>
-      <div>
+      {actionDescription && (
+        <div className="rounded px-4 py-3 text-sm bg-gray-800 text-gray-400 mt-6 w-full">
+          {actionDescription}
+        </div>
+      )}
+      <div className={twJoin("w-full", shouldButtonRender && "mt-12")}>
         {shouldButtonRender ? (
           <Button
             onClick={buttonContent?.action}
             color="primary"
             rounded={false}
+            className="w-full"
           >
             {buttonContent?.text}
           </Button>
