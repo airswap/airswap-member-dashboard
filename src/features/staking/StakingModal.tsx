@@ -1,4 +1,3 @@
-import { useForm } from "react-hook-form";
 import { useWaitForTransaction } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -16,9 +15,8 @@ import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
 
 export const StakingModal = () => {
-  const { setShowStakingModal, txType, setTxType } = useStakingModalStore();
+  const { formReturn, setShowStakingModal, txType } = useStakingModalStore();
 
-  const formReturn = useForm();
   const { watch } = formReturn;
   const stakingAmount = watch("stakingAmount") || "0";
 
@@ -124,7 +122,7 @@ export const StakingModal = () => {
         />
       ) : (
         <>
-          <ManageStake formReturn={formReturn} />
+          <ManageStake />
           <div>
             <Button
               onClick={modalButtonAction?.callback}

@@ -1,20 +1,15 @@
-import { FieldValues, UseFormReturn } from "react-hook-form";
 import { TxType, useStakingModalStore } from "./store/useStakingModalStore";
 
 export const NumberInput = ({
   astBalance,
   unstakableSAstBalance,
-  formReturn,
   name,
-} // isDisabled,
-: {
+}: {
   astBalance: number;
   unstakableSAstBalance: number;
-  formReturn: UseFormReturn<FieldValues>;
   name: string;
-  // isDisabled: boolean;
 }) => {
-  const { txType } = useStakingModalStore();
+  const { formReturn, txType } = useStakingModalStore();
   const { register, setValue } = formReturn;
 
   return (
@@ -38,7 +33,6 @@ export const NumberInput = ({
       })}
       // FIXME: monospace font per designs.
       className="items-right w-1/5 bg-transparent text-right text-white min-w-fit font-medium text-[20px]"
-      // disabled={isDisabled}
     />
   );
 };
