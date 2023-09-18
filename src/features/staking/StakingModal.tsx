@@ -11,6 +11,7 @@ import { useStakeAst } from "./hooks/useStakeAst";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
 import { TxType, useStakingModalStore } from "./store/useStakingModalStore";
 import { AmountStakedText } from "./subcomponents/AmountStakedText";
+import { actionButtonsObject } from "./utils/actionButtonsObject";
 import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
 
@@ -30,8 +31,8 @@ export const StakingModal = () => {
 
   const needsApproval =
     txType === TxType.STAKE &&
-    +stakingAmount > 0 &&
-    +astAllowance < +stakingAmount;
+    parseFloat(stakingAmount) > 0 &&
+    parseFloat(astAllowance) < parseFloat(stakingAmount);
 
   const canUnstake = stakingAmount <= +unstakableSastBalance;
   const canStake =
@@ -52,15 +53,15 @@ export const StakingModal = () => {
     canUnstake,
   });
 
-  const activeTxHash =
+  const transactionHashes =
     dataApproveAst?.hash || dataStakeAst?.hash || dataUnstakeSast?.hash;
 
-  // if transaction is processing, return it's status
   const { status: txStatus } = useWaitForTransaction({
-    hash: activeTxHash,
-    enabled: !!activeTxHash,
+    hash: transactionHashes,
+    enabled: !!transactionHashes,
   });
 
+  // These are "action" buttons for transactions. The `actionButtons` var below gets passed into TransactionTracker.tsx and rendered there
   const modalButtonAction = modalButtonActionsAndText({
     txType,
     needsApproval,
@@ -71,25 +72,41 @@ export const StakingModal = () => {
     },
   });
 
+  const isAmountInvalid = +stakingAmount <= 0;
+  const insufficientAstBalance =
+    txType === TxType.STAKE && stakingAmount > astBalance;
+  const insufficientSastBalance =
+    txType === TxType.UNSTAKE && stakingAmount > unstakableSastBalance;
+
   const isStakeButtonDisabled =
-    +stakingAmount <= 0 ||
-    (txType === TxType.STAKE && stakingAmount > astBalance) ||
-    (txType === TxType.UNSTAKE && stakingAmount > unstakableSastBalance);
+    isAmountInvalid || insufficientAstBalance || insufficientSastBalance;
 
-  const successText = <AmountStakedText stakingAmount={stakingAmount} />;
-  const actionDescription = transactionTrackerMessages({ txType, txStatus });
-  const transactionHashes =
-    dataApproveAst?.hash || dataStakeAst?.hash || dataUnstakeSast?.hash;
+  const successText = (
+    <AmountStakedText stakingAmount={stakingAmount} txStatus={txStatus} />
+  );
+  const actionDescription = transactionTrackerMessages({
+    txStatus,
+    dataApproveAst,
+    dataStakeAst,
+    dataUnstakeSast,
+  });
 
-  const actionButtons = {
-    afterSuccess: {
-      label: "Manage Stake",
-      callback: resetStakeAst,
-    },
-    afterFailure: {
-      label: "Try again",
-      callback: resetUnstakeSast,
-    },
+  const actionButtons = actionButtonsObject({
+    resetApproveAst,
+    resetStakeAst,
+    resetUnstakeSast,
+  });
+
+  const actionButtonLogic = () => {
+    if (dataApproveAst) {
+      return actionButtons.approve;
+    } else if (dataStakeAst) {
+      return actionButtons.stake;
+    } else if (dataUnstakeSast) {
+      return actionButtons.unstake;
+    } else {
+      return undefined;
+    }
   };
 
   return (
@@ -102,7 +119,7 @@ export const StakingModal = () => {
         <TransactionTracker
           actionDescription={actionDescription}
           successText={successText}
-          actionButtons={actionButtons}
+          actionButtons={actionButtonLogic()}
           txHash={transactionHashes}
         />
       ) : (

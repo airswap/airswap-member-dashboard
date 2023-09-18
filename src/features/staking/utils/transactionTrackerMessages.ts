@@ -1,18 +1,22 @@
-import { TxType } from "../store/useStakingModalStore";
+import { WriteContractResult } from "wagmi/actions";
 import { Status } from "../types/StakingTypes";
 
 export const transactionTrackerMessages = ({
-  txType,
   txStatus,
+  dataApproveAst,
+  dataStakeAst,
+  dataUnstakeSast,
 }: {
-  txType: TxType;
   txStatus: Status;
+  dataApproveAst: WriteContractResult | undefined;
+  dataStakeAst: WriteContractResult | undefined;
+  dataUnstakeSast: WriteContractResult | undefined;
 }) => {
-  const stake = txType === TxType.STAKE;
-  const unstake = txType === TxType.UNSTAKE;
-  if (stake && txStatus === "loading") {
+  if (dataApproveAst && txStatus === "loading") {
+    return "YOur transaction to approve AST is processing. Please wait a moment";
+  } else if (dataStakeAst && txStatus === "loading") {
     return "Your transaction to stake AST is processing. Please wait a moment.";
-  } else if (unstake && txStatus === "loading") {
+  } else if (dataUnstakeSast && txStatus === "loading") {
     return "Your transaction to unstake AST is processing. Please wait a moment.";
   } else if (txStatus === "error") {
     return "It looks like something went wrong with your transaction. Please try again";

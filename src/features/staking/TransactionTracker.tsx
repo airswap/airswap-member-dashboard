@@ -15,10 +15,10 @@ export const TransactionTracker = ({
   actionButtons,
   txHash,
 }: {
-  actionDescription: string | undefined;
+  actionDescription?: string;
   successText: string | ReactNode;
-  actionButtons: ActionButton;
-  txHash: Hash | undefined;
+  actionButtons?: ActionButton;
+  txHash?: Hash;
 }) => {
   const { setTxHash } = useStakingModalStore();
   const { data, status, isError } = useWaitForTransaction({
@@ -29,28 +29,29 @@ export const TransactionTracker = ({
   const icon = transactionTrackerIcon(status);
   const etherscanUrl = EtherscanUrl(txHash);
 
-  const shouldButtonRender = status === "success" || status === "error";
+  const shouldButtonRender = status === "success" || isError;
 
   const buttonContents = (status: Status) => {
-    if (status === "success") {
-      return {
-        text: actionButtons.afterSuccess.label,
-        action: actionButtons.afterSuccess.callback,
-      };
-    }
-    if (status === "error") {
-      return {
-        text: actionButtons.afterFailure.label,
-        action: actionButtons.afterFailure.callback,
-      };
+    switch (status) {
+      case "success":
+        return {
+          text: actionButtons?.afterSuccess.label,
+          action: actionButtons?.afterSuccess.callback,
+        };
+      case "error":
+        return {
+          text: actionButtons?.afterFailure.label,
+          action: actionButtons?.afterFailure.callback,
+        };
+      default:
+        return;
     }
   };
   const buttonContent = buttonContents(status);
 
   useEffect(() => {
-    // if txHash exists, update Zustand store
     txHash ? setTxHash(data?.blockHash) : setTxHash(undefined);
-  }, [txHash, setTxHash, data]);
+  }, [txHash, setTxHash, data?.blockHash]);
 
   return (
     <div className="flex flex-col items-center text-gray-500 pt-4">
@@ -60,17 +61,17 @@ export const TransactionTracker = ({
           "bg-black rounded-full",
         )}
       >
-        {icon && <img src={icon} alt={icon} />}
+        {icon && <img src={icon} alt="" />}
       </div>
-      {successText && <div>{successText}</div>}
-      {txHash && <div>{etherscanUrl}</div>}
+      {successText && <div className="-mb-4">{successText}</div>}
+      {status === "success" && <div className="mt-6">{etherscanUrl}</div>}
       {actionDescription && (
-        <div className="rounded px-4 py-3 text-sm bg-gray-800 text-gray-400 mt-6 w-full">
+        <div className="w-full mt-6 p-4 text-center rounded bg-gray-800 text-gray-400 text-sm">
           {actionDescription}
         </div>
       )}
       <div className={twJoin("w-full", shouldButtonRender && "mt-12")}>
-        {shouldButtonRender ? (
+        {shouldButtonRender && (
           <Button
             onClick={buttonContent?.action}
             color="primary"
@@ -79,7 +80,7 @@ export const TransactionTracker = ({
           >
             {buttonContent?.text}
           </Button>
-        ) : null}
+        )}
       </div>
     </div>
   );

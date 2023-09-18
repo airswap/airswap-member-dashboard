@@ -29,7 +29,7 @@ export const modalButtonActionsAndText = ({
   }
   if (txType === TxType.UNSTAKE) {
     return {
-      label: "Unstale",
+      label: "Unstake",
       callback: buttonActions.unstake,
     };
   }
