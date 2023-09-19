@@ -63,8 +63,8 @@ export const TransactionTracker = ({
       >
         {icon && <img src={icon} alt="" />}
       </div>
-      {successText && <div className="-mb-4">{successText}</div>}
-      {status === "success" && <div className="mt-6">{etherscanUrl}</div>}
+      {successText && <div className="-mb-6">{successText}</div>}
+      <div className="mt-8">{etherscanUrl}</div>
       {actionDescription && (
         <div className="w-full mt-6 p-4 text-center rounded bg-gray-800 text-gray-400 text-sm">
           {actionDescription}

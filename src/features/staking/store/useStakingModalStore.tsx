@@ -1,4 +1,3 @@
-import { FieldValues, UseFormReturn, useForm } from "react-hook-form";
 import { Hash } from "viem";
 import { create } from "zustand";
 
@@ -8,7 +7,6 @@ export enum TxType {
 }
 
 type StakingModalStore = {
-  formReturn: UseFormReturn<FieldValues>;
   showStakingModal: boolean;
   setShowStakingModal: (show: boolean) => void;
   txType: TxType;
@@ -18,8 +16,6 @@ type StakingModalStore = {
 };
 
 const stakingModalStore = create<StakingModalStore>((set) => ({
-  formReturn: useForm(),
-
   showStakingModal: false,
   setShowStakingModal(show: boolean) {
     set({ showStakingModal: show });
@@ -38,7 +34,6 @@ const stakingModalStore = create<StakingModalStore>((set) => ({
 
 export const useStakingModalStore = () => {
   const [
-    formReturn,
     showStakingModal,
     setShowStakingModal,
     txType,
@@ -46,7 +41,6 @@ export const useStakingModalStore = () => {
     txHash,
     setTxHash,
   ] = stakingModalStore((state) => [
-    state.formReturn,
     state.showStakingModal,
     state.setShowStakingModal,
     state.txType,
@@ -55,7 +49,6 @@ export const useStakingModalStore = () => {
     state.setTxHash,
   ]);
   return {
-    formReturn,
     showStakingModal,
     setShowStakingModal,
     txType,

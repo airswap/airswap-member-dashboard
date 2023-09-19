@@ -1,3 +1,4 @@
+import { FieldValues, UseFormReturn } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
@@ -7,8 +8,12 @@ import { NumberInput } from "./NumberInput";
 import { StakableBar } from "./StakableBar";
 import { TxType, useStakingModalStore } from "./store/useStakingModalStore";
 
-export const ManageStake = () => {
-  const { formReturn, txType, setTxType } = useStakingModalStore();
+export const ManageStake = ({
+  formReturn,
+}: {
+  formReturn: UseFormReturn<FieldValues>;
+}) => {
+  const { txType, setTxType } = useStakingModalStore();
   const { getValues } = formReturn;
   const stakingAmount = getValues().stakingAmount;
 
@@ -65,7 +70,6 @@ export const ManageStake = () => {
               astBalance={+astBalance}
               unstakableSAstBalance={+unstakableSAstBalance}
               formReturn={formReturn}
-              name="stakingAmount"
             />
           </div>
           <span className="text-xs font-medium leading-4 text-gray-500">

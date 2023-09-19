@@ -5,7 +5,7 @@ import { useAccount, useDisconnect, useEnsName } from "wagmi";
 import { Button } from "../common/Button";
 import WalletConnectionModal from "./WalletConnectionModal";
 
-const WalletConnection = ({}: {}) => {
+const WalletConnection = () => {
   const { address, isConnected } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const { disconnect } = useDisconnect();

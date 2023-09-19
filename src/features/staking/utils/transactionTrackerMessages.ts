@@ -13,7 +13,7 @@ export const transactionTrackerMessages = ({
   dataUnstakeSast: WriteContractResult | undefined;
 }) => {
   if (dataApproveAst && txStatus === "loading") {
-    return "YOur transaction to approve AST is processing. Please wait a moment";
+    return "Your transaction to approve AST is processing. Please wait a moment";
   } else if (dataStakeAst && txStatus === "loading") {
     return "Your transaction to stake AST is processing. Please wait a moment.";
   } else if (dataUnstakeSast && txStatus === "loading") {

@@ -1,3 +1,4 @@
+import { useForm } from "react-hook-form";
 import { useWaitForTransaction } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -15,8 +16,9 @@ import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
 
 export const StakingModal = () => {
-  const { formReturn, setShowStakingModal, txType } = useStakingModalStore();
+  const { setShowStakingModal, txType } = useStakingModalStore();
 
+  const formReturn = useForm();
   const { watch } = formReturn;
   const stakingAmount = watch("stakingAmount") || "0";
 
@@ -29,12 +31,15 @@ export const StakingModal = () => {
 
   const needsApproval =
     txType === TxType.STAKE &&
-    parseFloat(stakingAmount) > 0 &&
-    parseFloat(astAllowance) < parseFloat(stakingAmount);
+    Number(stakingAmount) > 0 &&
+    Number(astAllowance) < Number(stakingAmount);
 
-  const canUnstake = stakingAmount <= +unstakableSastBalance;
   const canStake =
-    !needsApproval && +stakingAmount <= +astBalance && +stakingAmount > 0;
+    !needsApproval &&
+    Number(stakingAmount) <= Number(astBalance) &&
+    Number(stakingAmount) > 0;
+
+  const canUnstake = stakingAmount <= Number(unstakableSastBalance);
 
   const { approveAst, dataApproveAst, resetApproveAst } = useApproveAst({
     stakingAmount,
@@ -59,7 +64,6 @@ export const StakingModal = () => {
     enabled: !!transactionHashes,
   });
 
-  // These are "action" buttons for transactions. The `actionButtons` var below gets passed into TransactionTracker.tsx and rendered there
   const modalButtonAction = modalButtonActionsAndText({
     txType,
     needsApproval,
@@ -70,9 +74,9 @@ export const StakingModal = () => {
     },
   });
 
-  const isAmountInvalid = +stakingAmount <= 0;
+  const isAmountInvalid = Number(stakingAmount) <= 0;
   const insufficientAstBalance =
-    txType === TxType.STAKE && stakingAmount > astBalance;
+    txType === TxType.STAKE && Number(stakingAmount) > Number(astBalance);
   const insufficientSastBalance =
     txType === TxType.UNSTAKE && stakingAmount > unstakableSastBalance;
 
@@ -122,7 +126,7 @@ export const StakingModal = () => {
         />
       ) : (
         <>
-          <ManageStake />
+          <ManageStake formReturn={formReturn} />
           <div>
             <Button
               onClick={modalButtonAction?.callback}
