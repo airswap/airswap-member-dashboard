@@ -1,45 +1,44 @@
 import { format } from "@greypixel_/nicenumbers";
+import { twJoin } from "tailwind-merge";
 import { Checkbox } from "../common/Checkbox";
-import { useClaimableAmount } from "./hooks/useClaimableAmount";
 
 export const ClaimableTokensLineItem = ({
-  tokenAddress,
-  numPoints,
+  symbol,
+  amount,
+  decimals,
+  value,
   isSelected,
   onSelect,
 }: {
-  tokenAddress: `0x${string}`;
-  numPoints: number;
+  symbol: string;
+  decimals: number;
+  amount: bigint;
+  value: number;
   isSelected: boolean;
-  onSelect: (amount: bigint) => void;
+  onSelect: () => void;
 }) => {
-  const { isLoading, data } = useClaimableAmount({
-    points: numPoints,
-    tokenAddress,
-  });
-
-  if (isLoading || !data.claimableAmount || !data.tokenInfo) {
-    return null;
-  }
-
   return (
     <>
       <Checkbox
         isOptionButton
         checked={isSelected}
-        onCheckedChange={(state) =>
-          state === true &&
-          data.claimableAmount &&
-          onSelect(data.claimableAmount)
-        }
+        onCheckedChange={(state) => state === true && onSelect()}
       />
       <span className="text-gray-400">
-        {format(data.claimableAmount, {
-          tokenDecimals: data.tokenInfo.decimals,
+        {format(amount, {
+          tokenDecimals: decimals,
         })}{" "}
-        {data.tokenInfo.symbol}
+        {symbol}
       </span>
-      <span className="text-white font-medium">$XXX</span>
+      <span
+        className={twJoin(
+          "text-white font-medium",
+          amount && symbol ? "opacity-100" : "opacity-0",
+          "transition-opacity",
+        )}
+      >
+        ${value.toFixed(2)}
+      </span>
     </>
   );
 };
