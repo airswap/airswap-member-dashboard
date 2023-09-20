@@ -1,5 +1,5 @@
 import { BsCircleFill } from "react-icons/bs";
-import { twMerge } from "tailwind-merge";
+import { twJoin, twMerge } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import "../../index.css";
 import { calculateTokenProportions } from "./utils/calculateTokenProportions";
@@ -18,12 +18,17 @@ export const StakableBar = ({ className }: { className?: string }) => {
       stakable: +stakable,
     });
 
+  const zeroBalance = !unstakablePercent && !stakedPercent && !stakablePercent;
+
   return (
     <div className={twMerge("flex w-full flex-col gap-4", className)}>
       <div className="m-auto flex h-2 mb-2 w-full flex-row rounded-full">
         <div
           style={{ flexBasis: `${unstakablePercent}%` }}
-          className="checkered-blue rounded-l-full min-w-[3px]"
+          className={twJoin(
+            "checkered-blue rounded-l-full",
+            zeroBalance ? "min-w-0" : "min-w-[3px]",
+          )}
         ></div>
         <div
           style={{ flexBasis: `${stakedPercent}%` }}
@@ -31,7 +36,10 @@ export const StakableBar = ({ className }: { className?: string }) => {
         ></div>
         <div
           style={{ flexBasis: `${stakablePercent}%` }}
-          className="rounded-r-full bg-gray-500 min-w[3px]"
+          className={twJoin(
+            "bg-gray-500 min-w[3px]",
+            zeroBalance ? "w-full rounded-full" : "rounded-r-full",
+          )}
         ></div>
       </div>
 
