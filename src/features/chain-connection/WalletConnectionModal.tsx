@@ -9,6 +9,7 @@ import frameLogo from "./assets/wallet-logos/frame-logo.png";
 import metamaskLogo from "./assets/wallet-logos/metamask-logo.svg";
 import rabbyLogo from "./assets/wallet-logos/rabby-logo.svg";
 import walletConnectLogo from "./assets/wallet-logos/walletconnect-logo.svg";
+import { filterUniqueConnectors } from "./utils/filterUniqueConnectors";
 
 const walletLogos: Record<string, string> = {
   walletconnect: walletConnectLogo,
@@ -26,7 +27,7 @@ const WalletConnectionModal = ({
   const { isConnected } = useAccount();
   const { connect, connectors, isLoading, pendingConnector } = useConnect();
 
-  console.log("metamask", connectors[0]);
+  const connectorsList = filterUniqueConnectors(connectors);
 
   useEffect(() => {
     isConnected && setShowConnectionModal(false);
@@ -49,11 +50,10 @@ const WalletConnectionModal = ({
         </div>
         <LineBreak className="mb-4 -mx-6" />
         <div className="flex flex-col gap-2">
-          {connectors
+          {connectorsList
             // .filter((connector) => connector.ready)
             // .sort((c) => (c.ready ? -1 : 1))
             .map((connector: Connector) => {
-              console.log(connector);
               return (
                 <button
                   className={twJoin(
