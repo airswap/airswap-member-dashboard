@@ -35,11 +35,13 @@ export const StakingModal = () => {
     Number(astAllowance) < Number(stakingAmount);
 
   const canStake =
+    txType === TxType.STAKE &&
     !needsApproval &&
     Number(stakingAmount) <= Number(astBalance) &&
     Number(stakingAmount) > 0;
 
-  const canUnstake = stakingAmount <= Number(unstakableSastBalance);
+  const canUnstake =
+    stakingAmount <= Number(unstakableSastBalance) && txType === TxType.UNSTAKE;
 
   const { approveAst, dataApproveAst, resetApproveAst } = useApproveAst({
     stakingAmount,

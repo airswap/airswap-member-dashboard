@@ -33,12 +33,6 @@ export const Modal = ({
   return (
     <dialog
       ref={modalRef}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          // Clicked on the background
-          onCloseRequest();
-        }
-      }}
       className={twMerge(
         "backdrop:bg-gray-900 backdrop:bg-opacity-[85%] backdrop:backdrop-blur-[2px]",
         "bg-transparent",
