@@ -38,17 +38,17 @@ export const ManageStake: FC<ManageStakeProps> = ({
 
   return (
     <>
-      <LineBreak />
-      <StakableBar />
-      <LineBreak />
-      <div className="font-lg pointer-cursor mt-6 rounded-md font-semibold">
+      <LineBreak className="relative -mx-6" />
+      <StakableBar className="my-6" />
+      <LineBreak className="relative mb-4 -mx-6" />
+      <div className="font-lg pointer-cursor rounded-md font-semibold">
         <Button
           className={twJoin([
-            "rounded-none rounded-l-md",
-            "w-1/2 text-sm uppercase",
-            `${stakeOrUnstake === "stake" && "bg-bg-darkShaded"}`,
-            `${isTransactionLoading && "opacity-50"}`,
+            "w-1/2 p-2",
+            `${stakeOrUnstake === "stake" ? "bg-gray-800" : "text-gray-500"}`,
           ])}
+          rounded="leftFalse"
+          size="small"
           onClick={() => setStakeOrUnstake(StakeOrUnstake.STAKE)}
           disabled={isTransactionLoading}
         >
@@ -56,10 +56,12 @@ export const ManageStake: FC<ManageStakeProps> = ({
         </Button>
         <Button
           className={twJoin(
-            "rounded-none rounded-r-md",
-            "w-1/2 text-sm uppercase",
-            `${stakeOrUnstake === "unstake" && "bg-bg-darkShaded"}`,
+            "w-1/2 p-2",
+            `${stakeOrUnstake === "unstake" ? "bg-gray-800" : "text-gray-500"}`,
           )}
+          rounded="rightFalse"
+          size="small"
+          color="transparent"
           onClick={() => setStakeOrUnstake(StakeOrUnstake.UNSTAKE)}
           disabled={isTransactionLoading}
         >
@@ -68,17 +70,17 @@ export const ManageStake: FC<ManageStakeProps> = ({
       </div>
       <div
         className={twJoin(
-          "my-3 rounded px-4 py-3 text-sm",
-          "dark:bg-bg-darkShaded",
+          "my-3 rounded px-4 py-3 text-xs leading-[18px]",
+          "bg-gray-800 text-gray-400",
         )}
       >
         Stake AST prior to voting on proposals. The amount of tokens you stake
         determines the weight of your vote. Tokens unlock linearly over 20
         weeks.
       </div>
-      <div className="flex items-center justify-between rounded border border-border-darkShaded bg-black px-4 py-2">
-        <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8 " />
-        <div className="flex flex-col text-right uppercase w-full">
+      <div className="flex items-center justify-between rounded border border-gray-800 bg-gray-950 px-5 py-3">
+        <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8" />
+        <div className="flex flex-col items-end uppercase w-full overflow-hidden">
           <div>
             <NumberInput
               stakeOrUnstake={stakeOrUnstake}
@@ -89,7 +91,7 @@ export const ManageStake: FC<ManageStakeProps> = ({
               isDisabled={!!isTransactionLoading}
             />
           </div>
-          <span className="text-xs">
+          <span className="text-xs font-medium leading-4 text-gray-500">
             {stakeOrUnstake === StakeOrUnstake.STAKE
               ? astBalance
               : unstakableSAstBalance}{" "}

@@ -1,5 +1,5 @@
 import { FieldValues, UseFormReturn } from "react-hook-form";
-import { twMerge } from "tailwind-merge";
+import { twJoin } from "tailwind-merge";
 import { StakeOrUnstake } from "../types/StakingTypes";
 
 export const NumberInput = ({
@@ -40,9 +40,9 @@ export const NumberInput = ({
           setValue(name, e.target.value);
         },
       })}
-      className={twMerge(
-        "items-right w-1/4 bg-black text-right text-white",
-        !isDisabled && "opacity-80",
+      // FIXME: monospace font per designs.
+      className={twJoin(
+        "items-right w-1/5 bg-transparent text-right text-white min-w-fit font-medium text-[20px]",
       )}
       disabled={isDisabled}
     />

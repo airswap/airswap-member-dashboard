@@ -1,15 +1,10 @@
 import { BsCircleFill } from "react-icons/bs";
+import { twJoin, twMerge } from "tailwind-merge";
 import { useTokenBalances } from "../../../hooks/useTokenBalances";
 import "../../../index.css";
 import { calculateTokenProportions } from "../utils/calculateTokenProportions";
 
-/**
- * @param unstakable - balance of sAST available to unstake
- * @param staked - total amount of SAST
- * @param stakable - amount of available AST
- * @returns component that displays a visual representation of available token balances
- */
-export const StakableBar = () => {
+export const StakableBar = ({ className }: { className?: string }) => {
   const {
     ustakableSAstBalanceFormatted: unstakable,
     sAstBalanceFormatted: staked,
@@ -23,36 +18,48 @@ export const StakableBar = () => {
       stakable: +stakable,
     });
 
+  const zeroBalance = !unstakablePercent && !stakedPercent && !stakablePercent;
+
   return (
-    <div className="flex w-full flex-col space-y-3">
-      <div className="m-auto mt-6 flex h-3 w-full flex-row rounded-full">
+    <div className={twMerge("flex w-full flex-col gap-4", className)}>
+      <div className="m-auto flex h-2 mb-2 w-full flex-row rounded-full">
         <div
           style={{ flexBasis: `${unstakablePercent}%` }}
-          className="checkered-blue rounded-l-full min-w-[3%]"
+          className={twJoin(
+            "checkered-blue rounded-l-full",
+            zeroBalance ? "min-w-0" : "min-w-[3px]",
+          )}
         ></div>
         <div
           style={{ flexBasis: `${stakedPercent}%` }}
-          className="bg-accent-blue"
+          className="bg-airswap-blue"
         ></div>
         <div
-          style={{ flexBasis: `${stakablePercent ? stakablePercent : 100}%` }}
-          className="rounded-r-full bg-accent-gray min-w-[3%]"
+          style={{ flexBasis: `${stakablePercent}%` }}
+          className={twJoin(
+            "bg-gray-500 min-w[3px]",
+            zeroBalance ? "w-full rounded-full" : "rounded-r-full",
+          )}
         ></div>
       </div>
-      <div className="flex flex-row items-center">
-        <div className="checkered-blue rounded-full">
-          <BsCircleFill className="text-transparent" />
+
+      {/* TODO: monospaced font for numbers */}
+      <div className="flex flex-row items-center leading-none text-[15px]">
+        <div className="checkered-blue rounded-full mr-2.5">
+          <BsCircleFill className="text-transparent" size={14} />
         </div>
-        <span className="mx-2">{unstakable}</span>
-        unstakable
+        <span className="font-medium">{unstakable}&nbsp;</span>
+        <span className="text-gray-400">unstakable</span>
       </div>
-      <div className="flex flex-row items-center">
-        <BsCircleFill className="text-blue-500" />
-        <span className="mx-2">{staked}</span>staked
+      <div className="flex flex-row items-center leading-none text-[15px]">
+        <BsCircleFill className="text-blue-500 mr-2.5" size={14} />
+        <span className="font-medium">{staked}&nbsp;</span>
+        <span className="text-gray-400">staked</span>
       </div>
-      <div className="flex flex-row items-center">
-        <BsCircleFill className="text-accent-gray" />
-        <span className="mx-2">{stakable}</span>stakable
+      <div className="flex flex-row items-center leading-none text-[15px]">
+        <BsCircleFill className="text-gray-500 mr-2.5" size={14} />
+        <span className="font-medium">{stakable}&nbsp;</span>
+        <span className="text-gray-400">stakable</span>
       </div>
     </div>
   );

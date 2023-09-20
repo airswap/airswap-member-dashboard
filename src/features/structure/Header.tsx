@@ -1,3 +1,4 @@
+import { useAccount } from "wagmi";
 import AirSwapLogoWithText from "../../assets/airswap-logo-with-text.svg";
 import AirSwapLogo from "../../assets/airswap-logo.svg";
 import WalletConnection from "../chain-connection/WalletConnection";
@@ -5,11 +6,16 @@ import { SettingsMenuButton } from "../settings/SettingsMenuButton";
 import { StakeButton } from "../staking/StakeButton";
 
 export const Header = ({}: {}) => {
+  const { isConnected } = useAccount();
   return (
     <div className="flex h-24 flex-row items-center justify-between px-8">
       <div>
-        <div className="h-10 w-10 md:hidden">
-          <img src={AirSwapLogo} alt="AirSwap Logo" className="h-10 w-10" />
+        <div className="h-10 w-10 md:hidden -mr-5">
+          <img
+            src={AirSwapLogo}
+            alt="AirSwap Logo"
+            className="h-8 xs:h-10 w-10 -ml-6 xs:-ml-2 mt-1 xs:mt-0"
+          />
         </div>
         <img
           src={AirSwapLogoWithText}
@@ -18,10 +24,19 @@ export const Header = ({}: {}) => {
         />
       </div>
 
-      <div className="flex flex-row items-center gap-4">
-        <WalletConnection />
-        <SettingsMenuButton />
-        <StakeButton />
+      <div className="flex flex-row items-center gap-2 xs:gap-4">
+        {!isConnected ? (
+          <>
+            <SettingsMenuButton />
+            <WalletConnection />
+          </>
+        ) : (
+          <>
+            <WalletConnection />
+            <SettingsMenuButton />
+          </>
+        )}
+        {isConnected ? <StakeButton /> : null}
       </div>
     </div>
   );

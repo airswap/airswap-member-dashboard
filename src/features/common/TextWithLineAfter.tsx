@@ -13,17 +13,12 @@ export const TextWithLineAfter: FC<TextWithLineAfterProps> = ({
   return (
     <div
       className={twMerge(
-        [
-          "relative my-3 flex w-full items-center after:ml-2 after:h-[1px] after:flex-1",
-        ],
-        ["dark:after:bg-border-darkGray"],
-        ["after:bg-bg-lightGray"],
+        "relative my-4 flex w-full items-center",
+        "after:bg-gray-800 after:ml-2 after:h-[1px] after:flex-1",
         className,
       )}
     >
-      <span className="relative text-font-lightBluePrimary dark:text-font-darkPrimary">
-        {children}
-      </span>
+      <span className="uppercase text-sm font-semibold">{children}</span>
     </div>
   );
 };
