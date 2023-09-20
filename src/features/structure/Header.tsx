@@ -2,7 +2,6 @@ import { useAccount } from "wagmi";
 import AirSwapLogoWithText from "../../assets/airswap-logo-with-text.svg";
 import AirSwapLogo from "../../assets/airswap-logo.svg";
 import WalletConnection from "../chain-connection/WalletConnection";
-import { SettingsMenuButton } from "../settings/SettingsMenuButton";
 import { StakeButton } from "../staking/StakeButton";
 
 export const Header = ({}: {}) => {
@@ -25,7 +24,8 @@ export const Header = ({}: {}) => {
       </div>
 
       <div className="flex flex-row items-center gap-2 xs:gap-4">
-        {!isConnected ? (
+        <WalletConnection />
+        {/* {!isConnected ? (
           <>
             <SettingsMenuButton />
             <WalletConnection />
@@ -35,7 +35,7 @@ export const Header = ({}: {}) => {
             <WalletConnection />
             <SettingsMenuButton />
           </>
-        )}
+        )} */}
         {isConnected ? <StakeButton /> : null}
       </div>
     </div>

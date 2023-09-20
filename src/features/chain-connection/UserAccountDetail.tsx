@@ -1,4 +1,4 @@
-import { useClickOutside } from "@react-hookz/web";
+import { useClickOutside, useKeyboardEvent } from "@react-hookz/web";
 import { useRef } from "react";
 import { MdLogout } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
@@ -36,6 +36,11 @@ export const UserAccountDetail = ({
     setShowUserAccountDetail(false);
     disconnect();
   };
+
+  // close when "escape" key pressed
+  useKeyboardEvent("Escape", () => {
+    setShowUserAccountDetail(false);
+  });
 
   const defaultAvatar = (
     <img src={defaultEnsAvatar} alt="ENS avatar" className="rounded-full" />

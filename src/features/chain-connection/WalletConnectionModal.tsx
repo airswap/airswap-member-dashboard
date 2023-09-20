@@ -1,6 +1,8 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import { MdClose } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
-import { Connector, useConnect } from "wagmi";
+import { Connector, useAccount, useConnect } from "wagmi";
+import { LineBreak } from "../common/LineBreak";
 import { Modal } from "../common/Modal";
 import coinbaseWalletLogo from "./assets/wallet-logos/coinbase-wallet.svg";
 import frameLogo from "./assets/wallet-logos/frame-logo.png";
@@ -21,20 +23,37 @@ const WalletConnectionModal = ({
 }: {
   setShowConnectionModal: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const { isConnected } = useAccount();
   const { connect, connectors, isLoading, pendingConnector } = useConnect();
+
+  console.log("metamask", connectors[0]);
+
+  useEffect(() => {
+    isConnected && setShowConnectionModal(false);
+  }, [isConnected, setShowConnectionModal]);
 
   return (
     <Modal
-      className="text-white"
-      // modalHeadline="Select Wallet"
+      className={twJoin("text-white")}
       onCloseRequest={() => setShowConnectionModal(false)}
     >
       <div className="color-white flex w-[360px] flex-col bg-gray-900 font-bold">
+        <div className="flex justify-between items-center mb-4 -mt-2">
+          <h2 className="font-semibold text-xl">Select Wallet</h2>
+          <div
+            className="hover:cursor-pointer"
+            onClick={() => setShowConnectionModal(false)}
+          >
+            <MdClose className="text-gray-500" size={26} />
+          </div>
+        </div>
+        <LineBreak className="mb-4 -mx-6" />
         <div className="flex flex-col gap-2">
           {connectors
-            .filter((connector) => connector.ready)
+            // .filter((connector) => connector.ready)
             // .sort((c) => (c.ready ? -1 : 1))
             .map((connector: Connector) => {
+              console.log(connector);
               return (
                 <button
                   className={twJoin(
