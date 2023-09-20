@@ -5,7 +5,7 @@ import { multicall } from "wagmi/actions";
 type TokenInfoQueryKey = [
   chainId: number,
   tokenAddress: `0x${string}`,
-  "tokenInfo",
+  tokenInfo: "tokenInfo",
 ];
 
 const fetchTokenInfo = async ({
