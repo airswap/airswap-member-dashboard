@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useNetwork, useSwitchNetwork } from "wagmi";
 import { Header } from "./features/structure/Header";
 import { VoteList } from "./features/votes/VoteList";
 import { useApplyTheme } from "./hooks/useApplyTheme";
@@ -7,6 +7,7 @@ import { useApplyTheme } from "./hooks/useApplyTheme";
 function App() {
   useApplyTheme();
   const { chain } = useNetwork();
+  const { isConnected } = useAccount();
 
   const { switchNetwork } = useSwitchNetwork({
     throwForSwitchChainNotSupported: true,
@@ -15,10 +16,10 @@ function App() {
   useEffect(() => {
     if (chain?.id === 1 || chain?.id === 5) {
       null;
-    } else {
+    } else if (isConnected) {
       switchNetwork && switchNetwork(1);
     }
-  }, [chain?.id, switchNetwork]);
+  }, [chain?.id, isConnected, switchNetwork]);
 
   return (
     <div className="flex flex-col flex-1 h-full">
