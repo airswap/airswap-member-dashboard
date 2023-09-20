@@ -1,4 +1,4 @@
-import { useClickOutside } from "@react-hooks-library/core";
+import { useClickOutside } from "@react-hookz/web";
 import { useRef } from "react";
 import { MdLogout } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
