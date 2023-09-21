@@ -19,7 +19,7 @@ export const useAstAllowance = () => {
     },
   );
 
-  const { data: astAllowance } = useContractRead({
+  const { data } = useContractRead({
     address: airSwapToken.address,
     abi: astAbi,
     functionName: "allowance",
@@ -29,7 +29,8 @@ export const useAstAllowance = () => {
     enabled: !!address && !!airSwapStaking.address,
   });
 
-  const astAllowanceFormatted = format(astAllowance, { tokenDecimals: 4 });
+  const astAllowanceRaw = Number(data) || 0;
+  const astAllowanceFormatted = format(astAllowanceRaw, { tokenDecimals: 4 });
 
-  return { astAllowance, astAllowanceFormatted };
+  return { astAllowanceRaw, astAllowanceFormatted };
 };
