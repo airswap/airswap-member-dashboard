@@ -13,6 +13,7 @@ import { TxType, useStakingModalStore } from "./store/useStakingModalStore";
 import { AmountStakedText } from "./subcomponents/AmountStakedText";
 import { actionButtonsObject } from "./utils/actionButtonsObject";
 import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
+import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
 import { transactionTrackerMessages } from "./utils/transactionTrackerMessages";
 
 export const StakingModal = () => {
@@ -101,6 +102,13 @@ export const StakingModal = () => {
     resetUnstakeSast,
   });
 
+  const modalLoadingStateHeadlines = modalTxLoadingStateHeadlines({
+    txStatus,
+    dataApproveAst,
+    dataStakeAst,
+    dataUnstakeSast,
+  });
+
   const actionButtonLogic = () => {
     if (dataApproveAst) {
       return actionButtons.approve;
@@ -116,7 +124,7 @@ export const StakingModal = () => {
   return (
     <Modal
       className="w-full max-w-none xs:max-w-[360px] text-white"
-      modalHeadline={"Manage stake"}
+      modalHeadline={modalLoadingStateHeadlines}
       onCloseRequest={() => setShowStakingModal(false)}
     >
       {transactionHashes ? (
