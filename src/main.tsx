@@ -3,6 +3,7 @@ import {
   QueryClientProvider,
   QueryKey,
 } from "@tanstack/react-query";
+import { Buffer } from "buffer";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { WagmiConfig, configureChains, createConfig, mainnet } from "wagmi";
@@ -17,6 +18,11 @@ import App from "./App.tsx";
 import AirSwapLogo from "./assets/airswap-logo.svg";
 import "./index.css";
 import { isPlainObject } from "./utils/isPlainObject.ts";
+
+// polyfill Buffer for client
+if (!window.Buffer) {
+  window.Buffer = Buffer;
+}
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli],
