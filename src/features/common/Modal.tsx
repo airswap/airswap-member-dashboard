@@ -16,25 +16,20 @@ export const Modal = ({
   // This component is intended to be rendered conditionally, so if it is
   // rendered we need to immediately show the modal dialog.
   useEffect(() => {
-    if (modalRef.current) {
+    if (modalRef.current && !modalRef.current.hasAttribute("open")) {
       modalRef.current.showModal();
     }
   }, [modalRef]);
 
   // Close on escape pressed.
   useKeyboardEvent("Escape", () => {
-    onCloseRequest();
+    onCloseRequest && onCloseRequest();
+    modalRef.current?.close();
   });
 
   return (
     <dialog
       ref={modalRef}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          // Clicked on the background
-          onCloseRequest();
-        }
-      }}
       className={twMerge(
         "backdrop:bg-gray-900 backdrop:bg-opacity-[85%] backdrop:backdrop-blur-[2px]",
         "bg-transparent",
