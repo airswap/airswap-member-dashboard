@@ -28,7 +28,7 @@ export const ManageStake: FC<ManageStakeProps> = ({
 }) => {
   const {
     astBalanceFormatted: astBalance,
-    ustakableSAstBalanceFormatted: unstakableSAstBalance,
+    unstakableSAstBalanceFormatted: unstakableSAstBalance,
   } = useTokenBalances();
 
   const isTransactionLoading =

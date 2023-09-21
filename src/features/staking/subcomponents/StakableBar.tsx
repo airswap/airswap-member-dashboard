@@ -6,7 +6,7 @@ import { calculateTokenProportions } from "../utils/calculateTokenProportions";
 
 export const StakableBar = ({ className }: { className?: string }) => {
   const {
-    ustakableSAstBalanceFormatted: unstakable,
+    unstakableSAstBalanceFormatted: unstakable,
     sAstBalanceFormatted: staked,
     astBalanceFormatted: stakable,
   } = useTokenBalances();

@@ -32,25 +32,25 @@ export const StakingModal: FC<StakingModalInterface> = ({
 
   const formReturn = useForm();
   const { watch, setValue } = formReturn;
-  const stakingAmount = watch("stakingAmount") || "0";
+  const stakingAmount = Number(watch("stakingAmount") || "0");
 
-  const { astAllowanceFormatted: astAllowance } = useAstAllowance();
+  const { astAllowanceRaw } = useAstAllowance();
   const {
-    ustakableSAstBalanceFormatted: unstakableSAstBalance,
-    astBalanceFormatted: astBalance,
+    unstakableSAstBalanceRaw: unstakableSAstBalance,
+    astBalanceRaw: astBalance,
   } = useTokenBalances();
 
   const needsApproval =
     stakeOrUnstake === StakeOrUnstake.STAKE &&
     stakingAmount > 0 &&
-    +astAllowance < +stakingAmount;
+    astAllowanceRaw < stakingAmount;
 
   const canStake =
-    !needsApproval && +stakingAmount <= +astBalance && +stakingAmount > 0;
+    !needsApproval && stakingAmount <= astBalance && stakingAmount > 0;
 
   const canUnstake =
     stakeOrUnstake === StakeOrUnstake.UNSTAKE && stakingAmount > 0
-      ? +stakingAmount <= +unstakableSAstBalance
+      ? stakingAmount <= unstakableSAstBalance
       : false;
 
   const { approve, statusApprove } = useApproveAst({

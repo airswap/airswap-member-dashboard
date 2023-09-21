@@ -49,11 +49,11 @@ export const useTokenBalances = () => {
     enabled: !!isConnected,
   });
 
-  const unstakableSAstBalanceRaw = (data && data[0].result) || 0;
-  const sAstBalanceRaw = (data && data[1].result) || 0;
-  const astBalanceRaw = (data && data[2].result) || 0;
+  const unstakableSAstBalanceRaw = Number(data && data[0].result) || 0;
+  const sAstBalanceRaw = Number(data && data[1].result) || 0;
+  const astBalanceRaw = Number(data && data[2].result) || 0;
 
-  const ustakableSAstBalanceFormatted =
+  const unstakableSAstBalanceFormatted =
     format((data && data[0].result) || 0, { tokenDecimals: 4 }) || 0;
   const sAstBalanceFormatted =
     format(data && data[1].result, { tokenDecimals: 4 }) || 0;
@@ -63,7 +63,7 @@ export const useTokenBalances = () => {
 
   return {
     unstakableSAstBalanceRaw,
-    ustakableSAstBalanceFormatted,
+    unstakableSAstBalanceFormatted,
     sAstBalanceRaw,
     sAstBalanceFormatted,
     astBalanceRaw,
