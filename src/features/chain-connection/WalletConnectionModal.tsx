@@ -1,12 +1,13 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { twJoin } from "tailwind-merge";
-import { Connector, useConnect } from "wagmi";
+import { Connector, useAccount, useConnect } from "wagmi";
 import { Modal } from "../common/Modal";
 import coinbaseWalletLogo from "./assets/wallet-logos/coinbase-wallet.svg";
 import frameLogo from "./assets/wallet-logos/frame-logo.png";
 import metamaskLogo from "./assets/wallet-logos/metamask-logo.svg";
 import rabbyLogo from "./assets/wallet-logos/rabby-logo.svg";
 import walletConnectLogo from "./assets/wallet-logos/walletconnect-logo.svg";
+import { filterUniqueConnectors } from "./utils/filterUniqueConnectors";
 
 const walletLogos: Record<string, string> = {
   walletconnect: walletConnectLogo,
@@ -21,7 +22,14 @@ const WalletConnectionModal = ({
 }: {
   setShowConnectionModal: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const { isConnected } = useAccount();
   const { connect, connectors, isLoading, pendingConnector } = useConnect();
+
+  const connectorsList = filterUniqueConnectors(connectors);
+
+  useEffect(() => {
+    isConnected && setShowConnectionModal(false);
+  }, [isConnected, setShowConnectionModal]);
 
   return (
     <Modal
@@ -31,8 +39,8 @@ const WalletConnectionModal = ({
     >
       <div className="color-white flex w-[360px] flex-col bg-gray-900 font-bold">
         <div className="flex flex-col gap-2">
-          {connectors
-            .filter((connector) => connector.ready)
+          {connectorsList
+            // .filter((connector) => connector.ready)
             // .sort((c) => (c.ready ? -1 : 1))
             .map((connector: Connector) => {
               return (
