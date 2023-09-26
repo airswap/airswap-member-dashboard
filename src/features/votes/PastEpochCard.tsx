@@ -25,14 +25,12 @@ export const PastEpochCard = ({
   const [
     isClaimSelected,
     setClaimSelected,
-    selectedClaims,
     setPointsClaimableForEpoch,
     addClaim,
     removeClaimForTree,
   ] = useClaimSelectionStore((state) => [
     state.isClaimSelected,
     state.setClaimSelected,
-    state.selectedClaims,
     state.setPointsClaimableForEpoch,
     state.addClaim,
     state.removeClaimForTree,
@@ -48,7 +46,7 @@ export const PastEpochCard = ({
     proposalGroup,
   });
 
-  const proof = useGroupMerkleProof({
+  const { data: proof } = useGroupMerkleProof({
     proposalIds: proposalGroup.map((p) => p.id),
     enabled: !!connectedAccount && !hasUserClaimed && votedOnAllProposals,
     vote: {
@@ -62,15 +60,16 @@ export const PastEpochCard = ({
   });
 
   const claim = useMemo(() => {
+    if (!proof) return;
     return {
-      proof: proof!,
+      proof: proof,
       tree: treeId,
       value: pointsEarned,
     };
   }, [pointsEarned, proof, treeId]);
 
   useEffect(() => {
-    if (root && !hasUserClaimed) {
+    if (root && claim && !hasUserClaimed) {
       setPointsClaimableForEpoch(proposalGroup[0].id, pointsEarned);
       addClaim(claim);
     } else {
@@ -105,11 +104,13 @@ export const PastEpochCard = ({
               !root || // disabled if there's no root
               hasUserClaimed || // or if the user has already claimed
               pointsEarned === 0 || // or if there are no points to claim
-              !proof // or if proof isn't ready yet.
+              !proof || // or if proof isn't ready yet.
+              !claim // or if claim isn't ready yet.
             }
             checked={isClaimSelected(treeId)}
             onCheckedChange={(newState) => {
-              setClaimSelected(claim, newState as boolean);
+              // Button will be disabled if there's no claim, so ! is ok.
+              setClaimSelected(claim!, newState as boolean);
             }}
           />
         </div>

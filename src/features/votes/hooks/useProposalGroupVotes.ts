@@ -55,10 +55,9 @@ export const useProposalGroupVotes = (
     [snapshot.endpoint, "votesByProposalIds", proposalIds],
     fetch,
     {
-      // FIXME: remove all Infinity caches and have a configurable cache time
-      cacheTime: Infinity,
-      // TODO: Should be possible to increase this to be much more aggresively cached
-      // if we ensure that this is only requested for closed proposals.
+      // Note that this is a large payload, and we want to avoid caching it for
+      // extended amounts of time.
+      cacheTime: 600_000, // 10 minutes
       staleTime: 600_000, // 10 minutes
       enabled:
         !!proposalIds && proposalIds.length > 0 && (options?.enabled ?? true),
