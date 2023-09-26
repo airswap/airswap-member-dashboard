@@ -43,23 +43,24 @@ export const StakableBar = ({ className }: { className?: string }) => {
         ></div>
       </div>
 
-      {/* TODO: monospaced font for numbers */}
       <div className="flex flex-row items-center leading-none text-[15px]">
         <div className="checkered-blue rounded-full mr-2.5">
           <BsCircleFill className="text-transparent" size={14} />
         </div>
-        <span className="font-medium">{unstakable}&nbsp;</span>
-        <span className="text-gray-400">unstakable</span>
+        <span className="font-medium font-mono">{unstakable}</span>
+        <span className="text-gray-400 relative -top-0.5">
+          &nbsp; unstakable
+        </span>
       </div>
       <div className="flex flex-row items-center leading-none text-[15px]">
         <BsCircleFill className="text-blue-500 mr-2.5" size={14} />
-        <span className="font-medium">{staked}&nbsp;</span>
-        <span className="text-gray-400">staked</span>
+        <span className="font-medium font-mono">{staked}</span>
+        <span className="text-gray-400 relative -top-0.5">&nbsp; staked</span>
       </div>
       <div className="flex flex-row items-center leading-none text-[15px]">
         <BsCircleFill className="text-gray-500 mr-2.5" size={14} />
-        <span className="font-medium">{stakable}&nbsp;</span>
-        <span className="text-gray-400">stakable</span>
+        <span className="font-medium font-mono">{stakable}</span>
+        <span className="text-gray-400 relative -top-0.5">&nbsp; stakable</span>
       </div>
     </div>
   );

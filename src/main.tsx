@@ -19,6 +19,10 @@ import AirSwapLogo from "./assets/airswap-logo.svg";
 import "./index.css";
 import { isPlainObject } from "./utils/isPlainObject.ts";
 
+// Fonts:
+import "@fontsource/dm-mono/400.css";
+import "@fontsource/dm-mono/500.css";
+
 // polyfill Buffer for client
 if (!window.Buffer) {
   window.Buffer = Buffer;
