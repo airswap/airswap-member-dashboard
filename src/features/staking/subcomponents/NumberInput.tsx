@@ -40,9 +40,9 @@ export const NumberInput = ({
           setValue(name, e.target.value);
         },
       })}
-      // FIXME: monospace font per designs.
       className={twJoin(
-        "items-right w-1/5 bg-transparent text-right text-white min-w-fit font-medium text-[20px]",
+        "items-right w-1/5 bg-transparent text-right text-white min-w-fit text-[20px]",
+        "font-mono font-medium",
       )}
       disabled={isDisabled}
     />
