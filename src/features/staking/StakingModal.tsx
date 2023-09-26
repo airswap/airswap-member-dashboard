@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { useWaitForTransaction } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -17,11 +16,8 @@ import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
 
 export const StakingModal = () => {
-  const { setShowStakingModal, txType, setTxHash } = useStakingModalStore();
-
-  const formReturn = useForm();
-  const { watch } = formReturn;
-  const stakingAmount = watch("stakingAmount") || "0";
+  const { setShowStakingModal, txType, setTxHash, stakingAmount } =
+    useStakingModalStore();
 
   const { astAllowanceFormatted: astAllowance } = useAstAllowance();
 
@@ -38,20 +34,21 @@ export const StakingModal = () => {
   const canStake = txType === TxType.STAKE && !needsApproval;
 
   const canUnstake =
-    stakingAmount <= Number(unstakableSastBalance) && txType === TxType.UNSTAKE;
+    Number(stakingAmount) <= Number(unstakableSastBalance) &&
+    txType === TxType.UNSTAKE;
 
   const { approveAst, dataApproveAst, resetApproveAst } = useApproveAst({
-    stakingAmount,
+    stakingAmount: Number(stakingAmount),
     enabled: needsApproval,
   });
 
   const { stakeAst, resetStakeAst, dataStakeAst } = useStakeAst({
-    stakingAmount,
+    stakingAmount: Number(stakingAmount),
     enabled: canStake,
   });
 
   const { unstakeSast, resetUnstakeSast, dataUnstakeSast } = useUnstakeSast({
-    unstakingAmount: stakingAmount,
+    unstakingAmount: Number(stakingAmount),
     canUnstake,
   });
 
@@ -118,11 +115,10 @@ export const StakingModal = () => {
           dataApproveAst={dataApproveAst}
           dataStakeAst={dataStakeAst}
           dataUnstakeSast={dataUnstakeSast}
-          stakingAmount={stakingAmount}
         />
       ) : (
         <>
-          <ManageStake formReturn={formReturn} />
+          <ManageStake />
           <div>
             <Button
               onClick={modalButtonAction?.callback}

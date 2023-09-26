@@ -22,15 +22,13 @@ export const TransactionTracker = ({
   dataApproveAst,
   dataStakeAst,
   dataUnstakeSast,
-  stakingAmount = "0",
 }: {
   actionButtons?: ActionButton;
   dataApproveAst?: WriteContractResult | undefined;
   dataStakeAst?: WriteContractResult | undefined;
   dataUnstakeSast?: WriteContractResult | undefined;
-  stakingAmount?: string;
 }) => {
-  const { txHash, txType } = useStakingModalStore();
+  const { txHash, txType, stakingAmount } = useStakingModalStore();
 
   const { status: txStatus, isError } = useWaitForTransaction({
     hash: txHash,

@@ -1,17 +1,16 @@
-import { FieldValues, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
 
 export const NumberInput = ({
   astBalance,
   unstakableSAstBalance,
-  formReturn,
 }: {
   astBalance: number;
   unstakableSAstBalance: number;
-  formReturn: UseFormReturn<FieldValues>;
 }) => {
-  const { txType } = useStakingModalStore();
+  const { txType, setStakingAmount } = useStakingModalStore();
+  const formReturn = useForm();
   const { register, setValue } = formReturn;
 
   return (
@@ -28,8 +27,10 @@ export const NumberInput = ({
         onChange: (e) => {
           if (isNaN(e.target.value) && e.target.value !== ".") {
             setValue("stakingAmount", "");
+            setStakingAmount("");
           }
           setValue("stakingAmount", e.target.value);
+          setStakingAmount(e.target.value);
         },
       })}
       // FIXME: monospace font per designs.
