@@ -23,8 +23,8 @@ export const useHasClaimedForTree = ({
     functionName: "claimed",
     args: [treeId, _voterAddress!],
     enabled: !!voterAddress,
-    // 7 days
-    cacheTime: 604_800_000,
+    // 60d
+    cacheTime: 5_184_000_000,
     staleTime: 604_800_000,
   });
 };

@@ -69,7 +69,9 @@ export const useGroupedProposals = () => {
   };
 
   return useQuery([snapshot.endpoint, snapshot.space, "proposals"], fetch, {
-    cacheTime: Infinity,
+    cacheTime: 604_800_000, // 7 days
     staleTime: 3_600_000, // 1 hour
+    refetchInterval: 3_600_000, // 1 hour
+    refetchIntervalInBackground: false,
   });
 };

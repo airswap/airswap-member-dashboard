@@ -16,11 +16,9 @@ const VOTES_QUERY = (space: string, voter?: string) => gql`
       orderBy: "created"
       orderDirection: desc
     ) {
-      id
       proposal {
         id
       }
-      choice
       vp
     }
   }
@@ -28,8 +26,6 @@ const VOTES_QUERY = (space: string, voter?: string) => gql`
 
 type VotesQueryResult = {
   votes: {
-    id: string;
-    choice: number;
     vp: number;
     proposal: { id: string };
   }[];
@@ -61,7 +57,7 @@ export const useUserVotes = (voter?: `0x${string}`) => {
     ],
     fetch,
     {
-      cacheTime: Infinity,
+      cacheTime: 600_000,
       staleTime: 600_000, // 10 minutes
       enabled: !!_voter,
     },
