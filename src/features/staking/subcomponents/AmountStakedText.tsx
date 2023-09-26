@@ -1,7 +1,7 @@
 import { twJoin } from "tailwind-merge";
 import { WriteContractResult } from "wagmi/actions";
-import { TxType, useStakingModalStore } from "../store/useStakingModalStore";
-import { Status } from "../types/StakingTypes";
+import { useStakingModalStore } from "../store/useStakingModalStore";
+import { Status, TxType } from "../types/StakingTypes";
 
 export const AmountStakedText = ({
   stakingAmount,

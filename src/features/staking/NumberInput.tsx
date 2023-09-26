@@ -1,5 +1,6 @@
 import { FieldValues, UseFormReturn } from "react-hook-form";
-import { TxType, useStakingModalStore } from "./store/useStakingModalStore";
+import { useStakingModalStore } from "./store/useStakingModalStore";
+import { TxType } from "./types/StakingTypes";
 
 export const NumberInput = ({
   astBalance,

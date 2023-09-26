@@ -1,10 +1,6 @@
 import { Hash } from "viem";
 import { create } from "zustand";
-
-export enum TxType {
-  STAKE = "stake",
-  UNSTAKE = "unstake",
-}
+import { TxType } from "../types/StakingTypes";
 
 type StakingModalStore = {
   showStakingModal: boolean;

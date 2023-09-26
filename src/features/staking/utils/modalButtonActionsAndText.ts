@@ -1,5 +1,5 @@
 import { WriteContractResult } from "wagmi/actions";
-import { TxType } from "../store/useStakingModalStore";
+import { TxType } from "../types/StakingTypes";
 
 type ButtonActions = {
   approve: (() => Promise<WriteContractResult>) | undefined;

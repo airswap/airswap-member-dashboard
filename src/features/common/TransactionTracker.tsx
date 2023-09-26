@@ -1,27 +1,31 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { twJoin } from "tailwind-merge";
-import { Hash } from "viem";
-import { useWaitForTransaction } from "wagmi";
+import { useQuery, useWaitForTransaction } from "wagmi";
 import loadingSpinner from "../../assets/loading-spinner.svg";
-import { Button } from "../common/Button";
-import { EtherscanUrl } from "../common/EtherscanUrl";
-import { useStakingModalStore } from "./store/useStakingModalStore";
-import { ActionButton, Status } from "./types/StakingTypes";
-import { transactionTrackerIcon } from "./utils/iconTransactionTracker";
+import { useStakingModalStore } from "../staking/store/useStakingModalStore";
+import { transactionTrackerIcon } from "../staking/utils/iconTransactionTracker";
+import { Button } from "./Button";
+import { EtherscanUrl } from "./EtherscanUrl";
+
+type Status = ReturnType<typeof useQuery>["status"];
+
+type ActionButton = {
+  afterSuccess: { label: string; callback: () => void };
+  afterFailure: { label: string; callback: () => void };
+};
 
 export const TransactionTracker = ({
   actionDescription,
   successText,
   actionButtons,
-  txHash,
 }: {
   actionDescription?: string;
   successText: string | ReactNode;
   actionButtons?: ActionButton;
-  txHash?: Hash;
 }) => {
-  const { setTxHash } = useStakingModalStore();
-  const { data, status, isError } = useWaitForTransaction({
+  const { txHash } = useStakingModalStore();
+
+  const { status, isError } = useWaitForTransaction({
     hash: txHash,
     enabled: !!txHash,
   });
@@ -48,10 +52,6 @@ export const TransactionTracker = ({
     }
   };
   const buttonContent = buttonContents(status);
-
-  useEffect(() => {
-    txHash ? setTxHash(data?.blockHash) : setTxHash(undefined);
-  }, [txHash, setTxHash, data?.blockHash]);
 
   return (
     <div className="flex flex-col items-center text-gray-500 pt-4">

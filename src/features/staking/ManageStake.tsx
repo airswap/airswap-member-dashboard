@@ -6,7 +6,8 @@ import { Button } from "../common/Button";
 import { LineBreak } from "../common/LineBreak";
 import { NumberInput } from "./NumberInput";
 import { StakableBar } from "./StakableBar";
-import { TxType, useStakingModalStore } from "./store/useStakingModalStore";
+import { useStakingModalStore } from "./store/useStakingModalStore";
+import { TxType } from "./types/StakingTypes";
 
 export const ManageStake = ({
   formReturn,

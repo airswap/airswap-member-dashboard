@@ -1,23 +1,26 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useWaitForTransaction } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { Modal } from "../common/Modal";
+import { TransactionTracker } from "../common/TransactionTracker";
 import { ManageStake } from "./ManageStake";
-import { TransactionTracker } from "./TransactionTracker";
 import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useStakeAst } from "./hooks/useStakeAst";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
-import { TxType, useStakingModalStore } from "./store/useStakingModalStore";
+import { useStakingModalStore } from "./store/useStakingModalStore";
 import { AmountStakedText } from "./subcomponents/AmountStakedText";
+import { TxType } from "./types/StakingTypes";
 import { actionButtonsObject } from "./utils/actionButtonObject";
 import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
 import { transactionTrackerMessages } from "./utils/transactionTrackerMesssages";
 
 export const StakingModal = () => {
-  const { setShowStakingModal, txType } = useStakingModalStore();
+  const { setShowStakingModal, txType, setTxHash, txHash } =
+    useStakingModalStore();
 
   const formReturn = useForm();
   const { watch } = formReturn;
@@ -123,18 +126,21 @@ export const StakingModal = () => {
     }
   };
 
+  useEffect(() => {
+    transactionHashes ? setTxHash(transactionHashes) : null;
+  }, [transactionHashes, setTxHash]);
+
   return (
     <Modal
       className="w-full max-w-none xs:max-w-[360px] text-white"
       modalHeadline={modalLoadingStateHeadlines}
       onCloseRequest={() => setShowStakingModal(false)}
     >
-      {transactionHashes ? (
+      {txHash ? (
         <TransactionTracker
           actionDescription={actionDescription}
           successText={successText}
           actionButtons={actionButtonLogic()}
-          txHash={transactionHashes}
         />
       ) : (
         <>
