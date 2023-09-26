@@ -11,16 +11,13 @@ import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useStakeAst } from "./hooks/useStakeAst";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
 import { useStakingModalStore } from "./store/useStakingModalStore";
-import { AmountStakedText } from "./subcomponents/AmountStakedText";
 import { TxType } from "./types/StakingTypes";
 import { actionButtonsObject } from "./utils/actionButtonObject";
 import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
-import { transactionTrackerMessages } from "./utils/transactionTrackerMesssages";
 
 export const StakingModal = () => {
-  const { setShowStakingModal, txType, setTxHash, txHash } =
-    useStakingModalStore();
+  const { setShowStakingModal, txType, setTxHash } = useStakingModalStore();
 
   const formReturn = useForm();
   const { watch } = formReturn;
@@ -58,12 +55,12 @@ export const StakingModal = () => {
     canUnstake,
   });
 
-  const transactionHashes =
+  const currentTransactionHash =
     dataApproveAst?.hash || dataStakeAst?.hash || dataUnstakeSast?.hash;
 
   const { status: txStatus } = useWaitForTransaction({
-    hash: transactionHashes,
-    enabled: !!transactionHashes,
+    hash: currentTransactionHash,
+    enabled: !!currentTransactionHash,
   });
 
   const modalButtonAction = modalButtonActionsAndText({
@@ -85,34 +82,13 @@ export const StakingModal = () => {
   const isStakeButtonDisabled =
     isAmountInvalid || insufficientAstBalance || insufficientSastBalance;
 
-  const successText = (
-    <AmountStakedText
-      stakingAmount={stakingAmount}
-      txStatus={txStatus}
-      dataApproveAst={dataApproveAst}
-      dataStakeAst={dataStakeAst}
-      dataUnstakeSast={dataUnstakeSast}
-    />
-  );
-  const actionDescription = transactionTrackerMessages({
-    txStatus,
-    dataApproveAst,
-    dataStakeAst,
-    dataUnstakeSast,
-  });
-
   const actionButtons = actionButtonsObject({
     resetApproveAst,
     resetStakeAst,
     resetUnstakeSast,
   });
 
-  const modalLoadingStateHeadlines = modalTxLoadingStateHeadlines({
-    txStatus,
-    dataApproveAst,
-    dataStakeAst,
-    dataUnstakeSast,
-  });
+  const modalLoadingStateHeadlines = modalTxLoadingStateHeadlines(txStatus);
 
   const actionButtonLogic = () => {
     if (dataApproveAst) {
@@ -127,8 +103,8 @@ export const StakingModal = () => {
   };
 
   useEffect(() => {
-    transactionHashes ? setTxHash(transactionHashes) : null;
-  }, [transactionHashes, setTxHash]);
+    currentTransactionHash ? setTxHash(currentTransactionHash) : null;
+  }, [currentTransactionHash, setTxHash]);
 
   return (
     <Modal
@@ -136,11 +112,13 @@ export const StakingModal = () => {
       modalHeadline={modalLoadingStateHeadlines}
       onCloseRequest={() => setShowStakingModal(false)}
     >
-      {txHash ? (
+      {txStatus !== "idle" ? (
         <TransactionTracker
-          actionDescription={actionDescription}
-          successText={successText}
           actionButtons={actionButtonLogic()}
+          dataApproveAst={dataApproveAst}
+          dataStakeAst={dataStakeAst}
+          dataUnstakeSast={dataUnstakeSast}
+          stakingAmount={stakingAmount}
         />
       ) : (
         <>

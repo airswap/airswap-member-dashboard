@@ -1,4 +1,7 @@
-import { ActionButton } from "../types/StakingTypes";
+type ActionButton = {
+  afterSuccess: { label: string; callback: () => void };
+  afterFailure: { label: string; callback: () => void };
+};
 
 type ActionButtons = { [k: string]: ActionButton };
 
