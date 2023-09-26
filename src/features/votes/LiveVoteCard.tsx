@@ -34,7 +34,6 @@ export const LiveVoteCard = ({ proposal }: { proposal: Proposal }) => {
       <span
         className={twJoin(
           "flex-1 text-base font-bold",
-          // TODO: FIX color
           (hasUserVoted || hasEnded) && "text-gray-500",
         )}
       >
