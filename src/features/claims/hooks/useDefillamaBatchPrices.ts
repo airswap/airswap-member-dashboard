@@ -21,7 +21,6 @@ const fetch = async (addresses: `0x${string}`[]) => {
   );
   const results = response.data.coins;
   // return an array of {address: price} objects, where `price` is results[address].price
-  console.log(results);
   return addresses.map((address) => ({
     address,
     price: results[`ethereum:${address}`].price,
