@@ -24,6 +24,8 @@ export const useGroupClaimStatus = ({
       treeId: groupHash,
     });
 
+  // TODO: this could be more efficient - we only need votes to calculate points
+  // so we don't really need to cache the votes themselves here.
   // Fetch all user votes.
   const { data: userVotes } = useUserVotes(address);
 
