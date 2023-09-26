@@ -13,7 +13,10 @@ import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { poolAbi } from "../../contracts/poolAbi";
 import { Button } from "../common/Button";
 import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
-import { ClaimableTokensLineItem } from "./ClaimableTokensLineItem";
+import {
+  ClaimableTokensLineItem,
+  ClaimableTokensLineItemLoading,
+} from "./ClaimableTokensLineItem";
 import { useClaimableAmounts } from "./hooks/useClaimableAmounts";
 import { useResetClaimStatus } from "./hooks/useResetClaimStatus";
 
@@ -85,7 +88,7 @@ export const ClaimForm = ({}: {}) => {
       resetClaimStatuses();
       clearSelectedClaims();
       setShowClaimModal(false);
-      // TODO: show toast.
+      // TODO: Use new transaction tracker.
     },
   });
 
@@ -105,43 +108,42 @@ export const ClaimForm = ({}: {}) => {
 
       <hr className="border-gray-800 -mx-6 my-6" />
 
-      {/* TODO: needs a loading state */}
       <div
         className="grid items-center gap-x-5 gap-y-4"
         style={{
           gridTemplateColumns: "auto 1fr auto",
         }}
       >
-        {claimable
-          .filter(
-            ({ claimableAmount, price, tokenInfo }) =>
+        {claimable.map(
+          ({ claimableAmount, claimableValue, price, tokenInfo }, i) => {
+            const isLoaded =
               tokenInfo?.decimals &&
               claimableAmount &&
               price &&
-              tokenInfo.symbol,
-          )
-          .map((claimOption, i) => (
-            <ClaimableTokensLineItem
-              isSelected={selection?.index === i}
-              onSelect={() => {
-                if (
-                  !claimOption.claimableAmount ||
-                  !claimOption.tokenInfo?.address
-                )
-                  return;
-                setSelection({
-                  amount: claimOption.claimableAmount,
-                  index: i,
-                  tokenAddress: claimOption.tokenInfo.address,
-                });
-              }}
-              amount={claimOption.claimableAmount || 0n}
-              decimals={claimOption.tokenInfo?.decimals || 18}
-              symbol={claimOption.tokenInfo?.symbol || "N/A"}
-              value={claimOption.claimableValue || 0}
-              key={claimOption.tokenInfo?.address || i}
-            />
-          ))}
+              tokenInfo.symbol;
+
+            return isLoaded ? (
+              <ClaimableTokensLineItem
+                isSelected={selection?.index === i}
+                onSelect={() => {
+                  if (!claimableAmount || !tokenInfo?.address) return;
+                  setSelection({
+                    amount: claimableAmount,
+                    index: i,
+                    tokenAddress: tokenInfo.address,
+                  });
+                }}
+                amount={claimableAmount || 0n}
+                decimals={tokenInfo?.decimals || 18}
+                symbol={tokenInfo?.symbol || "N/A"}
+                value={claimableValue || 0}
+                key={tokenInfo?.address || i}
+              />
+            ) : (
+              <ClaimableTokensLineItemLoading key={i + "-loading"} />
+            );
+          },
+        )}
       </div>
 
       <Button color="primary" rounded={false} className="mt-7" onClick={write}>

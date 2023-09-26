@@ -42,3 +42,16 @@ export const ClaimableTokensLineItem = ({
     </>
   );
 };
+
+export const ClaimableTokensLineItemLoading = () => (
+  <>
+    <Checkbox isOptionButton disabled className="animate-pulse" />
+    {/* Tokens */}
+    <div className="inline-flex flex-row gap-1 animate-pulse">
+      <span className="bg-gray-600 w-24 h-3.5" />
+      <span className="bg-gray-600 w-6 h-3.5" />
+    </div>
+
+    <span className="bg-gray-400 w-10 h-3.5 justify-self-end animate-pulse" />
+  </>
+);
