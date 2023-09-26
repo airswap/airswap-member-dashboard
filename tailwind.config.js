@@ -23,6 +23,9 @@ module.exports = {
           darkShaded: "hsl(220, 19%, 8%)",
         },
       },
+      fontFamily: {
+        mono: ["DM Mono", "monospace"],
+      },
     },
   },
   plugins: [],
