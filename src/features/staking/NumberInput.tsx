@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { twJoin } from "tailwind-merge";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
 
@@ -34,7 +35,10 @@ export const NumberInput = ({
         },
       })}
       // FIXME: monospace font per designs.
-      className="items-right w-1/5 bg-transparent text-right text-white min-w-fit font-medium text-[20px]"
+      className={twJoin(
+        "items-right w-1/5 bg-transparent text-right min-w-fit",
+        "font-mono font-medium text-white text-[20px]",
+      )}
     />
   );
 };
