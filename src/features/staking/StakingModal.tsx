@@ -45,6 +45,11 @@ export const StakingModal = () => {
     txType === TxType.UNSTAKE &&
     validNumberInput;
 
+  const isInsufficientBalance =
+    txType === TxType.STAKE && stakingAmount
+      ? Number(stakingAmount) > Number(astBalance)
+      : Number(stakingAmount) > Number(unstakableSastBalance);
+
   const {
     writeAsync: approveAst,
     data: dataApproveAst,
@@ -97,16 +102,12 @@ export const StakingModal = () => {
       stake: stakeAst,
       unstake: unstakeSast,
     },
+    insufficientBalance: isInsufficientBalance,
   });
 
   const isAmountInvalid = Number(stakingAmount) <= 0;
-  const insufficientAstBalance =
-    txType === TxType.STAKE && Number(stakingAmount) > Number(astBalance);
-  const insufficientSastBalance =
-    txType === TxType.UNSTAKE && stakingAmount > unstakableSastBalance;
 
-  const isStakeButtonDisabled =
-    isAmountInvalid || insufficientAstBalance || insufficientSastBalance;
+  const isStakeButtonDisabled = isAmountInvalid || isInsufficientBalance;
 
   const actionButtons = actionButtonsObject({
     resetApproveAst,

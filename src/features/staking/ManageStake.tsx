@@ -10,7 +10,7 @@ import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
 
 export const ManageStake = ({}) => {
-  const { txType, setTxType } = useStakingModalStore();
+  const { txType, setTxType, setStakingAmount } = useStakingModalStore();
 
   const formReturn = useForm();
   const { setValue } = formReturn;
@@ -22,9 +22,12 @@ export const ManageStake = ({}) => {
 
   const handleSetMaxBalance = () => {
     if (txType === TxType.STAKE) {
-      setValue("stakingAmount", astBalance);
+      setValue("stakingAmount", astBalance.toString());
+      // TODO: setStakingAmount sets the `stakingAmount` in Zustand store. This is different than `stakingAmount` from the react-hook-form register which originates in this file
+      setStakingAmount(astBalance.toString());
     } else {
       setValue("stakingAmount", unstakableSAstBalance);
+      setStakingAmount(unstakableSAstBalance.toString());
     }
   };
 
@@ -32,6 +35,9 @@ export const ManageStake = ({}) => {
     if (txType === TxType.UNSTAKE) {
       setTxType(TxType.STAKE);
       setValue("stakingAmount", "0");
+      setStakingAmount("0");
+    } else {
+      null;
     }
   };
 
@@ -39,6 +45,9 @@ export const ManageStake = ({}) => {
     if (txType === TxType.STAKE) {
       setTxType(TxType.UNSTAKE);
       setValue("stakingAmount", "0");
+      setStakingAmount("0");
+    } else {
+      null;
     }
   };
 
