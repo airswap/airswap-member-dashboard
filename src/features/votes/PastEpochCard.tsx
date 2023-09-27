@@ -9,12 +9,60 @@ import { CheckMark } from "../common/icons/CheckMark";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
 import { useGroupMerkleProof } from "./hooks/useGroupMerkleProof";
 import { Proposal } from "./hooks/useGroupedProposals";
+import { useSnapshotProposalUrl } from "./hooks/useSnapshotUrl";
 import { useTreeRoots } from "./hooks/useTreeRoots";
 import { useClaimSelectionStore } from "./store/useClaimSelectionStore";
 import { getEpochName } from "./utils/getEpochName";
 
 const SNAPSHOT_WEB = import.meta.env.VITE_SNAPSHOT_WEB;
 const SNAPSHOT_SPACE = import.meta.env.VITE_SNAPSHOT_SPACE;
+
+const PastProposal = ({
+  proposal,
+  voted,
+}: {
+  proposal: Proposal;
+  voted?: boolean;
+}) => {
+  const proposalUrl = useSnapshotProposalUrl(proposal.id);
+  return (
+    <a
+      href={proposalUrl}
+      target="_blank"
+      rel="noreferrer"
+      className={twJoin([
+        "grid grid-cols-[auto,1fr,auto,auto] border-t border-gray-800",
+        "items-center cursor-pointer",
+      ])}
+      key={proposal.id}
+    >
+      <div className="justify-self-center py-3.5 grid place-items-center w-6 mx-5">
+        {voted ? (
+          <span className="text-green-400">
+            <CheckMark size={20} />
+          </span>
+        ) : (
+          <span className="text-red-600">
+            <MdClose size={20} />
+          </span>
+        )}
+      </div>
+      <div className="text-font-secondary text-sm leading-6 font-medium text-gray-500">
+        {proposal.title}
+      </div>
+      <div></div>
+      <div className="grid place-items-center w-8 h-8 mr-4">
+        <a
+          href={`${SNAPSHOT_WEB}#/${SNAPSHOT_SPACE}/proposal/${proposal.id}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <MdOpenInNew size={16} />
+        </a>
+      </div>
+    </a>
+  );
+};
 
 export const PastEpochCard = ({
   proposalGroup,
@@ -147,38 +195,7 @@ export const PastEpochCard = ({
   );
 
   const content = proposalGroup.map((proposal, i) => (
-    <div
-      className={twJoin([
-        "grid grid-cols-[auto,1fr,auto,auto] border-t border-gray-800",
-        "items-center",
-      ])}
-      key={proposal.id}
-    >
-      <div className="justify-self-center py-3.5 grid place-items-center w-6 mx-5">
-        {votedForProposal[i] ? (
-          <span className="text-green-400">
-            <CheckMark size={20} />
-          </span>
-        ) : (
-          <span className="text-red-600">
-            <MdClose size={20} />
-          </span>
-        )}
-      </div>
-      <div className="text-font-secondary text-sm leading-6 font-medium text-gray-500">
-        {proposal.title}
-      </div>
-      <div></div>
-      <div className="grid place-items-center w-8 h-8 mr-4">
-        <a
-          href={`${SNAPSHOT_WEB}#/${SNAPSHOT_SPACE}/proposal/${proposal.id}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <MdOpenInNew size={16} />
-        </a>
-      </div>
-    </div>
+    <PastProposal proposal={proposal} voted={votedForProposal[i]} />
   ));
 
   return (

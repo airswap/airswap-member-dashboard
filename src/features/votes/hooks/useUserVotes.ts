@@ -42,7 +42,7 @@ export const useUserVotes = (voter?: `0x${string}`) => {
 
   const fetch = async () => {
     const result = await request<VotesQueryResult>(
-      snapshot.endpoint,
+      snapshot.apiEndpoint,
       VOTES_QUERY(snapshot.space, _voter),
     );
     return result.votes;
@@ -50,7 +50,7 @@ export const useUserVotes = (voter?: `0x${string}`) => {
 
   return useQuery(
     [
-      snapshot.endpoint,
+      snapshot.apiEndpoint,
       snapshot.space,
       "votesByVoterAddress",
       _voter?.toLowerCase(),
