@@ -29,16 +29,21 @@ export const StakingModal = () => {
     astBalanceFormatted: astBalance,
   } = useTokenBalances();
 
+  // stakingAmount default is NaN. Wagmi hooks need to validate that stakingAmount exists
+  const validNumberInput = !!stakingAmount && Number(stakingAmount) > 0;
+
   const needsApproval =
     txType === TxType.STAKE &&
-    Number(stakingAmount) > 0 &&
-    Number(astAllowance) < Number(stakingAmount);
+    Number(astAllowance) < Number(stakingAmount) &&
+    validNumberInput;
 
-  const canStake = txType === TxType.STAKE && !needsApproval;
+  const canStake =
+    txType === TxType.STAKE && !needsApproval && validNumberInput;
 
   const canUnstake =
     Number(stakingAmount) <= Number(unstakableSastBalance) &&
-    txType === TxType.UNSTAKE;
+    txType === TxType.UNSTAKE &&
+    validNumberInput;
 
   const {
     writeAsync: approveAst,
@@ -46,7 +51,7 @@ export const StakingModal = () => {
     reset: resetApproveAst,
     isLoading: approvalAwaitingSignature,
   } = useApproveAst({
-    stakingAmount: Number(stakingAmount),
+    stakingAmount: Number(stakingAmount) || 0,
     enabled: needsApproval,
   });
 
@@ -56,7 +61,7 @@ export const StakingModal = () => {
     data: dataStakeAst,
     isLoading: stakeAwaitingSignature,
   } = useStakeAst({
-    stakingAmount: Number(stakingAmount),
+    stakingAmount: Number(stakingAmount) || 0,
     enabled: canStake,
   });
 
@@ -66,8 +71,8 @@ export const StakingModal = () => {
     data: dataUnstakeSast,
     isLoading: unstakeAwaitingSignature,
   } = useUnstakeSast({
-    unstakingAmount: Number(stakingAmount),
-    canUnstake,
+    unstakingAmount: Number(stakingAmount) || 0,
+    canUnstake: canUnstake,
   });
 
   useEffect(() => {

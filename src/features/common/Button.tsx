@@ -15,6 +15,7 @@ const buttonVariants = tv({
       primary: "bg-airswap-blue text-white hover:border-white",
       transparent: "border border-gray-800 hover:border-white",
       black: "bg-black border border-gray-800 hover:border-white",
+      none: "bg-transparent",
     },
     rounded: {
       true: "rounded-full",
@@ -27,6 +28,7 @@ const buttonVariants = tv({
     },
     size: {
       small: "text-xs py-1 px-3",
+      none: "p-0 -mt-1.5",
     },
   },
   defaultVariants: {

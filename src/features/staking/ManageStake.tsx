@@ -1,3 +1,4 @@
+import { useForm } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
@@ -9,12 +10,37 @@ import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
 
 export const ManageStake = ({}) => {
-  const { txType, setTxType, stakingAmount } = useStakingModalStore();
+  const { txType, setTxType } = useStakingModalStore();
+
+  const formReturn = useForm();
+  const { setValue } = formReturn;
 
   const {
     astBalanceFormatted: astBalance,
     unstakableSAstBalanceFormatted: unstakableSAstBalance,
   } = useTokenBalances();
+
+  const handleSetMaxBalance = () => {
+    if (txType === TxType.STAKE) {
+      setValue("stakingAmount", astBalance);
+    } else {
+      setValue("stakingAmount", unstakableSAstBalance);
+    }
+  };
+
+  const handleSwitchStakeButton = () => {
+    if (txType === TxType.UNSTAKE) {
+      setTxType(TxType.STAKE);
+      setValue("stakingAmount", "0");
+    }
+  };
+
+  const handleSwitchUntakeButton = () => {
+    if (txType === TxType.STAKE) {
+      setTxType(TxType.UNSTAKE);
+      setValue("stakingAmount", "0");
+    }
+  };
 
   return (
     <div>
@@ -28,7 +54,7 @@ export const ManageStake = ({}) => {
           ])}
           rounded="leftFalse"
           size="small"
-          onClick={() => setTxType(TxType.STAKE)}
+          onClick={handleSwitchStakeButton}
         >
           Stake
         </Button>
@@ -40,8 +66,7 @@ export const ManageStake = ({}) => {
           rounded="rightFalse"
           size="small"
           color="transparent"
-          onClick={() => setTxType(TxType.UNSTAKE)}
-          disabled={Number(stakingAmount) <= 0}
+          onClick={handleSwitchUntakeButton}
         >
           Unstake
         </Button>
@@ -61,14 +86,22 @@ export const ManageStake = ({}) => {
         <div className="flex flex-col items-end uppercase w-full overflow-hidden">
           <div>
             <NumberInput
+              formReturn={formReturn}
               astBalance={+astBalance}
               unstakableSAstBalance={+unstakableSAstBalance}
             />
           </div>
-          <span className="text-xs font-medium leading-4 text-gray-500">
-            {txType === TxType.STAKE ? astBalance : unstakableSAstBalance}{" "}
-            {txType === TxType.STAKE ? "stakable" : "unstakable"}
-          </span>
+          <Button
+            onClick={handleSetMaxBalance}
+            color="none"
+            size="none"
+            rounded="none"
+          >
+            <span className="text-xs font-medium leading-4 text-gray-500">
+              {txType === TxType.STAKE ? astBalance : unstakableSAstBalance}{" "}
+              {txType === TxType.STAKE ? "stakable" : "unstakable"}
+            </span>
+          </Button>
         </div>
       </div>
     </div>
