@@ -13,7 +13,8 @@ export const NumberInput = ({
   unstakableSAstBalance: number;
 }) => {
   const { txType } = useStakingModalStore();
-  const { register, setValue } = formReturn;
+  const { register, setValue, watch } = formReturn;
+  watch();
 
   return (
     <input
