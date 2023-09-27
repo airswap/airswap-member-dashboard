@@ -1,9 +1,5 @@
 import BigNumber from "bignumber.js";
-import {
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from "wagmi";
+import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { stakingAbi } from "../../../contracts/stakingAbi";
@@ -41,19 +37,5 @@ export const useUnstakeSast = ({
     enabled: canUnstake,
   });
 
-  const {
-    write: unstake,
-    data,
-    reset: resetUnstake,
-  } = useContractWrite(configUnstake);
-
-  const { data: transactionReceiptUnstake, status: statusUnstake } =
-    useWaitForTransaction({ hash: data?.hash });
-
-  return {
-    unstake,
-    resetUnstake,
-    statusUnstake,
-    transactionReceiptUnstake,
-  };
+  return useContractWrite(configUnstake);
 };

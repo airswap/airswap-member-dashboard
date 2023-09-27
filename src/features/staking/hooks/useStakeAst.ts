@@ -1,9 +1,5 @@
 import BigNumber from "bignumber.js";
-import {
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from "wagmi";
+import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { stakingAbi } from "../../../contracts/stakingAbi";
@@ -36,14 +32,5 @@ export const useStakeAst = ({
     enabled: enabled,
   });
 
-  const {
-    write: stake,
-    data,
-    reset: resetStake,
-  } = useContractWrite(configStake);
-
-  const { data: transactionReceiptStake, status: statusStake } =
-    useWaitForTransaction({ hash: data?.hash });
-
-  return { stake, resetStake, transactionReceiptStake, statusStake };
+  return useContractWrite(configStake);
 };

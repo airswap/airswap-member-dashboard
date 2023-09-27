@@ -1,8 +1,8 @@
 import { BsCircleFill } from "react-icons/bs";
 import { twJoin, twMerge } from "tailwind-merge";
-import { useTokenBalances } from "../../../hooks/useTokenBalances";
-import "../../../index.css";
-import { calculateTokenProportions } from "../utils/calculateTokenProportions";
+import { useTokenBalances } from "../../hooks/useTokenBalances";
+import "../../index.css";
+import { calculateTokenProportions } from "./utils/calculateTokenProportions";
 
 export const StakableBar = ({ className }: { className?: string }) => {
   const {

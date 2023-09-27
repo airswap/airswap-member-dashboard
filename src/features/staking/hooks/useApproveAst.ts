@@ -1,9 +1,5 @@
 import BigNumber from "bignumber.js";
-import {
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from "wagmi";
+import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
@@ -41,19 +37,5 @@ export const useApproveAst = ({
     enabled: enabled && stakingAmount > 0 && !!airSwapStaking.address,
   });
 
-  const {
-    writeAsync: approve,
-    data: dataApprove,
-    reset: resetApprove,
-  } = useContractWrite(configApprove);
-
-  const { data: transactionReceiptApprove, status: statusApprove } =
-    useWaitForTransaction({
-      hash: dataApprove?.hash,
-      onSuccess() {
-        resetApprove();
-      },
-    });
-
-  return { approve, resetApprove, transactionReceiptApprove, statusApprove };
+  return useContractWrite(configApprove);
 };

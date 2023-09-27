@@ -1,188 +1,184 @@
-import { FC, RefObject, useState } from "react";
-import { useForm } from "react-hook-form";
-import { MdClose } from "react-icons/md";
-import { twJoin } from "tailwind-merge";
+import { useEffect, useState } from "react";
+import { useWaitForTransaction } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
+import { Modal } from "../common/Modal";
+import { TransactionTracker } from "../common/TransactionTracker";
+import { ManageStake } from "./ManageStake";
 import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useStakeAst } from "./hooks/useStakeAst";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
-import { ApproveSuccess } from "./subcomponents/ApproveSuccess";
-import { ManageStake } from "./subcomponents/ManageStake";
-import { StakeOrUnstake } from "./types/StakingTypes";
-import {
-  buttonStatusText,
-  handleButtonActions,
-  modalHeadline,
-} from "./utils/helpers";
+import { useStakingModalStore } from "./store/useStakingModalStore";
+import { TxType } from "./types/StakingTypes";
+import { actionButtonsObject } from "./utils/actionButtonObject";
+import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
+import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
 
-interface StakingModalInterface {
-  stakingModalRef: RefObject<HTMLDialogElement>;
-  chainId: number;
-}
+export const StakingModal = () => {
+  const { setShowStakingModal, txType, setTxHash, stakingAmount } =
+    useStakingModalStore();
 
-export const StakingModal: FC<StakingModalInterface> = ({
-  stakingModalRef,
-  chainId,
-}) => {
-  const [stakeOrUnstake, setStakeOrUnstake] = useState<StakeOrUnstake>(
-    StakeOrUnstake.STAKE,
-  );
+  // This state tracks whether the last transaction was an approval.
+  const [isApproval, setIsApproval] = useState<boolean>(false);
 
-  const formReturn = useForm();
-  const { watch, setValue } = formReturn;
-  const stakingAmount = Number(watch("stakingAmount") || "0");
+  const { astAllowanceFormatted: astAllowance } = useAstAllowance();
 
-  const { astAllowanceRaw } = useAstAllowance();
   const {
-    unstakableSAstBalanceRaw: unstakableSAstBalance,
-    astBalanceRaw: astBalance,
+    unstakableSAstBalanceFormatted: unstakableSastBalance,
+    astBalanceFormatted: astBalance,
   } = useTokenBalances();
 
   const needsApproval =
-    stakeOrUnstake === StakeOrUnstake.STAKE &&
-    stakingAmount > 0 &&
-    astAllowanceRaw < stakingAmount;
+    txType === TxType.STAKE &&
+    Number(stakingAmount) > 0 &&
+    Number(astAllowance) < Number(stakingAmount);
 
-  const canStake =
-    !needsApproval && stakingAmount <= astBalance && stakingAmount > 0;
+  const canStake = txType === TxType.STAKE && !needsApproval;
 
   const canUnstake =
-    stakeOrUnstake === StakeOrUnstake.UNSTAKE && stakingAmount > 0
-      ? stakingAmount <= unstakableSAstBalance
-      : false;
+    Number(stakingAmount) <= Number(unstakableSastBalance) &&
+    txType === TxType.UNSTAKE;
 
-  const { approve, statusApprove } = useApproveAst({
-    stakingAmount,
+  const {
+    writeAsync: approveAst,
+    data: dataApproveAst,
+    reset: resetApproveAst,
+    isLoading: approvalAwaitingSignature,
+  } = useApproveAst({
+    stakingAmount: Number(stakingAmount),
     enabled: needsApproval,
   });
 
-  const { stake, resetStake, transactionReceiptStake, statusStake } =
-    useStakeAst({
-      stakingAmount,
-      enabled: canStake,
-    });
-
-  const { unstake, resetUnstake, statusUnstake, transactionReceiptUnstake } =
-    useUnstakeSast({
-      unstakingAmount: stakingAmount,
-      canUnstake,
-    });
-
-  const buttonText = buttonStatusText({
-    stakeOrUnstake,
-    needsApproval,
-    statusApprove,
-    statusStake,
-    statusUnstake,
+  const {
+    writeAsync: stakeAst,
+    reset: resetStakeAst,
+    data: dataStakeAst,
+    isLoading: stakeAwaitingSignature,
+  } = useStakeAst({
+    stakingAmount: Number(stakingAmount),
+    enabled: canStake,
   });
 
-  const isButtonDisabled =
-    (stakeOrUnstake === StakeOrUnstake.STAKE && stakingAmount > astBalance) ||
-    (stakeOrUnstake === StakeOrUnstake.UNSTAKE &&
-      stakingAmount > unstakableSAstBalance) ||
-    stakingAmount <= 0 ||
-    buttonText === "Approving..." ||
-    buttonText === "Staking..." ||
-    buttonText === "Unstaking...";
+  const {
+    writeAsync: unstakeSast,
+    reset: resetUnstakeSast,
+    data: dataUnstakeSast,
+    isLoading: unstakeAwaitingSignature,
+  } = useUnstakeSast({
+    unstakingAmount: Number(stakingAmount),
+    canUnstake,
+  });
 
-  const headline = modalHeadline({ statusStake, statusUnstake });
+  useEffect(() => {
+    if (needsApproval) setIsApproval(true);
+    if (unstakeAwaitingSignature || stakeAwaitingSignature)
+      setIsApproval(false);
+  }, [needsApproval, unstakeAwaitingSignature, stakeAwaitingSignature]);
 
-  const renderManageStake = () => {
-    if (statusStake === "success") {
-      return false;
-    } else if (statusUnstake === "success") {
-      return false;
+  const currentTransactionHash =
+    dataApproveAst?.hash || dataStakeAst?.hash || dataUnstakeSast?.hash;
+
+  const { status: txStatus } = useWaitForTransaction({
+    hash: currentTransactionHash,
+    enabled: !!currentTransactionHash,
+  });
+
+  const modalButtonAction = modalButtonActionsAndText({
+    txType,
+    needsApproval,
+    buttonActions: {
+      approve: approveAst,
+      stake: stakeAst,
+      unstake: unstakeSast,
+    },
+  });
+
+  const isAmountInvalid = Number(stakingAmount) <= 0;
+  const insufficientAstBalance =
+    txType === TxType.STAKE && Number(stakingAmount) > Number(astBalance);
+  const insufficientSastBalance =
+    txType === TxType.UNSTAKE && stakingAmount > unstakableSastBalance;
+
+  const isStakeButtonDisabled =
+    isAmountInvalid || insufficientAstBalance || insufficientSastBalance;
+
+  const actionButtons = actionButtonsObject({
+    resetApproveAst,
+    resetStakeAst,
+    resetUnstakeSast,
+  });
+
+  const modalLoadingStateHeadlines = modalTxLoadingStateHeadlines(txStatus);
+
+  const actionButtonLogic = () => {
+    if (dataApproveAst) {
+      return actionButtons.approve;
+    } else if (dataStakeAst) {
+      return actionButtons.stake;
+    } else if (dataUnstakeSast) {
+      return actionButtons.unstake;
     } else {
-      return true;
+      return undefined;
     }
   };
-  const isRenderManageStake = renderManageStake();
 
-  const isRenderApproveSuccess =
-    statusStake === "success" || statusUnstake === "success";
+  useEffect(() => {
+    currentTransactionHash ? setTxHash(currentTransactionHash) : null;
+  }, [currentTransactionHash, setTxHash]);
 
-  const handleCloseModal = () => {
-    stakingModalRef.current && stakingModalRef.current.close();
-    setValue("stakingAmount", 0);
-  };
+  const shouldShowTracker =
+    stakeAwaitingSignature ||
+    approvalAwaitingSignature ||
+    unstakeAwaitingSignature ||
+    !!currentTransactionHash;
 
-  // TODO: replace this with our `Modal` component so it inherits the close
-  // to click etc.
+  // Used in "you successfully {verb} {stakingAmount} AST"
+  const verb = isApproval
+    ? "approved"
+    : txType === TxType.STAKE
+    ? "staked"
+    : "unstaked";
+
   return (
-    <dialog
-      className={twJoin(
-        "bg-gray-900 p-6 text-white",
-        "w-full max-w-none xs:max-w-[360px]",
-        "border border-gray-800 rounded-none xs:rounded-lg",
-        "backdrop:bg-gray-950 backdrop:bg-opacity-[85%] backdrop:backdrop-blur-[2px]",
-      )}
-      ref={stakingModalRef}
+    <Modal
+      className="w-full max-w-none xs:max-w-[360px] text-white"
+      heading={modalLoadingStateHeadlines}
+      onCloseRequest={() => setShowStakingModal(false)}
     >
-      <div className="flex justify-between items-center mb-7 mt-1">
-        <h2 className="font-semibold text-xl">{headline}</h2>
-        <div className="hover:cursor-pointer" onClick={handleCloseModal}>
-          <MdClose className="text-gray-500" size={26} />
-        </div>
-      </div>
-
-      {isRenderManageStake ? (
-        <ManageStake
-          formReturn={formReturn}
-          stakeOrUnstake={stakeOrUnstake}
-          setStakeOrUnstake={setStakeOrUnstake}
-          statusApprove={statusApprove}
-          statusStake={statusStake}
-          statusUnstake={statusUnstake}
+      {shouldShowTracker ? (
+        <TransactionTracker
+          actionButtons={actionButtonLogic()}
+          successContent={
+            <span>
+              You successfully {verb}{" "}
+              <span className="text-white">{stakingAmount} AST</span>
+            </span>
+          }
+          failureContent={"Your transaction has failed"}
+          signatureExplainer={
+            isApproval
+              ? "To stake AST you will first need to approve the token spend."
+              : undefined
+          }
+          txHash={currentTransactionHash}
         />
-      ) : null}
-
-      {isRenderApproveSuccess ? (
-        <ApproveSuccess
-          stakeOrUnstake={stakeOrUnstake}
-          statusUnstake={statusUnstake}
-          amount={stakingAmount.toString()}
-          chainId={chainId}
-          transactionHashStake={transactionReceiptStake?.transactionHash}
-          transactionHashUnstake={transactionReceiptUnstake?.transactionHash}
-        />
-      ) : null}
-
-      {/* TODO: border radius not rendering correctly. */}
-      <Button
-        className={twJoin(
-          "mt-6 w-full !rounded-sm",
-          `${isButtonDisabled && "opacity-50"}`,
-        )}
-        color="primary"
-        rounded={false}
-        isDisabled={isButtonDisabled}
-        loadingSpinnerArgs={{
-          stakeOrUnstake,
-          needsApproval,
-          statusApprove,
-          statusStake,
-          statusUnstake,
-        }}
-        onClick={() => {
-          handleButtonActions({
-            stakeOrUnstake,
-            needsApproval,
-            statusStake,
-            statusUnstake,
-            resetStake,
-            resetUnstake,
-            canUnstake,
-            approve,
-            stake,
-            unstake,
-            setValue,
-          });
-        }}
-      >
-        <span>{buttonText}</span>
-      </Button>
-    </dialog>
+      ) : (
+        <>
+          <ManageStake />
+          <div>
+            <Button
+              onClick={modalButtonAction?.callback}
+              disabled={isStakeButtonDisabled}
+              color="primary"
+              rounded={false}
+              className="w-full mt-10"
+            >
+              {modalButtonAction?.label}
+            </Button>
+          </div>
+        </>
+      )}
+    </Modal>
   );
 };
