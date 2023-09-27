@@ -37,15 +37,5 @@ export const useUnstakeSast = ({
     enabled: canUnstake,
   });
 
-  const {
-    writeAsync: unstakeSast,
-    data: dataUnstakeSast,
-    reset: resetUnstakeSast,
-  } = useContractWrite(configUnstake);
-
-  return {
-    unstakeSast,
-    resetUnstakeSast,
-    dataUnstakeSast,
-  };
+  return useContractWrite(configUnstake);
 };

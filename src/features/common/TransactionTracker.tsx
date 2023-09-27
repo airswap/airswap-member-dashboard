@@ -1,118 +1,95 @@
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { MdCheck, MdClose } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import { useQuery, useWaitForTransaction } from "wagmi";
-import { WriteContractResult } from "wagmi/actions";
-import loadingSpinner from "../../assets/loading-spinner.svg";
-import { useStakingModalStore } from "../staking/store/useStakingModalStore";
-import { AmountStakedText } from "../staking/subcomponents/AmountStakedText";
-import { TxType } from "../staking/types/StakingTypes";
-import { transactionTrackerIcon } from "../staking/utils/iconTransactionTracker";
 import { Button } from "./Button";
-import { EtherscanUrl } from "./EtherscanUrl";
-import { transactionTextLogic } from "./utils/transactionTextLogic";
+import { ViewOnEtherscanLink } from "./ViewOnEtherscanLink";
 
 type Status = ReturnType<typeof useQuery>["status"];
 
-type ActionButton = {
+type ActionButtons = {
   afterSuccess: { label: string; callback: () => void };
   afterFailure: { label: string; callback: () => void };
 };
 
 export const TransactionTracker = ({
   actionButtons,
-  dataApproveAst,
-  dataStakeAst,
-  dataUnstakeSast,
+  txHash,
+  successContent,
+  failureContent,
+  signatureExplainer,
 }: {
-  actionButtons?: ActionButton;
-  dataApproveAst?: WriteContractResult | undefined;
-  dataStakeAst?: WriteContractResult | undefined;
-  dataUnstakeSast?: WriteContractResult | undefined;
+  actionButtons?: ActionButtons;
+  /** Note that this will be undefined when the user hasn't signed yet */
+  txHash?: `0x${string}`;
+  /** Children to display after transaction successful */
+  successContent: React.ReactNode;
+  /** Children to display after transaction fails */
+  failureContent: React.ReactNode;
+  /** String to display to explain what the signature is for */
+  signatureExplainer?: string;
 }) => {
-  const { txHash, txType, stakingAmount } = useStakingModalStore();
-
-  const { status: txStatus, isError } = useWaitForTransaction({
+  const isAwaitingSignature = !txHash;
+  const { isLoading, isSuccess, isError } = useWaitForTransaction({
     hash: txHash,
     enabled: !!txHash,
   });
 
-  const icon = transactionTrackerIcon(txStatus);
-  const etherscanUrl = EtherscanUrl(txHash);
+  // Designs only show the aciton button after success or failure.
+  const shouldButtonRender = !isAwaitingSignature && !isLoading;
+  const buttonInfo = isSuccess
+    ? actionButtons?.afterSuccess
+    : actionButtons?.afterFailure;
 
-  const shouldButtonRender = txStatus === "success" || isError;
-
-  const successText = AmountStakedText({
-    dataApproveAst,
-    dataStakeAst,
-    dataUnstakeSast,
-    txStatus,
-  });
-
-  const transactionText = transactionTextLogic({
-    dataApproveAst,
-    dataStakeAst,
-    dataUnstakeSast,
-    txStatus,
-  });
-
-  const buttonContents = (txStatus: Status) => {
-    switch (txStatus) {
-      case "success":
-        return {
-          text: actionButtons?.afterSuccess.label,
-          action: actionButtons?.afterSuccess.callback,
-        };
-      case "error":
-        return {
-          text: actionButtons?.afterFailure.label,
-          action: actionButtons?.afterFailure.callback,
-        };
-      default:
-        return undefined;
-    }
-  };
-  const buttonContent = buttonContents(txStatus);
+  const statusContent = isAwaitingSignature
+    ? "Waiting for signature"
+    : isLoading
+    ? "Transaction in progress"
+    : isSuccess
+    ? successContent
+    : failureContent;
 
   return (
-    <div className="flex flex-col items-center text-gray-500 pt-4">
+    <div className="flex flex-col items-center text-gray-500 mt-6">
       <div
         className={twJoin(
-          icon === loadingSpinner ? "m-auto animate-spin p-0" : "p-2",
-          "bg-black rounded-full",
+          "bg-gray-950 border-gray-800 rounded-full w-11 h-11 mb-6",
+          "grid place-items-center text-white",
         )}
       >
-        {icon && <img src={icon} alt="" />}
-      </div>
-      {successText && (
-        <div className="-mb-6">
-          <div className={twJoin("flex flex-row my-4 flex-wrap")}>
-            <span>{successText}</span>
-            <span className="ml-2 font-medium text-white">
-              <span>{stakingAmount}</span>
-              <span className="ml-1">
-                {txType === TxType.STAKE ? "AST" : "sAST"}
-              </span>
-            </span>
-          </div>
-        </div>
-      )}
-      <div className="mt-8">{etherscanUrl}</div>
-      {transactionText && (
-        <div className="w-full mt-6 p-4 text-center rounded bg-gray-800 text-gray-400 text-sm">
-          {transactionText}
-        </div>
-      )}
-      <div className={twJoin("w-full", shouldButtonRender && "mt-12")}>
-        {shouldButtonRender && (
-          <Button
-            onClick={buttonContent?.action}
-            color="primary"
-            rounded={false}
-            className="w-full"
-          >
-            {buttonContent?.text}
-          </Button>
+        {isLoading || isAwaitingSignature ? (
+          <AiOutlineLoading3Quarters size={27} className="animate-spin" />
+        ) : isSuccess ? (
+          <MdCheck size={28} className="text-green-400" />
+        ) : (
+          <MdClose size={28} className="text-red-600" />
         )}
       </div>
+
+      <div className="">{statusContent}</div>
+
+      {txHash && <ViewOnEtherscanLink txHash={txHash} className="mt-6" />}
+
+      {(isError || isAwaitingSignature) && (
+        <div className="p-4 bg-gray-800 text-gray-400 text-xs leading-[18px] rounded mt-6">
+          {isError
+            ? "It looks like something went wrong with your transaction, please try again."
+            : `${
+                signatureExplainer ? signatureExplainer + " " : ""
+              } Your wallet should open now. Sign the transaction in your wallet. If your wallet doesn't open, please try again.`}
+        </div>
+      )}
+
+      {shouldButtonRender && buttonInfo && (
+        <Button
+          onClick={buttonInfo.callback}
+          color="primary"
+          rounded={false}
+          className="w-full mt-10"
+        >
+          {buttonInfo.label}
+        </Button>
+      )}
     </div>
   );
 };

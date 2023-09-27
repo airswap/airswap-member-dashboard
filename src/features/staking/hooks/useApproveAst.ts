@@ -37,15 +37,5 @@ export const useApproveAst = ({
     enabled: enabled && stakingAmount > 0 && !!airSwapStaking.address,
   });
 
-  const {
-    writeAsync: approveAst,
-    data: dataApproveAst,
-    reset: resetApproveAst,
-  } = useContractWrite(configApprove);
-
-  return {
-    approveAst,
-    resetApproveAst,
-    dataApproveAst,
-  };
+  return useContractWrite(configApprove);
 };

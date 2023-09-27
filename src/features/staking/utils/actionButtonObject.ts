@@ -17,7 +17,7 @@ export const actionButtonsObject = ({
   return {
     approve: {
       afterSuccess: {
-        label: "Manage Stake",
+        label: "Continue",
         callback: resetApproveAst,
       },
       afterFailure: {

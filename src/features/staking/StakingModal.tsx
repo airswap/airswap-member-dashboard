@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useWaitForTransaction } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -19,6 +19,9 @@ export const StakingModal = () => {
   const { setShowStakingModal, txType, setTxHash, stakingAmount } =
     useStakingModalStore();
 
+  // This state tracks whether the last transaction was an approval.
+  const [isApproval, setIsApproval] = useState<boolean>(false);
+
   const { astAllowanceFormatted: astAllowance } = useAstAllowance();
 
   const {
@@ -37,20 +40,41 @@ export const StakingModal = () => {
     Number(stakingAmount) <= Number(unstakableSastBalance) &&
     txType === TxType.UNSTAKE;
 
-  const { approveAst, dataApproveAst, resetApproveAst } = useApproveAst({
+  const {
+    writeAsync: approveAst,
+    data: dataApproveAst,
+    reset: resetApproveAst,
+    isLoading: approvalAwaitingSignature,
+  } = useApproveAst({
     stakingAmount: Number(stakingAmount),
     enabled: needsApproval,
   });
 
-  const { stakeAst, resetStakeAst, dataStakeAst } = useStakeAst({
+  const {
+    writeAsync: stakeAst,
+    reset: resetStakeAst,
+    data: dataStakeAst,
+    isLoading: stakeAwaitingSignature,
+  } = useStakeAst({
     stakingAmount: Number(stakingAmount),
     enabled: canStake,
   });
 
-  const { unstakeSast, resetUnstakeSast, dataUnstakeSast } = useUnstakeSast({
+  const {
+    writeAsync: unstakeSast,
+    reset: resetUnstakeSast,
+    data: dataUnstakeSast,
+    isLoading: unstakeAwaitingSignature,
+  } = useUnstakeSast({
     unstakingAmount: Number(stakingAmount),
     canUnstake,
   });
+
+  useEffect(() => {
+    if (needsApproval) setIsApproval(true);
+    if (unstakeAwaitingSignature || stakeAwaitingSignature)
+      setIsApproval(false);
+  }, [needsApproval, unstakeAwaitingSignature, stakeAwaitingSignature]);
 
   const currentTransactionHash =
     dataApproveAst?.hash || dataStakeAst?.hash || dataUnstakeSast?.hash;
@@ -103,18 +127,41 @@ export const StakingModal = () => {
     currentTransactionHash ? setTxHash(currentTransactionHash) : null;
   }, [currentTransactionHash, setTxHash]);
 
+  const shouldShowTracker =
+    stakeAwaitingSignature ||
+    approvalAwaitingSignature ||
+    unstakeAwaitingSignature ||
+    !!currentTransactionHash;
+
+  // Used in "you successfully {verb} {stakingAmount} AST"
+  const verb = isApproval
+    ? "approved"
+    : txType === TxType.STAKE
+    ? "staked"
+    : "unstaked";
+
   return (
     <Modal
       className="w-full max-w-none xs:max-w-[360px] text-white"
       modalHeadline={modalLoadingStateHeadlines}
       onCloseRequest={() => setShowStakingModal(false)}
     >
-      {txStatus !== "idle" ? (
+      {shouldShowTracker ? (
         <TransactionTracker
           actionButtons={actionButtonLogic()}
-          dataApproveAst={dataApproveAst}
-          dataStakeAst={dataStakeAst}
-          dataUnstakeSast={dataUnstakeSast}
+          successContent={
+            <span>
+              You successfully {verb}{" "}
+              <span className="text-white">{stakingAmount} AST</span>
+            </span>
+          }
+          failureContent={"Your transaction has failed"}
+          signatureExplainer={
+            isApproval
+              ? "To stake AST you will first need to approve the token spend."
+              : undefined
+          }
+          txHash={currentTransactionHash}
         />
       ) : (
         <>

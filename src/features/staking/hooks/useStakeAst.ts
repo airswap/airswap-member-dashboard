@@ -32,15 +32,5 @@ export const useStakeAst = ({
     enabled: enabled,
   });
 
-  const {
-    writeAsync: stakeAst,
-    data: dataStakeAst,
-    reset: resetStakeAst,
-  } = useContractWrite(configStake);
-
-  return {
-    stakeAst,
-    resetStakeAst,
-    dataStakeAst,
-  };
+  return useContractWrite(configStake);
 };
