@@ -1,11 +1,19 @@
+import { format } from "@greypixel_/nicenumbers";
 import BigNumber from "bignumber.js";
 import { useState } from "react";
-import { zeroAddress } from "viem";
-import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { decodeEventLog, zeroAddress } from "viem";
+import {
+  useAccount,
+  useChainId,
+  useContractWrite,
+  usePrepareContractWrite,
+  usePublicClient,
+} from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { poolAbi } from "../../contracts/poolAbi";
 import { Button } from "../common/Button";
+import { TransactionTracker } from "../common/TransactionTracker";
 import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
 import {
   ClaimableTokensLineItem,
@@ -17,6 +25,11 @@ import { useResetClaimStatus } from "./hooks/useResetClaimStatus";
 export const ClaimForm = ({}: {}) => {
   const [pool] = useContractAddresses([ContractTypes.AirSwapPool], {});
   const { address: connectedAccount } = useAccount();
+
+  const [withdrawnAmount, setWithdrawnAmount] = useState<bigint>();
+
+  const chainId = useChainId();
+  const publicClient = usePublicClient({ chainId: chainId });
 
   const [
     pointsClaimableByEpoch,
@@ -55,6 +68,8 @@ export const ClaimForm = ({}: {}) => {
   const [selection, setSelection] = useState<{
     index: number;
     tokenAddress: `0x${string}`;
+    tokenDecimals: number;
+    tokenSymbol: string;
     amount: bigint;
   }>();
 
@@ -77,18 +92,88 @@ export const ClaimForm = ({}: {}) => {
     enabled: !!selection,
   });
 
-  const { data, write } = useContractWrite({
+  const {
+    data: writeResult,
+    write,
+    reset: resetContractWrite,
+    isLoading: waitingForSignature,
+  } = useContractWrite({
     ...claimTxConfig,
-    onSuccess: () => {
+    onSuccess: async (result) => {
       resetClaimStatuses();
       clearSelectedClaims();
       refetchClaimable();
-      setShowClaimModal(false);
-      // TODO: Use new transaction tracker.
+
+      // Find the withdrawn amount.
+      const receipt = await publicClient.waitForTransactionReceipt({
+        hash: result.hash,
+      });
+      // Reverse because it's likely to be the last one
+      for (const log of receipt.logs.reverse()) {
+        try {
+          const decodedLog = decodeEventLog({
+            abi: poolAbi,
+            ...log,
+          });
+          if (decodedLog.eventName === "Withdraw") {
+            setWithdrawnAmount(decodedLog.args.amount);
+            break;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    },
+    onError: (e) => {
+      resetClaimStatuses();
+      clearSelectedClaims();
+      refetchClaimable();
     },
   });
 
-  return (
+  const actionButtons = {
+    afterFailure: {
+      label: "Try again",
+      callback: () => {
+        resetContractWrite();
+      },
+    },
+    afterSuccess: {
+      label: "Close",
+      callback: () => {
+        setShowClaimModal(false);
+      },
+    },
+  };
+
+  const successContent = withdrawnAmount ? (
+    <span>
+      You successfully claimed{" "}
+      <span className="w-20 text-white">
+        {format(withdrawnAmount, { tokenDecimals: selection?.tokenDecimals })}{" "}
+        {selection?.tokenSymbol || "tokens"}
+      </span>{" "}
+      using {pointsSelected} points
+    </span>
+  ) : (
+    <span>
+      You successfully claimed{" "}
+      <span className="inline-block w-14 bg-gray-400 animate-pulse h-3" />
+      &nbsp;
+      <span className="inline-block w-8 bg-gray-400 animate-pulse h-3" />
+      &nbsp;tokens using {pointsSelected} points
+    </span>
+  );
+
+  return writeResult?.hash || waitingForSignature ? (
+    <TransactionTracker
+      txHash={writeResult?.hash || undefined}
+      actionButtons={actionButtons}
+      failureContent="Claim failed"
+      successContent={successContent}
+      className="w-[304px]"
+    />
+  ) : (
     <div className="flex flex-col w-[304px]">
       <div
         className="grid items-center gap-x-5 gap-y-4"
@@ -113,11 +198,13 @@ export const ClaimForm = ({}: {}) => {
                     amount: claimableAmount,
                     index: i,
                     tokenAddress: tokenInfo.address,
+                    tokenDecimals: tokenInfo.decimals || 18,
+                    tokenSymbol: tokenInfo.symbol || "",
                   });
                 }}
                 amount={claimableAmount || 0n}
                 decimals={tokenInfo?.decimals || 18}
-                symbol={tokenInfo?.symbol || "N/A"}
+                symbol={tokenInfo?.symbol || "Tokens"}
                 value={claimableValue || 0}
                 key={tokenInfo?.address || i}
               />
@@ -128,7 +215,13 @@ export const ClaimForm = ({}: {}) => {
         )}
       </div>
 
-      <Button color="primary" rounded={false} className="mt-7" onClick={write}>
+      <Button
+        color="primary"
+        rounded={false}
+        className="mt-7"
+        onClick={write}
+        disabled={selection === undefined}
+      >
         Claim
       </Button>
     </div>
