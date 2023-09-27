@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useWaitForTransaction } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -16,8 +17,11 @@ import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
 
 export const StakingModal = () => {
-  const { setShowStakingModal, txType, setTxHash, stakingAmount } =
-    useStakingModalStore();
+  const { setShowStakingModal, txType, setTxHash } = useStakingModalStore();
+
+  const formReturn = useForm();
+  const { getValues } = formReturn;
+  const stakingAmount = getValues().stakingAmount;
 
   // This state tracks whether the last transaction was an approval.
   const [isApproval, setIsApproval] = useState<boolean>(false);
@@ -171,7 +175,7 @@ export const StakingModal = () => {
         />
       ) : (
         <>
-          <ManageStake />
+          <ManageStake formReturn={formReturn} />
           <div>
             <Button
               onClick={modalButtonAction?.callback}

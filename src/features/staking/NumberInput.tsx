@@ -12,14 +12,13 @@ export const NumberInput = ({
   astBalance: number;
   unstakableSAstBalance: number;
 }) => {
-  const { txType, setStakingAmount } = useStakingModalStore();
+  const { txType } = useStakingModalStore();
   const { register, setValue } = formReturn;
 
   return (
     <input
       max={astBalance}
       placeholder="0"
-      // defaultValue="0"
       autoComplete="off"
       {...register("stakingAmount", {
         valueAsNumber: true,
@@ -30,10 +29,8 @@ export const NumberInput = ({
         onChange: (e) => {
           if (isNaN(e.target.value) && e.target.value !== ".") {
             setValue("stakingAmount", "");
-            setStakingAmount("");
           }
           setValue("stakingAmount", e.target.value);
-          setStakingAmount(e.target.value);
         },
       })}
       className={twJoin(
