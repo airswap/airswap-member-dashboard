@@ -169,7 +169,7 @@ export const StakingModal = () => {
           <div>
             <Button
               onClick={modalButtonAction?.callback}
-              isDisabled={isStakeButtonDisabled}
+              disabled={isStakeButtonDisabled}
               color="primary"
               rounded={false}
               className="w-full mt-10"

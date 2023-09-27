@@ -8,8 +8,8 @@ import { tv, type VariantProps } from "tailwind-variants";
 
 const buttonVariants = tv({
   base:
-    "font-bold px-5 py-3 uppercase transition-colors duration-150" +
-    "disabled:pointer-events-none disabled:cursor-not-allowed",
+    "font-bold px-5 py-3 uppercase transition-all duration-150" +
+    "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-70",
   variants: {
     color: {
       primary: "bg-airswap-blue text-white hover:border-white",
@@ -40,7 +40,6 @@ type ButtonVariants = VariantProps<typeof buttonVariants>;
 interface ButtonProps {
   children?: ReactNode;
   className?: string;
-  isDisabled?: boolean;
 }
 
 export const Button = ({
@@ -49,7 +48,7 @@ export const Button = ({
   rounded,
   size,
   color,
-  isDisabled,
+  disabled,
   ...rest
 }: ButtonProps &
   React.DetailedHTMLProps<
@@ -59,13 +58,9 @@ export const Button = ({
   ButtonVariants) => {
   return (
     <button
-      className={twMerge(
-        buttonVariants({ color, rounded, size }),
-        className,
-        isDisabled && "opacity-70",
-      )}
+      className={twMerge(buttonVariants({ color, rounded, size }), className)}
       {...rest}
-      disabled={isDisabled}
+      disabled={disabled}
     >
       {children}
     </button>
