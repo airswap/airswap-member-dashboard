@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { ClaimForm } from "../claims/ClaimForm";
+import { ClaimModalSubheading } from "../claims/ClaimModalSubheading";
 import { Modal } from "../common/Modal";
 import { ClaimFloat } from "./ClaimFloat";
 import { LiveVoteCard } from "./LiveVoteCard";
@@ -98,7 +99,11 @@ export const VoteList = ({}: {}) => {
 
       {/* Claim modal. */}
       {showClaimModal && (
-        <Modal onCloseRequest={() => setShowClaimModal(false)}>
+        <Modal
+          onCloseRequest={() => setShowClaimModal(false)}
+          heading="Claim"
+          subHeading={<ClaimModalSubheading />}
+        >
           <ClaimForm />
         </Modal>
       )}

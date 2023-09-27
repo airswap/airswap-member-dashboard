@@ -34,7 +34,7 @@ const WalletConnectionModal = ({
   return (
     <Modal
       className="text-white"
-      modalHeadline="Select Wallet"
+      heading="Select Wallet"
       onCloseRequest={() => setShowConnectionModal(false)}
     >
       <div className="color-white flex w-[360px] flex-col bg-gray-900 font-bold">

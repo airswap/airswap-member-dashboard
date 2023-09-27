@@ -143,7 +143,7 @@ export const StakingModal = () => {
   return (
     <Modal
       className="w-full max-w-none xs:max-w-[360px] text-white"
-      modalHeadline={modalLoadingStateHeadlines}
+      heading={modalLoadingStateHeadlines}
       onCloseRequest={() => setShowStakingModal(false)}
     >
       {shouldShowTracker ? (
