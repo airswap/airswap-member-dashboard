@@ -7,7 +7,7 @@ const VOTES_QUERY = (space: string, voter?: string) => gql`
   query {
     votes(
       # TODO: should deal with pagination probably.
-      first: 100
+      first: 1000
       skip: 0
       where: {
         space_in: ["${space}"]

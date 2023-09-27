@@ -55,7 +55,7 @@ export const LiveVoteCard = ({ proposal }: { proposal: Proposal }) => {
         )}
         <span className={twMerge(hasEnded && "text-gray-500")}>
           {hasEnded
-            ? "Awaiting finalization"
+            ? "Finalizing"
             : hasUserVoted
             ? "Voted"
             : hasStarted
