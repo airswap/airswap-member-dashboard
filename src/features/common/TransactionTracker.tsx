@@ -1,6 +1,6 @@
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { MdCheck, MdClose } from "react-icons/md";
-import { twJoin } from "tailwind-merge";
+import { twJoin, twMerge } from "tailwind-merge";
 import { useQuery, useWaitForTransaction } from "wagmi";
 import { Button } from "./Button";
 import { ViewOnEtherscanLink } from "./ViewOnEtherscanLink";
@@ -18,6 +18,7 @@ export const TransactionTracker = ({
   successContent,
   failureContent,
   signatureExplainer,
+  className,
 }: {
   actionButtons?: ActionButtons;
   /** Note that this will be undefined when the user hasn't signed yet */
@@ -28,6 +29,7 @@ export const TransactionTracker = ({
   failureContent: React.ReactNode;
   /** String to display to explain what the signature is for */
   signatureExplainer?: string;
+  className?: string;
 }) => {
   const isAwaitingSignature = !txHash;
   const { isLoading, isSuccess, isError } = useWaitForTransaction({
@@ -50,7 +52,12 @@ export const TransactionTracker = ({
     : failureContent;
 
   return (
-    <div className="flex flex-col items-center text-gray-500 mt-6">
+    <div
+      className={twMerge(
+        "flex flex-col items-center text-gray-500 mt-6",
+        className,
+      )}
+    >
       <div
         className={twJoin(
           "bg-gray-950 border-gray-800 rounded-full w-11 h-11 mb-6",
@@ -66,7 +73,7 @@ export const TransactionTracker = ({
         )}
       </div>
 
-      <div className="">{statusContent}</div>
+      <div className="text-center">{statusContent}</div>
 
       {txHash && <ViewOnEtherscanLink txHash={txHash} className="mt-6" />}
 
