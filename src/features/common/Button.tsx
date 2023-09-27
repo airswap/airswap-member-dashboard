@@ -28,7 +28,7 @@ const buttonVariants = tv({
     },
     size: {
       small: "text-xs py-1 px-3",
-      none: "p-0 -mt-1.5",
+      smallest: "p-0 -mt-1.5",
     },
   },
   defaultVariants: {

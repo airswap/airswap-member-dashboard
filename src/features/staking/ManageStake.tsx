@@ -101,7 +101,7 @@ export const ManageStake = ({
           <Button
             onClick={handleSetMaxBalance}
             color="none"
-            size="none"
+            size="smallest"
             rounded="none"
           >
             <span className="text-xs font-medium leading-4 text-gray-500">
