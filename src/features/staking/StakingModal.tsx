@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useWaitForTransaction } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -16,8 +17,11 @@ import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
 
 export const StakingModal = () => {
-  const { setShowStakingModal, txType, setTxHash, stakingAmount } =
-    useStakingModalStore();
+  const { setShowStakingModal, txType, setTxHash } = useStakingModalStore();
+
+  const formReturn = useForm();
+  const { getValues } = formReturn;
+  const stakingAmount = getValues().stakingAmount;
 
   // This state tracks whether the last transaction was an approval.
   const [isApproval, setIsApproval] = useState<boolean>(false);
@@ -29,16 +33,26 @@ export const StakingModal = () => {
     astBalanceFormatted: astBalance,
   } = useTokenBalances();
 
+  // stakingAmount default is NaN. Wagmi hooks need to validate that stakingAmount exists
+  const validNumberInput = !!stakingAmount && Number(stakingAmount) > 0;
+
   const needsApproval =
     txType === TxType.STAKE &&
-    Number(stakingAmount) > 0 &&
-    Number(astAllowance) < Number(stakingAmount);
+    Number(astAllowance) < Number(stakingAmount) &&
+    validNumberInput;
 
-  const canStake = txType === TxType.STAKE && !needsApproval;
+  const canStake =
+    txType === TxType.STAKE && !needsApproval && validNumberInput;
 
   const canUnstake =
     Number(stakingAmount) <= Number(unstakableSastBalance) &&
-    txType === TxType.UNSTAKE;
+    txType === TxType.UNSTAKE &&
+    validNumberInput;
+
+  const isInsufficientBalance =
+    txType === TxType.STAKE && stakingAmount
+      ? Number(stakingAmount) > Number(astBalance)
+      : Number(stakingAmount) > Number(unstakableSastBalance);
 
   const {
     writeAsync: approveAst,
@@ -46,7 +60,7 @@ export const StakingModal = () => {
     reset: resetApproveAst,
     isLoading: approvalAwaitingSignature,
   } = useApproveAst({
-    stakingAmount: Number(stakingAmount),
+    stakingAmount: Number(stakingAmount) || 0,
     enabled: needsApproval,
   });
 
@@ -56,7 +70,7 @@ export const StakingModal = () => {
     data: dataStakeAst,
     isLoading: stakeAwaitingSignature,
   } = useStakeAst({
-    stakingAmount: Number(stakingAmount),
+    stakingAmount: Number(stakingAmount) || 0,
     enabled: canStake,
   });
 
@@ -66,8 +80,8 @@ export const StakingModal = () => {
     data: dataUnstakeSast,
     isLoading: unstakeAwaitingSignature,
   } = useUnstakeSast({
-    unstakingAmount: Number(stakingAmount),
-    canUnstake,
+    unstakingAmount: Number(stakingAmount) || 0,
+    canUnstake: canUnstake,
   });
 
   useEffect(() => {
@@ -92,16 +106,12 @@ export const StakingModal = () => {
       stake: stakeAst,
       unstake: unstakeSast,
     },
+    insufficientBalance: isInsufficientBalance,
   });
 
   const isAmountInvalid = Number(stakingAmount) <= 0;
-  const insufficientAstBalance =
-    txType === TxType.STAKE && Number(stakingAmount) > Number(astBalance);
-  const insufficientSastBalance =
-    txType === TxType.UNSTAKE && stakingAmount > unstakableSastBalance;
 
-  const isStakeButtonDisabled =
-    isAmountInvalid || insufficientAstBalance || insufficientSastBalance;
+  const isStakeButtonDisabled = isAmountInvalid || isInsufficientBalance;
 
   const actionButtons = actionButtonsObject({
     resetApproveAst,
@@ -165,7 +175,7 @@ export const StakingModal = () => {
         />
       ) : (
         <>
-          <ManageStake />
+          <ManageStake formReturn={formReturn} />
           <div>
             <Button
               onClick={modalButtonAction?.callback}

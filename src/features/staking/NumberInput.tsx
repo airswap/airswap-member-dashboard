@@ -1,24 +1,26 @@
-import { useForm } from "react-hook-form";
+import { FieldValues, UseFormReturn } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
 
 export const NumberInput = ({
+  formReturn,
   astBalance,
   unstakableSAstBalance,
 }: {
+  formReturn: UseFormReturn<FieldValues>;
   astBalance: number;
   unstakableSAstBalance: number;
 }) => {
-  const { txType, setStakingAmount } = useStakingModalStore();
-  const formReturn = useForm();
-  const { register, setValue } = formReturn;
+  const { txType } = useStakingModalStore();
+  const { register, setValue, watch } = formReturn;
+  watch();
 
   return (
     <input
       max={astBalance}
       placeholder="0"
-      defaultValue="0"
+      autoComplete="off"
       {...register("stakingAmount", {
         valueAsNumber: true,
         required: true,
@@ -28,16 +30,14 @@ export const NumberInput = ({
         onChange: (e) => {
           if (isNaN(e.target.value) && e.target.value !== ".") {
             setValue("stakingAmount", "");
-            setStakingAmount("");
           }
           setValue("stakingAmount", e.target.value);
-          setStakingAmount(e.target.value);
         },
       })}
-      // FIXME: monospace font per designs.
       className={twJoin(
         "items-right w-1/5 bg-transparent text-right min-w-fit",
         "font-mono font-medium text-white text-[20px]",
+        "focus-visible:outline-none",
       )}
     />
   );

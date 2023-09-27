@@ -33,8 +33,8 @@ export const useApproveAst = ({
     address: airSwapToken.address,
     abi: astAbi,
     functionName: "approve",
-    args: [airSwapStaking.address!, BigInt(stakingAmountConversion)],
-    enabled: enabled && stakingAmount > 0 && !!airSwapStaking.address,
+    args: [airSwapStaking.address!, BigInt(stakingAmountConversion || 0)],
+    enabled: enabled && !!airSwapStaking.address,
   });
 
   return useContractWrite(configApprove);

@@ -11,11 +11,19 @@ export const modalButtonActionsAndText = ({
   txType,
   needsApproval,
   buttonActions,
+  insufficientBalance,
 }: {
   txType: TxType;
   needsApproval: boolean;
   buttonActions: ButtonActions;
+  insufficientBalance?: boolean;
 }) => {
+  if (insufficientBalance) {
+    return {
+      label: "Insufficient balance",
+      callback: () => null,
+    };
+  }
   if (txType === TxType.STAKE && needsApproval) {
     return {
       label: "Approve",
