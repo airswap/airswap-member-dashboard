@@ -34,7 +34,7 @@ export const ManageStake = ({
   const handleSwitchStakeButton = () => {
     if (txType === TxType.UNSTAKE) {
       setTxType(TxType.STAKE);
-      setValue("stakingAmount", "0");
+      setValue("stakingAmount", undefined);
     } else {
       null;
     }
@@ -43,7 +43,7 @@ export const ManageStake = ({
   const handleSwitchUntakeButton = () => {
     if (txType === TxType.STAKE) {
       setTxType(TxType.UNSTAKE);
-      setValue("stakingAmount", "0");
+      setValue("stakingAmount", undefined);
     } else {
       null;
     }
@@ -92,11 +92,7 @@ export const ManageStake = ({
         <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8" />
         <div className="flex flex-col items-end uppercase w-full overflow-hidden">
           <div>
-            <NumberInput
-              formReturn={formReturn}
-              astBalance={+astBalance}
-              unstakableSAstBalance={+unstakableSAstBalance}
-            />
+            <NumberInput formReturn={formReturn} />
           </div>
           <Button
             onClick={handleSetMaxBalance}
