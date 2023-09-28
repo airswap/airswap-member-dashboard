@@ -2,6 +2,7 @@ import { useKeyboardEvent } from "@react-hookz/web";
 import { ReactNode, useEffect, useRef } from "react";
 import { MdClose } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
+import { useStakingModalStore } from "../staking/store/useStakingModalStore";
 
 export const Modal = ({
   className,
@@ -17,6 +18,9 @@ export const Modal = ({
   children?: React.ReactNode;
 }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
+  const { isTxLoading, txStatus } = useStakingModalStore();
+
+  const isTxStatusLoading = txStatus === "loading" || isTxLoading;
 
   // This component is intended to be rendered conditionally, so if it is
   // rendered we need to immediately show the modal dialog.
@@ -45,7 +49,7 @@ export const Modal = ({
         {/* Header */}
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-white mb-1">{heading}</h2>
-          <button onClick={onCloseRequest}>
+          <button onClick={onCloseRequest} disabled={isTxStatusLoading}>
             <MdClose className="text-gray-500" size={24} />
           </button>
         </div>

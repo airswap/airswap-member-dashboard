@@ -17,7 +17,13 @@ import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
 
 export const StakingModal = () => {
-  const { setShowStakingModal, txType, setTxHash } = useStakingModalStore();
+  const {
+    setShowStakingModal,
+    txType,
+    setIsTxLoading,
+    setTxStatus,
+    setTxHash,
+  } = useStakingModalStore();
 
   const formReturn = useForm();
   const { getValues } = formReturn;
@@ -133,10 +139,6 @@ export const StakingModal = () => {
     }
   };
 
-  useEffect(() => {
-    currentTransactionHash ? setTxHash(currentTransactionHash) : null;
-  }, [currentTransactionHash, setTxHash]);
-
   const shouldShowTracker =
     stakeAwaitingSignature ||
     approvalAwaitingSignature ||
@@ -149,6 +151,27 @@ export const StakingModal = () => {
     : txType === TxType.STAKE
     ? "staked"
     : "unstaked";
+
+  // txStatus and isTxLoading gets set in Zustand store, then used to disable the close modal button in Modal.tsx if transaction is loading
+  useEffect(() => {
+    setIsTxLoading(
+      approvalAwaitingSignature ||
+        stakeAwaitingSignature ||
+        unstakeAwaitingSignature,
+    );
+    setTxStatus(txStatus);
+  }, [
+    setIsTxLoading,
+    approvalAwaitingSignature,
+    stakeAwaitingSignature,
+    unstakeAwaitingSignature,
+    txStatus,
+    setTxStatus,
+  ]);
+
+  useEffect(() => {
+    currentTransactionHash ? setTxHash(currentTransactionHash) : null;
+  }, [currentTransactionHash, setTxHash]);
 
   return (
     <Modal
