@@ -8,8 +8,6 @@ type StakingModalStore = {
   setShowStakingModal: (show: boolean) => void;
   txType: TxType;
   setTxType: (change: TxType) => void;
-  stakingAmount: string;
-  setStakingAmount: (change: string) => void;
   txHash: Hash | undefined;
   setTxHash: (hash: Hash | undefined) => void;
 };
@@ -25,11 +23,6 @@ const stakingModalStore = create<StakingModalStore>()(
       txType: TxType.STAKE,
       setTxType(change: TxType) {
         set({ txType: change });
-      },
-
-      stakingAmount: "0",
-      setStakingAmount(change: string) {
-        set({ stakingAmount: change });
       },
 
       txHash: undefined,
@@ -49,8 +42,6 @@ export const useStakingModalStore = () => {
     setShowStakingModal,
     txType,
     setTxType,
-    stakingAmount,
-    setStakingAmount,
     txHash,
     setTxHash,
   ] = stakingModalStore((state) => [
@@ -58,8 +49,6 @@ export const useStakingModalStore = () => {
     state.setShowStakingModal,
     state.txType,
     state.setTxType,
-    state.stakingAmount,
-    state.setStakingAmount,
     state.txHash,
     state.setTxHash,
   ]);
@@ -68,8 +57,6 @@ export const useStakingModalStore = () => {
     setShowStakingModal,
     txType,
     setTxType,
-    stakingAmount,
-    setStakingAmount,
     txHash,
     setTxHash,
   };
