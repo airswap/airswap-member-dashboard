@@ -24,43 +24,28 @@
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
-      "description": "- `txStatus` returns the current state of a transaction: \"idle\", \"loading\", \"success\", or \"error\". These values get passed into AmountStakedText.tsx, which then gets passed into TransactionTracker.tsx. These values help show the user where they are in the staking flow.\n- `useWaitForTransaction` hook gets called in StakingModal.tsx instead of TransactionTracker.tsx, because we want to keep TransactionTracker as generic as possible, to allow for non-staking transactions to also be passed in",
-      "line": 61
+      "description": "- `txStatus` returns the current state of a transaction: \"idle\", \"loading\", \"success\", or \"error\". Gets passed into `modalTxLoadingStateHeadlines` to generate relevant headlines. Also gets passed along to Zustand store, but only to control the close button in Modal.tsx",
+      "line": 102
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "`modalButtonActionsAndText` returns functions based on where a user is in the staking flow. These are 'write' functions from Wagmi hooks that get called when a user clicks the \"STAKE\" button in StakingModal.tsx. These button actions are different than the `actionButtons` variable below; `actionButtons` returns 'reset' functions from Wagmi, which help the TransactionTracker.tsx component get \"unstuck\" when a user moves along the staking flow.",
-      "line": 66
-    },
-    {
-      "file": "src/features/staking/StakingModal.tsx",
-      "description": "AmountStakedText has its own component because it contains flex box formatting, and does not need to be rendered unless a transaction is successful",
-      "line": 86
-    },
-    {
-      "file": "src/features/staking/StakingModal.tsx",
-      "description": "Variable gets passed as a prop to TransactionTracker. Gives user a description of what's currently happening if a transaction is processing",
-      "line": 94
-    },
-    {
-      "file": "src/features/staking/StakingModal.tsx",
-      "description": "function returns 'reset' functions from Wagmi",
-      "line": 101
-    },
-    {
-      "file": "src/features/staking/StakingModal.tsx",
-      "description": "`modalTxLoadingStateHeadlines` updates the headline in Modal.tsx to reflect where the user is in the staking flow process",
       "line": 107
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
-      "description": "Logic processes `actionButtons` and passes the correct functions as a prop to TransactionTracker. These functions get called after a transaction finishes processing, and allows a user to move along to the next step in the staking flow.",
-      "line": 114
+      "description": "`actionButtonsObject` function returns 'reset' functions from Wagmi. These reset functions get passed into `actionButtonLogic`, which then gets passed into TransactionTracker.tsx",
+      "line": 122
+    },
+    {
+      "file": "src/features/staking/StakingModal.tsx",
+      "description": "`modalTxLoadingStateHeadlines` updates the headline in Modal.tsx to reflect where the user is in the staking flow process",
+      "line": 128
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "ManageStake.tsx renders \"stake\" and \"unstake\" buttons, and NumberInput.",
-      "line": 141
+      "line": 201
     }
   ]
 }
