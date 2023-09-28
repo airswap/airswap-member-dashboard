@@ -27,6 +27,7 @@ export const ClaimForm = ({}: {}) => {
   const { address: connectedAccount } = useAccount();
 
   const [withdrawnAmount, setWithdrawnAmount] = useState<bigint>();
+  const [pointsUsed, setPointsUsed] = useState<number>();
 
   const chainId = useChainId();
   const publicClient = usePublicClient({ chainId: chainId });
@@ -89,7 +90,9 @@ export const ClaimForm = ({}: {}) => {
       selection?.amount || 0n,
       connectedAccount!,
     ],
-    enabled: !!selection,
+    // Don't simulate if we've got a withdrawn amount, because we're
+    // showing a tx success for the current claim, so it'll fail.
+    enabled: !!selection && !withdrawnAmount,
   });
 
   const {
@@ -153,7 +156,7 @@ export const ClaimForm = ({}: {}) => {
         {format(withdrawnAmount, { tokenDecimals: selection?.tokenDecimals })}{" "}
         {selection?.tokenSymbol || "tokens"}
       </span>{" "}
-      using {pointsSelected} points
+      using {pointsUsed} points
     </span>
   ) : (
     <span>
@@ -161,7 +164,7 @@ export const ClaimForm = ({}: {}) => {
       <span className="inline-block w-14 bg-gray-400 animate-pulse h-3" />
       &nbsp;
       <span className="inline-block w-8 bg-gray-400 animate-pulse h-3" />
-      &nbsp;tokens using {pointsSelected} points
+      &nbsp;tokens using {pointsUsed} points
     </span>
   );
 
@@ -219,8 +222,13 @@ export const ClaimForm = ({}: {}) => {
         color="primary"
         rounded={false}
         className="mt-7"
-        onClick={write}
-        disabled={selection === undefined}
+        onClick={() => {
+          if (write) {
+            write();
+            setPointsUsed(pointsSelected);
+          }
+        }}
+        disabled={selection === undefined || !write}
       >
         Claim
       </Button>

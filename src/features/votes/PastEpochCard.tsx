@@ -195,7 +195,11 @@ export const PastEpochCard = ({
   );
 
   const content = proposalGroup.map((proposal, i) => (
-    <PastProposal proposal={proposal} voted={votedForProposal[i]} />
+    <PastProposal
+      proposal={proposal}
+      voted={votedForProposal[i]}
+      key={proposal.id}
+    />
   ));
 
   return (

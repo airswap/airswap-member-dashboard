@@ -64,14 +64,14 @@ export const VoteListSkeletons = () => (
     {/* Loading state */}
     <VoteLoadingHeaderSkeleton />
     <div className="flex flex-col gap-2">
-      {new Array(NUM_LIVE_LOADING).fill(null).map(() => (
-        <VoteLoadingSkeleton type="present" />
+      {new Array(NUM_LIVE_LOADING).fill(null).map((_, i) => (
+        <VoteLoadingSkeleton type="present" key={"loading-" + i} />
       ))}
     </div>
     <VoteLoadingHeaderSkeleton />
     <div className="flex flex-col gap-2">
-      {new Array(NUM_PAST_LOADING).fill(null).map(() => (
-        <VoteLoadingSkeleton type="past" />
+      {new Array(NUM_PAST_LOADING).fill(null).map((_, i) => (
+        <VoteLoadingSkeleton type="past" key={"pastloading-" + i} />
       ))}
     </div>
   </>
