@@ -4,18 +4,23 @@
   "steps": [
     {
       "file": "src/features/staking/StakingModal.tsx",
-      "description": "Values imported from Zustand store:\n- formReturn manages state of NumberInput, where the user enters the amount to approve/stake/unstake\n- txType is either \"stake\" or \"unstake\"",
+      "description": "Values imported from Zustand store:\n- txType is either \"stake\" or \"unstake\" \n- setIsTxLoading and setTxStatus store if a transaction is loading. The corresponding isTxLoading and txStatus variables in Zustand are used in Modal.tsx to disable the close modal button",
       "line": 20
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
-      "description": "Checks if user needs to approve token spending. If `needsApproval` is `true`, clicking the stake button will fire off `approveAst` function. If `needsApproval` is `false`, the connected user has approved the contract to spend AST and can stake tokens",
+      "description": "This state tracks whether the last transaction was an approval. Changes future variables such as `verb`, which manipulates TransactionTracker.tsx to render relevant data",
       "line": 33
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
+      "description": "Checks if user needs to approve token spending. If `needsApproval` is `true`, clicking the stake button will fire off `approveAst` function. If `needsApproval` is `false`, the connected user has approved the contract to spend AST and can stake tokens",
+      "line": 45
+    },
+    {
+      "file": "src/features/staking/StakingModal.tsx",
       "description": "useApproveAst, useStakeAst, and useUnstakeSast are all similar function.\n- approveAst: this is a 'write' function that approves the contract to spend AST\n- dataApproveAst: the 'data' functions in these hooks are mostly used to get a transaction hash after the 'write' function runs.\n- restApproveAst: the 'reset' functions can get called to reset the data after a 'write' function gets called. Resetting data allows for the TransactionTracker.tsx component to render the correct data based on where a user is in the staking flow",
-      "line": 43
+      "line": 68
     },
     {
       "file": "src/features/staking/StakingModal.tsx",

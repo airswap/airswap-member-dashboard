@@ -17,9 +17,6 @@ export const NumberInput = ({
     unstakableSAstBalanceFormatted: unstakableSAstBalance,
   } = useTokenBalances();
 
-  const stake = txType === TxType.STAKE;
-  const unstake = txType === TxType.UNSTAKE;
-
   return (
     <input
       max={astBalance}
@@ -29,23 +26,16 @@ export const NumberInput = ({
         valueAsNumber: true,
         required: true,
         min: 0,
-        max: stake ? Number(astBalance) : Number(unstakableSAstBalance),
+        max:
+          txType === TxType.STAKE
+            ? Number(astBalance)
+            : Number(unstakableSAstBalance),
         validate: (val) => !isNaN(val) && val > 0,
         onChange: (e) => {
           // disallow non-numeric inputs
           if (isNaN(e.target.value) && e.target.value !== ".") {
             setValue("stakingAmount", "");
           }
-          // if input is larger than max balance, reset to max balance
-          if (stake && Number(e.target.value) > Number(astBalance)) {
-            setValue("stakingAmount", astBalance.toString());
-          } else if (
-            unstake &&
-            Number(e.target.value) > Number(unstakableSAstBalance)
-          ) {
-            setValue("stakingAmount", unstakableSAstBalance.toString());
-          }
-          // default setting
           setValue("stakingAmount", e.target.value);
         },
       })}
