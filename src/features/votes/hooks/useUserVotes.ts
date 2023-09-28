@@ -34,7 +34,10 @@ type VotesQueryResult = {
 // TODO: check if we need an API key.
 // ref: https://docs.snapshot.org/tools/graphql-api/api-keys
 
-export const useUserVotes = (voter?: `0x${string}`) => {
+export const useUserVotes = (
+  voter: `0x${string}` | undefined = undefined,
+  isActiveVote: boolean,
+) => {
   const snapshot = useSnapshotConfig();
   const { address: connectedAccount } = useAccount();
 
@@ -59,6 +62,19 @@ export const useUserVotes = (voter?: `0x${string}`) => {
     {
       cacheTime: 600_000,
       staleTime: 600_000, // 10 minutes
+      refetchIntervalInBackground: false,
+      refetchInterval(data, query) {
+        if (isActiveVote) {
+          if (data && !data.length) {
+            return 15_000; // 30 seconds
+          }
+          return 120_000;
+        }
+        return false;
+      },
+      refetchOnWindowFocus() {
+        return isActiveVote;
+      },
       enabled: !!_voter,
     },
   );

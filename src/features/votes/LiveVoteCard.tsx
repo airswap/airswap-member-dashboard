@@ -6,7 +6,10 @@ import { useSnapshotProposalUrl } from "./hooks/useSnapshotUrl";
 import { useUserVotes } from "./hooks/useUserVotes";
 
 export const LiveVoteCard = ({ proposal }: { proposal: Proposal }) => {
-  const { data: userVotes, isLoading: userVotesLoading } = useUserVotes();
+  const { data: userVotes, isLoading: userVotesLoading } = useUserVotes(
+    undefined,
+    true,
+  );
 
   const hasStarted = proposal.start * 1000 < Date.now();
   const hasEnded = proposal.end * 1000 < Date.now();

@@ -24,10 +24,14 @@ export const useGroupClaimStatus = ({
       treeId: groupHash,
     });
 
+  const isActive =
+    proposalGroup[0].start * 1000 < Date.now() &&
+    proposalGroup[0].end * 1000 > Date.now();
+
   // TODO: this could be more efficient - we only need votes to calculate points
   // so we don't really need to cache the votes themselves here.
   // Fetch all user votes.
-  const { data: userVotes } = useUserVotes(address);
+  const { data: userVotes } = useUserVotes(address, isActive);
 
   return useMemo(() => {
     const vpsByVote = proposalGroup.map(
