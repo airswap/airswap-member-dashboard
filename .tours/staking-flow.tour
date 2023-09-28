@@ -28,6 +28,11 @@
       "line": 102
     },
     {
+      "file": "src/features/common/Modal.tsx",
+      "description": "isTxLoading and txStatus are React state variables that get set in StakingModal.tsx. These correspond to variables that come from WAGMI. If either has a loading state, it disables the close button. The close modal button should be disabled when a transaction is processing to prevent a user from accidentally closing it",
+      "line": 21
+    },
+    {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "`modalButtonActionsAndText` returns functions based on where a user is in the staking flow. These are 'write' functions from Wagmi hooks that get called when a user clicks the \"STAKE\" button in StakingModal.tsx. These button actions are different than the `actionButtons` variable below; `actionButtons` returns 'reset' functions from Wagmi, which help the TransactionTracker.tsx component get \"unstuck\" when a user moves along the staking flow.",
       "line": 107
@@ -41,6 +46,21 @@
       "file": "src/features/staking/StakingModal.tsx",
       "description": "`modalTxLoadingStateHeadlines` updates the headline in Modal.tsx to reflect where the user is in the staking flow process",
       "line": 128
+    },
+    {
+      "file": "src/features/staking/StakingModal.tsx",
+      "description": "`shouldShowTracker` is used to conditionally render TransactionTracker.tsx. We only want TransactionTracker to show when a user has made a transaction",
+      "line": 142
+    },
+    {
+      "file": "src/features/staking/StakingModal.tsx",
+      "description": "`verb` gets passed into TransactionTracker.tsx and indicates a user action after a successful transaction",
+      "line": 149
+    },
+    {
+      "file": "src/features/staking/StakingModal.tsx",
+      "description": "This useEffect hook sets `setIsTxLoading` and `setTxStatus` in the Zustand store. The corresponding state variables get used in Modal.tsx to disable the close modal button if transaction is loading",
+      "line": 156
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
