@@ -5,7 +5,7 @@ import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { LineBreak } from "../common/LineBreak";
 import { NumberInput } from "./NumberInput";
-import { StakableBar } from "./StakableBar";
+import { PieBar } from "./PieBar";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
 
@@ -51,7 +51,7 @@ export const ManageStake = ({
 
   return (
     <div>
-      <StakableBar className="my-6" />
+      <PieBar />
       <LineBreak className="relative mb-4 -mx-6" />
       <div className="font-lg pointer-cursor rounded-md font-semibold">
         <Button
