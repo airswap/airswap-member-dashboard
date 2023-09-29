@@ -2,25 +2,29 @@ import { useKeyboardEvent } from "@react-hookz/web";
 import { ReactNode, useEffect, useRef } from "react";
 import { MdClose } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
-import { useStakingModalStore } from "../staking/store/useStakingModalStore";
 
 export const Modal = ({
   className,
   heading,
+  isClosable = true,
   subHeading,
   onCloseRequest,
   children,
 }: {
   className?: string;
   heading?: ReactNode;
+  isClosable?: boolean;
   subHeading?: ReactNode;
   onCloseRequest: () => void;
   children?: React.ReactNode;
 }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
-  const { isTxLoading, txStatus } = useStakingModalStore();
 
-  const isTxStatusLoading = txStatus === "loading" || isTxLoading;
+  // Close on escape pressed.
+  useKeyboardEvent("Escape", () => {
+    onCloseRequest && onCloseRequest();
+    modalRef.current?.close();
+  });
 
   // This component is intended to be rendered conditionally, so if it is
   // rendered we need to immediately show the modal dialog.
@@ -29,12 +33,6 @@ export const Modal = ({
       modalRef.current.showModal();
     }
   }, [modalRef]);
-
-  // Close on escape pressed.
-  useKeyboardEvent("Escape", () => {
-    onCloseRequest && onCloseRequest();
-    modalRef.current?.close();
-  });
 
   return (
     <dialog
@@ -46,10 +44,9 @@ export const Modal = ({
       )}
     >
       <div className="px-6 py-7 bg-gray-900 border border-[#1F2937] rounded-lg">
-        {/* Header */}
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-white mb-1">{heading}</h2>
-          <button onClick={onCloseRequest} disabled={isTxStatusLoading}>
+          <button onClick={onCloseRequest} disabled={!isClosable}>
             <MdClose className="text-gray-500" size={24} />
           </button>
         </div>

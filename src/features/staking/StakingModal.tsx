@@ -17,13 +17,7 @@ import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
 
 export const StakingModal = () => {
-  const {
-    setShowStakingModal,
-    txType,
-    setIsTxLoading,
-    setTxStatus,
-    setTxHash,
-  } = useStakingModalStore();
+  const { setShowStakingModal, txType, setTxHash } = useStakingModalStore();
 
   const formReturn = useForm();
   const { getValues } = formReturn;
@@ -152,22 +146,12 @@ export const StakingModal = () => {
     ? "staked"
     : "unstaked";
 
-  // txStatus and isTxLoading gets set in Zustand store, then used to disable the close modal button in Modal.tsx if transaction is loading
-  useEffect(() => {
-    setIsTxLoading(
-      approvalAwaitingSignature ||
-        stakeAwaitingSignature ||
-        unstakeAwaitingSignature,
-    );
-    setTxStatus(txStatus);
-  }, [
-    setIsTxLoading,
-    approvalAwaitingSignature,
-    stakeAwaitingSignature,
-    unstakeAwaitingSignature,
-    txStatus,
-    setTxStatus,
-  ]);
+  // Used to disable close button in Modal.tsx
+  const txIsLoading =
+    approvalAwaitingSignature ||
+    stakeAwaitingSignature ||
+    unstakeAwaitingSignature ||
+    txStatus === "loading";
 
   useEffect(() => {
     currentTransactionHash ? setTxHash(currentTransactionHash) : null;
@@ -177,6 +161,7 @@ export const StakingModal = () => {
     <Modal
       className="w-full max-w-none xs:max-w-[360px] text-white"
       heading={modalLoadingStateHeadlines}
+      isClosable={!txIsLoading}
       onCloseRequest={() => setShowStakingModal(false)}
     >
       {shouldShowTracker ? (

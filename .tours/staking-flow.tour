@@ -10,62 +10,57 @@
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "This state tracks whether the last transaction was an approval. Changes future variables such as `verb`, which manipulates TransactionTracker.tsx to render relevant data",
-      "line": 33
+      "line": 27
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "Checks if user needs to approve token spending. If `needsApproval` is `true`, clicking the stake button will fire off `approveAst` function. If `needsApproval` is `false`, the connected user has approved the contract to spend AST and can stake tokens",
-      "line": 45
+      "line": 39
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "useApproveAst, useStakeAst, and useUnstakeSast are all similar function.\n- approveAst: this is a 'write' function that approves the contract to spend AST\n- dataApproveAst: the 'data' functions in these hooks are mostly used to get a transaction hash after the 'write' function runs.\n- restApproveAst: the 'reset' functions can get called to reset the data after a 'write' function gets called. Resetting data allows for the TransactionTracker.tsx component to render the correct data based on where a user is in the staking flow",
-      "line": 68
+      "line": 62
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "- `txStatus` returns the current state of a transaction: \"idle\", \"loading\", \"success\", or \"error\". Gets passed into `modalTxLoadingStateHeadlines` to generate relevant headlines. Also gets passed along to Zustand store, but only to control the close button in Modal.tsx",
-      "line": 102
-    },
-    {
-      "file": "src/features/common/Modal.tsx",
-      "description": "isTxLoading and txStatus are React state variables that get set in StakingModal.tsx. These correspond to variables that come from WAGMI. If either has a loading state, it disables the close button. The close modal button should be disabled when a transaction is processing to prevent a user from accidentally closing it",
-      "line": 21
+      "line": 96
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "`modalButtonActionsAndText` returns functions based on where a user is in the staking flow. These are 'write' functions from Wagmi hooks that get called when a user clicks the \"STAKE\" button in StakingModal.tsx. These button actions are different than the `actionButtons` variable below; `actionButtons` returns 'reset' functions from Wagmi, which help the TransactionTracker.tsx component get \"unstuck\" when a user moves along the staking flow.",
-      "line": 107
+      "line": 101
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "`actionButtonsObject` function returns 'reset' functions from Wagmi. These reset functions get passed into `actionButtonLogic`, which then gets passed into TransactionTracker.tsx",
-      "line": 122
+      "line": 116
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "`modalTxLoadingStateHeadlines` updates the headline in Modal.tsx to reflect where the user is in the staking flow process",
-      "line": 128
+      "line": 122
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "`shouldShowTracker` is used to conditionally render TransactionTracker.tsx. We only want TransactionTracker to show when a user has made a transaction",
-      "line": 142
+      "line": 136
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "`verb` gets passed into TransactionTracker.tsx and indicates a user action after a successful transaction",
-      "line": 149
+      "line": 143
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
-      "description": "This useEffect hook sets `setIsTxLoading` and `setTxStatus` in the Zustand store. The corresponding state variables get used in Modal.tsx to disable the close modal button if transaction is loading",
-      "line": 156
+      "description": "If a transaction is in loading state or if user needs to approve transaction in MetaMask, this variable gets passed into Modal.tsx and disables the close button",
+      "line": 150
     },
     {
       "file": "src/features/staking/StakingModal.tsx",
       "description": "ManageStake.tsx renders \"stake\" and \"unstake\" buttons, and NumberInput.",
-      "line": 201
+      "line": 186
     }
   ]
 }
