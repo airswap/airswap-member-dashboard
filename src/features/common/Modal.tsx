@@ -22,6 +22,7 @@ export const Modal = ({
 
   // Close on escape pressed.
   useKeyboardEvent("Escape", () => {
+    if (!isClosable) return;
     onCloseRequest && onCloseRequest();
     modalRef.current?.close();
   });
