@@ -35,14 +35,23 @@ export const useActivatePointsClaim = () => {
 
     // Check if the user has any migrated points
     const points = leaves.find(
-      ([address]) => address === connectedAccount,
+      ([address]) => address.toLowerCase() === connectedAccount!.toLowerCase(),
     )?.[1];
 
     // Bail early if they have nothing to claim
     if (!points) return null;
 
     // Create a merkle tree
-    const merkleTree = new MerkleTree(leaves, keccak256, { sort: true });
+    const merkleTree = new MerkleTree(
+      leaves.map(([addr, points]) =>
+        generateMerkleLeaf({
+          voter: addr,
+          vp: points,
+        }),
+      ),
+      keccak256,
+      { sort: true },
+    );
     // Generate their leaf
     const userLeaf = generateMerkleLeaf({
       voter: connectedAccount!,

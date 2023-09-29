@@ -13,7 +13,7 @@ export const useClaimCalculations = (
     useDefaultAsFallback: false,
     alwaysUseDefault: false,
   });
-  const _points = BigInt(points) * BigInt(10 ** 4);
+  const _points = BigInt(points * 10000);
 
   const fetch = async () => {
     if (!poolContract.address) return;
