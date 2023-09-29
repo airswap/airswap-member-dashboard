@@ -1,11 +1,9 @@
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { MdCheck, MdClose } from "react-icons/md";
 import { twJoin, twMerge } from "tailwind-merge";
-import { useQuery, useWaitForTransaction } from "wagmi";
+import { useWaitForTransaction } from "wagmi";
 import { Button } from "./Button";
 import { ViewOnEtherscanLink } from "./ViewOnEtherscanLink";
-
-type Status = ReturnType<typeof useQuery>["status"];
 
 type ActionButtons = {
   afterSuccess: { label: string; callback: () => void };

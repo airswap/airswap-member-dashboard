@@ -1,20 +1,21 @@
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
+import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
 
 export const NumberInput = ({
   formReturn,
-  astBalance,
-  unstakableSAstBalance,
 }: {
   formReturn: UseFormReturn<FieldValues>;
-  astBalance: number;
-  unstakableSAstBalance: number;
 }) => {
   const { txType } = useStakingModalStore();
   const { register, setValue, watch } = formReturn;
   watch();
+  const {
+    astBalanceFormatted: astBalance,
+    unstakableSAstBalanceFormatted: unstakableSAstBalance,
+  } = useTokenBalances();
 
   return (
     <input
@@ -25,9 +26,13 @@ export const NumberInput = ({
         valueAsNumber: true,
         required: true,
         min: 0,
-        max: txType === TxType.STAKE ? astBalance : unstakableSAstBalance,
+        max:
+          txType === TxType.STAKE
+            ? Number(astBalance)
+            : Number(unstakableSAstBalance),
         validate: (val) => !isNaN(val) && val > 0,
         onChange: (e) => {
+          // disallow non-numeric inputs
           if (isNaN(e.target.value) && e.target.value !== ".") {
             setValue("stakingAmount", "");
           }
