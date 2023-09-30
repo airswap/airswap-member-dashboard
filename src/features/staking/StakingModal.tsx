@@ -133,10 +133,6 @@ export const StakingModal = () => {
     }
   };
 
-  useEffect(() => {
-    currentTransactionHash ? setTxHash(currentTransactionHash) : null;
-  }, [currentTransactionHash, setTxHash]);
-
   const shouldShowTracker =
     stakeAwaitingSignature ||
     approvalAwaitingSignature ||
@@ -150,10 +146,22 @@ export const StakingModal = () => {
     ? "staked"
     : "unstaked";
 
+  // Used to disable close button in Modal.tsx
+  const txIsLoading =
+    approvalAwaitingSignature ||
+    stakeAwaitingSignature ||
+    unstakeAwaitingSignature ||
+    txStatus === "loading";
+
+  useEffect(() => {
+    currentTransactionHash ? setTxHash(currentTransactionHash) : null;
+  }, [currentTransactionHash, setTxHash]);
+
   return (
     <Modal
       className="w-full max-w-none xs:max-w-[360px] text-white"
       heading={modalLoadingStateHeadlines}
+      isClosable={!txIsLoading}
       onCloseRequest={() => setShowStakingModal(false)}
     >
       {shouldShowTracker ? (

@@ -26,7 +26,6 @@ const getCurrentSystemTheme = (): ThemeValue => {
   return window.matchMedia(colorSchemeQuery).matches ? "dark" : "light";
 };
 const currentSystemTheme = getCurrentSystemTheme();
-console.log(typeof currentSystemTheme);
 
 export const useThemeStore = create<ThemeState>()(
   persist(
