@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { ActivatePointsCard } from "../activate-migration/ActivatePointsCard";
 import { ClaimForm } from "../claims/ClaimForm";
 import { ClaimModalSubheading } from "../claims/ClaimModalSubheading";
 import { Modal } from "../common/Modal";
@@ -91,6 +92,8 @@ export const VoteList = ({}: {}) => {
               </div>
             </>
           )}
+
+          <ActivatePointsCard />
         </>
       )}
 
