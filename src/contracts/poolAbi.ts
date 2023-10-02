@@ -17,12 +17,12 @@ export const poolAbi = [
     name: "AdminNotSet",
     type: "error",
   },
-  { inputs: [], name: "AlreadyClaimed", type: "error" },
   {
     inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     name: "AmountInsufficient",
     type: "error",
   },
+  { inputs: [], name: "ClaimAlreadyUsed", type: "error" },
   { inputs: [], name: "ClaimsNotProvided", type: "error" },
   {
     inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
@@ -43,13 +43,8 @@ export const poolAbi = [
     type: "error",
   },
   {
-    inputs: [{ internalType: "address", name: "", type: "address" }],
-    name: "TokenInvalid",
-    type: "error",
-  },
-  {
     inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    name: "TreeDisabled",
+    name: "TreeNotEnabled",
     type: "error",
   },
   { inputs: [], name: "Unauthorized", type: "error" },
@@ -181,14 +176,33 @@ export const poolAbi = [
     inputs: [
       {
         indexed: false,
-        internalType: "bytes32[]",
-        name: "trees",
-        type: "bytes32[]",
+        internalType: "address",
+        name: "account",
+        type: "address",
       },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "tree",
+        type: "bytes32",
+      },
+    ],
+    name: "UseClaim",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
         indexed: false,
         internalType: "address",
         name: "account",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "recipient",
         type: "address",
       },
       {
@@ -257,6 +271,17 @@ export const poolAbi = [
       { internalType: "bytes32", name: "_root", type: "bytes32" },
     ],
     name: "enable",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "_tree", type: "bytes32" },
+      { internalType: "bytes32", name: "_root", type: "bytes32" },
+      { internalType: "address[]", name: "_accounts", type: "address[]" },
+    ],
+    name: "enableAndSetClaimed",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

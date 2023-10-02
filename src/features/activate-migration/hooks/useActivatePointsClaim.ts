@@ -5,16 +5,6 @@ import { useAccount, useQuery } from "wagmi";
 import { generateMerkleLeaf } from "../../votes/utils/merkleUtils";
 import { ACTIVATE_TREE_ID } from "../constants";
 
-export type Claim = {
-  tree: `0x${string}`;
-  /**
-   * NOTE: This is a number of points, it needs to be converted to a bigint
-   * before it is sent to the contract.
-   */
-  value: number;
-  proof: `0x${string}`[];
-};
-
 type LeavesFormat = [`0x${string}`, number][];
 
 const getLeaves = async () => {
@@ -35,14 +25,23 @@ export const useActivatePointsClaim = () => {
 
     // Check if the user has any migrated points
     const points = leaves.find(
-      ([address]) => address === connectedAccount,
+      ([address]) => address.toLowerCase() === connectedAccount!.toLowerCase(),
     )?.[1];
 
     // Bail early if they have nothing to claim
     if (!points) return null;
 
     // Create a merkle tree
-    const merkleTree = new MerkleTree(leaves, keccak256, { sort: true });
+    const merkleTree = new MerkleTree(
+      leaves.map(([addr, points]) =>
+        generateMerkleLeaf({
+          voter: addr,
+          vp: points,
+        }),
+      ),
+      keccak256,
+      { sort: true },
+    );
     // Generate their leaf
     const userLeaf = generateMerkleLeaf({
       voter: connectedAccount!,
@@ -50,6 +49,13 @@ export const useActivatePointsClaim = () => {
     });
     // Generate their proof
     const proof = merkleTree.getHexProof(userLeaf) as `0x${string}`[];
+
+    if (import.meta.env.DEV) {
+      console.log("Activate migration details:", {
+        root: merkleTree.getHexRoot(),
+        tree: ACTIVATE_TREE_ID,
+      });
+    }
 
     return {
       tree: ACTIVATE_TREE_ID,

@@ -103,14 +103,15 @@ export const ClaimForm = ({}: {}) => {
   } = useContractWrite({
     ...claimTxConfig,
     onSuccess: async (result) => {
-      resetClaimStatuses();
-      clearSelectedClaims();
-      refetchClaimable();
-
       // Find the withdrawn amount.
       const receipt = await publicClient.waitForTransactionReceipt({
         hash: result.hash,
       });
+
+      resetClaimStatuses();
+      clearSelectedClaims();
+      refetchClaimable();
+
       // Reverse because it's likely to be the last one
       for (const log of receipt.logs.reverse()) {
         try {
@@ -189,7 +190,7 @@ export const ClaimForm = ({}: {}) => {
             ({ claimableAmount, claimableValue, price, tokenInfo }, i) => {
               const isLoaded =
                 tokenInfo?.decimals &&
-                claimableAmount &&
+                claimableAmount != null &&
                 price &&
                 tokenInfo.symbol;
 
