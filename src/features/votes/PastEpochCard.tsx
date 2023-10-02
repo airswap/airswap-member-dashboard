@@ -26,10 +26,8 @@ const PastProposal = ({
 }) => {
   const proposalUrl = useSnapshotProposalUrl(proposal.id);
   return (
-    <a
-      href={proposalUrl}
-      target="_blank"
-      rel="noreferrer"
+    <div
+      onClick={() => window.open(proposalUrl, "_blank")}
       className={twJoin([
         "grid grid-cols-[auto,1fr,auto,auto] border-t border-gray-800",
         "items-center cursor-pointer",
@@ -60,7 +58,7 @@ const PastProposal = ({
           <MdOpenInNew size={16} />
         </a>
       </div>
-    </a>
+    </div>
   );
 };
 

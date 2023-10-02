@@ -20,11 +20,9 @@ export const LiveVoteCard = ({ proposal }: { proposal: Proposal }) => {
   const proposalUrl = useSnapshotProposalUrl(proposal.id);
   const { isConnected: isWalletConnected } = useAccount();
   return (
-    <a
+    <div
       className="flex flex-row gap-5 ring-1 ring-gray-800 px-5 py-4 items-center rounded cursor-pointer"
-      href={proposalUrl}
-      target="_blank"
-      rel="noreferrer"
+      onClick={() => window.open(proposalUrl, "_blank")}
     >
       {/* Status light */}
       {isWalletConnected && (
@@ -73,6 +71,6 @@ export const LiveVoteCard = ({ proposal }: { proposal: Proposal }) => {
             : "Vote Pending"}
         </span>
       </div>
-    </a>
+    </div>
   );
 };
