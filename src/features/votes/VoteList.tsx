@@ -56,7 +56,7 @@ export const VoteList = ({}: {}) => {
             <>
               <div className="flex flex-row items-center gap-2">
                 <h3 className="text-xs font-bold uppercase text-gray-500">
-                  Live votes
+                  Votes
                 </h3>
                 <div className="h-px flex-1 bg-gray-800"></div>
               </div>
@@ -81,7 +81,7 @@ export const VoteList = ({}: {}) => {
             <>
               <div className="flex flex-row items-center gap-4">
                 <h3 className="text-xs font-bold uppercase text-gray-500">
-                  Past Epochs
+                  Rewards
                 </h3>
                 <div className="h-px flex-1 bg-gray-800"></div>
               </div>

@@ -47,7 +47,7 @@ export const useGroupedProposals = () => {
   const snapshot = useSnapshotConfig();
   const fetch = async () => {
     const result = await request<ProposalsQueryResult>(
-      snapshot.endpoint,
+      snapshot.apiEndpoint,
       PROPOSALS_QUERY(snapshot.space, snapshot.startTimestamp),
     );
     const proposalGroups: Proposal[][] = [];
@@ -68,7 +68,7 @@ export const useGroupedProposals = () => {
     return proposalGroups;
   };
 
-  return useQuery([snapshot.endpoint, snapshot.space, "proposals"], fetch, {
+  return useQuery([snapshot.apiEndpoint, snapshot.space, "proposals"], fetch, {
     cacheTime: 604_800_000, // 7 days
     staleTime: 3_600_000, // 1 hour
     refetchInterval: 3_600_000, // 1 hour

@@ -45,14 +45,14 @@ export const useProposalGroupVotes = (
   const snapshot = useSnapshotConfig();
   const fetch = async () => {
     const result = await request<VotesByProposalQueryResult>(
-      snapshot.endpoint,
+      snapshot.apiEndpoint,
       VOTES_FOR_PROPOSALS_QUERY(proposalIds),
     );
     return result.votes;
   };
 
   return useQuery(
-    [snapshot.endpoint, "votesByProposalIds", proposalIds],
+    [snapshot.apiEndpoint, "votesByProposalIds", proposalIds],
     fetch,
     {
       // Note that this is a large payload, and we want to avoid caching it for

@@ -25,6 +25,6 @@ export const useHasClaimedForTree = ({
     enabled: !!voterAddress,
     // 60d
     cacheTime: 5_184_000_000,
-    staleTime: 604_800_000,
+    staleTime: 60_000,
   });
 };

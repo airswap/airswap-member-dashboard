@@ -27,6 +27,7 @@ export const ClaimableTokensLineItem = ({
       <span className="text-gray-400">
         {format(amount, {
           tokenDecimals: decimals,
+          significantFigures: 3,
         })}{" "}
         {symbol}
       </span>
