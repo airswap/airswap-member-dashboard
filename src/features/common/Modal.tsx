@@ -47,7 +47,13 @@ export const Modal = ({
       <div className="px-6 py-7 bg-gray-900 border border-[#1F2937] rounded-lg">
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-white mb-1">{heading}</h2>
-          <button onClick={onCloseRequest} disabled={!isClosable}>
+          <button
+            onClick={() => {
+              onCloseRequest && onCloseRequest();
+              modalRef.current?.close();
+            }}
+            disabled={!isClosable}
+          >
             <MdClose className="text-gray-500" size={24} />
           </button>
         </div>
