@@ -177,47 +177,48 @@ export const ClaimForm = ({}: {}) => {
       className="w-[304px]"
     />
   ) : (
-    <div className="flex flex-col w-[304px]">
-      <div
-        className="grid items-center gap-x-5 gap-y-4"
-        style={{
-          gridTemplateColumns: "auto 1fr auto",
-        }}
-      >
-        {claimable.map(
-          ({ claimableAmount, claimableValue, price, tokenInfo }, i) => {
-            const isLoaded =
-              tokenInfo?.decimals &&
-              claimableAmount &&
-              price &&
-              tokenInfo.symbol;
+    <div className="w-[320px] max-h-[300px] flex flex-col">
+      <div className="flex-1 overflow-auto [scrollbar-width:thin]">
+        <div
+          className="grid items-center gap-x-5 gap-y-4 pr-3"
+          style={{
+            gridTemplateColumns: "auto 1fr auto",
+          }}
+        >
+          {claimable.map(
+            ({ claimableAmount, claimableValue, price, tokenInfo }, i) => {
+              const isLoaded =
+                tokenInfo?.decimals &&
+                claimableAmount &&
+                price &&
+                tokenInfo.symbol;
 
-            return isLoaded ? (
-              <ClaimableTokensLineItem
-                isSelected={selection?.index === i}
-                onSelect={() => {
-                  if (!claimableAmount || !tokenInfo?.address) return;
-                  setSelection({
-                    amount: claimableAmount,
-                    index: i,
-                    tokenAddress: tokenInfo.address,
-                    tokenDecimals: tokenInfo.decimals || 18,
-                    tokenSymbol: tokenInfo.symbol || "",
-                  });
-                }}
-                amount={claimableAmount || 0n}
-                decimals={tokenInfo?.decimals || 18}
-                symbol={tokenInfo?.symbol || "Tokens"}
-                value={claimableValue || 0}
-                key={tokenInfo?.address || i}
-              />
-            ) : (
-              <ClaimableTokensLineItemLoading key={i + "-loading"} />
-            );
-          },
-        )}
+              return isLoaded ? (
+                <ClaimableTokensLineItem
+                  isSelected={selection?.index === i}
+                  onSelect={() => {
+                    if (!claimableAmount || !tokenInfo?.address) return;
+                    setSelection({
+                      amount: claimableAmount,
+                      index: i,
+                      tokenAddress: tokenInfo.address,
+                      tokenDecimals: tokenInfo.decimals || 18,
+                      tokenSymbol: tokenInfo.symbol || "",
+                    });
+                  }}
+                  amount={claimableAmount || 0n}
+                  decimals={tokenInfo?.decimals || 18}
+                  symbol={tokenInfo?.symbol || "Tokens"}
+                  value={claimableValue || 0}
+                  key={tokenInfo?.address || i}
+                />
+              ) : (
+                <ClaimableTokensLineItemLoading key={i + "-loading"} />
+              );
+            },
+          )}
+        </div>
       </div>
-
       <Button
         color="primary"
         rounded={false}
