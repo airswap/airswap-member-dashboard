@@ -15,13 +15,6 @@ module.exports = {
         airswap: {
           blue: "#2B71FF",
         },
-        // TODO: remove after updating transaction tracker.
-        bg: {
-          darkShaded: "hsl(220, 19%, 8%)",
-        },
-        border: {
-          darkShaded: "hsl(220, 19%, 8%)",
-        },
       },
       fontFamily: {
         mono: ["DM Mono", "monospace"],

@@ -53,6 +53,18 @@
   -webkit-text-size-adjust: 100%;
 }
 
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  @apply my-1 rounded-sm bg-gray-800;
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply cursor-pointer rounded-sm bg-gray-500;
+}
+
 .checkered-blue {
   background-color: #2b72ff;
   opacity: 0.8;
