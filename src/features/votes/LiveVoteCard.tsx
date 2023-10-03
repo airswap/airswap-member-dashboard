@@ -1,6 +1,7 @@
 import { twJoin, twMerge } from "tailwind-merge";
 import { useAccount } from "wagmi";
 import { CheckMark } from "../common/icons/CheckMark";
+import { CountdownTimer } from "./CountdownTimer";
 import { Proposal } from "./hooks/useGroupedProposals";
 import { useSnapshotProposalUrl } from "./hooks/useSnapshotUrl";
 import { useUserVotes } from "./hooks/useUserVotes";
@@ -62,13 +63,21 @@ export const LiveVoteCard = ({ proposal }: { proposal: Proposal }) => {
           </span>
         )}
         <span className={twMerge(hasEnded && "text-gray-500")}>
-          {hasEnded
-            ? "Finalizing"
-            : hasUserVoted
-            ? "Voted"
-            : hasStarted
-            ? "Vote Now"
-            : "Vote Pending"}
+          {hasEnded ? (
+            "Finalizing"
+          ) : hasUserVoted ? (
+            "Voted"
+          ) : hasStarted ? (
+            "Vote Now"
+          ) : (
+            <span>
+              Starts in&nbsp;&nbsp;
+              <CountdownTimer
+                to={proposal.start * 1000}
+                className="tabular-nums numeric tracking-tight"
+              />
+            </span>
+          )}
         </span>
       </div>
     </div>
