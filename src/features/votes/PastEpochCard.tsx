@@ -136,7 +136,7 @@ export const PastEpochCard = ({
 
   const { isConnected: isWalletConnected } = useAccount();
 
-  const proposalGroupTitle = getEpochName(proposalGroup[0]) + " Epoch";
+  const proposalGroupTitle = getEpochName(proposalGroup[0]);
 
   const trigger = (
     <div className="flex w-full items-center justify-between pr-4 font-semibold">

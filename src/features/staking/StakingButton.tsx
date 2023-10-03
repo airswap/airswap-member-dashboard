@@ -5,7 +5,7 @@ import { Button } from "../common/Button";
 import { StakingModal } from "./StakingModal";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 
-export const StakeButton = () => {
+export const StakingButton = () => {
   const { showStakingModal, setShowStakingModal } = useStakingModalStore();
   const { isConnected } = useAccount();
   const { unstakableSastBalance: sAstBalance } = useTokenBalances();
@@ -24,7 +24,7 @@ export const StakeButton = () => {
           color="primary"
           onClick={() => setShowStakingModal(true)}
         >
-          Stake
+          Staking
         </Button>
       </div>
       {isConnected && showStakingModal && <StakingModal />}
