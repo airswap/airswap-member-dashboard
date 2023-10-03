@@ -1,6 +1,8 @@
 import { format } from "@greypixel_/nicenumbers";
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect } from "react";
 import { twJoin } from "tailwind-merge";
+import { useAccount } from "wagmi";
 import { Button } from "../common/Button";
 import { useClaimSelectionStore } from "./store/useClaimSelectionStore";
 
@@ -9,12 +11,22 @@ export const ClaimFloat = ({
 }: {
   onClaimClicked: () => void;
 }) => {
-  const [selectedClaims, pointsClaimableByEpoch, showClaimModal] =
-    useClaimSelectionStore((state) => [
-      state.selectedClaims,
-      state.pointsClaimableByEpoch,
-      state.showClaimModal,
-    ]);
+  const [
+    selectedClaims,
+    pointsClaimableByEpoch,
+    showClaimModal,
+    clearSelectedClaims,
+  ] = useClaimSelectionStore((state) => [
+    state.selectedClaims,
+    state.pointsClaimableByEpoch,
+    state.showClaimModal,
+    state.clearSelectedClaims,
+  ]);
+
+  const { address } = useAccount();
+  useEffect(() => {
+    clearSelectedClaims();
+  }, [address, clearSelectedClaims]);
 
   const totalPointsClaimable =
     selectedClaims.length > 0
@@ -50,7 +62,7 @@ export const ClaimFloat = ({
         >
           <div className="flex flex-col">
             <span className="text-gray-500 font-bold text-xs uppercase">
-              Total {selectedClaims.length ? "Selected" : "Available"}
+              {selectedClaims.length ? "Selected Rewards" : "Total Rewards"}
             </span>
 
             <span className="text-[22px] leading-6 font-bold text-white">

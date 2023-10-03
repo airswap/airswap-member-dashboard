@@ -20,6 +20,8 @@ const WalletConnection = () => {
       : setShowUserAccountDetail(!showUserAccountDetail);
   };
 
+  const displayAddress = ensName || truncateEthAddress(address || "");
+
   return (
     <>
       <Button
@@ -38,12 +40,10 @@ const WalletConnection = () => {
         <span
           className={twJoin(
             isConnected ? "font-medium" : "font-bold px-1",
-            "whitespace-nowrap",
+            "whitespace-nowrap normal-case",
           )}
         >
-          {isConnected
-            ? ensName || truncateEthAddress(address || "")
-            : "Connect"}
+          {isConnected ? displayAddress : "Connect"}
         </span>
       </Button>
       {showConnectionModal && (

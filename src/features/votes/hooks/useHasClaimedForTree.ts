@@ -22,7 +22,7 @@ export const useHasClaimedForTree = ({
     abi: poolAbi,
     functionName: "claimed",
     args: [treeId, _voterAddress!],
-    enabled: !!voterAddress,
+    enabled: !!_voterAddress,
     // 60d
     cacheTime: 5_184_000_000,
     staleTime: 60_000,

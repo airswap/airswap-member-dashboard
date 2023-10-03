@@ -2,7 +2,7 @@ import { useAccount } from "wagmi";
 import AirSwapLogoWithText from "../../assets/airswap-logo-with-text.svg";
 import AirSwapLogo from "../../assets/airswap-logo.svg";
 import WalletConnection from "../chain-connection/WalletConnection";
-import { StakeButton } from "../staking/StakeButton";
+import { StakingButton } from "../staking/StakingButton";
 
 export const Header = ({}: {}) => {
   const { isConnected } = useAccount();
@@ -36,7 +36,7 @@ export const Header = ({}: {}) => {
             <SettingsMenuButton />
           </>
         )} */}
-        {isConnected ? <StakeButton /> : null}
+        {isConnected ? <StakingButton /> : null}
       </div>
     </div>
   );
