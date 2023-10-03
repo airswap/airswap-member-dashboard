@@ -8,7 +8,7 @@ import { useStakingModalStore } from "./store/useStakingModalStore";
 export const StakeButton = () => {
   const { showStakingModal, setShowStakingModal } = useStakingModalStore();
   const { isConnected } = useAccount();
-  const { sAstBalanceFormatted: sAstBalance } = useTokenBalances();
+  const { unstakableSastBalance: sAstBalance } = useTokenBalances();
 
   return (
     <>
