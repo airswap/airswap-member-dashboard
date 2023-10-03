@@ -5,20 +5,28 @@ type ButtonActions = {
   approve: (() => Promise<WriteContractResult>) | undefined;
   stake: (() => Promise<WriteContractResult>) | undefined;
   unstake: (() => Promise<WriteContractResult>) | undefined;
+  switchNetwork: (() => void) | undefined;
 };
 
 export const modalButtonActionsAndText = ({
+  isSupportedNetwork,
   txType,
   needsApproval,
   buttonActions,
   insufficientBalance,
 }: {
+  isSupportedNetwork: boolean;
   txType: TxType;
   needsApproval: boolean;
   buttonActions: ButtonActions;
   insufficientBalance?: boolean;
 }) => {
-  if (insufficientBalance) {
+  if (!isSupportedNetwork) {
+    return {
+      label: "Switch to Ethereum",
+      callback: buttonActions.switchNetwork,
+    };
+  } else if (insufficientBalance) {
     return {
       label: "Insufficient balance",
       callback: () => null,

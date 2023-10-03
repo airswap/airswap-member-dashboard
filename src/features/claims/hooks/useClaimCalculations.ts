@@ -1,4 +1,4 @@
-import { useChainId, useQuery } from "wagmi";
+import { useNetwork, useQuery } from "wagmi";
 import { multicall } from "wagmi/actions";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
@@ -8,7 +8,7 @@ export const useClaimCalculations = (
   points: number,
   claimableTokens: `0x${string}`[],
 ) => {
-  const chainId = useChainId();
+  const { chain } = useNetwork();
   const [poolContract] = useContractAddresses([ContractTypes.AirSwapPool], {
     useDefaultAsFallback: false,
     alwaysUseDefault: false,
@@ -18,7 +18,7 @@ export const useClaimCalculations = (
   const fetch = async () => {
     if (!poolContract.address) return;
     const multicallResponse = await multicall({
-      chainId,
+      chainId: chain!.id,
       contracts: claimableTokens.map((tokenAddress) => ({
         address: poolContract.address!,
         abi: poolAbi,
@@ -31,9 +31,9 @@ export const useClaimCalculations = (
     return multicallResponse.map((response) => response.result || 0n);
   };
 
-  return useQuery(["claimCalculations", chainId, points], fetch, {
+  return useQuery(["claimCalculations", chain!.id, points], fetch, {
     enabled: Boolean(
-      _points > 0 && poolContract.address && claimableTokens.length,
+      _points > 0 && poolContract.address && claimableTokens.length && chain,
     ),
     // 1 minute
     cacheTime: 60_000,

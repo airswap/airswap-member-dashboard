@@ -8,12 +8,14 @@ import {
   useContractWrite,
   usePrepareContractWrite,
   usePublicClient,
+  useSwitchNetwork,
 } from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { poolAbi } from "../../contracts/poolAbi";
 import { Button } from "../common/Button";
 import { TransactionTracker } from "../common/TransactionTracker";
+import { useIsSupportedChain } from "../common/hooks/useIsSupportedChain";
 import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
 import {
   ClaimableTokensLineItem,
@@ -31,6 +33,9 @@ export const ClaimForm = ({}: {}) => {
 
   const chainId = useChainId();
   const publicClient = usePublicClient({ chainId: chainId });
+
+  const isSupportedChain = useIsSupportedChain();
+  const { switchNetwork, isLoading: switchNetworkLoading } = useSwitchNetwork();
 
   const [
     pointsClaimableByEpoch,
@@ -220,20 +225,34 @@ export const ClaimForm = ({}: {}) => {
           )}
         </div>
       </div>
-      <Button
-        color="primary"
-        rounded={false}
-        className="mt-7"
-        onClick={() => {
-          if (write) {
-            write();
-            setPointsUsed(pointsSelected);
-          }
-        }}
-        disabled={selection === undefined || !write}
-      >
-        Claim
-      </Button>
+      {isSupportedChain ? (
+        <Button
+          color="primary"
+          rounded={false}
+          className="mt-7"
+          onClick={() => {
+            if (write) {
+              write();
+              setPointsUsed(pointsSelected);
+            }
+          }}
+          disabled={selection === undefined || !write}
+        >
+          Claim
+        </Button>
+      ) : (
+        <Button
+          color="primary"
+          rounded={false}
+          className="mt-7"
+          disabled={switchNetworkLoading || !switchNetwork}
+          onClick={() => {
+            switchNetwork?.(1);
+          }}
+        >
+          Switch to Ethereum
+        </Button>
+      )}
     </div>
   );
 };

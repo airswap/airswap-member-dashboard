@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useWaitForTransaction } from "wagmi";
+import { useSwitchNetwork, useWaitForTransaction } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { Modal } from "../common/Modal";
 import { TransactionTracker } from "../common/TransactionTracker";
+import { useIsSupportedChain } from "../common/hooks/useIsSupportedChain";
 import { ManageStake } from "./ManageStake";
 import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
@@ -22,6 +23,9 @@ export const StakingModal = () => {
   const formReturn = useForm();
   const { getValues } = formReturn;
   const stakingAmount = getValues().stakingAmount;
+
+  const isSupportedChain = useIsSupportedChain();
+  const { switchNetwork } = useSwitchNetwork();
 
   // This state tracks whether the last transaction was an approval.
   const [isApproval, setIsApproval] = useState<boolean>(false);
@@ -99,9 +103,11 @@ export const StakingModal = () => {
   });
 
   const modalButtonAction = modalButtonActionsAndText({
+    isSupportedNetwork: isSupportedChain,
     txType,
     needsApproval,
     buttonActions: {
+      switchNetwork: () => switchNetwork?.(1),
       approve: approveAst,
       stake: stakeAst,
       unstake: unstakeSast,
