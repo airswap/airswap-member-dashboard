@@ -12,6 +12,7 @@ import { useGroupHash } from "./hooks/useGroupHash";
 import { useGroupMerkleRoot } from "./hooks/useGroupMerkleRoot";
 import { Proposal } from "./hooks/useGroupedProposals";
 import { useIsPoolAdmin } from "./hooks/useIsPoolAdmin";
+import { useProposalGroupVotes } from "./hooks/useProposalGroupVotes";
 import { useTreeRoots } from "./hooks/useTreeRoots";
 
 /**
@@ -44,6 +45,12 @@ export const SetRootButton = ({
     { enabled: !!isPoolAdmin && existingRoot === null && hasEnded },
   );
 
+  const { data: votes } = useProposalGroupVotes(
+    proposalGroup.map((p) => p.id),
+    {
+      enabled: !!isPoolAdmin && existingRoot === null && hasEnded,
+    },
+  );
   // Write the root
 
   const [airswapPool] = useContractAddresses([ContractTypes.AirSwapPool], {
@@ -85,7 +92,7 @@ export const SetRootButton = ({
       size="small"
       color="primary"
     >
-      Set root
+      Set root ({votes?.length || 0} votes)
     </Button>
   );
 };
