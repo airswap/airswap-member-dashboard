@@ -6,16 +6,16 @@ import { calculateTokenProportions } from "./utils/calculateTokenProportions";
 
 export const PieBar = () => {
   const {
-    unstakableSAstBalanceFormatted: unstakable,
-    sAstBalanceFormatted: staked,
-    astBalanceFormatted: stakable,
+    unstakableSastBalance: unstakable,
+    stakableAstBalance: stakable,
+    stakedSastBalance: staked,
   } = useTokenBalances();
 
   const { unstakablePercent, stakedPercent, stakablePercent } =
     calculateTokenProportions({
-      unstakable: +unstakable,
-      staked: +staked,
-      stakable: +stakable,
+      unstakable: unstakable,
+      staked: staked,
+      stakable: stakable,
     });
 
   const zeroBalance = !unstakablePercent && !stakedPercent && !stakablePercent;

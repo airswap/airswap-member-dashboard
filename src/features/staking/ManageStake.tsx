@@ -19,15 +19,17 @@ export const ManageStake = ({
   const { setValue } = formReturn;
 
   const {
-    astBalanceFormatted: astBalance,
-    unstakableSAstBalanceFormatted: unstakableSAstBalance,
+    // astBalanceFormatted: astBalance,
+    // unstakableSAstBalanceFormatted: unstakableSAstBalance,
+    unstakableSastBalance,
+    stakableAstBalance: astBalance,
   } = useTokenBalances();
 
   const handleSetMaxBalance = () => {
     if (txType === TxType.STAKE) {
       setValue("stakingAmount", astBalance.toString());
     } else {
-      setValue("stakingAmount", unstakableSAstBalance.toString());
+      setValue("stakingAmount", unstakableSastBalance.toString());
     }
   };
 
@@ -101,7 +103,7 @@ export const ManageStake = ({
             rounded="none"
           >
             <span className="text-xs font-medium leading-4 text-gray-500">
-              {txType === TxType.STAKE ? astBalance : unstakableSAstBalance}{" "}
+              {txType === TxType.STAKE ? astBalance : unstakableSastBalance}{" "}
               {txType === TxType.STAKE ? "stakable" : "unstakable"}
             </span>
           </Button>
