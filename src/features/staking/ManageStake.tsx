@@ -4,11 +4,11 @@ import AirSwapLogo from "../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { LineBreak } from "../common/LineBreak";
+import { convertDecimalPlaces } from "../common/utils/convertDecimalPlaces";
 import { NumberInput } from "./NumberInput";
 import { PieBar } from "./PieBar";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
-import { convertDecimalPlaces } from "../common/utils/convertDecimalPlaces";
 
 export const ManageStake = ({
   formReturn,
@@ -21,17 +21,17 @@ export const ManageStake = ({
 
   const {
     unstakableSastBalanceRaw: unstakableBalance,
-    astBalanceRaw:stakableBalance
+    astBalanceRaw: stakableBalance,
   } = useTokenBalances();
 
-  const stakableBalanceFormatted = convertDecimalPlaces(stakableBalance as bigint)
-  const unstakableBalanceFormatted = convertDecimalPlaces(unstakableBalance as bigint)
+  const stakableBalanceFormatted = convertDecimalPlaces(stakableBalance);
+  const unstakableBalanceFormatted = convertDecimalPlaces(unstakableBalance);
 
   const handleSetMaxBalance = () => {
     if (txType === TxType.STAKE) {
-      setValue("stakingAmount", Number(stakableBalance) / 10**4);
+      setValue("stakingAmount", Number(stakableBalance) / 10 ** 4);
     } else {
-      setValue("stakingAmount", Number(unstakableBalance) / 10**4);
+      setValue("stakingAmount", Number(unstakableBalance) / 10 ** 4);
     }
   };
 
@@ -105,7 +105,9 @@ export const ManageStake = ({
             rounded="none"
           >
             <span className="text-xs font-medium leading-4 text-gray-500">
-              {txType === TxType.STAKE ? stakableBalanceFormatted : unstakableBalanceFormatted}{" "}
+              {txType === TxType.STAKE
+                ? stakableBalanceFormatted
+                : unstakableBalanceFormatted}{" "}
               {txType === TxType.STAKE ? "stakable" : "unstakable"}
             </span>
           </Button>

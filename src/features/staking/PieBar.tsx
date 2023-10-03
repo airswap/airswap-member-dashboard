@@ -2,21 +2,22 @@ import { BsCircleFill } from "react-icons/bs";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import "../../index.css";
-import { calculateTokenProportions } from "./utils/calculateTokenProportions";
 import { convertDecimalPlaces } from "../common/utils/convertDecimalPlaces";
+import { calculateTokenProportions } from "./utils/calculateTokenProportions";
 
 export const PieBar = () => {
-  const { unstakableSastBalanceRaw, sAstBalanceRaw, astBalanceRaw } = useTokenBalances();
+  const { unstakableSastBalanceRaw, sAstBalanceRaw, astBalanceRaw } =
+    useTokenBalances();
 
-  const stakable = convertDecimalPlaces(astBalanceRaw as bigint)
-  const staked = convertDecimalPlaces(sAstBalanceRaw as bigint)
-  const unstakable = convertDecimalPlaces( unstakableSastBalanceRaw as bigint);
+  const stakable = convertDecimalPlaces(astBalanceRaw);
+  const staked = convertDecimalPlaces(sAstBalanceRaw);
+  const unstakable = convertDecimalPlaces(unstakableSastBalanceRaw);
 
   const { unstakablePercent, stakedPercent, stakablePercent } =
     calculateTokenProportions({
-      unstakable: Number(unstakableSastBalanceRaw) / 10**4,
-      staked: Number(sAstBalanceRaw) / 10**4,
-      stakable: Number(astBalanceRaw) / 10**4,
+      unstakable: Number(unstakableSastBalanceRaw) / 10 ** 4,
+      staked: Number(sAstBalanceRaw) / 10 ** 4,
+      stakable: Number(astBalanceRaw) / 10 ** 4,
     });
 
   const zeroBalance = !unstakablePercent && !stakedPercent && !stakablePercent;
