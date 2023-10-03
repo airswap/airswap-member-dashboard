@@ -2,12 +2,12 @@ import { Status } from "../types/StakingTypes";
 
 export const modalTxLoadingStateHeadlines = (txStatus: Status) => {
   if (txStatus === "loading") {
-    return "Transaction submitted";
+    return "Processing";
   } else if (txStatus === "success") {
-    return "Transaction successful";
+    return "Success";
   } else if (txStatus === "error") {
-    return "Transaction failed";
+    return "Failed";
   } else {
-    return "Manage Stake";
+    return "Staking";
   }
 };

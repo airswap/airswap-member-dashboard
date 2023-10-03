@@ -62,7 +62,7 @@ export const ClaimFloat = ({
         >
           <div className="flex flex-col">
             <span className="text-gray-500 font-bold text-xs uppercase">
-              Total {selectedClaims.length ? "Selected" : "Available"}
+              {selectedClaims.length ? "Selected Rewards" : "Total Rewards"}
             </span>
 
             <span className="text-[22px] leading-6 font-bold text-white">
