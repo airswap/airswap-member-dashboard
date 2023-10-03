@@ -33,8 +33,8 @@ export const StakingModal = () => {
   const { astAllowanceFormatted: astAllowance } = useAstAllowance();
 
   const {
-    unstakableSastBalance: unstakableSastBalance,
-    stakableAstBalance: astBalance,
+    unstakableSastBalanceRaw: unstakableSastBalance,
+    astBalanceRaw: astBalance,
   } = useTokenBalances();
 
   // stakingAmount default is NaN. Wagmi hooks need to validate that stakingAmount exists

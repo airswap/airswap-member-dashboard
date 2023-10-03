@@ -3,19 +3,20 @@ import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import "../../index.css";
 import { calculateTokenProportions } from "./utils/calculateTokenProportions";
+import { convertDecimalPlaces } from "../common/utils/convertDecimalPlaces";
 
 export const PieBar = () => {
-  const {
-    unstakableSastBalance: unstakable,
-    stakableAstBalance: stakable,
-    stakedSastBalance: staked,
-  } = useTokenBalances();
+  const { unstakableSastBalanceRaw, sAstBalanceRaw, astBalanceRaw } = useTokenBalances();
+
+  const stakable = convertDecimalPlaces(astBalanceRaw as bigint)
+  const staked = convertDecimalPlaces(sAstBalanceRaw as bigint)
+  const unstakable = convertDecimalPlaces( unstakableSastBalanceRaw as bigint);
 
   const { unstakablePercent, stakedPercent, stakablePercent } =
     calculateTokenProportions({
-      unstakable: unstakable,
-      staked: staked,
-      stakable: stakable,
+      unstakable: Number(unstakableSastBalanceRaw) / 10**4,
+      staked: Number(sAstBalanceRaw) / 10**4,
+      stakable: Number(astBalanceRaw) / 10**4,
     });
 
   const zeroBalance = !unstakablePercent && !stakedPercent && !stakablePercent;

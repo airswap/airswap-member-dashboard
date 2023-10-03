@@ -48,13 +48,9 @@ export const useTokenBalances = () => {
     enabled: !!isConnected,
   });
 
-  const unstakableSAstBalanceRaw = Number(data && data[0].result) || 0;
-  const sAstBalanceRaw = Number(data && data[1].result) || 0;
-  const astBalanceRaw = Number(data && data[2].result) || 0;
+  const unstakableSastBalanceRaw = data && data[0].result || 0n;
+  const sAstBalanceRaw = data && data[1].result || 0n;
+  const astBalanceRaw = data && data[2].result || 0n;
 
-  const unstakableSastBalance = unstakableSAstBalanceRaw / 10 ** 4;
-  const stakableAstBalance = astBalanceRaw / 10 ** 4;
-  const stakedSastBalance = sAstBalanceRaw / 10 ** 4;
-
-  return { unstakableSastBalance, stakableAstBalance, stakedSastBalance };
+  return { unstakableSastBalanceRaw, sAstBalanceRaw, astBalanceRaw };
 };

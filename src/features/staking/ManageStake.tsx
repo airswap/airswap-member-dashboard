@@ -8,6 +8,7 @@ import { NumberInput } from "./NumberInput";
 import { PieBar } from "./PieBar";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
+import { convertDecimalPlaces } from "../common/utils/convertDecimalPlaces";
 
 export const ManageStake = ({
   formReturn,
@@ -19,17 +20,18 @@ export const ManageStake = ({
   const { setValue } = formReturn;
 
   const {
-    // astBalanceFormatted: astBalance,
-    // unstakableSAstBalanceFormatted: unstakableSAstBalance,
-    unstakableSastBalance,
-    stakableAstBalance: astBalance,
+    unstakableSastBalanceRaw: unstakableBalance,
+    astBalanceRaw:stakableBalance
   } = useTokenBalances();
+
+  const stakableBalanceFormatted = convertDecimalPlaces(stakableBalance as bigint)
+  const unstakableBalanceFormatted = convertDecimalPlaces(unstakableBalance as bigint)
 
   const handleSetMaxBalance = () => {
     if (txType === TxType.STAKE) {
-      setValue("stakingAmount", astBalance.toString());
+      setValue("stakingAmount", Number(stakableBalance) / 10**4);
     } else {
-      setValue("stakingAmount", unstakableSastBalance.toString());
+      setValue("stakingAmount", Number(unstakableBalance) / 10**4);
     }
   };
 
@@ -103,7 +105,7 @@ export const ManageStake = ({
             rounded="none"
           >
             <span className="text-xs font-medium leading-4 text-gray-500">
-              {txType === TxType.STAKE ? astBalance : unstakableSastBalance}{" "}
+              {txType === TxType.STAKE ? stakableBalanceFormatted : unstakableBalanceFormatted}{" "}
               {txType === TxType.STAKE ? "stakable" : "unstakable"}
             </span>
           </Button>

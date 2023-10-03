@@ -4,11 +4,15 @@ import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { StakingModal } from "./StakingModal";
 import { useStakingModalStore } from "./store/useStakingModalStore";
+import { convertDecimalPlaces } from "../common/utils/convertDecimalPlaces";
 
 export const StakingButton = () => {
   const { showStakingModal, setShowStakingModal } = useStakingModalStore();
   const { isConnected } = useAccount();
-  const { unstakableSastBalance: sAstBalance } = useTokenBalances();
+  const { unstakableSastBalanceRaw } = useTokenBalances();
+
+  const sAstBalance = convertDecimalPlaces(unstakableSastBalanceRaw as bigint)
+
 
   return (
     <>
