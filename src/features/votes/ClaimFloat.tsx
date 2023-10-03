@@ -1,6 +1,8 @@
 import { format } from "@greypixel_/nicenumbers";
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect } from "react";
 import { twJoin } from "tailwind-merge";
+import { useAccount } from "wagmi";
 import { Button } from "../common/Button";
 import { useClaimSelectionStore } from "./store/useClaimSelectionStore";
 
@@ -9,12 +11,22 @@ export const ClaimFloat = ({
 }: {
   onClaimClicked: () => void;
 }) => {
-  const [selectedClaims, pointsClaimableByEpoch, showClaimModal] =
-    useClaimSelectionStore((state) => [
-      state.selectedClaims,
-      state.pointsClaimableByEpoch,
-      state.showClaimModal,
-    ]);
+  const [
+    selectedClaims,
+    pointsClaimableByEpoch,
+    showClaimModal,
+    clearSelectedClaims,
+  ] = useClaimSelectionStore((state) => [
+    state.selectedClaims,
+    state.pointsClaimableByEpoch,
+    state.showClaimModal,
+    state.clearSelectedClaims,
+  ]);
+
+  const { address } = useAccount();
+  useEffect(() => {
+    clearSelectedClaims();
+  }, [address, clearSelectedClaims]);
 
   const totalPointsClaimable =
     selectedClaims.length > 0
