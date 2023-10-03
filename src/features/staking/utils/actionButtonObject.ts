@@ -1,3 +1,5 @@
+import { FieldValues, UseFormReturn } from "react-hook-form";
+
 type ActionButton = {
   afterSuccess: { label: string; callback: () => void };
   afterFailure: { label: string; callback: () => void };
@@ -9,11 +11,14 @@ export const actionButtonsObject = ({
   resetApproveAst,
   resetStakeAst,
   resetUnstakeSast,
+  formReturn,
 }: {
   resetApproveAst: () => void;
   resetStakeAst: () => void;
   resetUnstakeSast: () => void;
+  formReturn: UseFormReturn<FieldValues>;
 }): ActionButtons => {
+  const { setValue } = formReturn;
   return {
     approve: {
       afterSuccess: {
@@ -28,7 +33,10 @@ export const actionButtonsObject = ({
     stake: {
       afterSuccess: {
         label: "Manage Stake",
-        callback: resetStakeAst,
+        callback: () => {
+          resetStakeAst();
+          setValue("stakingAmount", undefined);
+        },
       },
       afterFailure: {
         label: "Try again",
@@ -38,7 +46,10 @@ export const actionButtonsObject = ({
     unstake: {
       afterSuccess: {
         label: "Manage Stake",
-        callback: resetUnstakeSast,
+        callback: () => {
+          resetUnstakeSast();
+          setValue("stakingAmount", undefined);
+        },
       },
       afterFailure: {
         label: "Try again",

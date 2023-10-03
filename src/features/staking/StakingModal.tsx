@@ -33,8 +33,8 @@ export const StakingModal = () => {
   const { astAllowanceFormatted: astAllowance } = useAstAllowance();
 
   const {
-    unstakableSAstBalanceFormatted: unstakableSastBalance,
-    astBalanceFormatted: astBalance,
+    unstakableSastBalance: unstakableSastBalance,
+    stakableAstBalance: astBalance,
   } = useTokenBalances();
 
   // stakingAmount default is NaN. Wagmi hooks need to validate that stakingAmount exists
@@ -123,6 +123,7 @@ export const StakingModal = () => {
     resetApproveAst,
     resetStakeAst,
     resetUnstakeSast,
+    formReturn,
   });
 
   const modalLoadingStateHeadlines = modalTxLoadingStateHeadlines(txStatus);

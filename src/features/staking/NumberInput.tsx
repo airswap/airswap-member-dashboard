@@ -13,8 +13,8 @@ export const NumberInput = ({
   const { register, setValue, watch } = formReturn;
   watch();
   const {
-    astBalanceFormatted: astBalance,
-    unstakableSAstBalanceFormatted: unstakableSAstBalance,
+    stakableAstBalance: astBalance,
+    unstakableSastBalance: unstakableSAstBalance,
   } = useTokenBalances();
 
   return (
