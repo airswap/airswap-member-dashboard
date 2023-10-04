@@ -20,7 +20,9 @@ export const StakingButton = () => {
           "flex flex-row items-center gap-4 ring-1 ring-gray-800 rounded-full sm:pl-5",
         )}
       >
-        <span className="hidden sm:flex font-medium ">{`${sAstBalance} sAST`}</span>
+        <span className="hidden sm:flex font-medium ">{`${
+          sAstBalance || 0
+        } sAST`}</span>
         <Button
           className="-mr-5 -my-px"
           rounded={true}

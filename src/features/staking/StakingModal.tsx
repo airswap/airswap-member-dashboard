@@ -89,10 +89,18 @@ export const StakingModal = () => {
   });
 
   useEffect(() => {
-    if (needsApproval) setIsApproval(true);
+    // after successfully staking, `needsApproval` will reset to true. We need `dataStakeAst` to be falsey to set `isApproval` to true, otherwise const `verb` will show as "approved" after the user has staked
+    if (needsApproval && !dataStakeAst) {
+      setIsApproval(true);
+    }
     if (unstakeAwaitingSignature || stakeAwaitingSignature)
       setIsApproval(false);
-  }, [needsApproval, unstakeAwaitingSignature, stakeAwaitingSignature]);
+  }, [
+    needsApproval,
+    dataStakeAst,
+    unstakeAwaitingSignature,
+    stakeAwaitingSignature,
+  ]);
 
   const currentTransactionHash =
     dataApproveAst?.hash || dataStakeAst?.hash || dataUnstakeSast?.hash;

@@ -9,9 +9,9 @@ export const PieBar = () => {
   const { unstakableSastBalanceRaw, sAstBalanceRaw, astBalanceRaw } =
     useTokenBalances();
 
-  const stakable = formatNumber(astBalanceRaw, 4);
-  const staked = formatNumber(sAstBalanceRaw, 4);
-  const unstakable = formatNumber(unstakableSastBalanceRaw, 4);
+  const stakable = formatNumber(astBalanceRaw, 4) || 0;
+  const staked = formatNumber(sAstBalanceRaw, 4) || 0;
+  const unstakable = formatNumber(unstakableSastBalanceRaw, 4) || 0;
 
   const { unstakablePercent, stakedPercent, stakablePercent } =
     calculateTokenProportions({
