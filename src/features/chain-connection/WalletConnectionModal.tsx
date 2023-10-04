@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { twJoin } from "tailwind-merge";
 import { Connector, useAccount, useConnect } from "wagmi";
 import { Modal } from "../common/Modal";
@@ -24,6 +24,7 @@ const WalletConnectionModal = ({
 }) => {
   const { isConnected } = useAccount();
   const { connect, connectors, isLoading, pendingConnector } = useConnect();
+  const [injectedIsMetaMask, setInjectedIsMetaMask] = useState<boolean>(false);
 
   const connectorsList = filterUniqueConnectors(connectors);
 
@@ -32,6 +33,16 @@ const WalletConnectionModal = ({
     // close modal when WalletConnect or Coinbase modal is open
     pendingConnector && setShowConnectionModal(false);
   }, [isConnected, pendingConnector, setShowConnectionModal]);
+
+  useEffect(() => {
+    const rabbyConnector = connectorsList.find(
+      (connector) => connector.name.toLowerCase() === "rabby wallet",
+    );
+    if (rabbyConnector && !rabbyConnector.options.getProvider()._isRabby) {
+      // Rabby is forwarding to metamask
+      setInjectedIsMetaMask(true);
+    }
+  }, [connectorsList]);
 
   return (
     <Modal
@@ -42,6 +53,12 @@ const WalletConnectionModal = ({
       <div className="color-white flex w-[360px] flex-col bg-gray-900 font-bold">
         <div className="flex flex-col gap-2">
           {connectorsList.map((connector: Connector) => {
+            if (
+              injectedIsMetaMask &&
+              connector.name.toLowerCase() === "metamask"
+            )
+              return null;
+            const isInjected = connector.id === "injected";
             return (
               <button
                 className={twJoin(
@@ -53,12 +70,20 @@ const WalletConnectionModal = ({
                 key={connector.id}
               >
                 <img
-                  src={walletLogos[connector.name.toLowerCase()]}
+                  src={
+                    walletLogos[
+                      injectedIsMetaMask && isInjected
+                        ? "metamask"
+                        : connector.name.toLowerCase()
+                    ]
+                  }
                   alt={`${connector.name} logo`}
                   className="mr-5 h-10 w-10"
                 />
                 <span className={twJoin(!connector.ready && "opacity-50")}>
-                  {connector.name}
+                  {injectedIsMetaMask && isInjected
+                    ? "MetaMask"
+                    : connector.name}
                   {/* {!connector.ready && " (unsupported)"} */}
                   {isLoading &&
                     connector.id === pendingConnector?.id &&
