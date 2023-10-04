@@ -4,6 +4,7 @@ import AirSwapLogo from "../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { LineBreak } from "../common/LineBreak";
+import { convertDecimalPlaces } from "../common/utils/convertDecimalPlaces";
 import { NumberInput } from "./NumberInput";
 import { PieBar } from "./PieBar";
 import { useStakingModalStore } from "./store/useStakingModalStore";
@@ -19,15 +20,18 @@ export const ManageStake = ({
   const { setValue } = formReturn;
 
   const {
-    astBalanceFormatted: astBalance,
-    unstakableSAstBalanceFormatted: unstakableSAstBalance,
+    unstakableSastBalanceRaw: unstakableBalance,
+    astBalanceRaw: stakableBalance,
   } = useTokenBalances();
+
+  const stakableBalanceFormatted = convertDecimalPlaces(stakableBalance);
+  const unstakableBalanceFormatted = convertDecimalPlaces(unstakableBalance);
 
   const handleSetMaxBalance = () => {
     if (txType === TxType.STAKE) {
-      setValue("stakingAmount", astBalance.toString());
+      setValue("stakingAmount", Number(stakableBalance) / 10 ** 4);
     } else {
-      setValue("stakingAmount", unstakableSAstBalance.toString());
+      setValue("stakingAmount", Number(unstakableBalance) / 10 ** 4);
     }
   };
 
@@ -101,7 +105,9 @@ export const ManageStake = ({
             rounded="none"
           >
             <span className="text-xs font-medium leading-4 text-gray-500">
-              {txType === TxType.STAKE ? astBalance : unstakableSAstBalance}{" "}
+              {txType === TxType.STAKE
+                ? stakableBalanceFormatted
+                : unstakableBalanceFormatted}{" "}
               {txType === TxType.STAKE ? "stakable" : "unstakable"}
             </span>
           </Button>

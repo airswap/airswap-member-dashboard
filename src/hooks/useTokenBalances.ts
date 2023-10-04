@@ -1,4 +1,3 @@
-import { format } from "@greypixel_/nicenumbers";
 import { useAccount, useContractReads } from "wagmi";
 import { ContractTypes } from "../config/ContractAddresses";
 import { useContractAddresses } from "../config/hooks/useContractAddress";
@@ -49,24 +48,9 @@ export const useTokenBalances = () => {
     enabled: !!isConnected,
   });
 
-  const unstakableSAstBalanceRaw = Number(data && data[0].result) || 0;
-  const sAstBalanceRaw = Number(data && data[1].result) || 0;
-  const astBalanceRaw = Number(data && data[2].result) || 0;
+  const unstakableSastBalanceRaw = (data && (data[0].result as bigint)) || 0n;
+  const sAstBalanceRaw = (data && (data[1].result as bigint)) || 0n;
+  const astBalanceRaw = (data && (data[2].result as bigint)) || 0n;
 
-  const unstakableSAstBalanceFormatted =
-    format((data && data[0].result) || 0, { tokenDecimals: 4 }) || 0;
-  const sAstBalanceFormatted =
-    format(data && data[1].result, { tokenDecimals: 4 }) || 0;
-
-  const astBalanceFormatted =
-    format(data && data[2].result, { tokenDecimals: 4 }) || 0;
-
-  return {
-    unstakableSAstBalanceRaw,
-    unstakableSAstBalanceFormatted,
-    sAstBalanceRaw,
-    sAstBalanceFormatted,
-    astBalanceRaw,
-    astBalanceFormatted,
-  };
+  return { unstakableSastBalanceRaw, sAstBalanceRaw, astBalanceRaw };
 };

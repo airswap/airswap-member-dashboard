@@ -13,13 +13,13 @@ export const NumberInput = ({
   const { register, setValue, watch } = formReturn;
   watch();
   const {
-    astBalanceFormatted: astBalance,
-    unstakableSAstBalanceFormatted: unstakableSAstBalance,
+    astBalanceRaw: astBalance,
+    unstakableSastBalanceRaw: unstakableSAstBalance,
   } = useTokenBalances();
 
   return (
     <input
-      max={astBalance}
+      max={Number(astBalance)}
       placeholder="0"
       autoComplete="off"
       {...register("stakingAmount", {
