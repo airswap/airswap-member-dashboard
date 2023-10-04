@@ -24,8 +24,8 @@ export const ManageStake = ({
     astBalanceRaw: stakableBalance,
   } = useTokenBalances();
 
-  const stakableBalanceFormatted = formatNumber(stakableBalance, 4) || 0;
-  const unstakableBalanceFormatted = formatNumber(unstakableBalance, 4) || 0;
+  const stakableBalanceFormatted = formatNumber(stakableBalance, 4);
+  const unstakableBalanceFormatted = formatNumber(unstakableBalance, 4);
 
   const handleSetMaxBalance = () => {
     if (txType === TxType.STAKE) {
