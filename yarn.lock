@@ -235,11 +235,6 @@
   resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.2.0.tgz#5f3d96ec6b2354ad6d8a28bf216a1d97b5426861"
   integrity sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==
 
-"@greypixel_/nicenumbers@^0.0.20":
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/@greypixel_/nicenumbers/-/nicenumbers-0.0.20.tgz#f5aa4053a8912f9c745efcde326edc3b18dd7822"
-  integrity sha512-WcfvHTdGaVnQpW0H3DTQGrQt7r5pbzf4pD/Db1/L+ljmXS30Nutiko33ZIJgcrONtSLr1ICt6EiV7lYujzQVjw==
-
 "@humanwhocodes/config-array@^0.11.11":
   version "0.11.11"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.11.tgz#88a04c570dbbc7dd943e4712429c3df09bc32844"

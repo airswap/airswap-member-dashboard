@@ -1,8 +1,8 @@
-import { format } from "@greypixel_/nicenumbers";
 import { useAccount, useContractRead, useNetwork } from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
+import { formatNumber } from "../../common/utils/formatNumber";
 
 export const useAstAllowance = () => {
   const { address } = useAccount();
@@ -29,7 +29,7 @@ export const useAstAllowance = () => {
     enabled: !!address && !!airSwapStaking.address,
   });
 
-  const astAllowanceFormatted = format(astAllowance, { tokenDecimals: 4 });
+  const astAllowanceFormatted = formatNumber(astAllowance, 4);
 
   return { astAllowance, astAllowanceFormatted };
 };

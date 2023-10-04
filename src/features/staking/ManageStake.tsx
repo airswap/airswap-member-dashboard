@@ -4,7 +4,7 @@ import AirSwapLogo from "../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { LineBreak } from "../common/LineBreak";
-import { convertDecimalPlaces } from "../common/utils/convertDecimalPlaces";
+import { formatNumber } from "../common/utils/formatNumber";
 import { NumberInput } from "./NumberInput";
 import { PieBar } from "./PieBar";
 import { useStakingModalStore } from "./store/useStakingModalStore";
@@ -24,8 +24,8 @@ export const ManageStake = ({
     astBalanceRaw: stakableBalance,
   } = useTokenBalances();
 
-  const stakableBalanceFormatted = convertDecimalPlaces(stakableBalance);
-  const unstakableBalanceFormatted = convertDecimalPlaces(unstakableBalance);
+  const stakableBalanceFormatted = formatNumber(stakableBalance, 4);
+  const unstakableBalanceFormatted = formatNumber(unstakableBalance, 4);
 
   const handleSetMaxBalance = () => {
     if (txType === TxType.STAKE) {

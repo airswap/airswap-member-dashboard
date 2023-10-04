@@ -1,9 +1,9 @@
-import { format } from "@greypixel_/nicenumbers";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { twJoin } from "tailwind-merge";
 import { useAccount } from "wagmi";
 import { Button } from "../common/Button";
+import { formatNumber } from "../common/utils/formatNumber";
 import { useClaimSelectionStore } from "./store/useClaimSelectionStore";
 
 export const ClaimFloat = ({
@@ -66,12 +66,7 @@ export const ClaimFloat = ({
             </span>
 
             <span className="text-[22px] leading-6 font-bold text-white">
-              {format(totalPointsClaimable, {
-                tokenDecimals: 0,
-                minDecimalPlaces: 0,
-                significantFigures: 3,
-              })}{" "}
-              Points
+              {formatNumber(totalPointsClaimable)} Points
             </span>
           </div>
 

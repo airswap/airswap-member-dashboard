@@ -1,9 +1,9 @@
-import { format } from "@greypixel_/nicenumbers";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { twJoin, twMerge } from "tailwind-merge";
 import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
+import { formatNumber } from "../common/utils/formatNumber";
 import { useHasClaimedForTree } from "../votes/hooks/useHasClaimedForTree";
 import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
 import { ACTIVATE_TREE_ID } from "./constants";
@@ -100,11 +100,7 @@ export const ActivatePointsCard = ({}: {}) => {
               </span>
             )}
             {/* TODO: small numbers of points probably don't need decimals. */}
-            {format(activateMigrationClaim?.value, {
-              tokenDecimals: 0,
-              significantFigures: 3,
-              minDecimalPlaces: 0,
-            })}
+            {formatNumber(activateMigrationClaim?.value)}
             &nbsp; Points {hasUserClaimed && " claimed "}
           </div>
         </div>

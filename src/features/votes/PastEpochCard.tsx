@@ -1,4 +1,3 @@
-import { format } from "@greypixel_/nicenumbers";
 import { useEffect, useMemo } from "react";
 import { MdClose, MdOpenInNew } from "react-icons/md";
 import { twJoin, twMerge } from "tailwind-merge";
@@ -6,6 +5,7 @@ import { useAccount } from "wagmi";
 import { Accordion } from "../common/Accordion";
 import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
+import { formatNumber } from "../common/utils/formatNumber";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
 import { useGroupMerkleProof } from "./hooks/useGroupMerkleProof";
 import { Proposal } from "./hooks/useGroupedProposals";
@@ -193,11 +193,7 @@ export const PastEpochCard = ({
 
         {votedOnAllProposals ? (
           <span>
-            {format(pointsEarned, {
-              tokenDecimals: 0,
-              significantFigures: 3,
-              minDecimalPlaces: 0,
-            })}
+            {formatNumber(pointsEarned)}
             &nbsp; Points {hasUserClaimed && " claimed "}
           </span>
         ) : (
