@@ -162,7 +162,10 @@ export const PastEpochCard = ({
         </div>
         {/* Title */}
         <div
-          className={twMerge("font-bold", hasUserClaimed && "text-gray-500")}
+          className={twMerge(
+            "font-bold",
+            (hasUserClaimed || !votedOnAllProposals) && "text-gray-500",
+          )}
         >
           {proposalGroupTitle}
         </div>
@@ -173,7 +176,7 @@ export const PastEpochCard = ({
         className={twJoin([
           "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
           "flex flex-row items-center gap-2 ring-1 ring-gray-800",
-          hasUserClaimed && "text-gray-500",
+          (hasUserClaimed || !votedOnAllProposals) && "text-gray-500",
         ])}
       >
         {hasUserClaimed && (
@@ -181,13 +184,25 @@ export const PastEpochCard = ({
             <CheckMark size={20} />
           </span>
         )}
+        {!votedOnAllProposals && (
+          <span className="text-red-600">
+            <MdClose size={20} />
+          </span>
+        )}
         {/* TODO: small numbers of points probably don't need decimals. */}
-        {format(pointsEarned, {
-          tokenDecimals: 0,
-          significantFigures: 3,
-          minDecimalPlaces: 0,
-        })}
-        &nbsp; Points {hasUserClaimed && " claimed "}
+
+        {votedOnAllProposals ? (
+          <span>
+            {format(pointsEarned, {
+              tokenDecimals: 0,
+              significantFigures: 3,
+              minDecimalPlaces: 0,
+            })}
+            &nbsp; Points {hasUserClaimed && " claimed "}
+          </span>
+        ) : (
+          <span>Missed</span>
+        )}
       </div>
     </div>
   );
