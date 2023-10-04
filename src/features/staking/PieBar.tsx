@@ -2,16 +2,16 @@ import { BsCircleFill } from "react-icons/bs";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import "../../index.css";
-import { convertDecimalPlaces } from "../common/utils/convertDecimalPlaces";
+import { formatNumber } from "../common/utils/formatNumber";
 import { calculateTokenProportions } from "./utils/calculateTokenProportions";
 
 export const PieBar = () => {
   const { unstakableSastBalanceRaw, sAstBalanceRaw, astBalanceRaw } =
     useTokenBalances();
 
-  const stakable = convertDecimalPlaces(astBalanceRaw);
-  const staked = convertDecimalPlaces(sAstBalanceRaw);
-  const unstakable = convertDecimalPlaces(unstakableSastBalanceRaw);
+  const stakable = formatNumber(astBalanceRaw, 4);
+  const staked = formatNumber(sAstBalanceRaw, 4);
+  const unstakable = formatNumber(unstakableSastBalanceRaw, 4);
 
   const { unstakablePercent, stakedPercent, stakablePercent } =
     calculateTokenProportions({

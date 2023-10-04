@@ -1,4 +1,3 @@
-import { format } from "@greypixel_/nicenumbers";
 import BigNumber from "bignumber.js";
 import { useState } from "react";
 import { decodeEventLog, zeroAddress } from "viem";
@@ -16,6 +15,7 @@ import { poolAbi } from "../../contracts/poolAbi";
 import { Button } from "../common/Button";
 import { TransactionTracker } from "../common/TransactionTracker";
 import { useIsSupportedChain } from "../common/hooks/useIsSupportedChain";
+import { formatNumber } from "../common/utils/formatNumber";
 import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
 import {
   ClaimableTokensLineItem,
@@ -159,10 +159,10 @@ export const ClaimForm = ({}: {}) => {
     <span>
       You successfully claimed{" "}
       <span className="w-20 text-white">
-        {format(withdrawnAmount, { tokenDecimals: selection?.tokenDecimals })}{" "}
+        {formatNumber(withdrawnAmount, selection?.tokenDecimals)}{" "}
         {selection?.tokenSymbol || "tokens"}
       </span>{" "}
-      using {pointsUsed} points
+      using {formatNumber(pointsUsed)} points
     </span>
   ) : (
     <span>
@@ -170,7 +170,7 @@ export const ClaimForm = ({}: {}) => {
       <span className="inline-block w-14 bg-gray-400 animate-pulse h-3" />
       &nbsp;
       <span className="inline-block w-8 bg-gray-400 animate-pulse h-3" />
-      &nbsp;tokens using {pointsUsed} points
+      &nbsp;tokens using {formatNumber(pointsUsed)} points
     </span>
   );
 

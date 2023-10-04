@@ -3,7 +3,6 @@ import { ActivatePointsCard } from "../activate-migration/ActivatePointsCard";
 import { ClaimForm } from "../claims/ClaimForm";
 import { ClaimModalSubheading } from "../claims/ClaimModalSubheading";
 import { Modal } from "../common/Modal";
-import { ClaimFloat } from "./ClaimFloat";
 import { LiveVoteCard } from "./LiveVoteCard";
 import { PastEpochCard } from "./PastEpochCard";
 import { SetRootButton } from "./SetRootButton";
@@ -90,15 +89,16 @@ export const VoteList = ({}: {}) => {
                   <PastEpochCard proposalGroup={group} key={group[0].id} />
                 ))}
               </div>
+              {/* Spacer to allow overscroll to cover the height of the claim float. */}
             </>
           )}
 
           <ActivatePointsCard />
+          <div className="h-28" />
         </>
       )}
 
       {/* Claim Float */}
-      <ClaimFloat onClaimClicked={() => setShowClaimModal(true)} />
 
       {/* Claim modal. */}
       {showClaimModal && (

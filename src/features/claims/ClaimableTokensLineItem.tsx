@@ -1,6 +1,6 @@
-import { format } from "@greypixel_/nicenumbers";
 import { twJoin } from "tailwind-merge";
 import { Checkbox } from "../common/Checkbox";
+import { formatNumber } from "../common/utils/formatNumber";
 
 export const ClaimableTokensLineItem = ({
   symbol,
@@ -25,15 +25,11 @@ export const ClaimableTokensLineItem = ({
         onCheckedChange={(state) => state === true && onSelect()}
       />
       <span className="text-gray-400">
-        {format(amount, {
-          tokenDecimals: decimals,
-          significantFigures: 3,
-        })}{" "}
-        {symbol}
+        {formatNumber(amount, decimals)} {symbol}
       </span>
       <span
         className={twJoin(
-          "text-white font-medium",
+          "text-white font-medium text-right",
           amount != null ? "opacity-100" : "opacity-0",
           "transition-opacity",
         )}

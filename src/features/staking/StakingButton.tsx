@@ -2,7 +2,7 @@ import { twJoin } from "tailwind-merge";
 import { useAccount } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
-import { convertDecimalPlaces } from "../common/utils/convertDecimalPlaces";
+import { formatNumber } from "../common/utils/formatNumber";
 import { StakingModal } from "./StakingModal";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 
@@ -11,7 +11,7 @@ export const StakingButton = () => {
   const { isConnected } = useAccount();
   const { unstakableSastBalanceRaw } = useTokenBalances();
 
-  const sAstBalance = convertDecimalPlaces(unstakableSastBalanceRaw);
+  const sAstBalance = formatNumber(unstakableSastBalanceRaw, 4);
 
   return (
     <>

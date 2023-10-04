@@ -1,4 +1,3 @@
-import { format } from "@greypixel_/nicenumbers";
 import { useEffect, useMemo } from "react";
 import { MdClose, MdOpenInNew } from "react-icons/md";
 import { twJoin, twMerge } from "tailwind-merge";
@@ -6,6 +5,7 @@ import { useAccount } from "wagmi";
 import { Accordion } from "../common/Accordion";
 import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
+import { formatNumber } from "../common/utils/formatNumber";
 import { useGroupClaimStatus } from "./hooks/useGroupClaimStatus";
 import { useGroupMerkleProof } from "./hooks/useGroupMerkleProof";
 import { Proposal } from "./hooks/useGroupedProposals";
@@ -162,7 +162,10 @@ export const PastEpochCard = ({
         </div>
         {/* Title */}
         <div
-          className={twMerge("font-bold", hasUserClaimed && "text-gray-500")}
+          className={twMerge(
+            "font-bold",
+            (hasUserClaimed || !votedOnAllProposals) && "text-gray-500",
+          )}
         >
           {proposalGroupTitle}
         </div>
@@ -173,7 +176,7 @@ export const PastEpochCard = ({
         className={twJoin([
           "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
           "flex flex-row items-center gap-2 ring-1 ring-gray-800",
-          hasUserClaimed && "text-gray-500",
+          (hasUserClaimed || !votedOnAllProposals) && "text-gray-500",
         ])}
       >
         {hasUserClaimed && (
@@ -181,13 +184,21 @@ export const PastEpochCard = ({
             <CheckMark size={20} />
           </span>
         )}
+        {!votedOnAllProposals && (
+          <span className="text-red-600">
+            <MdClose size={20} />
+          </span>
+        )}
         {/* TODO: small numbers of points probably don't need decimals. */}
-        {format(pointsEarned, {
-          tokenDecimals: 0,
-          significantFigures: 3,
-          minDecimalPlaces: 0,
-        })}
-        &nbsp; Points {hasUserClaimed && " claimed "}
+
+        {votedOnAllProposals ? (
+          <span>
+            {formatNumber(pointsEarned)}
+            &nbsp; Points {hasUserClaimed && " claimed "}
+          </span>
+        ) : (
+          <span>Missed</span>
+        )}
       </div>
     </div>
   );

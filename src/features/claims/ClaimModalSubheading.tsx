@@ -1,3 +1,4 @@
+import { formatNumber } from "../common/utils/formatNumber";
 import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
 
 export const ClaimModalSubheading = ({}: {}) => {
@@ -22,7 +23,8 @@ export const ClaimModalSubheading = ({}: {}) => {
 
   return (
     <span>
-      Using {pointsSelected} out of {totalPointsClaimable} points
+      Using {formatNumber(pointsSelected)} out of{" "}
+      {formatNumber(totalPointsClaimable)} points
     </span>
   );
 };
