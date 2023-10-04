@@ -90,11 +90,11 @@ export const VoteList = ({}: {}) => {
                 ))}
               </div>
               {/* Spacer to allow overscroll to cover the height of the claim float. */}
-              <div className="h-28" />
             </>
           )}
 
           <ActivatePointsCard />
+          <div className="h-28" />
         </>
       )}
 
