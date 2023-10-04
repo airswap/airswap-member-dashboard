@@ -4,7 +4,9 @@ export const formatNumber = (
   number?: number | bigint,
   decimals: number | null = null,
 ) => {
-  if (!number) return undefined;
+  if (number === 0 || number === 0n) return "0";
+  else if (!number) return undefined;
+
   let _number;
   if (decimals) {
     _number = new BigNumber(number.toString())
