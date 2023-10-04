@@ -33,7 +33,7 @@ export const ClaimableTokensLineItem = ({
       </span>
       <span
         className={twJoin(
-          "text-white font-medium",
+          "text-white font-medium text-right",
           amount != null ? "opacity-100" : "opacity-0",
           "transition-opacity",
         )}
