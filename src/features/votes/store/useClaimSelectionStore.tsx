@@ -33,14 +33,20 @@ export type SelectedClaimState = {
   isClaimSelected: (tree: string) => boolean;
   isClaimLoading: boolean;
   setIsClaimLoading: (isClaimLoading: boolean) => void;
+  reset: () => void;
+};
+
+const defaultState = {
+  selectedClaims: [],
+  allClaims: [],
+  pointsClaimableByEpoch: {},
+  showClaimModal: false,
+  isClaimLoading: false,
 };
 
 export const useClaimSelectionStore = create<SelectedClaimState>(
   (set, get) => ({
-    selectedClaims: [],
-    allClaims: [],
-    pointsClaimableByEpoch: {},
-    showClaimModal: false,
+    ...defaultState,
     addClaim(claim: Claim) {
       set((state) => {
         // only add claim if it doesn't already exist (check `tree`)
@@ -85,9 +91,11 @@ export const useClaimSelectionStore = create<SelectedClaimState>(
     setShowClaimModal(show: boolean) {
       set({ showClaimModal: show });
     },
-    isClaimLoading: false,
     setIsClaimLoading(loading: boolean) {
       set({ isClaimLoading: loading });
+    },
+    reset() {
+      set(defaultState);
     },
   }),
 );
