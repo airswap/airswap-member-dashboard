@@ -1,3 +1,4 @@
+import { Address } from "viem";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { TxType } from "../types/StakingTypes";
@@ -7,8 +8,8 @@ type StakingModalStore = {
   setShowStakingModal: (show: boolean) => void;
   txType: TxType;
   setTxType: (change: TxType) => void;
-  txHash: `0x${string}` | undefined;
-  setTxHash: (hash: `0x${string}` | undefined) => void;
+  txHash: Address | undefined;
+  setTxHash: (hash: Address | undefined) => void;
 };
 
 const stakingModalStore = create<StakingModalStore>()(
@@ -25,7 +26,7 @@ const stakingModalStore = create<StakingModalStore>()(
       },
 
       txHash: undefined,
-      setTxHash(hash: `0x${string}` | undefined) {
+      setTxHash(hash: Address | undefined) {
         set({ txHash: hash });
       },
     }),

@@ -1,10 +1,6 @@
 import BigNumber from "bignumber.js";
 import { useEffect, useState } from "react";
-<<<<<<< Updated upstream
 import { Address, decodeEventLog, zeroAddress } from "viem";
-=======
-import { decodeEventLog, zeroAddress } from "viem";
->>>>>>> Stashed changes
 import {
   useAccount,
   useChainId,
@@ -80,11 +76,7 @@ export const ClaimForm = ({}: {}) => {
 
   const [selection, setSelection] = useState<{
     index: number;
-<<<<<<< Updated upstream
     tokenAddress: Address;
-=======
-    tokenAddress: `0x${string}`;
->>>>>>> Stashed changes
     tokenDecimals: number;
     tokenSymbol: string;
     amount: bigint;
