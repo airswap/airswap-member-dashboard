@@ -9,9 +9,9 @@ import { useStakingModalStore } from "./store/useStakingModalStore";
 export const StakingButton = () => {
   const { showStakingModal, setShowStakingModal } = useStakingModalStore();
   const { isConnected } = useAccount();
-  const { unstakableSastBalanceRaw } = useTokenBalances();
+  const { sAstBalanceRaw } = useTokenBalances();
 
-  const sAstBalance = formatNumber(unstakableSastBalanceRaw, 4);
+  const sAstBalance = formatNumber(sAstBalanceRaw, 4);
 
   return (
     <>
