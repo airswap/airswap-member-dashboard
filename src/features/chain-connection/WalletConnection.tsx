@@ -39,8 +39,8 @@ const WalletConnection = () => {
         )}
         <span
           className={twJoin(
-            isConnected ? "font-medium" : "font-bold px-1",
-            "whitespace-nowrap normal-case",
+            isConnected ? "font-medium normal-case" : "font-bold px-1",
+            "whitespace-nowrap",
           )}
         >
           {isConnected ? displayAddress : "Connect"}
