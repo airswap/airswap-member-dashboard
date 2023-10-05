@@ -136,6 +136,8 @@ export const PastEpochCard = ({
 
   const { isConnected: isWalletConnected } = useAccount();
 
+  if (!isWalletConnected) return null;
+
   const proposalGroupTitle = getEpochName(proposalGroup[0]);
 
   const trigger = (
