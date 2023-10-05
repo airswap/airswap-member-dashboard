@@ -31,6 +31,8 @@ export type SelectedClaimState = {
   clearSelectedClaims: () => void;
   setShowClaimModal: (show: boolean) => void;
   isClaimSelected: (tree: string) => boolean;
+  isClaimLoading: boolean;
+  setIsClaimLoading: (isClaimLoading: boolean) => void;
 };
 
 export const useClaimSelectionStore = create<SelectedClaimState>(
@@ -82,6 +84,10 @@ export const useClaimSelectionStore = create<SelectedClaimState>(
     },
     setShowClaimModal(show: boolean) {
       set({ showClaimModal: show });
+    },
+    isClaimLoading: false,
+    setIsClaimLoading(loading: boolean) {
+      set({ isClaimLoading: loading });
     },
   }),
 );

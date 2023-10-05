@@ -14,9 +14,12 @@ import { useClaimSelectionStore } from "./store/useClaimSelectionStore";
 export const VoteList = ({}: {}) => {
   const { data: proposalGroups, isLoading: proposalGroupsLoading } =
     useGroupedProposals();
-  const [showClaimModal, setShowClaimModal] = useClaimSelectionStore(
-    (state) => [state.showClaimModal, state.setShowClaimModal],
-  );
+  const [showClaimModal, setShowClaimModal, isClaimLoading] =
+    useClaimSelectionStore((state) => [
+      state.showClaimModal,
+      state.setShowClaimModal,
+      state.isClaimLoading,
+    ]);
 
   // Fetch proposal roots.
   const rootQueries = useTreeRoots({
@@ -105,6 +108,7 @@ export const VoteList = ({}: {}) => {
         <Modal
           onCloseRequest={() => setShowClaimModal(false)}
           heading="Claim"
+          isClosable={!isClaimLoading}
           subHeading={<ClaimModalSubheading />}
         >
           <ClaimForm />

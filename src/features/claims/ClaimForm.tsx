@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { decodeEventLog, zeroAddress } from "viem";
 import {
   useAccount,
@@ -43,12 +43,14 @@ export const ClaimForm = ({}: {}) => {
     selectedClaims,
     clearSelectedClaims,
     setShowClaimModal,
+    setIsClaimLoading,
   ] = useClaimSelectionStore((state) => [
     state.pointsClaimableByEpoch,
     state.allClaims,
     state.selectedClaims,
     state.clearSelectedClaims,
     state.setShowClaimModal,
+    state.setIsClaimLoading,
   ]);
 
   const _selectedClaims = selectedClaims.length ? selectedClaims : allClaims;
@@ -173,6 +175,10 @@ export const ClaimForm = ({}: {}) => {
       &nbsp;tokens using {formatNumber(pointsUsed)} points
     </span>
   );
+
+  useEffect(() => {
+    setIsClaimLoading(waitingForSignature);
+  }, [setIsClaimLoading, waitingForSignature]);
 
   return writeResult?.hash || waitingForSignature ? (
     <TransactionTracker
