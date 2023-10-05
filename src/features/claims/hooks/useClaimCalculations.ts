@@ -1,3 +1,4 @@
+import { BigNumber } from "bignumber.js";
 import { useNetwork, useQuery } from "wagmi";
 import { multicall } from "wagmi/actions";
 import { ContractTypes } from "../../../config/ContractAddresses";
@@ -13,7 +14,9 @@ export const useClaimCalculations = (
     useDefaultAsFallback: false,
     alwaysUseDefault: false,
   });
-  const _points = BigInt(points * 10000);
+  const _points = BigInt(
+    new BigNumber(points).multipliedBy(10 ** 4).toFixed(0),
+  );
 
   const fetch = async () => {
     if (!poolContract.address) return;
