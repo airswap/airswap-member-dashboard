@@ -56,7 +56,7 @@ export const ClaimFloat = ({
           key="ClaimPopover"
           className={twJoin(
             // position at bottom of container.
-            "fixed bottom-4 w-[808px]",
+            "fixed bottom-4 w-[808px] max-w-full",
             "bg-gray-900 flex flex-row justify-between p-5 rounded-md",
             "border border-gray-800",
             "shadow-[0_0_10px_8px] shadow-[#060607]",
