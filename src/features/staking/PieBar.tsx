@@ -70,6 +70,10 @@ export const PieBar = () => {
             zeroBalance
               ? "min-w-full rounded-full"
               : "min-w-[3px] rounded-l-full",
+            unstakedPercent &&
+              !stakedPercent &&
+              !unstakablePercent &&
+              "rounded-full",
           )}
         />
         <div
