@@ -76,14 +76,14 @@ export const VoteList = ({}: {}) => {
           )}
 
           {/* Inactive Votes */}
+          <div className="flex flex-row items-center gap-4">
+            <h3 className="text-xs font-bold uppercase text-gray-500">
+              Rewards
+            </h3>
+            <div className="h-px flex-1 bg-gray-800"></div>
+          </div>
           {pastProposalGroups && pastProposalGroups.length !== 0 && (
             <>
-              <div className="flex flex-row items-center gap-4">
-                <h3 className="text-xs font-bold uppercase text-gray-500">
-                  Rewards
-                </h3>
-                <div className="h-px flex-1 bg-gray-800"></div>
-              </div>
               <div className="flex flex-col gap-2">
                 {pastProposalGroups?.map((group) => (
                   <PastEpochCard proposalGroup={group} key={group[0].id} />

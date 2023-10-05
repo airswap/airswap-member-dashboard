@@ -14,10 +14,10 @@ const getLeaves = async () => {
   return response.data;
 };
 
-export const useActivatePointsClaim = () => {
+export const useActivatePointsClaim = ({ enabled }: { enabled: boolean }) => {
   const { address: connectedAccount } = useAccount();
 
-  const enabled = !!connectedAccount;
+  const _enabled = !!connectedAccount && (enabled ?? true);
 
   const fetch = async () => {
     // Fetch the leaves from the JSON
@@ -65,7 +65,7 @@ export const useActivatePointsClaim = () => {
   };
 
   return useQuery(["activate-points-claim", connectedAccount], fetch, {
-    enabled,
+    enabled: _enabled,
     cacheTime: 86_400_000, // 24 hours
     staleTime: 3_600_000, // 1 hour
   });

@@ -7,5 +7,6 @@ interface ImportMetaEnv {
   readonly VITE_WALLETCONNECT_ID?: string;
   readonly VITE_INFURA_API_KEY?: string;
   readonly VITE_ACTIVATE_POINTS_LEAVES_URL?: string;
+  readonly VITE_ENABLE_ACTIVATE_MIGRATION?: string;
   // more env variables...
 }

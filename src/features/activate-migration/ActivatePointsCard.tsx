@@ -14,7 +14,11 @@ export const ActivatePointsCard = ({}: {}) => {
     treeId: ACTIVATE_TREE_ID,
   });
 
-  const { data: activateMigrationClaim } = useActivatePointsClaim();
+  const IS_ENABLED = import.meta.env.VITE_ENABLE_ACTIVATE_MIGRATION === "true";
+
+  const { data: activateMigrationClaim } = useActivatePointsClaim({
+    enabled: IS_ENABLED,
+  });
 
   const [
     addClaim,
@@ -49,7 +53,7 @@ export const ActivatePointsCard = ({}: {}) => {
     activateMigrationClaim,
   ]);
 
-  return (
+  return IS_ENABLED ? (
     activateMigrationClaim && (
       <motion.div
         className="w-full items-center border border-gray-800 rounded p-4 pl-5"
@@ -106,5 +110,32 @@ export const ActivatePointsCard = ({}: {}) => {
         </div>
       </motion.div>
     )
+  ) : (
+    <div className="w-full items-center border border-gray-800 rounded p-4 pl-5">
+      <div className="flex w-full items-center justify-between font-semibold">
+        {/* Checkbox and title. */}
+        <div className="flex items-center">
+          {/* Checkbox */}
+          <div className="align-center -mt-1 mr-5 items-center ">
+            <Checkbox disabled />
+          </div>
+          {/* Title */}
+          <div className={twMerge("font-bold text-gray-500")}>
+            Points from Activate
+          </div>
+        </div>
+
+        {/* Points */}
+        <div
+          className={twJoin([
+            "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
+            "flex flex-row items-center gap-2 ring-1 ring-gray-800",
+            "text-gray-500",
+          ])}
+        >
+          Coming soon
+        </div>
+      </div>
+    </div>
   );
 };

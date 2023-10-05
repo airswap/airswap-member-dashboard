@@ -53,6 +53,7 @@ export const Modal = ({
               modalRef.current?.close();
             }}
             disabled={!isClosable}
+            className={!isClosable ? "hidden" : undefined}
           >
             <MdClose className="text-gray-500" size={24} />
           </button>
