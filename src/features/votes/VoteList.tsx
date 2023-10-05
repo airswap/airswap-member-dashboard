@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { useAccount, useChainId } from "wagmi";
 import { ActivatePointsCard } from "../activate-migration/ActivatePointsCard";
 import { ClaimForm } from "../claims/ClaimForm";
 import { ClaimModalSubheading } from "../claims/ClaimModalSubheading";
@@ -12,6 +13,8 @@ import { useTreeRoots } from "./hooks/useTreeRoots";
 import { useClaimSelectionStore } from "./store/useClaimSelectionStore";
 
 export const VoteList = ({}: {}) => {
+  const chainId = useChainId();
+  const { address: connectedAccount } = useAccount();
   const { data: proposalGroups, isLoading: proposalGroupsLoading } =
     useGroupedProposals();
   const [showClaimModal, setShowClaimModal, isClaimLoading] =
@@ -66,7 +69,10 @@ export const VoteList = ({}: {}) => {
                 return (
                   <Fragment key={group[0].id}>
                     {group.map((proposal) => (
-                      <LiveVoteCard proposal={proposal} key={proposal.id} />
+                      <LiveVoteCard
+                        proposal={proposal}
+                        key={`${proposal.id}--${chainId}-${connectedAccount}`}
+                      />
                     ))}
                     <SetRootButton
                       proposalGroup={group}
@@ -89,7 +95,10 @@ export const VoteList = ({}: {}) => {
             <>
               <div className="flex flex-col gap-2">
                 {pastProposalGroups?.map((group) => (
-                  <PastEpochCard proposalGroup={group} key={group[0].id} />
+                  <PastEpochCard
+                    proposalGroup={group}
+                    key={`${group[0].id}-${chainId}-${connectedAccount}`}
+                  />
                 ))}
               </div>
               {/* Spacer to allow overscroll to cover the height of the claim float. */}

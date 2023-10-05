@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { twJoin } from "tailwind-merge";
-import { useAccount } from "wagmi";
+import { useAccount, useChainId } from "wagmi";
 import { Button } from "../common/Button";
 import { formatNumber } from "../common/utils/formatNumber";
 import { useClaimSelectionStore } from "./store/useClaimSelectionStore";
@@ -15,18 +15,20 @@ export const ClaimFloat = ({
     selectedClaims,
     pointsClaimableByEpoch,
     showClaimModal,
-    clearSelectedClaims,
+    resetClaimStore,
   ] = useClaimSelectionStore((state) => [
     state.selectedClaims,
     state.pointsClaimableByEpoch,
     state.showClaimModal,
-    state.clearSelectedClaims,
+    state.reset,
   ]);
 
+  const chainId = useChainId();
   const { address } = useAccount();
-  useEffect(() => {
-    clearSelectedClaims();
-  }, [address, clearSelectedClaims]);
+
+  useLayoutEffect(() => {
+    resetClaimStore();
+  }, [address, resetClaimStore, chainId]);
 
   const totalPointsClaimable =
     selectedClaims.length > 0
