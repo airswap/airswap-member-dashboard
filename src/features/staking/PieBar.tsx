@@ -59,7 +59,7 @@ export const PieBar = () => {
       </div>
     );
   });
-  console.log(typeof unstakablePercent);
+
   return (
     <div className="flex w-full flex-col my-6 gap-4">
       <div className="m-auto flex h-2 mb-2 w-full flex-row rounded-full">
