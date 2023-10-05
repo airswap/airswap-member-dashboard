@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { twJoin, twMerge } from "tailwind-merge";
+import { useAccount } from "wagmi";
 import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
 import { formatNumber } from "../common/utils/formatNumber";
@@ -13,6 +14,8 @@ export const ActivatePointsCard = ({}: {}) => {
   const { data: hasUserClaimed } = useHasClaimedForTree({
     treeId: ACTIVATE_TREE_ID,
   });
+
+  const { isConnected: isWalletConnected } = useAccount();
 
   const IS_ENABLED = import.meta.env.VITE_ENABLE_ACTIVATE_MIGRATION === "true";
 
@@ -116,7 +119,12 @@ export const ActivatePointsCard = ({}: {}) => {
         {/* Checkbox and title. */}
         <div className="flex items-center">
           {/* Checkbox */}
-          <div className="align-center -mt-1 mr-5 items-center ">
+          <div
+            className={twJoin(
+              "align-center -mt-1 mr-5 items-center",
+              !isWalletConnected && "hidden",
+            )}
+          >
             <Checkbox disabled />
           </div>
           {/* Title */}
@@ -130,7 +138,7 @@ export const ActivatePointsCard = ({}: {}) => {
           className={twJoin([
             "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
             "flex flex-row items-center gap-2 ring-1 ring-gray-800",
-            "text-gray-500",
+            "text-gray-500 text-center",
           ])}
         >
           Coming soon

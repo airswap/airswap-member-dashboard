@@ -143,9 +143,13 @@ export const PastEpochCard = ({
       {/* Checkbox and title. */}
       <div className="flex items-center">
         {/* Checkbox */}
-        <div className="align-center -mt-1 mr-5 items-center ">
+        <div
+          className={twJoin(
+            "align-center -mt-1 mr-5 items-center",
+            !isWalletConnected && "hidden",
+          )}
+        >
           <Checkbox
-            className={twJoin(!isWalletConnected && "invisible")}
             disabled={
               !root || // disabled if there's no root
               hasUserClaimed || // or if the user has already claimed
@@ -177,6 +181,7 @@ export const PastEpochCard = ({
           "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
           "flex flex-row items-center gap-2 ring-1 ring-gray-800",
           (hasUserClaimed || !votedOnAllProposals) && "text-gray-500",
+          !isWalletConnected && "hidden",
         ])}
       >
         {hasUserClaimed && (
