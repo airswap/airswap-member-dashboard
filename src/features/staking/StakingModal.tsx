@@ -22,7 +22,7 @@ export const StakingModal = () => {
 
   const formReturn = useForm();
   const { getValues } = formReturn;
-  const stakingAmount = getValues().stakingAmount;
+  const stakingAmount = getValues().stakingAmount * 10 ** 4;
 
   const isSupportedChain = useIsSupportedChain();
   const { switchNetwork } = useSwitchNetwork();

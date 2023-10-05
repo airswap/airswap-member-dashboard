@@ -1,31 +1,31 @@
 type PercentObject = {
   unstakablePercent: number;
   stakedPercent: number;
-  stakablePercent: number;
+  unstakedPercent: number;
 };
 
 export const calculateTokenProportions = ({
   unstakable,
   staked,
-  stakable,
+  unstaked,
 }: {
   unstakable: number;
   staked: number;
-  stakable: number;
+  unstaked: number;
 }): PercentObject => {
-  const totalBalance = unstakable + staked + stakable;
+  const totalBalance = unstakable + staked + unstaked;
 
   if (totalBalance === 0) {
     return {
       unstakablePercent: 0,
       stakedPercent: 0,
-      stakablePercent: 0,
+      unstakedPercent: 0,
     };
   }
 
   return {
     unstakablePercent: (unstakable / totalBalance) * 100,
     stakedPercent: (staked / totalBalance) * 100,
-    stakablePercent: (stakable / totalBalance) * 100,
+    unstakedPercent: (unstaked / totalBalance) * 100,
   };
 };
