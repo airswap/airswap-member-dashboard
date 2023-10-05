@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
-import { useState } from "react";
-import { decodeEventLog, zeroAddress } from "viem";
+import { useEffect, useState } from "react";
+import { Address, decodeEventLog, zeroAddress } from "viem";
 import {
   useAccount,
   useChainId,
@@ -8,6 +8,7 @@ import {
   usePrepareContractWrite,
   usePublicClient,
   useSwitchNetwork,
+  useWaitForTransaction,
 } from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
@@ -43,12 +44,14 @@ export const ClaimForm = ({}: {}) => {
     selectedClaims,
     clearSelectedClaims,
     setShowClaimModal,
+    setIsClaimLoading,
   ] = useClaimSelectionStore((state) => [
     state.pointsClaimableByEpoch,
     state.allClaims,
     state.selectedClaims,
     state.clearSelectedClaims,
     state.setShowClaimModal,
+    state.setIsClaimLoading,
   ]);
 
   const _selectedClaims = selectedClaims.length ? selectedClaims : allClaims;
@@ -73,7 +76,7 @@ export const ClaimForm = ({}: {}) => {
 
   const [selection, setSelection] = useState<{
     index: number;
-    tokenAddress: `0x${string}`;
+    tokenAddress: Address;
     tokenDecimals: number;
     tokenSymbol: string;
     amount: bigint;
@@ -140,6 +143,10 @@ export const ClaimForm = ({}: {}) => {
     },
   });
 
+  const { status: txStatus } = useWaitForTransaction({
+    hash: writeResult?.hash,
+  });
+
   const actionButtons = {
     afterFailure: {
       label: "Try again",
@@ -173,6 +180,14 @@ export const ClaimForm = ({}: {}) => {
       &nbsp;tokens using {formatNumber(pointsUsed)} points
     </span>
   );
+
+  useEffect(() => {
+    if (txStatus === "loading" || waitingForSignature) {
+      setIsClaimLoading(true);
+    } else {
+      setIsClaimLoading(false);
+    }
+  }, [txStatus, setIsClaimLoading, waitingForSignature]);
 
   return writeResult?.hash || waitingForSignature ? (
     <TransactionTracker
