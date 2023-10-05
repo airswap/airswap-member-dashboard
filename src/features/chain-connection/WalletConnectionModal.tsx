@@ -50,7 +50,12 @@ const WalletConnectionModal = ({
       <div className="color-white flex w-[360px] flex-col bg-gray-900 font-bold">
         <div className="flex flex-col gap-2">
           {connectors
-            .filter((connector) => connector.ready)
+            .filter(
+              (connector) =>
+                connector.ready &&
+                // Don't show inject if it's MetaMask (we're already showing it)
+                !(connector.id === "injected" && connector.name === "MetaMask"),
+            )
             .map((connector: Connector) => {
               const isInjected = connector.id === "injected";
               return (
