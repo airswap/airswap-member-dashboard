@@ -8,6 +8,7 @@ import {
   usePrepareContractWrite,
   usePublicClient,
   useSwitchNetwork,
+  useWaitForTransaction,
 } from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
@@ -142,6 +143,10 @@ export const ClaimForm = ({}: {}) => {
     },
   });
 
+  const { status: txStatus } = useWaitForTransaction({
+    hash: writeResult?.hash,
+  });
+
   const actionButtons = {
     afterFailure: {
       label: "Try again",
@@ -177,8 +182,12 @@ export const ClaimForm = ({}: {}) => {
   );
 
   useEffect(() => {
-    setIsClaimLoading(waitingForSignature);
-  }, [setIsClaimLoading, waitingForSignature]);
+    if (txStatus === "loading" || waitingForSignature) {
+      setIsClaimLoading(true);
+    } else {
+      setIsClaimLoading(false);
+    }
+  }, [txStatus, setIsClaimLoading, waitingForSignature]);
 
   return writeResult?.hash || waitingForSignature ? (
     <TransactionTracker
