@@ -24,22 +24,22 @@ export const PieBar = () => {
 
   const stakableData = [
     {
-      color: "transparent",
-      bg: "checkered-blue",
-      var: unstaked,
-      text: "unstaked",
-    },
-    {
       color: "text-blue-500",
       bg: null,
+      var: unstakable,
+      text: "unstakable",
+    },
+    {
+      color: "transparent",
+      bg: "checkered-blue",
       var: staked,
       text: "staked",
     },
     {
       color: "text-gray-500",
       bg: null,
-      var: unstakable,
-      text: "unstakable",
+      var: unstaked,
+      text: "Not staked",
     },
   ];
 
@@ -64,13 +64,13 @@ export const PieBar = () => {
     <div className="flex w-full flex-col my-6 gap-4">
       <div className="m-auto flex h-2 mb-2 w-full flex-row rounded-full">
         <div
-          style={{ flexBasis: `${unstakedPercent}%` }}
+          style={{ flexBasis: `${unstakablePercent}%` }}
           className={twJoin(
-            "checkered-blue",
+            "bg-airswap-blue",
             zeroBalance
               ? "min-w-full rounded-full"
               : "min-w-[3px] rounded-l-full",
-            unstakedPercent &&
+            unstakablePercent &&
               !stakedPercent &&
               !unstakablePercent &&
               "rounded-full",
@@ -78,13 +78,13 @@ export const PieBar = () => {
         />
         <div
           style={{ flexBasis: `${stakedPercent}%` }}
-          className={twJoin("bg-airswap-blue", stakedPercent && "min-w-[3px]")}
+          className={twJoin("checkered-blue", stakedPercent && "min-w-[3px]")}
         />
         <div
-          style={{ flexBasis: `${unstakablePercent}%` }}
+          style={{ flexBasis: `${unstakedPercent}%` }}
           className={twJoin(
             "bg-gray-500",
-            unstakablePercent && "min-w-[3px] rounded-r-full",
+            unstakedPercent && "min-w-[3px] rounded-r-full",
           )}
         />
       </div>

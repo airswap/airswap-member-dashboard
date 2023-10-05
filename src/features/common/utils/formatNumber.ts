@@ -14,6 +14,7 @@ export const formatNumber = (
   } else {
     _number = number;
   }
+
   return _number.toLocaleString(window.navigator.language, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
