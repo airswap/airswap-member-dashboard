@@ -1,0 +1,33 @@
+name: IPFS Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.1
+
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+
+      - name: Install and Build 🔧
+        env:
+          VITE_INFURA_API_KEY: ${{ vars.VITE_INFURA_API_KEY }}
+          VITE_WALLETCONNECT_ID: ${{ vars.VITE_WALLETCONNECT_ID }}
+          VITE_ACTIVATE_POINTS_LEAVES_URL: ${{ vars.VITE_ACTIVATE_POINTS_LEAVES_URL }}
+          VITE_ENABLE_ACTIVATE_MIGRATION: ${{ vars.VITE_ENABLE_ACTIVATE_MIGRATION }}
+        run: |
+          yarn
+          yarn build
+
+      - name: IPFS Deploy 🚀
+        uses: aquiladev/ipfs-action@master
+        with:
+          path: ./build
+          service: infura
+          infuraProjectId: ${{ secrets.INFURA_PROJECT_ID }}
+          infuraProjectSecret: ${{ secrets.INFURA_PROJECT_SECRET }}
