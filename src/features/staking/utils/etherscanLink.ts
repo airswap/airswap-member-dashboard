@@ -1,9 +1,8 @@
-import { Hash } from "viem";
 import { ChainId } from "../types/StakingTypes";
 
 export const etherscanLink = (
   chainId: number | undefined,
-  transactionHash: Hash | undefined,
+  transactionHash: `0x${string}` | undefined,
 ) => {
   const chainUrls: { [key in ChainId]: string } = {
     [ChainId.Mainnet]: "https://etherscan.io/tx/",
