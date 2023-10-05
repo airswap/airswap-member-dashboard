@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { useEffect, useState } from "react";
-import { Hash, decodeEventLog, zeroAddress } from "viem";
+import { Address, decodeEventLog, zeroAddress } from "viem";
 import {
   useAccount,
   useChainId,
@@ -76,7 +76,7 @@ export const ClaimForm = ({}: {}) => {
 
   const [selection, setSelection] = useState<{
     index: number;
-    tokenAddress: Hash;
+    tokenAddress: Address;
     tokenDecimals: number;
     tokenSymbol: string;
     amount: bigint;
