@@ -13,7 +13,7 @@ export const calculateTokenProportions = ({
   staked: number;
   unstaked: number;
 }): PercentObject => {
-  const totalBalance = unstakable + staked + unstaked;
+  const totalBalance = staked + unstaked;
 
   if (totalBalance === 0) {
     return {
@@ -23,9 +23,15 @@ export const calculateTokenProportions = ({
     };
   }
 
+  const unstakablePercent = (unstakable / totalBalance) * 100;
+
+  const stakedTotalPercent = 100 - unstakablePercent;
+  const stakedPercent = (staked / stakedTotalPercent) * 100;
+  const unstakedPercent = (unstaked / stakedTotalPercent) * 100;
+
   return {
-    unstakablePercent: (unstakable / totalBalance) * 100,
-    stakedPercent: (staked / totalBalance) * 100,
-    unstakedPercent: (unstaked / totalBalance) * 100,
+    unstakablePercent,
+    stakedPercent,
+    unstakedPercent,
   };
 };
