@@ -76,7 +76,7 @@ export const StakingModal = () => {
     data: dataStakeAst,
     isLoading: stakeAwaitingSignature,
   } = useStakeAst({
-    stakingAmount: Number(stakingAmountFormatted) || 0,
+    stakingAmountFormatted: Number(stakingAmountFormatted) || 0,
     enabled: canStake,
   });
 
@@ -86,7 +86,7 @@ export const StakingModal = () => {
     data: dataUnstakeSast,
     isLoading: unstakeAwaitingSignature,
   } = useUnstakeSast({
-    unstakingAmount: Number(stakingAmountFormatted) || 0,
+    unstakingAmountFormatted: Number(stakingAmountFormatted) || 0,
     canUnstake: canUnstake,
   });
 

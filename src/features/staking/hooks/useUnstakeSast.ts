@@ -10,10 +10,10 @@ import { stakingAbi } from "../../../contracts/stakingAbi";
  * @param canUnstake - boolean value, true if unstakingAmount (stakingAmount) > 0 and if unstakigAmount (stakingAmount) <= sAST balance
  */
 export const useUnstakeSast = ({
-  unstakingAmount,
+  unstakingAmountFormatted,
   canUnstake,
 }: {
-  unstakingAmount: number;
+  unstakingAmountFormatted: number;
   canUnstake: boolean;
 }) => {
   const [airSwapStaking] = useContractAddresses(
@@ -24,7 +24,7 @@ export const useUnstakeSast = ({
     },
   );
 
-  const unstakingAmountConversion = new BigNumber(unstakingAmount)
+  const unstakingAmountConversion = new BigNumber(unstakingAmountFormatted)
     .multipliedBy(10 ** 4)
     .integerValue()
     .toString();
