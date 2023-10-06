@@ -5,10 +5,10 @@ import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
 
 export const useApproveAst = ({
-  stakingAmount,
+  stakingAmountFormatted,
   enabled = true,
 }: {
-  stakingAmount: number;
+  stakingAmountFormatted: number;
   enabled?: boolean;
 }) => {
   const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
@@ -24,7 +24,7 @@ export const useApproveAst = ({
     },
   );
 
-  const stakingAmountConversion = new BigNumber(stakingAmount)
+  const stakingAmountConversion = new BigNumber(stakingAmountFormatted)
     .multipliedBy(10 ** 4)
     .integerValue()
     .toString();
