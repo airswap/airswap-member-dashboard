@@ -22,7 +22,7 @@ export const StakingModal = () => {
 
   const formReturn = useForm();
   const { getValues } = formReturn;
-  const stakingAmount = getValues().stakingAmount * 10 ** 4;
+  const stakingAmount = getValues().stakingAmount;
 
   const isSupportedChain = useIsSupportedChain();
   const { switchNetwork } = useSwitchNetwork();
@@ -42,21 +42,23 @@ export const StakingModal = () => {
 
   const needsApproval =
     txType === TxType.STAKE &&
-    Number(astAllowance) < Number(stakingAmount) &&
+    Number(astAllowance) < Number(stakingAmount) * 10 ** 4 &&
     validNumberInput;
+
+  console.log(needsApproval, astAllowance, stakingAmount);
 
   const canStake =
     txType === TxType.STAKE && !needsApproval && validNumberInput;
 
   const canUnstake =
-    Number(stakingAmount) <= Number(unstakableSastBalance) &&
+    Number(stakingAmount) * 10 ** 4 <= Number(unstakableSastBalance) &&
     txType === TxType.UNSTAKE &&
     validNumberInput;
 
   const isInsufficientBalance =
     txType === TxType.STAKE && stakingAmount
-      ? Number(stakingAmount) > Number(astBalance)
-      : Number(stakingAmount) > Number(unstakableSastBalance);
+      ? Number(stakingAmount) * 10 ** 4 > Number(astBalance)
+      : Number(stakingAmount) * 10 ** 4 > Number(unstakableSastBalance);
 
   const {
     writeAsync: approveAst,
