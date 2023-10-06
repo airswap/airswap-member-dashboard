@@ -43,8 +43,6 @@ export const PieBar = () => {
     },
   ];
 
-  console.log(unstakablePercent, stakedPercent, unstakedPercent);
-
   const stakableRow = stakableData.map((stakable) => {
     return (
       <div
