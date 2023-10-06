@@ -66,7 +66,7 @@ export const StakingModal = () => {
     reset: resetApproveAst,
     isLoading: approvalAwaitingSignature,
   } = useApproveAst({
-    stakingAmount: Number(stakingAmountFormatted) || 0,
+    stakingAmountFormatted: Number(stakingAmountFormatted) || 0,
     enabled: needsApproval,
   });
 
