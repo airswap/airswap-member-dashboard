@@ -45,8 +45,6 @@ export const StakingModal = () => {
     Number(astAllowance) < Number(stakingAmount) * 10 ** 4 &&
     validNumberInput;
 
-  console.log(needsApproval, astAllowance, stakingAmount);
-
   const canStake =
     txType === TxType.STAKE && !needsApproval && validNumberInput;
 
