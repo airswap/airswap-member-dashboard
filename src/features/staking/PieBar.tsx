@@ -15,9 +15,9 @@ export const PieBar = () => {
 
   const { unstakablePercent, stakedPercent, unstakedPercent } =
     calculateTokenProportions({
-      unstakable: Number(unstakableSastBalanceRaw) / 10 ** 4,
-      staked: Number(sAstBalanceRaw) / 10 ** 4,
-      unstaked: Number(astBalanceRaw) / 10 ** 4,
+      unstakable: Number(unstakableSastBalanceRaw),
+      staked: Number(sAstBalanceRaw),
+      unstaked: Number(astBalanceRaw),
     });
 
   const zeroBalance = !unstakablePercent && !stakedPercent && !unstakedPercent;
@@ -42,6 +42,8 @@ export const PieBar = () => {
       text: "not staked",
     },
   ];
+
+  console.log(unstakablePercent, stakedPercent, unstakedPercent);
 
   const stakableRow = stakableData.map((stakable) => {
     return (
