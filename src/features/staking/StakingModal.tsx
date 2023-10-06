@@ -30,7 +30,7 @@ export const StakingModal = () => {
   // This state tracks whether the last transaction was an approval.
   const [isApproval, setIsApproval] = useState<boolean>(false);
 
-  const { astAllowanceFormatted: astAllowance } = useAstAllowance();
+  const { astAllowance } = useAstAllowance();
 
   const {
     unstakableSastBalanceRaw: unstakableSastBalance,
