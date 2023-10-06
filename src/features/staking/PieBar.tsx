@@ -15,9 +15,9 @@ export const PieBar = () => {
 
   const { unstakablePercent, stakedPercent, unstakedPercent } =
     calculateTokenProportions({
-      unstakable: Number(unstakableSastBalanceRaw),
-      staked: Number(sAstBalanceRaw),
-      unstaked: Number(astBalanceRaw),
+      unstakable: Number(unstakableSastBalanceRaw) / 10 ** 4,
+      staked: Number(sAstBalanceRaw) / 10 ** 4,
+      unstaked: Number(astBalanceRaw) / 10 ** 4,
     });
 
   const zeroBalance = !unstakablePercent && !stakedPercent && !unstakedPercent;
