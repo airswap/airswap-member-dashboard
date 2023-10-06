@@ -42,21 +42,21 @@ export const StakingModal = () => {
 
   const needsApproval =
     txType === TxType.STAKE &&
-    Number(astAllowance) < Number(stakingAmount) * 10 ** 4 &&
+    Number(astAllowance) < Number(stakingAmount) &&
     validNumberInput;
 
   const canStake =
     txType === TxType.STAKE && !needsApproval && validNumberInput;
 
   const canUnstake =
-    Number(stakingAmount) * 10 ** 4 <= Number(unstakableSastBalance) &&
+    Number(stakingAmount) <= Number(unstakableSastBalance) &&
     txType === TxType.UNSTAKE &&
     validNumberInput;
 
   const isInsufficientBalance =
     txType === TxType.STAKE && stakingAmount
-      ? Number(stakingAmount) * 10 ** 4 > Number(astBalance)
-      : Number(stakingAmount) * 10 ** 4 > Number(unstakableSastBalance);
+      ? Number(stakingAmount) > Number(astBalance)
+      : Number(stakingAmount) > Number(unstakableSastBalance);
 
   const {
     writeAsync: approveAst,
