@@ -21,7 +21,7 @@ export const UserAccountDetail = ({
 }) => {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address });
-  const { data: avatar } = useEnsAvatar({ name: ensName });
+  const { data: avatar, error: errorAvatar } = useEnsAvatar({ name: ensName });
   const { chain } = useNetwork();
   const { disconnect } = useDisconnect();
   const { data, isError } = useBalance({ address });
@@ -42,10 +42,6 @@ export const UserAccountDetail = ({
     setShowUserAccountDetail(false);
   });
 
-  const defaultAvatar = (
-    <img src={defaultEnsAvatar} alt="ENS avatar" className="rounded-full" />
-  );
-
   return (
     <div
       ref={ref}
@@ -54,7 +50,13 @@ export const UserAccountDetail = ({
         !showUserAccountDetail && "hidden",
       )}
     >
-      <div className="rounded-full mr-2">{avatar || defaultAvatar}</div>
+      <div className="rounded-full mr-2">
+        <img
+          src={avatar ? avatar : defaultEnsAvatar}
+          alt="ENS avatar"
+          className="rounded-full"
+        />
+      </div>
       <div className="flex flex-col text-left semibold font-loos">
         <span className="text-gray-500 text-xs">{chain?.name}</span>
         <span>
