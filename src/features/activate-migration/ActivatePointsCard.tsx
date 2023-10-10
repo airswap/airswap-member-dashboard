@@ -138,7 +138,7 @@ export const ActivatePointsCard = ({}: {}) => {
           className={twJoin([
             "rounded-full px-4 py-1 text-xs font-bold uppercase leading-6",
             "flex flex-row items-center gap-2 ring-1 ring-gray-800",
-            "text-gray-500 text-center",
+            "text-gray-500 text-center whitespace-nowrap",
           ])}
         >
           Coming soon

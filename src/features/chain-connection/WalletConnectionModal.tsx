@@ -47,7 +47,7 @@ const WalletConnectionModal = ({
       heading="Select Wallet"
       onCloseRequest={() => setShowConnectionModal(false)}
     >
-      <div className="color-white flex w-[360px] flex-col bg-gray-900 font-bold">
+      <div className="color-white flex w-[360px] flex-col bg-gray-900 font-bold max-w-full">
         <div className="flex flex-col gap-2">
           {connectors
             .filter(
