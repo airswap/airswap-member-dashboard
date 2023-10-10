@@ -14,7 +14,7 @@ function App() {
   return (
     <div className="flex flex-col flex-1 h-full items-center">
       <Header />
-      <main className="mx-auto flex w-[808px] p-2 max-w-full flex-col flex-1">
+      <main className="mx-auto flex w-[808px] p-0 xs:p-2 max-w-full flex-col flex-1">
         {isConnected ? <VoteList /> : <DisconnectedState />}
       </main>
       <ClaimFloat onClaimClicked={() => setShowClaimModal(true)} />
