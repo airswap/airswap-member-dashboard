@@ -1,5 +1,6 @@
 import { useClickOutside, useKeyboardEvent } from "@react-hookz/web";
 import { useRef } from "react";
+import Blockies from "react-blockies";
 import { MdLogout } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import {
@@ -10,7 +11,6 @@ import {
   useEnsName,
   useNetwork,
 } from "wagmi";
-import defaultEnsAvatar from "../../assets/avatar.svg";
 
 export const UserAccountDetail = ({
   showUserAccountDetail,
@@ -21,7 +21,7 @@ export const UserAccountDetail = ({
 }) => {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address, chainId: 1 });
-  const { data: avatar } = useEnsAvatar({
+  const { data: avatarUrl } = useEnsAvatar({
     name: ensName,
     chainId: 1,
   });
@@ -45,6 +45,8 @@ export const UserAccountDetail = ({
     setShowUserAccountDetail(false);
   });
 
+  console.log(avatarUrl);
+
   return (
     <div
       ref={ref}
@@ -54,11 +56,20 @@ export const UserAccountDetail = ({
       )}
     >
       <div className="rounded-full mr-2">
-        <img
-          src={avatar ? avatar : defaultEnsAvatar}
-          alt="ENS avatar"
-          className="rounded-full w-10 h-10"
-        />
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt="ENS avatar"
+            className="rounded-full w-10 h-10"
+          />
+        ) : (
+          // @ts-ignore - types are apparently wrong.
+          <Blockies
+            seed={address as string}
+            scale={4}
+            className="w-10 h-10 rounded-full"
+          />
+        )}
       </div>
       <div className="flex flex-col text-left semibold font-loos">
         <span className="text-gray-500 text-xs">{chain?.name}</span>
