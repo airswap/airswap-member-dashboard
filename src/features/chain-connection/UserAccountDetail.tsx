@@ -20,8 +20,11 @@ export const UserAccountDetail = ({
   setShowUserAccountDetail: (showUserAccountDetail: boolean) => void;
 }) => {
   const { address } = useAccount();
-  const { data: ensName } = useEnsName({ address });
-  const { data: avatar, error: errorAvatar } = useEnsAvatar({ name: ensName });
+  const { data: ensName } = useEnsName({ address, chainId: 1 });
+  const { data: avatar } = useEnsAvatar({
+    name: ensName,
+    chainId: 1,
+  });
   const { chain } = useNetwork();
   const { disconnect } = useDisconnect();
   const { data, isError } = useBalance({ address });
@@ -54,7 +57,7 @@ export const UserAccountDetail = ({
         <img
           src={avatar ? avatar : defaultEnsAvatar}
           alt="ENS avatar"
-          className="rounded-full"
+          className="rounded-full w-10 h-10"
         />
       </div>
       <div className="flex flex-col text-left semibold font-loos">
