@@ -7,7 +7,7 @@ import { StakingButton } from "../staking/StakingButton";
 export const Header = ({}: {}) => {
   const { isConnected } = useAccount();
   return (
-    <div className="flex flex-row items-center justify-between px-8 w-full p-3">
+    <div className="flex flex-row items-center justify-between px-8 w-full h-24 flex-shrink-0">
       <div>
         <div className="h-10 w-10 md:hidden -mr-5">
           <img
