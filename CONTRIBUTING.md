@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in contributing to the AirSwap Voter Rewards app! We welcome contributions no matter their size.
+Thank you for your interest in contributing to the AirSwap Member Dashboard app! We welcome contributions no matter their size.
 
 ## Issues
 
@@ -9,6 +9,7 @@ While we use GitHub for issue tracking and project management, development is ge
 ## Key libraries
 
 TODO: add this.
+
 - React-Query
 - TailwindCSS
 - Viem
@@ -31,7 +32,7 @@ $ yarn prettier
 ## Coding patterns
 
 - We extensively use `hooks`
-  - It is common for a hook to return `undefined` when it is either disabled  or is still fetching data.
+  - It is common for a hook to return `undefined` when it is either disabled or is still fetching data.
 - We are happy to build components that are responsible for fetching their own state. For example a balance input that shows the wallet balance within it will _always_ need a token balance, so it makes sense if it fetches that itself.
 
 ## Styling

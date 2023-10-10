@@ -1,4 +1,4 @@
-# AirSwap Voter Rewards
+# AirSwap Member Dashboard
 
 [![Discord](https://img.shields.io/discord/590643190281928738.svg)](https://chat.airswap.io) ![Twitter Follow](https://img.shields.io/twitter/follow/airswap?style=social) ![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/AirSwap?style=social)
 
@@ -21,6 +21,6 @@ $ yarn install
 $ yarn start
 ```
 
-This repo is a web frontend for the AirSwap voter rewards system. AirSwap is an open developer community focused on decentralized trading systems. Designers and developers earn for contributing; check [CONTRIBUTING](CONTRIBUTING.md) and join the [Discord](https://chat.airswap.io/) server to learn more.
+This repo is a web frontend for the AirSwap Member Dashboard system. AirSwap is an open developer community focused on decentralized trading systems. Designers and developers earn for contributing; check [CONTRIBUTING](CONTRIBUTING.md) and join the [Discord](https://chat.airswap.io/) server to learn more.
 
 Let's build stuff! 🛠️
