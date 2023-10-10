@@ -1,6 +1,6 @@
 export const DisconnectedState = ({}: {}) => {
   return (
-    <div className="flex flex-col gap-3 max-w-prose justify-center self-center justify-self-center">
+    <div className="flex flex-col gap-3 max-w-prose justify-center self-center justify-self-center p-4">
       <h1 className="text-2xl font-bold text-white">AirSwap Voter Dashboard</h1>
       <p className="text-gray-500 text-[15px] leading-6">
         <span>
