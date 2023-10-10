@@ -39,7 +39,7 @@ export const Checkbox = ({
           ])}
         >
           <svg
-            className="absolute inset-[5px] text-gray-500"
+            className="absolute inset-[5px] text-gray-500 h-3 w-3"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="none"
@@ -83,7 +83,7 @@ export const Checkbox = ({
         )}
         {!isOptionButton && (
           <svg
-            className="absolute inset-[5px] text-white"
+            className="absolute inset-[5px] text-white h-3 w-3"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="none"
