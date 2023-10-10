@@ -44,9 +44,6 @@ export const UserAccountDetail = ({
   useKeyboardEvent("Escape", () => {
     setShowUserAccountDetail(false);
   });
-
-  console.log(avatarUrl);
-
   return (
     <div
       ref={ref}
