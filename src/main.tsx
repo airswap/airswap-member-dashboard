@@ -79,7 +79,7 @@ const config = createConfig({
     new CoinbaseWalletConnector({
       chains,
       options: {
-        appName: "AirSwap Voter Rewards",
+        appName: "AirSwap Member Dashboard",
         appLogoUrl: AirSwapLogo,
       },
     }),
