@@ -55,6 +55,77 @@ export const claimableTokens: ClaimableTokensNetworkMapping = {
       mainnetEquivalentAddress: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     },
   ],
+  // bsc
+  56: [
+    // BSC-USD
+    {
+      address: "0x55d398326f99059fF775485246999027B3197955",
+      mainnetEquivalentAddress: "0x0000000000000000000000000000000000000000",
+    },
+    // WBNB
+    {
+      address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+      mainnetEquivalentAddress: "0x0000000000000000000000000000000000000000",
+    },
+    // BUSD
+    {
+      address: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+      mainnetEquivalentAddress: "0x4Fabb145d64652a948d72533023f6E7A623C7C53",
+    },
+    // USDC
+    {
+      address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+      mainnetEquivalentAddress: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+    },
+    // ETH
+    {
+      address: "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+      mainnetEquivalentAddress: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    },
+    // DOGE
+    {
+      address: "0xbA2aE424d960c26247Dd6c32edC70B295c744C43",
+      mainnetEquivalentAddress: "0x0000000000000000000000000000000000000000",
+    },
+    // ADA
+    {
+      address: "0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47",
+      mainnetEquivalentAddress: "0x0000000000000000000000000000000000000000",
+    },
+    // DOT
+    {
+      address: "0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402",
+      mainnetEquivalentAddress: "0x0000000000000000000000000000000000000000",
+    },
+    // AVAX
+    {
+      address: "0x1CE0c2827e2eF14D5C4f29a091d735A204794041",
+      mainnetEquivalentAddress: "0x0000000000000000000000000000000000000000",
+    },
+  ],
+  // polygon
+  137: [
+    // USDC.e
+    {
+      address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      mainnetEquivalentAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    },
+    // USDT
+    {
+      address: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+      mainnetEquivalentAddress: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    },
+    // WMATIC
+    {
+      address: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+      mainnetEquivalentAddress: "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
+    },
+    // DAI
+    {
+      address: "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
+      mainnetEquivalentAddress: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+    },
+  ],
   // avax
   43114: [
     // USDC.e
@@ -63,7 +134,7 @@ export const claimableTokens: ClaimableTokensNetworkMapping = {
       mainnetEquivalentAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     },
     {
-      // USDC
+    // USDC
       address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
       mainnetEquivalentAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     },
