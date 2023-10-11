@@ -7,7 +7,7 @@ import { Buffer } from "buffer";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { WagmiConfig, configureChains, createConfig, mainnet } from "wagmi";
-import { avalanche, goerli } from "wagmi/chains";
+import { avalanche, bsc, goerli, polygon } from "wagmi/chains";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
@@ -29,7 +29,7 @@ if (!window.Buffer) {
 }
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet, goerli, avalanche],
+  [mainnet, goerli, avalanche, bsc, polygon],
   [
     infuraProvider({ apiKey: import.meta.env.VITE_INFURA_API_KEY || "" }),
     publicProvider(),
