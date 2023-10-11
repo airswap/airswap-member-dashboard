@@ -1,6 +1,13 @@
 import axios from "axios";
 import { useQuery } from "wagmi";
 
+const DefillamaChainNames: Record<number, string> = {
+  1: "ethereum",
+  56: "bsc",
+  137: "polygon",
+  43114: "avax"
+}
+
 const path = "https://coins.llama.fi/prices/current";
 
 type CoinPrice = {
@@ -15,22 +22,28 @@ type CurrentPricesResponse = {
   coins: Record<string, CoinPrice>;
 };
 
-const fetch = async (addresses: `0x${string}`[]) => {
+const fetch = async (chainName: string, addresses: `0x${string}`[]) => {
   const response = await axios.get<CurrentPricesResponse>(
-    `${path}/${addresses.map((address) => `ethereum:${address}`).join(",")}`,
+    `${path}/${addresses.map((address) => `${chainName}:${address}`).join(",")}`,
   );
   const results = response.data.coins;
   // return an array of {address: price} objects, where `price` is results[address].price
   return addresses.map((address) => ({
     address,
-    price: results[`ethereum:${address}`].price,
+    price: results[`${chainName}:${address}`].price,
   }));
 };
 
-export const useDefiLlamaBatchPrices = (addresses: `0x${string}`[]) => {
+export const useDefiLlamaBatchPrices = ({
+  chainId,
+  tokenAddresses,
+}: {
+  chainId: number;
+  tokenAddresses: `0x${string}`[];
+}) => {
   return useQuery(
-    ["defillama", "prices", 1, addresses],
-    () => fetch(addresses),
+    ["defillama", "prices", chainId, tokenAddresses],
+    () => fetch(DefillamaChainNames[chainId], tokenAddresses),
     {
       cacheTime: 3_600_000, // 1 hour
       staleTime: 30_000, // 30 seconds
@@ -39,7 +52,7 @@ export const useDefiLlamaBatchPrices = (addresses: `0x${string}`[]) => {
       refetchOnWindowFocus: true,
       refetchOnMount: true,
       refetchOnReconnect: true,
-      enabled: !!addresses && addresses.length > 0,
+      enabled: !!tokenAddresses && tokenAddresses.length > 0,
     },
   );
 };

@@ -11,7 +11,7 @@ const empty: string[] = [];
 export const useClaimableAmounts = (points: number) => {
   const chainId = useChainId();
   const tokenList =
-    claimableTokens[chainId === 1 ? "mainnet" : chainId] || empty;
+    claimableTokens[chainId] || empty;
 
   const { data: claimableAmounts, refetch } = useClaimCalculations(
     points,
@@ -23,8 +23,10 @@ export const useClaimableAmounts = (points: number) => {
     tokenAddresses: tokenList.map((token) => token.address),
   });
 
-  const { data: prices } = useDefiLlamaBatchPrices(
-    tokenList.map((token) => token.mainnetEquivalentAddress || token.address),
+  const { data: prices } = useDefiLlamaBatchPrices({
+    chainId,
+    tokenAddresses: tokenList.map((token) => token.mainnetEquivalentAddress || token.address),
+  }
   );
 
   return useMemo(() => {
