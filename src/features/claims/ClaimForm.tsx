@@ -15,7 +15,6 @@ import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { poolAbi } from "../../contracts/poolAbi";
 import { Button } from "../common/Button";
 import { TransactionTracker } from "../common/TransactionTracker";
-import { useIsSupportedChain } from "../common/hooks/useIsSupportedChain";
 import { formatNumber } from "../common/utils/formatNumber";
 import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
 import {
@@ -35,7 +34,6 @@ export const ClaimForm = ({}: {}) => {
   const chainId = useChainId();
   const publicClient = usePublicClient({ chainId: chainId });
 
-  const isSupportedChain = useIsSupportedChain();
   const { switchNetwork, isLoading: switchNetworkLoading } = useSwitchNetwork();
 
   const [
@@ -240,34 +238,21 @@ export const ClaimForm = ({}: {}) => {
           )}
         </div>
       </div>
-      {isSupportedChain ? (
-        <Button
-          color="primary"
-          rounded={false}
-          className="mt-7"
-          onClick={() => {
-            if (write) {
-              write();
-              setPointsUsed(pointsSelected);
-            }
-          }}
-          disabled={selection === undefined || !write}
-        >
-          Claim
-        </Button>
-      ) : (
-        <Button
-          color="primary"
-          rounded={false}
-          className="mt-7"
-          disabled={switchNetworkLoading || !switchNetwork}
-          onClick={() => {
-            switchNetwork?.(1);
-          }}
-        >
-          Switch to Ethereum
-        </Button>
-      )}
+
+      <Button
+        color="primary"
+        rounded={false}
+        className="mt-7"
+        onClick={() => {
+          if (write) {
+            write();
+            setPointsUsed(pointsSelected);
+          }
+        }}
+        disabled={selection === undefined || !write}
+      >
+        Claim
+      </Button>
     </div>
   );
 };
