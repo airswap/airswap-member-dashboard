@@ -13,12 +13,12 @@ import {
   useDefiLlamaBatchPrices,
 } from "./useDefillamaBatchPrices";
 
+const testnets = Object.keys(testnetClaimableTokens).map((t) => parseInt(t));
+
 export const useClaimableAmounts = (points: number) => {
   const chainId = useChainId() as SupportedChainId;
 
-  const isTestnet = Object.keys(testnetClaimableTokens).includes(
-    chainId.toString(),
-  );
+  const isTestnet = testnets.includes(chainId);
 
   const tokenList = isTestnet
     ? testnetClaimableTokens[chainId]
