@@ -55,4 +55,27 @@ export const claimableTokens: ClaimableTokensNetworkMapping = {
       mainnetEquivalentAddress: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     },
   ],
+  // avax
+  43114: [
+    // USDC.e
+    {
+      address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+      mainnetEquivalentAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    },
+    {
+      // USDC
+      address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+      mainnetEquivalentAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    },
+    // wAVAX
+    {
+      address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+      mainnetEquivalentAddress: "0x85f138bfEE4ef8e540890CFb48F620571d67Eda3",
+    },
+    // USDT.e
+    {
+      address: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
+      mainnetEquivalentAddress: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    },
+  ],
 };
