@@ -13,12 +13,16 @@ export const PieBar = () => {
   const staked = formatNumber(sAstBalanceRaw, 4) || 0;
   const unstakable = formatNumber(unstakableSastBalanceRaw, 4) || 0;
 
-  const { unstakablePercent, stakedPercent, unstakedPercent } =
-    calculateTokenProportions({
-      unstakable: Number(unstakableSastBalanceRaw) / 10 ** 4,
-      staked: Number(sAstBalanceRaw) / 10 ** 4,
-      unstaked: Number(astBalanceRaw) / 10 ** 4,
-    });
+  const {
+    totalStakedPercent,
+    unstakablePercent,
+    stakedPercent,
+    unstakedPercent,
+  } = calculateTokenProportions({
+    unstakable: unstakableSastBalanceRaw,
+    staked: sAstBalanceRaw,
+    unstaked: astBalanceRaw,
+  });
 
   const zeroBalance = !unstakablePercent && !stakedPercent && !unstakedPercent;
 
@@ -63,28 +67,41 @@ export const PieBar = () => {
   return (
     <div className="flex w-full flex-col my-6 gap-4">
       <div className="m-auto flex h-2 mb-2 w-full flex-row rounded-full">
+        {/* this div should wrap unstakablePercent and staked percent, and represents totalStakedPercent */}
         <div
-          style={{ flexBasis: `${unstakablePercent}%` }}
+          style={{ flexBasis: `${totalStakedPercent}%` }}
           className={twJoin(
-            "bg-airswap-blue",
-            zeroBalance
-              ? "min-w-full rounded-full"
-              : "min-w-[3px] rounded-l-full",
-            unstakablePercent &&
-              !stakedPercent &&
-              !unstakablePercent &&
-              "rounded-full",
+            "flex flex-row w-full",
+            unstakablePercent ? "rounded-l-full" : "rounded-full",
           )}
-        />
-        <div
-          style={{ flexBasis: `${stakedPercent}%` }}
-          className={twJoin("checkered-blue", stakedPercent && "min-w-[3px]")}
-        />
+        >
+          <div
+            style={{ flexBasis: `${unstakablePercent}%` }}
+            className={twJoin(
+              "bg-airswap-blue z-50",
+              zeroBalance
+                ? `min-w-${unstakablePercent} rounded-full`
+                : "min-w-[3px] rounded-l-full",
+              unstakablePercent &&
+                !stakedPercent &&
+                !unstakablePercent &&
+                "rounded-full",
+            )}
+          />
+          <div
+            style={{ flexBasis: `${stakedPercent}%` }}
+            className={twJoin(
+              "checkered-blue z-50",
+              stakedPercent && "min-w-[3px]",
+            )}
+          />
+        </div>
         <div
           style={{ flexBasis: `${unstakedPercent}%` }}
           className={twJoin(
             "bg-gray-500",
             unstakedPercent && "min-w-[3px] rounded-r-full",
+            zeroBalance && "min-w-full rounded-full",
           )}
         />
       </div>
