@@ -128,7 +128,7 @@ export const poolAbi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "admin",
         type: "address",
@@ -162,7 +162,7 @@ export const poolAbi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "admin",
         type: "address",
@@ -175,17 +175,12 @@ export const poolAbi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "account",
         type: "address",
       },
-      {
-        indexed: false,
-        internalType: "bytes32",
-        name: "tree",
-        type: "bytes32",
-      },
+      { indexed: true, internalType: "bytes32", name: "tree", type: "bytes32" },
     ],
     name: "UseClaim",
     type: "event",
@@ -194,22 +189,28 @@ export const poolAbi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "account",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "recipient",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "token",
         type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
       },
       {
         indexed: false,

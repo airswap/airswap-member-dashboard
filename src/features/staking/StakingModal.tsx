@@ -5,10 +5,10 @@ import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { Modal } from "../common/Modal";
 import { TransactionTracker } from "../common/TransactionTracker";
-import { useIsSupportedChain } from "../common/hooks/useIsSupportedChain";
 import { ManageStake } from "./ManageStake";
 import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
+import { useChainSupportsStaking } from "./hooks/useChainSupportsStaking";
 import { useStakeAst } from "./hooks/useStakeAst";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
 import { useStakingModalStore } from "./store/useStakingModalStore";
@@ -24,7 +24,7 @@ export const StakingModal = () => {
   const { getValues } = formReturn;
   const stakingAmountFormatted = getValues().stakingAmount;
 
-  const isSupportedChain = useIsSupportedChain();
+  const isSupportedChain = useChainSupportsStaking();
   const { switchNetwork } = useSwitchNetwork();
 
   // This state tracks whether the last transaction was an approval.
