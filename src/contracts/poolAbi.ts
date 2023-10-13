@@ -1,4 +1,4 @@
-export const astAbi = [
+export const poolAbi = [
   {
     inputs: [
       { internalType: "uint256", name: "_scale", type: "uint256" },
