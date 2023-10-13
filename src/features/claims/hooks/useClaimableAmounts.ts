@@ -1,33 +1,49 @@
 import BigNumber from "bignumber.js";
 import { useMemo } from "react";
-import { useChainId } from "wagmi";
+import { Address, useChainId } from "wagmi";
 import { useMultipleTokenInfo } from "../../common/hooks/useMultipleTokenInfo";
-import { claimableTokens } from "../config/claimableTokens";
+import {
+  TestnetClaimableToken,
+  claimableTokens,
+  testnetClaimableTokens,
+} from "../config/claimableTokens";
 import { useClaimCalculations } from "./useClaimCalculations";
-import { useDefiLlamaBatchPrices } from "./useDefillamaBatchPrices";
+import {
+  SupportedChainId,
+  useDefiLlamaBatchPrices,
+} from "./useDefillamaBatchPrices";
 
-const empty: string[] = [];
+const testnets = Object.keys(testnetClaimableTokens).map((t) => parseInt(t));
 
 export const useClaimableAmounts = (points: number) => {
-  const chainId = useChainId();
-  const tokenList =
-    claimableTokens[chainId] || empty;
+  const chainId = useChainId() as SupportedChainId;
+
+  const isTestnet = testnets.includes(chainId);
+
+  const tokenList = isTestnet
+    ? testnetClaimableTokens[chainId]
+    : claimableTokens[chainId];
+
+  const tokenAddresses = isTestnet
+    ? (tokenList as TestnetClaimableToken[]).map((t) => t.address)
+    : (tokenList as Address[]);
 
   const { data: claimableAmounts, refetch } = useClaimCalculations(
     points,
-    tokenList.map((token) => token.address),
+    tokenAddresses,
   );
 
   const tokenInfoResults = useMultipleTokenInfo({
     chainId,
-    tokenAddresses: tokenList.map((token) => token.address),
+    tokenAddresses: tokenAddresses,
   });
 
   const { data: prices } = useDefiLlamaBatchPrices({
     chainId,
-    tokenAddresses: tokenList.map((token) => token.mainnetEquivalentAddress || token.address),
-  }
-  );
+    tokenAddresses: tokenList.map((token) =>
+      typeof token === "object" ? token.mainnetEquivalentAddress : token,
+    ),
+  });
 
   return useMemo(() => {
     const data = tokenList

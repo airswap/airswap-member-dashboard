@@ -1,12 +1,16 @@
 import axios from "axios";
 import { useQuery } from "wagmi";
+import { claimableTokens } from "../config/claimableTokens";
 
-const DefillamaChainNames: Record<number, string> = {
+// This type helps by throwing errors if we don't specify a name for a chain added in claimableTokens
+export type SupportedChainId = keyof typeof claimableTokens;
+
+const DefillamaChainNames: Record<SupportedChainId, string> = {
   1: "ethereum",
   56: "bsc",
   137: "polygon",
-  43114: "avax"
-}
+  43114: "avax",
+};
 
 const path = "https://coins.llama.fi/prices/current";
 
@@ -24,7 +28,9 @@ type CurrentPricesResponse = {
 
 const fetch = async (chainName: string, addresses: `0x${string}`[]) => {
   const response = await axios.get<CurrentPricesResponse>(
-    `${path}/${addresses.map((address) => `${chainName}:${address}`).join(",")}`,
+    `${path}/${addresses
+      .map((address) => `${chainName}:${address}`)
+      .join(",")}`,
   );
   const results = response.data.coins;
   // return an array of {address: price} objects, where `price` is results[address].price
@@ -38,7 +44,7 @@ export const useDefiLlamaBatchPrices = ({
   chainId,
   tokenAddresses,
 }: {
-  chainId: number;
+  chainId: SupportedChainId;
   tokenAddresses: `0x${string}`[];
 }) => {
   return useQuery(
