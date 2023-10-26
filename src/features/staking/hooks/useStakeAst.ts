@@ -20,7 +20,6 @@ export const useStakeAst = ({
   );
 
   const stakingAmountConversion = new BigNumber(stakingAmountFormatted)
-    .multipliedBy(10 ** 4)
     .integerValue()
     .toString();
 

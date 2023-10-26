@@ -10,7 +10,7 @@ export const NumberInput = ({
   formReturn: UseFormReturn<FieldValues>;
 }) => {
   const { txType } = useStakingModalStore();
-  const { register, setValue, watch } = formReturn;
+  const { register, setValue, watch, getValues } = formReturn;
   watch();
   const {
     astBalanceRaw: astBalance,

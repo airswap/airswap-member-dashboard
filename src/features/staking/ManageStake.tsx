@@ -5,7 +5,7 @@ import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { LineBreak } from "../common/LineBreak";
 import { formatNumber } from "../common/utils/formatNumber";
-import { NumberInput } from "./NumberInput";
+import { NumberInput2 } from "./NumberInput2";
 import { PieBar } from "./PieBar";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
@@ -17,7 +17,7 @@ export const ManageStake = ({
 }) => {
   const { txType, setTxType } = useStakingModalStore();
 
-  const { setValue } = formReturn;
+  const { setValue, getValues } = formReturn;
 
   const {
     unstakableSastBalanceRaw: unstakableBalance,
@@ -29,9 +29,9 @@ export const ManageStake = ({
 
   const handleSetMaxBalance = () => {
     if (txType === TxType.STAKE) {
-      setValue("stakingAmount", Number(stakableBalance) / 10 ** 4);
+      setValue("stakingAmount", Number(stakableBalance.toString()) / 10 ** 4);
     } else {
-      setValue("stakingAmount", Number(unstakableBalance) / 10 ** 4);
+      setValue("stakingAmount", Number(unstakableBalance.toString()) / 10 ** 4);
     }
   };
 
@@ -96,7 +96,8 @@ export const ManageStake = ({
         <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8" />
         <div className="flex flex-col items-end uppercase w-full overflow-hidden">
           <div>
-            <NumberInput formReturn={formReturn} />
+            {/* <NumberInput formReturn={formReturn} /> */}
+            <NumberInput2 formReturn={formReturn} />
           </div>
           <Button
             onClick={handleSetMaxBalance}

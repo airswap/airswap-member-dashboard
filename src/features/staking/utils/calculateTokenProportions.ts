@@ -19,8 +19,6 @@ export const calculateTokenProportions = ({
   const unstakedNum = Number(unstaked);
   const totalBalance = stakedNum + unstakedNum;
 
-  console.log(totalBalance);
-
   if (totalBalance === 0) {
     return {
       totalStakedPercent: 0,

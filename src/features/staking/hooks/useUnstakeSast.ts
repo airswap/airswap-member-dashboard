@@ -25,7 +25,6 @@ export const useUnstakeSast = ({
   );
 
   const unstakingAmountConversion = new BigNumber(unstakingAmountFormatted)
-    .multipliedBy(10 ** 4)
     .integerValue()
     .toString();
 

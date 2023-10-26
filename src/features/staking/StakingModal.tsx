@@ -23,6 +23,7 @@ export const StakingModal = () => {
   const formReturn = useForm();
   const { getValues } = formReturn;
   const stakingAmountFormatted = getValues().stakingAmount;
+  console.log("stakingAmountFormatted", stakingAmountFormatted);
 
   const isSupportedChain = useChainSupportsStaking();
   const { switchNetwork } = useSwitchNetwork();
@@ -39,26 +40,25 @@ export const StakingModal = () => {
 
   // stakingAmount default is NaN. Wagmi hooks need to validate that stakingAmount exists
   const validNumberInput =
-    !!stakingAmountFormatted && Number(stakingAmountFormatted) * 10 ** 4 > 0;
+    !!stakingAmountFormatted && Number(stakingAmountFormatted) > 0;
 
   const needsApproval =
     txType === TxType.STAKE &&
-    Number(astAllowance) < Number(stakingAmountFormatted) * 10 ** 4 &&
+    Number(astAllowance) < Number(stakingAmountFormatted) &&
     validNumberInput;
 
   const canStake =
     txType === TxType.STAKE && !needsApproval && validNumberInput;
 
   const canUnstake =
-    Number(stakingAmountFormatted) * 10 ** 4 <= Number(unstakableSastBalance) &&
+    Number(stakingAmountFormatted) <= Number(unstakableSastBalance) &&
     txType === TxType.UNSTAKE &&
     validNumberInput;
 
   const isInsufficientBalance =
     txType === TxType.STAKE && stakingAmountFormatted
-      ? Number(stakingAmountFormatted) * 10 ** 4 > Number(astBalance)
-      : Number(stakingAmountFormatted) * 10 ** 4 >
-        Number(unstakableSastBalance);
+      ? Number(stakingAmountFormatted) > Number(astBalance)
+      : Number(stakingAmountFormatted) > Number(unstakableSastBalance);
 
   const {
     writeAsync: approveAst,
@@ -125,7 +125,7 @@ export const StakingModal = () => {
     insufficientBalance: isInsufficientBalance,
   });
 
-  const isAmountInvalid = Number(stakingAmountFormatted) * 10 ** 4 <= 0;
+  const isAmountInvalid = Number(stakingAmountFormatted) <= 0;
 
   const isStakeButtonDisabled = isAmountInvalid || isInsufficientBalance;
 
@@ -187,7 +187,9 @@ export const StakingModal = () => {
           successContent={
             <span>
               You successfully {verb}{" "}
-              <span className="text-white">{stakingAmountFormatted} AST</span>
+              <span className="text-white">
+                {stakingAmountFormatted.toString() / 10 ** 4} AST
+              </span>
             </span>
           }
           failureContent={"Your transaction has failed"}
