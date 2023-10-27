@@ -5,7 +5,7 @@ import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { LineBreak } from "../common/LineBreak";
 import { formatNumber } from "../common/utils/formatNumber";
-import { NumberInput2 } from "./NumberInput2";
+import { NumberInput } from "./NumberInput";
 import { PieBar } from "./PieBar";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
@@ -17,7 +17,7 @@ export const ManageStake = ({
 }) => {
   const { txType, setTxType } = useStakingModalStore();
 
-  const { setValue, getValues } = formReturn;
+  const { setValue } = formReturn;
 
   const {
     unstakableSastBalanceRaw: unstakableBalance,
@@ -97,7 +97,7 @@ export const ManageStake = ({
         <div className="flex flex-col items-end uppercase w-full overflow-hidden">
           <div>
             {/* <NumberInput formReturn={formReturn} /> */}
-            <NumberInput2 formReturn={formReturn} />
+            <NumberInput formReturn={formReturn} />
           </div>
           <Button
             onClick={handleSetMaxBalance}
