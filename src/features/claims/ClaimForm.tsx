@@ -89,7 +89,9 @@ export const ClaimForm = ({}: {}) => {
       _selectedClaims.map((claim) => ({
         ...claim,
         value: BigInt(
-          new BigNumber(claim.value).multipliedBy(10 ** 4).toFixed(0),
+          new BigNumber(claim.value)
+            .multipliedBy(10 ** 4)
+            .toFixed(0, BigNumber.ROUND_FLOOR),
         ),
       })),
       selection?.tokenAddress || zeroAddress,
