@@ -102,3 +102,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     </QueryClientProvider>
   </React.StrictMode>,
 );
+
+console.log("Build commit hash: " + process.env.COMMIT_HASH);
