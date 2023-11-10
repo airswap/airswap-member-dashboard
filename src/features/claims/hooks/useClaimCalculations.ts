@@ -15,7 +15,9 @@ export const useClaimCalculations = (
     alwaysUseDefault: false,
   });
   const _points = BigInt(
-    new BigNumber(points).multipliedBy(10 ** 4).toFixed(0),
+    new BigNumber(points)
+      .multipliedBy(10 ** 4)
+      .toFixed(0, BigNumber.ROUND_FLOOR),
   );
 
   const fetch = async () => {
@@ -29,7 +31,6 @@ export const useClaimCalculations = (
         args: [_points, tokenAddress],
       })),
     });
-
     // return just the results
     return multicallResponse.map((response) => response.result || 0n);
   };
