@@ -136,10 +136,14 @@ export const ClaimForm = ({}: {}) => {
         }
       }
     },
-    onError: (e) => {
-      resetClaimStatuses();
-      clearSelectedClaims();
-      refetchClaimable();
+    onError: (e: any) => {
+      if (e?.cause?.code === 4001) {
+        // Do nothing here, the user rejected the tx
+      } else {
+        // There may have been a claim that caused excessive slippage.
+        resetClaimStatuses();
+        refetchClaimable();
+      }
     },
   });
 
