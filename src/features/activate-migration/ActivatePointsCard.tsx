@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { twJoin, twMerge } from "tailwind-merge";
-import { useAccount } from "wagmi";
+import { useAccount, useChainId } from "wagmi";
 import { Checkbox } from "../common/Checkbox";
 import { CheckMark } from "../common/icons/CheckMark";
 import { formatNumber } from "../common/utils/formatNumber";
@@ -11,13 +11,15 @@ import { ACTIVATE_TREE_ID } from "./constants";
 import { useActivatePointsClaim } from "./hooks/useActivatePointsClaim";
 
 export const ActivatePointsCard = ({}: {}) => {
+  const chainId = useChainId();
   const { data: hasUserClaimed } = useHasClaimedForTree({
     treeId: ACTIVATE_TREE_ID,
   });
 
   const { isConnected: isWalletConnected } = useAccount();
 
-  const IS_ENABLED = import.meta.env.VITE_ENABLE_ACTIVATE_MIGRATION === "true";
+  const IS_ENABLED =
+    import.meta.env.VITE_ENABLE_ACTIVATE_MIGRATION === "true" && chainId === 1;
 
   const { data: activateMigrationClaim } = useActivatePointsClaim({
     enabled: IS_ENABLED,
@@ -55,6 +57,10 @@ export const ActivatePointsCard = ({}: {}) => {
     setPointsClaimableForEpoch,
     activateMigrationClaim,
   ]);
+
+  if (chainId !== 1) {
+    return null;
+  }
 
   return IS_ENABLED ? (
     activateMigrationClaim && (
