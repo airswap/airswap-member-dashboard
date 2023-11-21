@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { useAccount, useChainId } from "wagmi";
 import { ActivatePointsCard } from "../activate-migration/ActivatePointsCard";
+import { NON_MAINNET_START_TIMESTAMP } from "../activate-migration/constants";
 import { ClaimForm } from "../claims/ClaimForm";
 import { ClaimModalSubheading } from "../claims/ClaimModalSubheading";
 import { Modal } from "../common/Modal";
@@ -38,7 +39,11 @@ export const VoteList = ({}: {}) => {
     ? []
     : proposalGroups?.filter(
         (proposals, i) =>
-          proposals[0].end * 1000 > Date.now() || rootQueries[i].data == null,
+          proposals[0].end * 1000 > Date.now() ||
+          (rootQueries[i].data == null &&
+            // For chains other than mainnet, only show a start date after November.
+            (chainId === 1 ||
+              proposals[0].start > NON_MAINNET_START_TIMESTAMP)),
       );
 
   const pastProposalGroups = rootsLoading
