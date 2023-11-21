@@ -38,7 +38,10 @@ export const VoteList = ({}: {}) => {
     ? []
     : proposalGroups?.filter(
         (proposals, i) =>
-          proposals[0].end * 1000 > Date.now() || rootQueries[i].data == null,
+          proposals[0].end * 1000 > Date.now() ||
+          (rootQueries[i].data == null &&
+            // For chains other than mainnet, only show a start date after November.
+            (chainId === 1 || proposals[0].start > 1698710400)),
       );
 
   const pastProposalGroups = rootsLoading
