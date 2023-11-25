@@ -2,6 +2,7 @@ export enum ContractTypes {
   AirSwapToken,
   AirSwapStaking,
   AirSwapPool,
+  SplitsMain
 }
 
 type ContractList = { [k in ContractTypes]?: `0x${string}` };
@@ -12,6 +13,7 @@ export const contractAddressesByChain: Record<number, ContractList> = {
     [ContractTypes.AirSwapStaking]:
       "0x9fc450F9AfE2833Eb44f9A1369Ab3678D3929860",
     [ContractTypes.AirSwapPool]: "0xbbcec987e4c189fcbab0a2534c77b3ba89229f11",
+    [ContractTypes.SplitsMain]: "0x2ed6c4B5dA6378c7897AC67Ba9e43102Feb694EE",
   },
   5: {
     // goerli

@@ -37,16 +37,16 @@ export const VoteList = ({}: {}) => {
   const liveProposalGroups = rootsLoading
     ? []
     : proposalGroups?.filter(
-        (proposals, i) =>
-          proposals[0].end * 1000 > Date.now() || rootQueries[i].data == null,
-      );
+      (proposals, i) =>
+        proposals[0].end * 1000 > Date.now() || rootQueries[i].data == null,
+    );
 
   const pastProposalGroups = rootsLoading
     ? []
     : proposalGroups?.filter(
-        (proposals, i) =>
-          proposals[0].end * 1000 < Date.now() && rootQueries[i].data != null,
-      );
+      (proposals, i) =>
+        proposals[0].end * 1000 < Date.now() && rootQueries[i].data != null,
+    );
 
   const showLoadingState = proposalGroupsLoading || rootsLoading;
 
@@ -106,7 +106,6 @@ export const VoteList = ({}: {}) => {
           )}
 
           <ActivatePointsCard />
-          <div className="h-28" />
         </>
       )}
 
