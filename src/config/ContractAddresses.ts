@@ -19,8 +19,10 @@ export const contractAddressesByChain: Record<number, ContractList> = {
   5: {
     // goerli
     [ContractTypes.AirSwapToken]: "0x1a1ec25DC08e98e5E93F1104B5e5cdD298707d31",
-    [ContractTypes.AirSwapStaking]:
+    [ContractTypes.AirSwapV3Staking_deprecated]:
       "0x51F372bE64F0612532F28142cECF8F204B272622",
+    [ContractTypes.AirSwapStaking]:
+      "0x3BeC6526366cb2C2A609eb2bCeC8A696C141a33e",
     [ContractTypes.AirSwapPool]: "0xbbcec987e4c189fcbab0a2534c77b3ba89229f11",
   },
   56: {
