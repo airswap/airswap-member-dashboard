@@ -277,7 +277,7 @@ export const MigrationModal = ({}: {}) => {
         hash,
       });
       setIsMining([false, false, false]);
-      setTransactionHashes((prev) => [...prev, hash]);
+      setTransactionHashes((prev) => [prev[0], prev[1], hash]);
       setCurrentStep(3);
     },
   });
