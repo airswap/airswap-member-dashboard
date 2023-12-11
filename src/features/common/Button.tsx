@@ -30,7 +30,7 @@ const buttonVariants = tv({
     },
     size: {
       small: "text-xs py-1 px-3",
-      smaller: 'text-xs px-1 py-0.25 font-extrabold',
+      smaller: 'text-[10px] px-[0.20rem] py-0 font-extrabold',
       smallest: "p-0 -mt-1.5",
     },
   },
