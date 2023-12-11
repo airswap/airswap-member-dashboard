@@ -41,7 +41,7 @@ export const NumberInput = ({
       })}
       className={twJoin(
         "items-right w-1/5 bg-transparent text-right min-w-fit",
-        "font-mono font-medium text-white text-[20px]",
+        "font-mono font-medium text-white text-[24px]",
         "focus-visible:outline-none",
       )}
     />

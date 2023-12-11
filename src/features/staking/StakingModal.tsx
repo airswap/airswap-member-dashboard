@@ -207,7 +207,7 @@ export const StakingModal = () => {
               disabled={isStakeButtonDisabled}
               color="primary"
               rounded={false}
-              className="w-full mt-10"
+              className="w-full mt-8"
             >
               {modalButtonAction?.label}
             </Button>

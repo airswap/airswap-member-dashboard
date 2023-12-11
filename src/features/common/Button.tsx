@@ -15,6 +15,7 @@ const buttonVariants = tv({
       primary: "bg-airswap-blue text-white hover:border-white",
       transparent: "border border-gray-800 hover:border-white",
       black: "bg-black border border-gray-800 hover:border-white",
+      darkGray: 'bg-gray-500 text-gray-800',
       none: "bg-transparent",
     },
     rounded: {
@@ -25,9 +26,11 @@ const buttonVariants = tv({
       rightTrue: "rounded-r-[3px]",
       rightFalse: "rounded-r-[3px]",
       none: "rounded-none",
+      small: 'rounded-sm'
     },
     size: {
       small: "text-xs py-1 px-3",
+      smaller: 'text-xs px-1 py-0.25 font-extrabold',
       smallest: "p-0 -mt-1.5",
     },
   },
