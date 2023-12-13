@@ -55,6 +55,15 @@ export const claimableTokens = {
     "0x4d224452801ACEd8B2F0aebE155379bb5D594381", // APE
     "0xF57e7e7C23978C3cAEC3C3548E3D615c346e79fF", // IMX
     "0x8E870D67F660D95d5be530380D0eC0bd388289E1", // USDP
+    "0x44108f0223a3c3028f5fe7aec7f9bb2e66bef82f", // ACX
+    "0x0f5d2fb29fb7d3cfee444a200298f468908cc942", // MANA
+    "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2", // MKR
+    "0x5a98fcbea516cf06857215779fd812ca3bef1b32", // LDO
+    "0xae7ab96520de3a18e5e111b5eaab095312d7fe84", // stETH
+    "0x111111111117dc0aa78b770fa6a738034120c302", // 1INCH
+    "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2", // SUSHI
+    "0x6982508145454ce325ddbe47a25d4ec3d2311933", // PEPE
+    "0xf57e7e7c23978c3caec3c3548e3d615c346e79ff", // IMX
   ] as `0x${string}`[],
   56: [
     // bsc
