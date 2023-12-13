@@ -288,7 +288,7 @@ export const MigrationModal = ({}: {}) => {
     showMigrationModal &&
     (initialAmount || 0n) > 0n && (
       <Modal
-        className="max-w-sm"
+        className="max-w-sm text-white"
         onCloseRequest={() => setShowMigrationModal(false)}
         heading="Migrate to V4!"
         subHeading={

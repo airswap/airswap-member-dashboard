@@ -84,7 +84,7 @@ export const ManageStake = ({
       </div>
       <div
         className={twJoin(
-          "my-3 rounded px-4 py-3 text-xs leading-[18px]",
+          "my-4 rounded px-4 py-3 text-xs leading-[18px]",
           "bg-gray-800 text-gray-400",
         )}
       >
@@ -92,24 +92,20 @@ export const ManageStake = ({
         determines the weight of your vote. Tokens unlock linearly over 20
         weeks.
       </div>
-      <div className="flex items-center justify-between rounded border border-gray-800 bg-gray-950 px-5 py-3">
+      <div className="flex items-center justify-between rounded border border-gray-800 bg-gray-950 px-5 py-5">
         <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8" />
-        <div className="flex flex-col items-end uppercase w-full overflow-hidden">
+        <div className="flex flex-row items-end uppercase w-full overflow-hidden">
           <div>
             <NumberInput formReturn={formReturn} />
           </div>
           <Button
             onClick={handleSetMaxBalance}
-            color="none"
-            size="smallest"
-            rounded="none"
+            color="darkGray"
+            size="smaller"
+            rounded='small'
+            className="flex self-center ml-4"
           >
-            <span className="text-xs font-medium leading-4 text-gray-500">
-              {txType === TxType.STAKE
-                ? stakableBalanceFormatted
-                : unstakableBalanceFormatted}{" "}
-              {txType === TxType.STAKE ? "stakable" : "unstakable"}
-            </span>
+            max
           </Button>
         </div>
       </div>
