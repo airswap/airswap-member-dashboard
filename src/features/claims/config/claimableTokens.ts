@@ -62,8 +62,6 @@ export const claimableTokens = {
     "0xae7ab96520de3a18e5e111b5eaab095312d7fe84", // stETH
     "0x111111111117dc0aa78b770fa6a738034120c302", // 1INCH
     "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2", // SUSHI
-    "0x6982508145454ce325ddbe47a25d4ec3d2311933", // PEPE
-    "0xf57e7e7c23978c3caec3c3548e3d615c346e79ff", // IMX
   ] as `0x${string}`[],
   56: [
     // bsc

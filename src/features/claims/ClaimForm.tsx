@@ -215,8 +215,7 @@ export const ClaimForm = ({}: {}) => {
               const isLoaded =
                 tokenInfo?.decimals &&
                 claimableAmount != null &&
-                price &&
-                tokenInfo.symbol;
+                price;
 
               return isLoaded ? (
                 <ClaimableTokensLineItem
@@ -228,12 +227,12 @@ export const ClaimForm = ({}: {}) => {
                       index: i,
                       tokenAddress: tokenInfo.address,
                       tokenDecimals: tokenInfo.decimals || 18,
-                      tokenSymbol: tokenInfo.symbol || "",
+                      tokenSymbol: tokenInfo.symbol || "???",
                     });
                   }}
                   amount={claimableAmount || 0n}
                   decimals={tokenInfo?.decimals || 18}
-                  symbol={tokenInfo?.symbol || "Tokens"}
+                  symbol={tokenInfo?.symbol || "???"}
                   value={claimableValue || 0}
                   key={tokenInfo?.address || i}
                 />
