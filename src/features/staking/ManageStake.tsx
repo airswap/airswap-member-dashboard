@@ -92,7 +92,7 @@ export const ManageStake = ({
         determines the weight of your vote. Tokens unlock linearly over 20
         weeks.
       </div>
-      <div className="flex items-center justify-between rounded border border-gray-800 bg-gray-950 px-5 py-5">
+      <div className="flex items-center justify-between rounded border border-gray-800 bg-gray-950 px-5 py-4">
         <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8" />
         <div className="flex flex-row items-end uppercase w-full overflow-hidden">
           <div>
@@ -103,7 +103,7 @@ export const ManageStake = ({
             color="darkGray"
             size="smaller"
             rounded='small'
-            className="flex self-center ml-4"
+            className="flex self-center ml-4 hover:bg-white"
           >
             max
           </Button>
