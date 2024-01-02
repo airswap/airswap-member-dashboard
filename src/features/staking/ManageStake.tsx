@@ -102,7 +102,7 @@ export const ManageStake = ({
           </div>
           <div>
             We are currently investigating an issue with the staking contract.
-            During this time new stakes are disabled unstaking is limited to
+            During this time new stakes are disabled and unstaking is limited to
             only your full balance when available.
           </div>
         </div>
