@@ -1,5 +1,4 @@
 import { useAccount } from "wagmi";
-import { MigrationModal } from "./features/staking/MigrationModal";
 import { DisconnectedState } from "./features/structure/DisconnectedState";
 import { Header } from "./features/structure/Header";
 import { ClaimFloat } from "./features/votes/ClaimFloat";
@@ -18,7 +17,7 @@ function App() {
       <main className="mx-auto flex w-[808px] p-0 xs:p-2 max-w-full flex-col flex-1">
         {isConnected ? <VoteList /> : <DisconnectedState />}
       </main>
-      <MigrationModal />
+      {/* <MigrationModal /> */}
       <ClaimFloat onClaimClicked={() => setShowClaimModal(true)} />
     </div>
   );

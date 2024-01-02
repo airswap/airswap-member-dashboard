@@ -20,7 +20,7 @@ const stakingModalStore = create<StakingModalStore>()(
         set({ showStakingModal: show });
       },
 
-      txType: TxType.STAKE,
+      txType: TxType.UNSTAKE,
       setTxType(change: TxType) {
         set({ txType: change });
       },
