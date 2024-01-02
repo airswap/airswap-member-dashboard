@@ -1,10 +1,11 @@
+import { useEffect } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
+import { IoMdAlert } from "react-icons/io";
 import { twJoin } from "tailwind-merge";
 import AirSwapLogo from "../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { LineBreak } from "../common/LineBreak";
-import { formatNumber } from "../common/utils/formatNumber";
 import { NumberInput } from "./NumberInput";
 import { PieBar } from "./PieBar";
 import { useStakingModalStore } from "./store/useStakingModalStore";
@@ -22,10 +23,16 @@ export const ManageStake = ({
   const {
     unstakableSastBalanceRaw: unstakableBalance,
     astBalanceRaw: stakableBalance,
+    sAstBalanceRaw: sAstBalance,
   } = useTokenBalances();
 
-  const stakableBalanceFormatted = formatNumber(stakableBalance, 4) || 0;
-  const unstakableBalanceFormatted = formatNumber(unstakableBalance, 4) || 0;
+  useEffect(() => {
+    if (sAstBalance != null && unstakableBalance != null) {
+      if (sAstBalance === unstakableBalance) {
+        setValue("stakingAmount", Number(sAstBalance / 10000n));
+      }
+    }
+  }, [sAstBalance, unstakableBalance, setValue]);
 
   const handleSetMaxBalance = () => {
     if (txType === TxType.STAKE) {
@@ -59,6 +66,7 @@ export const ManageStake = ({
       <LineBreak className="relative mb-4 -mx-6" />
       <div className="font-lg pointer-cursor rounded-md font-semibold">
         <Button
+          disabled
           className={twJoin([
             "w-1/2 p-2",
             `${txType === "stake" ? "bg-gray-800" : "text-gray-500"}`,
@@ -88,9 +96,16 @@ export const ManageStake = ({
           "bg-gray-800 text-gray-400",
         )}
       >
-        Stake AST prior to voting on proposals. The amount of tokens you stake
-        determines the weight of your vote. Tokens unlock linearly over 20
-        weeks.
+        <div className="flex flex-row gap-2 items-start">
+          <div>
+            <IoMdAlert size={20} className="mt-1" />
+          </div>
+          <div>
+            We are currently investigating an issue with the staking contract.
+            During this time new stakes are disabled unstaking is limited to
+            only your full balance when available.
+          </div>
+        </div>
       </div>
       <div className="flex items-center justify-between rounded border border-gray-800 bg-gray-950 px-5 py-4">
         <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8" />
@@ -99,11 +114,12 @@ export const ManageStake = ({
             <NumberInput formReturn={formReturn} />
           </div>
           <Button
+            disabled
             onClick={handleSetMaxBalance}
             color="darkGray"
             size="smaller"
-            rounded='small'
-            className="flex self-center ml-4 hover:bg-white"
+            rounded="small"
+            className="flex self-center ml-4 enabled:hover:bg-white"
           >
             max
           </Button>

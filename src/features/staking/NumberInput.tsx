@@ -19,6 +19,7 @@ export const NumberInput = ({
 
   return (
     <input
+      disabled
       max={Number(astBalance)}
       placeholder="0.00"
       autoComplete="off"
@@ -42,7 +43,7 @@ export const NumberInput = ({
       className={twJoin(
         "items-right w-1/5 bg-transparent text-right min-w-fit",
         "font-mono font-medium text-white text-[28px]",
-        "focus-visible:outline-none",
+        "focus-visible:outline-none disabled:text-opacity-50",
       )}
     />
   );
