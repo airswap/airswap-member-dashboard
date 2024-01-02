@@ -125,7 +125,7 @@ export const StakingModal = () => {
     insufficientBalance: isInsufficientBalance,
   });
 
-  const isAmountInvalid = Number(stakingAmountFormatted || 0) * 10 ** 4 <= 0;
+  const isAmountInvalid = Number(stakingAmountFormatted || 0) <= 0;
 
   const isStakeButtonDisabled = isAmountInvalid || isInsufficientBalance;
 
