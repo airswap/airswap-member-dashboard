@@ -29,9 +29,9 @@ export const ManageStake = ({
 
   const handleSetMaxBalance = () => {
     if (txType === TxType.STAKE) {
-      setValue("stakingAmount", Number(stakableBalance) / 10 ** 4);
+      setValue("stakingAmount", Number(stakableBalance / 10000n));
     } else {
-      setValue("stakingAmount", Number(unstakableBalance) / 10 ** 4);
+      setValue("stakingAmount", Number(unstakableBalance / 10000n));
     }
   };
 
