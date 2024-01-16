@@ -1,6 +1,7 @@
+import * as stakingDeploys from "@airswap/staking/deploys.js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSwitchNetwork, useWaitForTransaction } from "wagmi";
+import { useChainId, useSwitchNetwork, useWaitForTransaction } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { Modal } from "../common/Modal";
@@ -18,17 +19,21 @@ import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
 
 export const StakingModal = () => {
-  const { setShowStakingModal, txType, setTxHash } = useStakingModalStore();
+  // This state tracks whether the last transaction was an approval.
+  const [isApproval, setIsApproval] = useState<boolean>(false);
 
+  const chainId = useChainId();
+  const { setShowStakingModal, txType, setTxHash } = useStakingModalStore();
   const formReturn = useForm();
   const { getValues } = formReturn;
+
+  const address = stakingDeploys[chainId];
+  console.log(address);
+
   const stakingAmountFormatted = getValues().stakingAmount;
 
   const isSupportedChain = useChainSupportsStaking();
   const { switchNetwork } = useSwitchNetwork();
-
-  // This state tracks whether the last transaction was an approval.
-  const [isApproval, setIsApproval] = useState<boolean>(false);
 
   const { astAllowance } = useAstAllowance();
 

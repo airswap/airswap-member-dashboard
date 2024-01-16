@@ -213,9 +213,7 @@ export const ClaimForm = ({}: {}) => {
           {claimable.map(
             ({ claimableAmount, claimableValue, price, tokenInfo }, i) => {
               const isLoaded =
-                tokenInfo?.decimals &&
-                claimableAmount != null &&
-                price;
+                tokenInfo?.decimals && claimableAmount != null && price;
 
               return isLoaded ? (
                 <ClaimableTokensLineItem

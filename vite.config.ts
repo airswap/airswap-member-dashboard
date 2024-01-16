@@ -1,14 +1,16 @@
-import fs from 'fs'
-import { defineConfig } from "vite";
-import path from "path";
 import react from "@vitejs/plugin-react-swc";
 import { execSync } from "child_process";
+import fs from "fs";
+import path from "path";
+import { defineConfig } from "vite";
 
 const getGitData = () => {
-  const hash = fs.existsSync('.git') ?
-    execSync("git rev-parse HEAD").toString().trim() : 'DEV';
-  const date = fs.existsSync('.git') ?
-    execSync("git log -1 --format=%cd").toString().trim() : new Date().toLocaleDateString()
+  const hash = fs.existsSync(".git")
+    ? execSync("git rev-parse HEAD").toString().trim()
+    : "DEV";
+  const date = fs.existsSync(".git")
+    ? execSync("git log -1 --format=%cd").toString().trim()
+    : new Date().toLocaleDateString();
   return { hash, date };
 };
 const gitData = getGitData();
