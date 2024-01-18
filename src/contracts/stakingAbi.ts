@@ -1,11 +1,19 @@
 export const stakingAbi = [
   {
     inputs: [
-      { internalType: "contract ERC20", name: "_token", type: "address" },
       { internalType: "string", name: "_name", type: "string" },
       { internalType: "string", name: "_symbol", type: "string" },
-      { internalType: "uint256", name: "_duration", type: "uint256" },
-      { internalType: "uint256", name: "_minDelay", type: "uint256" },
+      {
+        internalType: "contract ERC20",
+        name: "_stakingToken",
+        type: "address",
+      },
+      { internalType: "uint256", name: "_stakingDuration", type: "uint256" },
+      {
+        internalType: "uint256",
+        name: "_minDurationChangeDelay",
+        type: "uint256",
+      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
@@ -61,12 +69,7 @@ export const stakingAbi = [
   { inputs: [], name: "TimelockActive", type: "error" },
   { inputs: [], name: "TimelockInactive", type: "error" },
   { inputs: [], name: "Timelocked", type: "error" },
-  {
-    anonymous: false,
-    inputs: [],
-    name: "CancelDurationChange",
-    type: "event",
-  },
+  { anonymous: false, inputs: [], name: "CancelDurationChange", type: "event" },
   {
     anonymous: false,
     inputs: [
@@ -153,18 +156,8 @@ export const stakingAbi = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "from",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
+      { indexed: true, internalType: "address", name: "from", type: "address" },
+      { indexed: true, internalType: "address", name: "to", type: "address" },
       {
         indexed: false,
         internalType: "uint256",
@@ -183,14 +176,14 @@ export const stakingAbi = [
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    inputs: [{ internalType: "address", name: "_account", type: "address" }],
     name: "available",
     outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    inputs: [{ internalType: "address", name: "_account", type: "address" }],
     name: "balanceOf",
     outputs: [{ internalType: "uint256", name: "total", type: "uint256" }],
     stateMutability: "view",
@@ -218,14 +211,7 @@ export const stakingAbi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "duration",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    inputs: [{ internalType: "address", name: "_account", type: "address" }],
     name: "getStakes",
     outputs: [
       {
@@ -236,7 +222,7 @@ export const stakingAbi = [
           { internalType: "uint256", name: "maturity", type: "uint256" },
         ],
         internalType: "struct IStaking.Stake",
-        name: "accountStake",
+        name: "_accountStake",
         type: "tuple",
       },
     ],
@@ -258,7 +244,7 @@ export const stakingAbi = [
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "delegate", type: "address" }],
+    inputs: [{ internalType: "address", name: "_delegate", type: "address" }],
     name: "proposeDelegate",
     outputs: [],
     stateMutability: "nonpayable",
@@ -279,21 +265,23 @@ export const stakingAbi = [
     type: "function",
   },
   {
-    inputs: [{ internalType: "uint256", name: "delay", type: "uint256" }],
+    inputs: [{ internalType: "uint256", name: "_delay", type: "uint256" }],
     name: "scheduleDurationChange",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    inputs: [{ internalType: "address", name: "_account", type: "address" }],
     name: "setDelegate",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "uint256", name: "_duration", type: "uint256" }],
+    inputs: [
+      { internalType: "uint256", name: "_stakingDuration", type: "uint256" },
+    ],
     name: "setDuration",
     outputs: [],
     stateMutability: "nonpayable",
@@ -310,7 +298,7 @@ export const stakingAbi = [
     type: "function",
   },
   {
-    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+    inputs: [{ internalType: "uint256", name: "_amount", type: "uint256" }],
     name: "stake",
     outputs: [],
     stateMutability: "nonpayable",
@@ -318,8 +306,8 @@ export const stakingAbi = [
   },
   {
     inputs: [
-      { internalType: "address", name: "account", type: "address" },
-      { internalType: "uint256", name: "amount", type: "uint256" },
+      { internalType: "address", name: "_account", type: "address" },
+      { internalType: "uint256", name: "_amount", type: "uint256" },
     ],
     name: "stakeFor",
     outputs: [],
@@ -328,15 +316,22 @@ export const stakingAbi = [
   },
   {
     inputs: [],
-    name: "symbol",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
+    name: "stakingDuration",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
-    name: "token",
+    name: "stakingToken",
     outputs: [{ internalType: "contract ERC20", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "symbol",
+    outputs: [{ internalType: "string", name: "", type: "string" }],
     stateMutability: "view",
     type: "function",
   },
@@ -355,14 +350,14 @@ export const stakingAbi = [
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "delegate", type: "address" }],
+    inputs: [{ internalType: "address", name: "_delegate", type: "address" }],
     name: "unsetDelegate",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+    inputs: [{ internalType: "uint256", name: "_amount", type: "uint256" }],
     name: "unstake",
     outputs: [],
     stateMutability: "nonpayable",

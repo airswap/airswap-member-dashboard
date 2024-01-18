@@ -196,6 +196,7 @@ export const MigrationModal = ({}: {}) => {
     enabled: !!connectedAccount,
     watch: true,
   });
+  console.log("newStakingAstAllowance", newStakingAstAllowance);
 
   // Save initial amount so we can show the amount even after it's gone.
   const [initialAmount, setInitialAmount] = useState<bigint>();
@@ -265,7 +266,8 @@ export const MigrationModal = ({}: {}) => {
     ...newStakingContract,
     functionName: "stake",
     args: [initialAmount!],
-    enabled: Boolean(currentStep === 2),
+    // enabled: Boolean(currentStep === 2),
+    enabled: true,
   });
   const { write: stake, isLoading: stakeLoading } = useContractWrite({
     ...stakeConfig,
