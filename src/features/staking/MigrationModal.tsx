@@ -5,9 +5,9 @@ import { MdLaunch } from "react-icons/md";
 import { twJoin } from "tailwind-merge";
 import {
   useAccount,
+  useChainId,
   useContractRead,
   useContractWrite,
-  useNetwork,
   usePrepareContractWrite,
   useSwitchNetwork,
 } from "wagmi";
@@ -42,8 +42,9 @@ const MigrationStep = ({
   transactionHash?: string;
   buttonAction?: () => void;
 }) => {
-  const { chain } = useNetwork();
-  const needsSwitchChain = isNextStep && chain?.id !== 1 && chain?.id !== 5;
+  const chainId = useChainId();
+
+  const needsSwitchChain = isNextStep && chainId !== 1 && chainId !== 5;
   const { switchNetwork } = useSwitchNetwork({ chainId: 1 });
 
   return (
@@ -201,12 +202,18 @@ export const MigrationModal = ({}: {}) => {
   const [initialAmount, setInitialAmount] = useState<bigint>();
   useEffect(() => {
     if (v3AvailableBalance && !initialAmount) {
+      // FIXME: type error
       setInitialAmount(v3AvailableBalance);
     }
   }, [v3AvailableBalance, initialAmount]);
 
   const needsApproval =
     initialAmount && initialAmount > (newStakingAstAllowance || 0n);
+
+  // const canStake =
+  //   !!newStakingAstAllowance &&
+  //   astBalance &&
+  //   newStakingAstAllowance >= astBalance;
 
   /* ---------------------------- Contract writes --------------------------- */
 
@@ -244,9 +251,6 @@ export const MigrationModal = ({}: {}) => {
     args: [newStakingContract.address!, initialAmount!],
     enabled: Boolean(currentStep === 1),
   });
-
-  console.log("approveConfig", approveConfig);
-
   const { write: approve, isLoading: approveLoading } = useContractWrite({
     ...approveConfig,
     onSuccess: async (result) => {
@@ -268,7 +272,8 @@ export const MigrationModal = ({}: {}) => {
     ...newStakingContract,
     functionName: "stake",
     args: [initialAmount!],
-    enabled: Boolean(currentStep === 2),
+    enabled: true,
+    // enabled: Boolean(currentStep === 2),
   });
   const { write: stake, isLoading: stakeLoading } = useContractWrite({
     ...stakeConfig,
