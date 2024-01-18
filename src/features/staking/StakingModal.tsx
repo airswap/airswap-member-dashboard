@@ -1,4 +1,3 @@
-import * as stakingDeploys from "@airswap/staking/deploys.js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useChainId, useSwitchNetwork, useWaitForTransaction } from "wagmi";
@@ -26,9 +25,6 @@ export const StakingModal = () => {
   const { setShowStakingModal, txType, setTxHash } = useStakingModalStore();
   const formReturn = useForm();
   const { getValues } = formReturn;
-
-  const address = stakingDeploys[chainId];
-  console.log(address);
 
   const stakingAmountFormatted = getValues().stakingAmount;
 

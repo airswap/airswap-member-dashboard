@@ -15,8 +15,8 @@ import { waitForTransaction } from "wagmi/actions";
 import { ContractTypes } from "../../config/ContractAddresses";
 import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { astAbi } from "../../contracts/astAbi";
-import { stakingAbi } from "../../contracts/stakingAbi";
 import { v3StakingAbi } from "../../contracts/v3StakingAbi";
+import { v4StakingAbi } from "../../contracts/v4StakingAbi";
 import { Button } from "../common/Button";
 import { Modal } from "../common/Modal";
 import { formatNumber } from "../common/utils/formatNumber";
@@ -244,6 +244,9 @@ export const MigrationModal = ({}: {}) => {
     args: [newStakingContract.address!, initialAmount!],
     enabled: Boolean(currentStep === 1),
   });
+
+  console.log("approveConfig", approveConfig);
+
   const { write: approve, isLoading: approveLoading } = useContractWrite({
     ...approveConfig,
     onSuccess: async (result) => {
@@ -261,7 +264,7 @@ export const MigrationModal = ({}: {}) => {
 
   // Restake.
   const { config: stakeConfig } = usePrepareContractWrite({
-    abi: stakingAbi,
+    abi: v4StakingAbi,
     ...newStakingContract,
     functionName: "stake",
     args: [initialAmount!],
@@ -330,7 +333,7 @@ export const MigrationModal = ({}: {}) => {
             verb="Approve"
             stepNumber={2}
             amount={formattedInitialAmount || ""}
-            description="Approve the new staking contract"
+            description="Approve the new v4.2 staking contract"
             isComplete={!needsApproval || Boolean(transactionHashes[1])}
             transactionHash={transactionHashes[1]}
             isNextStep={currentStep === 1}
@@ -342,7 +345,7 @@ export const MigrationModal = ({}: {}) => {
             verb="Stake"
             stepNumber={3}
             amount={formattedInitialAmount || ""}
-            description="Stake using the new contract"
+            description="Stake using the latest v4.2 contract"
             isComplete={Boolean(transactionHashes[2])}
             isNextStep={currentStep === 2}
             isLoading={stakeLoading || isMining[2]}
