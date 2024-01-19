@@ -6,10 +6,16 @@ import { stakingAbi } from "../contracts/stakingAbi";
 
 export const useTokenBalances = () => {
   const { address, isConnected } = useAccount();
-  const [sAstAddress] = useContractAddresses([ContractTypes.AirSwapStaking], {
-    defaultChainId: 1,
-    useDefaultAsFallback: true,
-  });
+  const [sAstAddress, sAstTokenV4_deprecated] = useContractAddresses(
+    [
+      ContractTypes.AirSwapStaking_latest,
+      ContractTypes.AirSwapV4Staking_deprecated,
+    ],
+    {
+      defaultChainId: 1,
+      useDefaultAsFallback: true,
+    },
+  );
 
   const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
     defaultChainId: 1,
@@ -24,6 +30,12 @@ export const useTokenBalances = () => {
   const airSwapStakingContract = {
     address: sAstAddress.address,
     chain: sAstAddress.chainId,
+    abi: stakingAbi,
+  };
+
+  const airSwapStakingV4OldContract = {
+    address: sAstTokenV4_deprecated.address,
+    chain: sAstTokenV4_deprecated.chainId,
     abi: stakingAbi,
   };
 
@@ -44,6 +56,11 @@ export const useTokenBalances = () => {
         functionName: "balanceOf",
         args: [address!],
       },
+      {
+        ...airSwapStakingV4OldContract,
+        functionName: "balanceOf",
+        args: [address!],
+      },
     ],
     enabled: !!isConnected,
   });
@@ -51,6 +68,13 @@ export const useTokenBalances = () => {
   const unstakableSastBalanceRaw = (data && (data[0].result as bigint)) || 0n;
   const sAstBalanceRaw = (data && (data[1].result as bigint)) || 0n;
   const astBalanceRaw = (data && (data[2].result as bigint)) || 0n;
+  const sAstBalanceV4_DeprecatedRaw =
+    (data && (data[3].result as bigint)) || 0n;
 
-  return { unstakableSastBalanceRaw, sAstBalanceRaw, astBalanceRaw };
+  return {
+    unstakableSastBalanceRaw,
+    sAstBalanceRaw,
+    astBalanceRaw,
+    sAstBalanceV4_DeprecatedRaw,
+  };
 };

@@ -196,7 +196,6 @@ export const MigrationModal = ({}: {}) => {
     enabled: !!connectedAccount,
     watch: true,
   });
-  console.log("newStakingAstAllowance", newStakingAstAllowance);
 
   // Save initial amount so we can show the amount even after it's gone.
   const [initialAmount, setInitialAmount] = useState<bigint>();
@@ -292,7 +291,7 @@ export const MigrationModal = ({}: {}) => {
       <Modal
         className="max-w-sm text-white"
         onCloseRequest={() => setShowMigrationModal(false)}
-        heading="Migrate to V4!"
+        heading="Migrate to V4.2!"
         subHeading={
           <span className="[text-wrap:balance]">
             Stake using the new contract to continue voting and earning rewards
