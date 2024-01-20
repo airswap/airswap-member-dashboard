@@ -40,13 +40,11 @@ export const useStakesForAccount = () => {
   });
 
   const sAstBalance = getStakesLatest?.balance;
-  const sAstMaturity = getStakesLatest?.maturity;
   const sAstBalanceV4Deprecated = getStakesV4Deprecated?.balance;
   const sAstMaturityV4Deprecated = getStakesV4Deprecated?.maturity;
 
   return {
     sAstBalance,
-    sAstMaturity,
     sAstBalanceV4Deprecated,
     sAstMaturityV4Deprecated,
   };
