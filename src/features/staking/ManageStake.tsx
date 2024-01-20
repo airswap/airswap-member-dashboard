@@ -12,6 +12,7 @@ import { LineBreak } from "../common/LineBreak";
 import { formatNumber } from "../common/utils/formatNumber";
 import { NumberInput } from "./NumberInput";
 import { PieBar } from "./PieBar";
+import { useStakesForAccount } from "./hooks/useStakesForAccount";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
 
@@ -43,6 +44,10 @@ export const ManageStake = ({
     useTokenBalances();
 
   const availableBalance = formatNumber(availableBalanceV4, 4);
+
+  // TODO: for v4.1, if currentTimestamp > maturity and balance > 0, show unstaking modal only for v4.2. If sAstBalanceV4Deprecated = 0, show regular UI only applicable for v4.2
+  const stakes = useStakesForAccount();
+  console.log(stakes);
 
   useEffect(() => {
     if (sAstBalance != null && unstakableBalance != null) {
