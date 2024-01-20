@@ -35,7 +35,8 @@ export const ManageStake = ({
     sAstMaturityV4Deprecated: sAstV4Maturity,
   } = useStakesForAccount();
 
-  console.log(sAstV4Maturity);
+  const isCannotUnstakeV4Balance =
+    Number(sAstV4Balance) > 0 && Number(sAstV4Maturity) > 0;
 
   const availableSAstV4Balance = formatNumber(sAstV4Balance, 4) || 0;
 
@@ -70,7 +71,9 @@ export const ManageStake = ({
 
   // if use has v4.0 stake which has not fully vested
   const handleDisplayMessage = () => {
-    if (+availableSAstV4Balance > 0 && txType === TxType.UNSTAKE) {
+    if (canUnstakeV4Balance && txType === TxType.UNSTAKE) {
+      `You have ${+availableSAstV4Balance} AST staking in the (deprecated) v4.1 Staking contract. Please unstake this balance first, then you can unstake your AST balance from the upgraded v4.2 contract.`;
+    } else if (isCannotUnstakeV4Balance && txType === TxType.UNSTAKE) {
       `Hey! You've got a V4.1 stake. You currently have ${availableSAstV4Balance} AST avaialble to unstake. The remainder of your tokens are still vesting. We're halting withdrawals of unvested AST from the v4.1 contract. However, you may unstake your available AST from the v4.2 contract.`;
     } else {
       return "Stake AST prior to voting on proposals. The amount of tokens you stake determines the weight of your vote. Tokens unlock linearly over 20 weeks.";

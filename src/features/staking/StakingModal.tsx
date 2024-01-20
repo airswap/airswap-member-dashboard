@@ -155,6 +155,7 @@ export const StakingModal = () => {
     resetApproveAst,
     resetStakeAst,
     resetUnstakeSast,
+    resetUnstakeSastV4Deprecated,
     formReturn,
   });
 
@@ -167,6 +168,8 @@ export const StakingModal = () => {
       return actionButtons.stake;
     } else if (dataUnstakeSast) {
       return actionButtons.unstake;
+    } else if (dataUnstakeSastV4Deprecated) {
+      return actionButtons.unstakeV4Deprecated;
     } else {
       return undefined;
     }
