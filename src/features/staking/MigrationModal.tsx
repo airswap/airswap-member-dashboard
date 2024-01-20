@@ -173,7 +173,7 @@ export const MigrationModal = ({}: {}) => {
   const [newStakingContract, oldStakingContract, astContract] =
     useContractAddresses(
       [
-        ContractTypes.AirSwapStaking,
+        ContractTypes.AirSwapStaking_latest,
         ContractTypes.AirSwapV3Staking_deprecated,
         ContractTypes.AirSwapToken,
       ],
@@ -304,9 +304,9 @@ export const MigrationModal = ({}: {}) => {
             staking contract.
           </p>
           <p>
-            After 31st December 2023 you will no longer be able to vote with AST
-            staked in this way. Please migrate at your earliest convenience by
-            following the steps below.
+            Since 31st December 2023, it hasn't been possible to vote with your
+            AST in this way. Please migrate to V4.2 at your earliest convenience
+            by following the steps below.
           </p>
         </div>
 

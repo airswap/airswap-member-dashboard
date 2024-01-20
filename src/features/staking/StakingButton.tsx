@@ -24,10 +24,8 @@ export const StakingButton = () => {
         <span className="hidden sm:flex font-medium ">{`${
           sAstBalance || 0
         } sAST (v4.2)`}</span>
-        {sAstBalanceV4_DeprecatedRaw > 0 && (
-          <span className="hidden sm:flex font-medium ">{`${
-            sAstBalanceV4_DeprecatedRaw || 0
-          } sAST (v4.0)`}</span>
+        {Number(sAstBalanceV4) > 0 && (
+          <span className="hidden sm:flex font-medium ">{`${sAstBalanceV4} sAST (v4.0)`}</span>
         )}
         <Button
           className="-mr-5 -my-px"

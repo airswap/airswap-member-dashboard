@@ -17,7 +17,7 @@ export const useApproveAst = ({
   });
 
   const [airSwapStaking] = useContractAddresses(
-    [ContractTypes.AirSwapStaking],
+    [ContractTypes.AirSwapStaking_latest],
     {
       defaultChainId: 1,
       useDefaultAsFallback: false,

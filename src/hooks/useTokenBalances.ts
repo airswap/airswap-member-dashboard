@@ -58,6 +58,11 @@ export const useTokenBalances = () => {
       },
       {
         ...airSwapStakingV4OldContract,
+        functionName: "available",
+        args: [address!],
+      },
+      {
+        ...airSwapStakingV4OldContract,
         functionName: "balanceOf",
         args: [address!],
       },
@@ -68,13 +73,17 @@ export const useTokenBalances = () => {
   const unstakableSastBalanceRaw = (data && (data[0].result as bigint)) || 0n;
   const sAstBalanceRaw = (data && (data[1].result as bigint)) || 0n;
   const astBalanceRaw = (data && (data[2].result as bigint)) || 0n;
-  const sAstBalanceV4_DeprecatedRaw =
+  const unstakableSastBalanceV4_DeprecatedRaw =
     (data && (data[3].result as bigint)) || 0n;
+  const sAstBalanceV4_DeprecatedRaw =
+    (data && (data[4].result as bigint)) || 0n;
 
   return {
     unstakableSastBalanceRaw,
     sAstBalanceRaw,
     astBalanceRaw,
+    // TODO: eventually we will remote depricated values when all members have unstaked from V4.1
+    unstakableSastBalanceV4_DeprecatedRaw,
     sAstBalanceV4_DeprecatedRaw,
   };
 };

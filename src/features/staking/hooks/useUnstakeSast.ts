@@ -17,7 +17,7 @@ export const useUnstakeSast = ({
   canUnstake: boolean;
 }) => {
   const [airSwapStaking] = useContractAddresses(
-    [ContractTypes.AirSwapStaking],
+    [ContractTypes.AirSwapStaking_latest],
     {
       defaultChainId: 1,
       useDefaultAsFallback: false,
