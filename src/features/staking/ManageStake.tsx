@@ -12,6 +12,7 @@ import { PieBar } from "./PieBar";
 import { useStakesForAccount } from "./hooks/useStakesForAccount";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
+import { convertUnixToDays } from "./utils/convertUnixToDays";
 
 export const ManageStake = ({
   formReturn,
@@ -28,12 +29,13 @@ export const ManageStake = ({
     astBalanceRaw: stakableBalance,
   } = useTokenBalances();
 
-  // TODO: for v4.1, if currentTimestamp > maturity and balance > 0, show unstaking modal only for v4.2. If sAstBalanceV4Deprecated = 0, show regular UI only applicable for v4.2
   const {
     sAstBalance,
     sAstBalanceV4Deprecated: sAstV4Balance,
     sAstMaturityV4Deprecated: sAstV4Maturity,
   } = useStakesForAccount();
+
+  const timeLeftToUnstake = convertUnixToDays(sAstV4Maturity);
 
   const isCannotUnstakeV4Balance =
     Number(sAstV4Balance) > 0 && Number(sAstV4Maturity) > 0;
@@ -69,14 +71,29 @@ export const ManageStake = ({
   const isMaxButtonDisabled =
     canUnstakeV4Balance && txType === TxType.UNSTAKE ? true : false;
 
+  const contentBox = (
+    <div>
+      New stakes are locked for 20 weeks and unlocked linearly.{" "}
+      {
+        <a
+          href="https://about.airswap.io/about/frequently-asked-questions#what-are-the-rules-of-staking"
+          target="_blank"
+          rel="noopener noreferer"
+          style={{ textDecoration: "underline" }}
+        >
+          Learn more about staking
+        </a>
+      }
+      .
+    </div>
+  );
+
   // if use has v4.0 stake which has not fully vested
-  const handleDisplayMessage = () => {
-    if (canUnstakeV4Balance && txType === TxType.UNSTAKE) {
+  const contentBoxV4Stake = () => {
+    if (canUnstakeV4Balance) {
       `You have ${+availableSAstV4Balance} AST staking in the (deprecated) v4.1 Staking contract. Please unstake this balance first, then you can unstake your AST balance from the upgraded v4.2 contract.`;
-    } else if (isCannotUnstakeV4Balance && txType === TxType.UNSTAKE) {
+    } else if (isCannotUnstakeV4Balance) {
       `Hey! You've got a V4.1 stake. You currently have ${availableSAstV4Balance} AST avaialble to unstake. The remainder of your tokens are still vesting. We're halting withdrawals of unvested AST from the v4.1 contract. However, you may unstake your available AST from the v4.2 contract.`;
-    } else {
-      return "Stake AST prior to voting on proposals. The amount of tokens you stake determines the weight of your vote. Tokens unlock linearly over 20 weeks.";
     }
   };
 
@@ -92,7 +109,21 @@ export const ManageStake = ({
     <div>
       <PieBar />
       <LineBreak className="relative mb-4 -mx-6" />
-      <div className="font-lg pointer-cursor rounded-md font-semibold">
+      <div className="mt-4 rounded px-4 py-3 text-xs leading-[18px] bg-gray-800 text-gray-400">
+        <div className="flex flex-row gap-2 items-start">{contentBox}</div>
+      </div>
+
+      {!!sAstV4Balance && sAstV4Balance > 0 && (
+        <div className="mt-4 rounded px-4 py-3 text-xs leading-[18px] bg-gray-800 text-gray-400">
+          <div className="flex flex-row gap-2 items-start">
+            <div>
+              <IoMdAlert size={20} className="mt-1" />
+            </div>
+            <div>{contentBoxV4Stake()}</div>
+          </div>
+        </div>
+      )}
+      <div className="my-4 font-lg pointer-cursor rounded-md font-semibold">
         <Button
           className={twJoin([
             "w-1/2 p-2",
@@ -116,21 +147,6 @@ export const ManageStake = ({
         >
           Unstake
         </Button>
-      </div>
-      <div
-        className={twJoin(
-          "my-4 rounded px-4 py-3 text-xs leading-[18px]",
-          "bg-gray-800 text-gray-400",
-        )}
-      >
-        <div className="flex flex-row gap-2 items-start">
-          {!!sAstV4Balance && sAstV4Balance > 0 && (
-            <div>
-              <IoMdAlert size={20} className="mt-1" />
-            </div>
-          )}
-          <div>{handleDisplayMessage()}</div>
-        </div>
       </div>
       <div className="flex items-center justify-between rounded border border-gray-800 bg-gray-950 px-5 py-4">
         <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8" />
