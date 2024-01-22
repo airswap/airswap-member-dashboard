@@ -5,6 +5,7 @@ import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { Modal } from "../common/Modal";
 import { TransactionTracker } from "../common/TransactionTracker";
+import { formatNumber } from "../common/utils/formatNumber";
 import { ManageStake } from "./ManageStake";
 import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
@@ -23,7 +24,8 @@ export const StakingModal = () => {
 
   const formReturn = useForm();
   const { getValues } = formReturn;
-  const stakingAmountFormatted = getValues().stakingAmount;
+  const stakingAmountNumberFormat = getValues().stakingAmount;
+  const stakingAmount = BigInt(stakingAmountNumberFormat);
 
   const isSupportedChain = useChainSupportsStaking();
   const { switchNetwork } = useSwitchNetwork();
@@ -32,39 +34,34 @@ export const StakingModal = () => {
   const [isApproval, setIsApproval] = useState<boolean>(false);
 
   const { astAllowance } = useAstAllowance();
+  console.log(astAllowance);
 
   const {
     unstakableSastBalanceRaw: unstakableSastBalance,
     astBalanceRaw: astBalance,
   } = useTokenBalances();
 
-  const {
-    sAstBalanceV4Deprecated: sAstV4Balance,
-    sAstMaturityV4Deprecated: sAstV4Maturity,
-  } = useStakesForAccount();
+  const { sAstBalanceV4Deprecated: sAstV4Balance } = useStakesForAccount();
 
-  // stakingAmount default is NaN. Wagmi hooks need to validate that stakingAmount exists
-  const validNumberInput =
-    !!stakingAmountFormatted && Number(stakingAmountFormatted) * 10 ** 4 > 0;
+  const isStakeAmountAndStakeType = txType === TxType.STAKE && !!stakingAmount;
+
+  // TODO: if `!!stakingAmount works as intended, delete `validNumberInput` and this comment
+  // const validNumberInput = !!stakingAmountFormatted && Number(stakingAmountFormatted) * 10 ** 4 > 0;
+
+  // TODO: delete following comment if `needsApproval` in the following line works as intended
+  // const needsApproval =  txType === TxType.STAKE && Number(astAllowance) < Number(stakingAmountFormatted) * 10 ** 4 && !!stakingAmount;
 
   const needsApproval =
-    txType === TxType.STAKE &&
-    Number(astAllowance) < Number(stakingAmountFormatted) * 10 ** 4 &&
-    validNumberInput;
+    isStakeAmountAndStakeType && !!astAllowance && astAllowance < stakingAmount;
 
-  const canStake =
-    txType === TxType.STAKE && !needsApproval && validNumberInput;
+  const canStake = isStakeAmountAndStakeType && !needsApproval;
 
   const canUnstake =
-    Number(stakingAmountFormatted) * 10 ** 4 <= Number(unstakableSastBalance) &&
-    txType === TxType.UNSTAKE &&
-    validNumberInput;
+    isStakeAmountAndStakeType && stakingAmount <= unstakableSastBalance;
 
-  const isInsufficientBalance =
-    txType === TxType.STAKE && stakingAmountFormatted
-      ? Number(stakingAmountFormatted) * 10 ** 4 > Number(astBalance)
-      : Number(stakingAmountFormatted) * 10 ** 4 >
-        Number(unstakableSastBalance);
+  const isInsufficientBalance = isStakeAmountAndStakeType
+    ? stakingAmount > astBalance
+    : stakingAmount > unstakableSastBalance;
 
   const {
     writeAsync: approveAst,
@@ -72,8 +69,8 @@ export const StakingModal = () => {
     reset: resetApproveAst,
     isLoading: approvalAwaitingSignature,
   } = useApproveAst({
-    stakingAmountFormatted: Number(stakingAmountFormatted) || 0,
-    enabled: needsApproval,
+    stakingAmount,
+    enabled: !!needsApproval,
   });
 
   const {
@@ -82,7 +79,7 @@ export const StakingModal = () => {
     data: dataStakeAst,
     isLoading: stakeAwaitingSignature,
   } = useStakeAst({
-    stakingAmountFormatted: Number(stakingAmountFormatted) || 0,
+    stakingAmount,
     enabled: canStake,
   });
 
@@ -92,7 +89,8 @@ export const StakingModal = () => {
     data: dataUnstakeSast,
     isLoading: unstakeAwaitingSignature,
   } = useUnstakeSast({
-    unstakingAmount: Number(stakingAmountFormatted) || 0,
+    unstakingAmount: stakingAmount,
+    enabled: canUnstake,
   });
 
   const {
@@ -105,6 +103,8 @@ export const StakingModal = () => {
     contractVersion: ContractVersion.V4,
     enabled: !!sAstV4Balance,
   });
+
+  console.log(unstakeSastV4Deprecated);
 
   useEffect(() => {
     // after successfully staking, `needsApproval` will reset to true. We need `dataStakeAst` to be falsey to set `isApproval` to true, otherwise const `verb` will show as "approved" after the user has staked
@@ -137,11 +137,13 @@ export const StakingModal = () => {
       approve: approveAst,
       stake: stakeAst,
       unstake: unstakeSast,
+      unstakeV4Deprecated: unstakeSastV4Deprecated,
     },
     insufficientBalance: isInsufficientBalance,
+    unstakeV4Deprecated: !!unstakeSastV4Deprecated,
   });
 
-  const isAmountInvalid = Number(stakingAmountFormatted || 0) <= 0;
+  const isAmountInvalid = stakingAmount <= 0;
 
   const isStakeButtonDisabled = isAmountInvalid || isInsufficientBalance;
 
@@ -173,6 +175,7 @@ export const StakingModal = () => {
     stakeAwaitingSignature ||
     approvalAwaitingSignature ||
     unstakeAwaitingSignature ||
+    unstakeAwaitingSignatureV4Deprecated ||
     !!currentTransactionHash;
 
   // Used in "you successfully {verb} {stakingAmount} AST"
@@ -189,6 +192,8 @@ export const StakingModal = () => {
     unstakeAwaitingSignature ||
     unstakeAwaitingSignatureV4Deprecated ||
     txStatus === "loading";
+
+  const formattedStakingAmount = formatNumber(stakingAmount, 4);
 
   useEffect(() => {
     currentTransactionHash ? setTxHash(currentTransactionHash) : null;
@@ -207,7 +212,7 @@ export const StakingModal = () => {
           successContent={
             <span>
               You successfully {verb}{" "}
-              <span className="text-white">{stakingAmountFormatted} AST</span>
+              <span className="text-white">{formattedStakingAmount} AST</span>
             </span>
           }
           failureContent={"Your transaction has failed"}

@@ -44,7 +44,7 @@ export const useUnstakeSast = ({
     abi: stakingAbi,
     functionName: "unstake",
     // args: [BigInt(unstakingAmountConversion)],
-    args: [unstakingAmount!],
+    args: [unstakingAmount || BigInt(0)],
     enabled,
   });
 

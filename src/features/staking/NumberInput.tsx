@@ -1,7 +1,6 @@
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
-import { useStakesForAccount } from "./hooks/useStakesForAccount";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
 
@@ -17,11 +16,6 @@ export const NumberInput = ({
     astBalanceRaw: astBalance,
     unstakableSastBalanceRaw: unstakableSAstBalance,
   } = useTokenBalances();
-
-  const {
-    sAstBalanceV4Deprecated: sAstV4Balance,
-    sAstMaturityV4Deprecated: sAstV4Maturity,
-  } = useStakesForAccount();
 
   return (
     <input

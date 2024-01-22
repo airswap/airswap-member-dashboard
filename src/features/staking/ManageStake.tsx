@@ -129,9 +129,9 @@ export const ManageStake = ({
 
       {txType === TxType.UNSTAKE && !!sAstV4Balance && (
         <div className="mt-4 rounded px-4 py-3 text-xs leading-[18px] bg-gray-800 text-gray-400">
-          <div className="flex flex-row gap-2 items-start">
+          <div className="flex flex-row gap-2 items-center">
             <div>
-              <IoMdAlert size={20} className="mt-1" />
+              <IoMdAlert size={20} />
             </div>
             {availableSAstV4Balance && <div>{contentBoxV4Stake()}</div>}
           </div>
@@ -145,7 +145,7 @@ export const ManageStake = ({
           ])}
           rounded="leftFalse"
           size="small"
-          onClick={() => handleSwitchStakeButton}
+          onClick={handleSwitchStakeButton}
         >
           Stake
         </Button>

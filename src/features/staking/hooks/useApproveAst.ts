@@ -1,14 +1,13 @@
-import BigNumber from "bignumber.js";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
 
 export const useApproveAst = ({
-  stakingAmountFormatted,
+  stakingAmount,
   enabled = true,
 }: {
-  stakingAmountFormatted: number;
+  stakingAmount: bigint;
   enabled?: boolean;
 }) => {
   const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
@@ -24,16 +23,16 @@ export const useApproveAst = ({
     },
   );
 
-  const stakingAmountConversion = new BigNumber(stakingAmountFormatted)
-    .multipliedBy(10 ** 4)
-    .integerValue()
-    .toString();
+  // const stakingAmountConversion = new BigNumber(stakingAmount)
+  //   .multipliedBy(10 ** 4)
+  //   .integerValue()
+  //   .toString();
 
   const { config: configApprove } = usePrepareContractWrite({
     address: airSwapToken.address,
     abi: astAbi,
     functionName: "approve",
-    args: [airSwapStaking.address!, BigInt(stakingAmountConversion || 0)],
+    args: [airSwapStaking.address!, stakingAmount || BigInt(0)],
     enabled: enabled && !!airSwapStaking.address,
   });
 
