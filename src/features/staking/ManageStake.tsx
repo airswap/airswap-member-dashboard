@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { IoMdAlert } from "react-icons/io";
 import { twJoin } from "tailwind-merge";
+import { WriteContractResult } from "wagmi/actions";
 import AirSwapLogo from "../../assets/airswap-logo.svg";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
@@ -16,10 +17,10 @@ import { convertUnixToDays } from "./utils/convertUnixToDays";
 
 export const ManageStake = ({
   formReturn,
-  canUnstakeV4Balance,
+  unstakeSastV4Deprecated,
 }: {
   formReturn: UseFormReturn<FieldValues>;
-  canUnstakeV4Balance: boolean;
+  unstakeSastV4Deprecated: (() => Promise<WriteContractResult>) | undefined;
 }) => {
   const { txType, setTxType } = useStakingModalStore();
   const { setValue } = formReturn;
@@ -35,10 +36,11 @@ export const ManageStake = ({
     sAstMaturityV4Deprecated: sAstV4Maturity,
   } = useStakesForAccount();
 
+  // if timeLeftToUnstake <=0
   const timeLeftToUnstake = convertUnixToDays(sAstV4Maturity);
 
-  const isCannotUnstakeV4Balance =
-    Number(sAstV4Balance) > 0 && Number(sAstV4Maturity) > 0;
+  const hasV4BalanceCanUnstake = sAstV4Balance && !timeLeftToUnstake;
+  const hasV4BalanceCannotUnstake = sAstV4Balance && timeLeftToUnstake;
 
   const availableSAstV4Balance = formatNumber(sAstV4Balance, 4) || 0;
 
@@ -68,9 +70,6 @@ export const ManageStake = ({
     }
   };
 
-  const isMaxButtonDisabled =
-    canUnstakeV4Balance && txType === TxType.UNSTAKE ? true : false;
-
   const contentBox = (
     <div>
       New stakes are locked for 20 weeks and unlocked linearly.{" "}
@@ -79,7 +78,7 @@ export const ManageStake = ({
           href="https://about.airswap.io/about/frequently-asked-questions#what-are-the-rules-of-staking"
           target="_blank"
           rel="noopener noreferer"
-          style={{ textDecoration: "underline" }}
+          className="underline"
         >
           Learn more about staking
         </a>
@@ -90,10 +89,25 @@ export const ManageStake = ({
 
   // if use has v4.0 stake which has not fully vested
   const contentBoxV4Stake = () => {
-    if (canUnstakeV4Balance) {
-      `You have ${+availableSAstV4Balance} AST staking in the (deprecated) v4.1 Staking contract. Please unstake this balance first, then you can unstake your AST balance from the upgraded v4.2 contract.`;
-    } else if (isCannotUnstakeV4Balance) {
-      `Hey! You've got a V4.1 stake. You currently have ${availableSAstV4Balance} AST avaialble to unstake. The remainder of your tokens are still vesting. We're halting withdrawals of unvested AST from the v4.1 contract. However, you may unstake your available AST from the v4.2 contract.`;
+    if (hasV4BalanceCanUnstake) {
+      return (
+        <div>
+          You have {availableSAstV4Balance} AST staked in v4.{" "}
+          {
+            <span
+              onClick={unstakeSastV4Deprecated}
+              className="underline hover:cursor-pointer"
+            >
+              Unstake now
+            </span>
+          }
+          .
+        </div>
+      );
+    } else if (hasV4BalanceCannotUnstake) {
+      return `You have ${availableSAstV4Balance} AST staked in v4. It can be unstaked in ${timeLeftToUnstake.days} days ${timeLeftToUnstake.hours} hours, ${timeLeftToUnstake.minutes} minutes`;
+    } else {
+      return null;
     }
   };
 
@@ -113,13 +127,13 @@ export const ManageStake = ({
         <div className="flex flex-row gap-2 items-start">{contentBox}</div>
       </div>
 
-      {!!sAstV4Balance && sAstV4Balance > 0 && (
+      {txType === TxType.UNSTAKE && !!sAstV4Balance && (
         <div className="mt-4 rounded px-4 py-3 text-xs leading-[18px] bg-gray-800 text-gray-400">
           <div className="flex flex-row gap-2 items-start">
             <div>
               <IoMdAlert size={20} className="mt-1" />
             </div>
-            <div>{contentBoxV4Stake()}</div>
+            {availableSAstV4Balance && <div>{contentBoxV4Stake()}</div>}
           </div>
         </div>
       )}
@@ -131,7 +145,7 @@ export const ManageStake = ({
           ])}
           rounded="leftFalse"
           size="small"
-          onClick={handleSwitchStakeButton}
+          onClick={() => handleSwitchStakeButton}
         >
           Stake
         </Button>
@@ -152,13 +166,9 @@ export const ManageStake = ({
         <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8" />
         <div className="flex flex-row items-end uppercase w-full overflow-hidden">
           <div>
-            <NumberInput
-              formReturn={formReturn}
-              canUnstakeV4Balance={canUnstakeV4Balance}
-            />
+            <NumberInput formReturn={formReturn} />
           </div>
           <Button
-            disabled={isMaxButtonDisabled}
             onClick={handleSetMaxBalance}
             color="darkGray"
             size="smaller"

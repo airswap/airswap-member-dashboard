@@ -6,7 +6,7 @@ type ButtonActions = {
   stake: (() => Promise<WriteContractResult>) | undefined;
   unstake: (() => Promise<WriteContractResult>) | undefined;
   switchNetwork: (() => void) | undefined;
-  unstakeV4Deprecated: (() => Promise<WriteContractResult>) | undefined;
+  unstakeV4Deprecated?: (() => Promise<WriteContractResult>) | undefined;
 };
 
 export const modalButtonActionsAndText = ({
@@ -15,14 +15,12 @@ export const modalButtonActionsAndText = ({
   needsApproval,
   buttonActions,
   insufficientBalance,
-  canUnstakeV4Balance,
 }: {
   isSupportedNetwork: boolean;
   txType: TxType;
   needsApproval: boolean;
   buttonActions: ButtonActions;
   insufficientBalance?: boolean;
-  canUnstakeV4Balance: boolean;
 }) => {
   if (!isSupportedNetwork) {
     return {
@@ -46,16 +44,17 @@ export const modalButtonActionsAndText = ({
       callback: buttonActions.stake,
     };
   }
-  if (txType === TxType.UNSTAKE && !canUnstakeV4Balance) {
+  if (txType === TxType.UNSTAKE) {
     return {
       label: "Unstake",
       callback: buttonActions.unstake,
     };
   }
-  if (txType === TxType.UNSTAKE && canUnstakeV4Balance) {
-    return {
-      label: "Unstake V4.0 balance",
-      callback: buttonActions.unstakeV4Deprecated,
-    };
-  }
+  // TODO: implement when v4 unstaking should be enabled
+  // if (txType === TxType.UNSTAKE) {
+  //   return {
+  //     label: "Unstake V4.0 balance",
+  //     callback: buttonActions.unstakeV4Deprecated,
+  //   };
+  // }
 };

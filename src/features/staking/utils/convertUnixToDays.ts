@@ -11,12 +11,25 @@ export const convertUnixToDays = (maturity: bigint | undefined) => {
     timeDifferenceInMilliseconds / (1000 * 60 * 60 * 24),
   );
 
-  const timeDifferenceInMinutes = Math.floor(
-    (timeDifferenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60),
+  const timeDifferenceInHours = Math.floor(
+    (timeDifferenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
   );
+
+  const timeDifferenceInMinutes = Math.floor(
+    (timeDifferenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60),
+  );
+
+  // returning false means that time is up
+  if (
+    timeDifferenceInDays <= 0 &&
+    timeDifferenceInHours <= 0 &&
+    timeDifferenceInMinutes <= 0
+  )
+    return false;
 
   return {
     days: timeDifferenceInDays,
+    hours: timeDifferenceInHours,
     minutes: timeDifferenceInMinutes,
   };
 };

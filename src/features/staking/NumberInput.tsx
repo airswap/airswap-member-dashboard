@@ -1,18 +1,14 @@
-import { useEffect } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { twJoin } from "tailwind-merge";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
-import { formatNumber } from "../common/utils/formatNumber";
 import { useStakesForAccount } from "./hooks/useStakesForAccount";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
 
 export const NumberInput = ({
   formReturn,
-  canUnstakeV4Balance,
 }: {
   formReturn: UseFormReturn<FieldValues>;
-  canUnstakeV4Balance: boolean;
 }) => {
   const { txType } = useStakingModalStore();
   const { register, setValue, watch } = formReturn;
@@ -27,20 +23,8 @@ export const NumberInput = ({
     sAstMaturityV4Deprecated: sAstV4Maturity,
   } = useStakesForAccount();
 
-  const formattedSAstV4Balance = formatNumber(sAstV4Balance, 4);
-
-  const isInputDisabled =
-    canUnstakeV4Balance && txType === TxType.UNSTAKE ? true : false;
-
-  useEffect(() => {
-    if (canUnstakeV4Balance) {
-      setValue("stakingAmount", formattedSAstV4Balance);
-    }
-  }, [canUnstakeV4Balance, formattedSAstV4Balance, setValue]);
-
   return (
     <input
-      disabled={isInputDisabled}
       max={Number(astBalance)}
       placeholder="0.00"
       autoComplete="off"

@@ -13,7 +13,7 @@ import { useStakeAst } from "./hooks/useStakeAst";
 import { useStakesForAccount } from "./hooks/useStakesForAccount";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
 import { useStakingModalStore } from "./store/useStakingModalStore";
-import { TxType } from "./types/StakingTypes";
+import { ContractVersion, TxType } from "./types/StakingTypes";
 import { actionButtonsObject } from "./utils/actionButtonObject";
 import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
@@ -66,10 +66,6 @@ export const StakingModal = () => {
       : Number(stakingAmountFormatted) * 10 ** 4 >
         Number(unstakableSastBalance);
 
-  // if this is true, v4.2 staking will be blocked, and v4.0 will be enabled
-  const canUnstakeV4Balance =
-    !!sAstV4Balance && Number(sAstV4Balance) > 0 && Number(sAstV4Maturity) > 0;
-
   const {
     writeAsync: approveAst,
     data: dataApproveAst,
@@ -96,8 +92,7 @@ export const StakingModal = () => {
     data: dataUnstakeSast,
     isLoading: unstakeAwaitingSignature,
   } = useUnstakeSast({
-    unstakingAmountFormatted: Number(stakingAmountFormatted) || 0,
-    canUnstake: canUnstake && !canUnstakeV4Balance,
+    unstakingAmount: Number(stakingAmountFormatted) || 0,
   });
 
   const {
@@ -106,8 +101,9 @@ export const StakingModal = () => {
     data: dataUnstakeSastV4Deprecated,
     isLoading: unstakeAwaitingSignatureV4Deprecated,
   } = useUnstakeSast({
-    unstakingAmountFormatted: Number(stakingAmountFormatted) || 0,
-    canUnstake: canUnstakeV4Balance,
+    unstakingAmount: sAstV4Balance,
+    contractVersion: ContractVersion.V4,
+    enabled: !!sAstV4Balance,
   });
 
   useEffect(() => {
@@ -141,10 +137,8 @@ export const StakingModal = () => {
       approve: approveAst,
       stake: stakeAst,
       unstake: unstakeSast,
-      unstakeV4Deprecated: unstakeSastV4Deprecated,
     },
     insufficientBalance: isInsufficientBalance,
-    canUnstakeV4Balance,
   });
 
   const isAmountInvalid = Number(stakingAmountFormatted || 0) <= 0;
@@ -193,6 +187,7 @@ export const StakingModal = () => {
     approvalAwaitingSignature ||
     stakeAwaitingSignature ||
     unstakeAwaitingSignature ||
+    unstakeAwaitingSignatureV4Deprecated ||
     txStatus === "loading";
 
   useEffect(() => {
@@ -227,7 +222,7 @@ export const StakingModal = () => {
         <>
           <ManageStake
             formReturn={formReturn}
-            canUnstakeV4Balance={canUnstakeV4Balance}
+            unstakeSastV4Deprecated={unstakeSastV4Deprecated}
           />
           <div>
             <Button
