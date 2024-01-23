@@ -98,9 +98,6 @@ export const StakingModal = () => {
     enabled: !!sAstV4Balance,
   });
 
-  console.log(sAstV4BalanceFormatted);
-  console.log("unstakeSastV4Deprecated", unstakeSastV4Deprecated);
-
   const currentTransactionHash =
     dataApproveAst?.hash ||
     dataStakeAst?.hash ||

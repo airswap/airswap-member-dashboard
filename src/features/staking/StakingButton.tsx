@@ -16,8 +16,6 @@ export const StakingButton = () => {
 
   const totalSastBalance = Number(sAstBalance) + Number(sAstBalanceV4);
 
-  console.log(totalSastBalance);
-
   return (
     <>
       <div
