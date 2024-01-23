@@ -57,9 +57,7 @@ export const PieBar = () => {
           <BsCircleFill className={`text-${stakable.color} `} size={14} />
         </div>
         <span className="font-medium font-mono">{stakable.var}</span>
-        <span className="content-end text-gray-400 relative -top-0.5">
-          &nbsp; {stakable.text}
-        </span>
+        <span className="text-gray-400 relative">&nbsp; {stakable.text}</span>
       </div>
     );
   });
