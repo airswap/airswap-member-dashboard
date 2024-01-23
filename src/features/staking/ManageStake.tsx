@@ -153,7 +153,7 @@ export const ManageStake = ({
       </div>
       <div className="flex items-center justify-between rounded border border-gray-800 bg-gray-950 px-5 py-4">
         <img src={AirSwapLogo} alt="AirSwap Logo" className="h-8 w-8" />
-        <div className="flex flex-row items-end uppercase w-full overflow-hidden">
+        <div className="flex flex-row uppercase w-full overflow-hidden">
           <div>
             <NumberInput formReturn={formReturn} />
           </div>
