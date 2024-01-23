@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { IoMdAlert } from "react-icons/io";
 import { twJoin } from "tailwind-merge";
@@ -110,14 +109,6 @@ export const ManageStake = ({
       return null;
     }
   };
-
-  useEffect(() => {
-    if (sAstBalance != null && unstakableBalance != null) {
-      if (sAstBalance === unstakableBalance) {
-        setValue("stakingAmount", Number(sAstBalance / 10000n));
-      }
-    }
-  }, [sAstBalance, unstakableBalance, setValue]);
 
   return (
     <div>

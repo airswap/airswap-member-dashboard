@@ -5,7 +5,6 @@ import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { Modal } from "../common/Modal";
 import { TransactionTracker } from "../common/TransactionTracker";
-import { formatNumber } from "../common/utils/formatNumber";
 import { ManageStake } from "./ManageStake";
 import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
@@ -25,7 +24,7 @@ export const StakingModal = () => {
   const formReturn = useForm();
   const { getValues } = formReturn;
   const stakingAmountNumberFormat = getValues().stakingAmount;
-  const stakingAmount = BigInt(stakingAmountNumberFormat);
+  const stakingAmount = BigInt(stakingAmountNumberFormat || 0);
 
   const isSupportedChain = useChainSupportsStaking();
   const { switchNetwork } = useSwitchNetwork();
@@ -34,7 +33,6 @@ export const StakingModal = () => {
   const [isApproval, setIsApproval] = useState<boolean>(false);
 
   const { astAllowance } = useAstAllowance();
-  console.log(astAllowance);
 
   const {
     unstakableSastBalanceRaw: unstakableSastBalance,
@@ -45,23 +43,21 @@ export const StakingModal = () => {
 
   const isStakeAmountAndStakeType = txType === TxType.STAKE && !!stakingAmount;
 
-  // TODO: if `!!stakingAmount works as intended, delete `validNumberInput` and this comment
-  // const validNumberInput = !!stakingAmountFormatted && Number(stakingAmountFormatted) * 10 ** 4 > 0;
-
-  // TODO: delete following comment if `needsApproval` in the following line works as intended
-  // const needsApproval =  txType === TxType.STAKE && Number(astAllowance) < Number(stakingAmountFormatted) * 10 ** 4 && !!stakingAmount;
-
+  // check if allowance is less than amount user wants to stake
   const needsApproval =
-    isStakeAmountAndStakeType && !!astAllowance && astAllowance < stakingAmount;
+    (isStakeAmountAndStakeType && astAllowance === 0n) ||
+    (!!astAllowance && astAllowance < stakingAmount);
 
-  const canStake = isStakeAmountAndStakeType && !needsApproval;
+  const canStake = !needsApproval;
 
-  const canUnstake =
-    isStakeAmountAndStakeType && stakingAmount <= unstakableSastBalance;
+  const canUnstake = stakingAmount <= unstakableSastBalance; // && isStakeAmountAndStakeType;
 
   const isInsufficientBalance = isStakeAmountAndStakeType
     ? stakingAmount > astBalance
     : stakingAmount > unstakableSastBalance;
+
+  console.log("needsApproval", needsApproval);
+  console.log("canStake", canStake);
 
   const {
     writeAsync: approveAst,
@@ -90,7 +86,7 @@ export const StakingModal = () => {
     isLoading: unstakeAwaitingSignature,
   } = useUnstakeSast({
     unstakingAmount: stakingAmount,
-    enabled: canUnstake,
+    enabled: canUnstake && txType === TxType.UNSTAKE,
   });
 
   const {
@@ -103,8 +99,6 @@ export const StakingModal = () => {
     contractVersion: ContractVersion.V4,
     enabled: !!sAstV4Balance,
   });
-
-  console.log(unstakeSastV4Deprecated);
 
   useEffect(() => {
     // after successfully staking, `needsApproval` will reset to true. We need `dataStakeAst` to be falsey to set `isApproval` to true, otherwise const `verb` will show as "approved" after the user has staked
@@ -193,8 +187,6 @@ export const StakingModal = () => {
     unstakeAwaitingSignatureV4Deprecated ||
     txStatus === "loading";
 
-  const formattedStakingAmount = formatNumber(stakingAmount, 4);
-
   useEffect(() => {
     currentTransactionHash ? setTxHash(currentTransactionHash) : null;
   }, [currentTransactionHash, setTxHash]);
@@ -212,7 +204,7 @@ export const StakingModal = () => {
           successContent={
             <span>
               You successfully {verb}{" "}
-              <span className="text-white">{formattedStakingAmount} AST</span>
+              <span className="text-white">{Number(stakingAmount)} AST</span>
             </span>
           }
           failureContent={"Your transaction has failed"}

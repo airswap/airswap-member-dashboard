@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
@@ -18,16 +19,16 @@ export const useStakeAst = ({
     },
   );
 
-  // const stakingAmountConversion = new BigNumber(stakingAmount)
-  //   .multipliedBy(10 ** 4)
-  //   .integerValue()
-  //   .toString();
+  const stakingAmountConversion = new BigNumber(Number(stakingAmount))
+    .multipliedBy(10 ** 4)
+    .integerValue()
+    .toString();
 
   const { config: configStake } = usePrepareContractWrite({
     address: airSwapStaking.address,
     abi: stakingAbi,
     functionName: "stake",
-    args: [stakingAmount || BigInt(0)],
+    args: [stakingAmount || BigInt(stakingAmountConversion || 0)],
     enabled: enabled,
   });
 
