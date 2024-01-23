@@ -6,57 +6,58 @@ type ButtonActions = {
   stake: (() => Promise<WriteContractResult>) | undefined;
   unstake: (() => Promise<WriteContractResult>) | undefined;
   switchNetwork: (() => void) | undefined;
-  unstakeV4Deprecated: (() => Promise<WriteContractResult>) | undefined;
 };
+
+/**
+ *
+ * @remarks - this does not take in actions for v4(deprecated) unstaking because that is handled only in the content box in ManageStake.tsx
+ */
 
 export const modalButtonActionsAndText = ({
   isSupportedNetwork,
   txType,
   needsApproval,
   buttonActions,
-  insufficientBalance,
-  unstakeV4Deprecated,
+  isInsufficientBalance,
 }: {
   isSupportedNetwork: boolean;
   txType: TxType;
   needsApproval: boolean;
   buttonActions: ButtonActions;
-  insufficientBalance?: boolean;
-  unstakeV4Deprecated: boolean;
+  isInsufficientBalance: boolean;
 }) => {
   if (!isSupportedNetwork) {
     return {
       label: "Switch to Ethereum",
       callback: buttonActions.switchNetwork,
     };
-  } else if (insufficientBalance) {
+  } else if (isInsufficientBalance) {
     return {
       label: "Insufficient balance",
       callback: () => null,
     };
-  }
-  if (txType === TxType.STAKE && needsApproval) {
+  } else if (
+    txType === TxType.STAKE &&
+    needsApproval &&
+    !isInsufficientBalance
+  ) {
     return {
       label: "Approve",
       callback: buttonActions.approve,
     };
-  } else if (txType === TxType.STAKE && !needsApproval) {
+  } else if (
+    txType === TxType.STAKE &&
+    !needsApproval &&
+    !isInsufficientBalance
+  ) {
     return {
       label: "Stake",
       callback: buttonActions.stake,
     };
-  }
-  if (txType === TxType.UNSTAKE && !unstakeV4Deprecated) {
+  } else if (txType === TxType.UNSTAKE) {
     return {
       label: "Unstake",
       callback: buttonActions.unstake,
-    };
-  }
-  // FIXME: double check this implementation
-  if (txType === TxType.UNSTAKE && !!unstakeV4Deprecated) {
-    return {
-      label: "Unstake V4.0 balance",
-      callback: buttonActions.unstakeV4Deprecated,
     };
   }
 };

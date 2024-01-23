@@ -23,8 +23,7 @@ export const StakingModal = () => {
 
   const formReturn = useForm();
   const { getValues } = formReturn;
-  const stakingAmountNumberFormat = getValues().stakingAmount;
-  const stakingAmount = BigInt(stakingAmountNumberFormat || 0);
+  const stakingAmount = getValues().stakingAmount * 10 ** 4 || 0;
 
   const isSupportedChain = useChainSupportsStaking();
   const { switchNetwork } = useSwitchNetwork();
@@ -40,6 +39,7 @@ export const StakingModal = () => {
   } = useTokenBalances();
 
   const { sAstBalanceV4Deprecated: sAstV4Balance } = useStakesForAccount();
+  const sAstV4BalanceFormatted = Number(sAstV4Balance);
 
   const isStakeAmountAndStakeType = txType === TxType.STAKE && !!stakingAmount;
 
@@ -48,16 +48,14 @@ export const StakingModal = () => {
     (isStakeAmountAndStakeType && astAllowance === 0n) ||
     (!!astAllowance && astAllowance < stakingAmount);
 
-  const canStake = !needsApproval;
+  const canUnstake = stakingAmount <= unstakableSastBalance;
 
-  const canUnstake = stakingAmount <= unstakableSastBalance; // && isStakeAmountAndStakeType;
+  const isInsufficientBalance =
+    txType === TxType.STAKE
+      ? stakingAmount > astBalance
+      : stakingAmount > unstakableSastBalance;
 
-  const isInsufficientBalance = isStakeAmountAndStakeType
-    ? stakingAmount > astBalance
-    : stakingAmount > unstakableSastBalance;
-
-  console.log("needsApproval", needsApproval);
-  console.log("canStake", canStake);
+  const isStakeButtonDisabled = stakingAmount <= 0 || isInsufficientBalance;
 
   const {
     writeAsync: approveAst,
@@ -65,7 +63,7 @@ export const StakingModal = () => {
     reset: resetApproveAst,
     isLoading: approvalAwaitingSignature,
   } = useApproveAst({
-    stakingAmount,
+    stakingAmount: stakingAmount,
     enabled: !!needsApproval,
   });
 
@@ -75,8 +73,8 @@ export const StakingModal = () => {
     data: dataStakeAst,
     isLoading: stakeAwaitingSignature,
   } = useStakeAst({
-    stakingAmount,
-    enabled: canStake,
+    stakingAmount: stakingAmount,
+    enabled: !needsApproval,
   });
 
   const {
@@ -95,33 +93,26 @@ export const StakingModal = () => {
     data: dataUnstakeSastV4Deprecated,
     isLoading: unstakeAwaitingSignatureV4Deprecated,
   } = useUnstakeSast({
-    unstakingAmount: sAstV4Balance,
+    unstakingAmount: sAstV4BalanceFormatted,
     contractVersion: ContractVersion.V4,
     enabled: !!sAstV4Balance,
   });
 
-  useEffect(() => {
-    // after successfully staking, `needsApproval` will reset to true. We need `dataStakeAst` to be falsey to set `isApproval` to true, otherwise const `verb` will show as "approved" after the user has staked
-    if (needsApproval && !dataStakeAst) {
-      setIsApproval(true);
-    }
-    if (unstakeAwaitingSignature || stakeAwaitingSignature)
-      setIsApproval(false);
-  }, [
-    needsApproval,
-    dataStakeAst,
-    unstakeAwaitingSignature,
-    stakeAwaitingSignature,
-  ]);
+  console.log(sAstV4BalanceFormatted);
+  console.log("unstakeSastV4Deprecated", unstakeSastV4Deprecated);
 
   const currentTransactionHash =
-    dataApproveAst?.hash || dataStakeAst?.hash || dataUnstakeSast?.hash;
+    dataApproveAst?.hash ||
+    dataStakeAst?.hash ||
+    dataUnstakeSast?.hash ||
+    dataUnstakeSastV4Deprecated?.hash;
 
   const { status: txStatus } = useWaitForTransaction({
     hash: currentTransactionHash,
     enabled: !!currentTransactionHash,
   });
 
+  // don't pass in unstakeV4Deprecated actions because that is only handled in the content box in ManageStake
   const modalButtonAction = modalButtonActionsAndText({
     isSupportedNetwork: isSupportedChain,
     txType,
@@ -131,15 +122,9 @@ export const StakingModal = () => {
       approve: approveAst,
       stake: stakeAst,
       unstake: unstakeSast,
-      unstakeV4Deprecated: unstakeSastV4Deprecated,
     },
-    insufficientBalance: isInsufficientBalance,
-    unstakeV4Deprecated: !!unstakeSastV4Deprecated,
+    isInsufficientBalance,
   });
-
-  const isAmountInvalid = stakingAmount <= 0;
-
-  const isStakeButtonDisabled = isAmountInvalid || isInsufficientBalance;
 
   const actionButtons = actionButtonsObject({
     resetApproveAst,
@@ -173,11 +158,14 @@ export const StakingModal = () => {
     !!currentTransactionHash;
 
   // Used in "you successfully {verb} {stakingAmount} AST"
-  const verb = isApproval
-    ? "approved"
-    : txType === TxType.STAKE
-    ? "staked"
-    : "unstaked";
+  const verb =
+    isApproval && !dataUnstakeSastV4Deprecated?.hash
+      ? "approved"
+      : isApproval && dataUnstakeSastV4Deprecated?.hash
+      ? "unstaked"
+      : txType === TxType.STAKE
+      ? "staked"
+      : "unstaked";
 
   // Used to disable close button in Modal.tsx
   const txIsLoading =
@@ -190,6 +178,20 @@ export const StakingModal = () => {
   useEffect(() => {
     currentTransactionHash ? setTxHash(currentTransactionHash) : null;
   }, [currentTransactionHash, setTxHash]);
+
+  useEffect(() => {
+    // after successfully staking, `needsApproval` will reset to true. We need `dataStakeAst` to be falsey to set `isApproval` to true, otherwise const `verb` will show as "approved" after the user has staked
+    if (needsApproval && !dataStakeAst) {
+      setIsApproval(true);
+    }
+    if (unstakeAwaitingSignature || stakeAwaitingSignature)
+      setIsApproval(false);
+  }, [
+    needsApproval,
+    dataStakeAst,
+    unstakeAwaitingSignature,
+    stakeAwaitingSignature,
+  ]);
 
   return (
     <Modal
@@ -204,7 +206,7 @@ export const StakingModal = () => {
           successContent={
             <span>
               You successfully {verb}{" "}
-              <span className="text-white">{Number(stakingAmount)} AST</span>
+              <span className="text-white">{stakingAmount / 10 ** 4} AST</span>
             </span>
           }
           failureContent={"Your transaction has failed"}

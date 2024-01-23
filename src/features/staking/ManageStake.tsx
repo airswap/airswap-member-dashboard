@@ -30,12 +30,10 @@ export const ManageStake = ({
   } = useTokenBalances();
 
   const {
-    sAstBalance,
     sAstBalanceV4Deprecated: sAstV4Balance,
     sAstMaturityV4Deprecated: sAstV4Maturity,
   } = useStakesForAccount();
 
-  // if timeLeftToUnstake <=0
   const timeLeftToUnstake = convertUnixToDays(sAstV4Maturity);
 
   const hasV4BalanceCanUnstake = sAstV4Balance && !timeLeftToUnstake;

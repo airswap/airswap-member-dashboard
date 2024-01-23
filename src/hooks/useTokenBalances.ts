@@ -70,11 +70,16 @@ export const useTokenBalances = () => {
     enabled: !!isConnected,
   });
 
+  // available balance to unstake from latest contract
   const unstakableSastBalanceRaw = (data && (data[0].result as bigint)) || 0n;
+  // total staked balance latest contract (not necessarily available to unstake)
   const sAstBalanceRaw = (data && (data[1].result as bigint)) || 0n;
+  // AST balance unstaked
   const astBalanceRaw = (data && (data[2].result as bigint)) || 0n;
+  // v4.0 balance available to unstake
   const unstakableSastBalanceV4_DeprecatedRaw =
     (data && (data[3].result as bigint)) || 0n;
+  // v4.0 balance total (not necessarily ready to unstake)
   const sAstBalanceV4_DeprecatedRaw =
     (data && (data[4].result as bigint)) || 0n;
 
@@ -82,7 +87,6 @@ export const useTokenBalances = () => {
     unstakableSastBalanceRaw,
     sAstBalanceRaw,
     astBalanceRaw,
-    // TODO: eventually we will remote depricated values when all members have unstaked from V4.1
     unstakableSastBalanceV4_DeprecatedRaw,
     sAstBalanceV4_DeprecatedRaw,
   };
