@@ -11,8 +11,6 @@ export const formatNumber = (
     _number = new BigNumber(number.toString())
       .dividedBy(10 ** decimals)
       .toNumber();
-
-    _number = Math.floor(_number);
   } else {
     _number = number;
   }

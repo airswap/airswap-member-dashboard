@@ -265,8 +265,7 @@ export const MigrationModal = ({}: {}) => {
     ...newStakingContract,
     functionName: "stake",
     args: [initialAmount!],
-    // enabled: Boolean(currentStep === 2),
-    enabled: true,
+    enabled: Boolean(currentStep === 2),
   });
   const { write: stake, isLoading: stakeLoading } = useContractWrite({
     ...stakeConfig,
