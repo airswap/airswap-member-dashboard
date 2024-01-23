@@ -11,8 +11,12 @@ export const StakingButton = () => {
   const { isConnected } = useAccount();
   const { sAstBalanceRaw, sAstBalanceV4_DeprecatedRaw } = useTokenBalances();
 
-  const sAstBalance = formatNumber(sAstBalanceRaw, 4);
-  const sAstBalanceV4 = formatNumber(sAstBalanceV4_DeprecatedRaw, 4);
+  const sAstBalance = formatNumber(sAstBalanceRaw, 4) || 0;
+  const sAstBalanceV4 = formatNumber(sAstBalanceV4_DeprecatedRaw, 4) || 0;
+
+  const totalSastBalance = Number(sAstBalance) + Number(sAstBalanceV4);
+
+  console.log(totalSastBalance);
 
   return (
     <>
@@ -21,12 +25,8 @@ export const StakingButton = () => {
           "flex flex-row items-center gap-4 ring-1 ring-gray-800 rounded-full sm:pl-5",
         )}
       >
-        <span className="hidden sm:flex font-medium ">{`${
-          sAstBalance || 0
-        } sAST (v4.2)`}</span>
-        {Number(sAstBalanceV4) > 0 && (
-          <span className="hidden sm:flex font-medium ">{`${sAstBalanceV4} sAST (v4.0)`}</span>
-        )}
+        <span className="hidden sm:flex font-medium ">{`${totalSastBalance} sAST`}</span>
+
         <Button
           className="-mr-5 -my-px"
           rounded={true}
