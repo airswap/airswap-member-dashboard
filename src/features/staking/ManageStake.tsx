@@ -12,6 +12,7 @@ import { PieBar } from "./PieBar";
 import { useStakesForAccount } from "./hooks/useStakesForAccount";
 import { useStakingModalStore } from "./store/useStakingModalStore";
 import { TxType } from "./types/StakingTypes";
+import { convertBigIntToBigNumber } from "./utils/convertBigIntToBigNumber";
 import { convertUnixToDays } from "./utils/convertUnixToDays";
 
 export const ManageStake = ({
@@ -43,9 +44,9 @@ export const ManageStake = ({
 
   const handleSetMaxBalance = () => {
     if (txType === TxType.STAKE) {
-      setValue("stakingAmount", Number(stakableBalance / 10000n));
+      setValue("stakingAmount", convertBigIntToBigNumber(stakableBalance));
     } else {
-      setValue("stakingAmount", Number(unstakableBalance / 10000n));
+      setValue("stakingAmount", convertBigIntToBigNumber(unstakableBalance));
     }
   };
 
