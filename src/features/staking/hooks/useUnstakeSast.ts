@@ -14,7 +14,7 @@ export const useUnstakeSast = ({
   contractVersion = ContractVersion.LATEST,
   enabled,
 }: {
-  unstakingAmount: number | undefined;
+  unstakingAmount: bigint | undefined;
   contractVersion?: ContractVersion;
   enabled: boolean;
 }) => {

@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSwitchNetwork, useWaitForTransaction } from "wagmi";
@@ -23,7 +24,11 @@ export const StakingModal = () => {
 
   const formReturn = useForm();
   const { getValues } = formReturn;
-  const stakingAmount = getValues().stakingAmount * 10 ** 4 || 0;
+  const stakingAmount = BigInt(
+    new BigNumber(getValues().stakingAmount || 0)
+      .multipliedBy(10 ** 4)
+      .toString(),
+  );
 
   const isSupportedChain = useChainSupportsStaking();
   const { switchNetwork } = useSwitchNetwork();
@@ -39,7 +44,7 @@ export const StakingModal = () => {
   } = useTokenBalances();
 
   const { sAstBalanceV4Deprecated: sAstV4Balance } = useStakesForAccount();
-  const sAstV4BalanceFormatted = Number(sAstV4Balance);
+  const sAstV4BalanceFormatted = sAstV4Balance;
 
   const isStakeAmountAndStakeType = txType === TxType.STAKE && !!stakingAmount;
 
@@ -48,7 +53,8 @@ export const StakingModal = () => {
     (isStakeAmountAndStakeType && astAllowance === 0n) ||
     (!!astAllowance && astAllowance < stakingAmount);
 
-  const canUnstake = stakingAmount <= unstakableSastBalance;
+  const canUnstake =
+    txType === TxType.UNSTAKE && stakingAmount <= unstakableSastBalance;
 
   const isInsufficientBalance =
     txType === TxType.STAKE
@@ -84,7 +90,7 @@ export const StakingModal = () => {
     isLoading: unstakeAwaitingSignature,
   } = useUnstakeSast({
     unstakingAmount: stakingAmount,
-    enabled: canUnstake && txType === TxType.UNSTAKE,
+    enabled: canUnstake,
   });
 
   const {
@@ -203,7 +209,9 @@ export const StakingModal = () => {
           successContent={
             <span>
               You successfully {verb}{" "}
-              <span className="text-white">{stakingAmount / 10 ** 4} AST</span>
+              <span className="text-white">
+                {Number(stakingAmount) / 10 ** 4} AST
+              </span>
             </span>
           }
           failureContent={"Your transaction has failed"}

@@ -7,7 +7,7 @@ export const useStakeAst = ({
   stakingAmount,
   enabled = true,
 }: {
-  stakingAmount: number;
+  stakingAmount: bigint;
   enabled?: boolean;
 }) => {
   const [airSwapStaking] = useContractAddresses(
@@ -22,7 +22,7 @@ export const useStakeAst = ({
     address: airSwapStaking.address,
     abi: stakingAbi,
     functionName: "stake",
-    args: [BigInt(stakingAmount || 0)],
+    args: [stakingAmount],
     enabled: enabled,
   });
 

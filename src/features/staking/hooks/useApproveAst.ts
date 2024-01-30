@@ -7,7 +7,7 @@ export const useApproveAst = ({
   stakingAmount,
   enabled = true,
 }: {
-  stakingAmount: number;
+  stakingAmount: bigint;
   enabled?: boolean;
 }) => {
   const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
@@ -27,7 +27,7 @@ export const useApproveAst = ({
     address: airSwapToken.address,
     abi: astAbi,
     functionName: "approve",
-    args: [airSwapStaking.address!, BigInt(stakingAmount || 0)],
+    args: [airSwapStaking.address!, stakingAmount],
     enabled: enabled && !!airSwapStaking.address,
   });
 
