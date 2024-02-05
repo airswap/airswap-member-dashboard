@@ -103,7 +103,20 @@ export const ManageStake = ({
         </div>
       );
     } else if (hasV4BalanceCannotUnstake) {
-      return `You have ${availableSAstV4Balance} AST staked in v4. It can be unstaked in ${timeLeftToUnstake.days} days ${timeLeftToUnstake.hours} hours, ${timeLeftToUnstake.minutes} minutes`;
+      return (
+        <div>
+          You have{" "}
+          <span className="rounded-sm px-0.5 text-white">
+            {availableSAstV4Balance}
+          </span>{" "}
+          AST staked in v4. It can be unstaked in{" "}
+          <span className="rounded-sm px-0.5 text-white">
+            {timeLeftToUnstake.days} days {timeLeftToUnstake.hours} hours,{" "}
+            {timeLeftToUnstake.minutes} minutes
+          </span>
+          .
+        </div>
+      );
     } else {
       return null;
     }
@@ -113,9 +126,11 @@ export const ManageStake = ({
     <div>
       <PieBar />
       <LineBreak className="relative mb-4 -mx-6" />
-      <div className="mt-4 rounded px-4 py-3 text-xs leading-[18px] bg-gray-800 text-gray-400">
-        <div className="flex flex-row gap-2 items-start">{contentBox}</div>
-      </div>
+      {!sAstV4Balance && (
+        <div className="mt-4 rounded px-4 py-3 text-xs leading-[18px] bg-gray-800 text-gray-400">
+          <div className="flex flex-row gap-2 items-start">{contentBox}</div>
+        </div>
+      )}
 
       {txType === TxType.UNSTAKE && !!sAstV4Balance && (
         <div className="mt-4 rounded px-4 py-3 text-xs leading-[18px] bg-gray-800 text-gray-400">
