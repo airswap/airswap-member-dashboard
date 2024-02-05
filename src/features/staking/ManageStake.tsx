@@ -68,6 +68,11 @@ export const ManageStake = ({
     }
   };
 
+  const handleUnstakeFromContentBox = () => {
+    setValue("stakingAmount", availableSAstV4Balance);
+    unstakeSastV4Deprecated && unstakeSastV4Deprecated();
+  };
+
   const contentBox = (
     <div>
       New stakes are locked for 20 weeks and unlocked linearly.{" "}
@@ -93,7 +98,7 @@ export const ManageStake = ({
           You have {availableSAstV4Balance} AST staked in v4.{" "}
           {
             <span
-              onClick={unstakeSastV4Deprecated}
+              onClick={handleUnstakeFromContentBox}
               className="underline hover:cursor-pointer"
             >
               Unstake now
