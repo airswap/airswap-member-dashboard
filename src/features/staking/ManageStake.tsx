@@ -69,7 +69,7 @@ export const ManageStake = ({
   };
 
   const handleUnstakeFromContentBox = () => {
-    setValue("stakingAmount", availableSAstV4Balance);
+    setValue("stakingAmount", 0);
     unstakeSastV4Deprecated && unstakeSastV4Deprecated();
   };
 
