@@ -20,8 +20,13 @@ import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
 
 export const StakingModal = () => {
-  const { setShowStakingModal, txType, setTxHash, v4UnstakingBalance } =
-    useStakingModalStore();
+  const {
+    setShowStakingModal,
+    txType,
+    setTxHash,
+    v4UnstakingBalance,
+    setV4UnstakingBalance,
+  } = useStakingModalStore();
 
   const formReturn = useForm();
   const { getValues } = formReturn;
@@ -146,6 +151,7 @@ export const StakingModal = () => {
     resetUnstakeSast,
     resetUnstakeSastV4Deprecated,
     formReturn,
+    setV4UnstakingBalance,
   });
 
   const modalLoadingStateHeadlines = modalTxLoadingStateHeadlines(txStatus);

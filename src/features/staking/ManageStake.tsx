@@ -146,7 +146,7 @@ export const ManageStake = ({
   // v4UnstakingBalance gets set here, so it can be passed into StakingModal (after Verb) after a successful v4 unstake
   useEffect(() => {
     if (hasV4BalanceCanUnstake) {
-      setV4UnstakingBalance(sAstV4Balance);
+      setV4UnstakingBalance(Number(sAstV4Balance));
     }
   }, [hasV4BalanceCanUnstake, setV4UnstakingBalance, sAstV4Balance]);
 

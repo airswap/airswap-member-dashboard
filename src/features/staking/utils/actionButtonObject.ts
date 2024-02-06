@@ -17,12 +17,14 @@ export const actionButtonsObject = ({
   resetUnstakeSast,
   resetUnstakeSastV4Deprecated,
   formReturn,
+  setV4UnstakingBalance,
 }: {
   resetApproveAst: () => void;
   resetStakeAst: () => void;
   resetUnstakeSast: () => void;
   resetUnstakeSastV4Deprecated: () => void;
   formReturn: UseFormReturn<FieldValues>;
+  setV4UnstakingBalance: (balance: number) => void;
 }): ActionButtons => {
   const { setValue } = formReturn;
 
@@ -69,6 +71,7 @@ export const actionButtonsObject = ({
         callback: () => {
           resetUnstakeSastV4Deprecated();
           setValue("stakingAmount", undefined);
+          setV4UnstakingBalance(0);
         },
       },
       afterFailure: {
