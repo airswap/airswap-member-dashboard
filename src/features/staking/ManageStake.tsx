@@ -96,13 +96,17 @@ export const ManageStake = ({
     if (hasV4BalanceCanUnstake) {
       return (
         <div>
-          You have {availableSAstV4Balance} AST staked in v4.{" "}
+          You have{" "}
+          <span className="rounded-sm text-white">
+            {availableSAstV4Balance}
+          </span>{" "}
+          AST staked in the deprecated v4 contract which you can{" "}
           {
             <span
               onClick={handleUnstakeFromContentBox}
               className="underline hover:cursor-pointer"
             >
-              Unstake now
+              unstake in full now
             </span>
           }
           .
@@ -112,11 +116,11 @@ export const ManageStake = ({
       return (
         <div>
           You have{" "}
-          <span className="rounded-sm px-0.5 text-white">
+          <span className="rounded-sm text-white">
             {availableSAstV4Balance}
           </span>{" "}
-          AST staked in v4. It can be unstaked in{" "}
-          <span className="rounded-sm px-0.5 text-white">
+          AST staked in the deprecated v4.0 contract which will be unstakable in{" "}
+          <span className="rounded-sm text-white">
             {timeLeftToUnstake.days} days {timeLeftToUnstake.hours} hours,{" "}
             {timeLeftToUnstake.minutes} minutes
           </span>

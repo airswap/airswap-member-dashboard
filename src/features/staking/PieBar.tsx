@@ -6,12 +6,28 @@ import { formatNumber } from "../common/utils/formatNumber";
 import { calculateTokenProportions } from "./utils/calculateTokenProportions";
 
 export const PieBar = () => {
-  const { unstakableSastBalanceRaw, sAstBalanceRaw, astBalanceRaw } =
-    useTokenBalances();
+  const {
+    unstakableSastBalanceRaw,
+    sAstBalanceRaw,
+    astBalanceRaw,
+    unstakableSastBalanceV4_DeprecatedRaw,
+    sAstBalanceV4_DeprecatedRaw,
+  } = useTokenBalances();
 
   const unstaked = formatNumber(astBalanceRaw, 4) || 0;
   const staked = formatNumber(sAstBalanceRaw, 4) || 0;
   const unstakable = formatNumber(unstakableSastBalanceRaw, 4) || 0;
+  const unstakableV4 =
+    formatNumber(unstakableSastBalanceV4_DeprecatedRaw, 4) || 0;
+  const stakedV4 = formatNumber(sAstBalanceV4_DeprecatedRaw, 4) || 0;
+
+  const totalStaked = String(Number(staked) + Number(stakedV4));
+  const totalUnstakable = String(Number(unstakable) + Number(unstakableV4));
+
+  // the following 2 values are only used for calculateTokenProportions
+  const totalUnstakableRaw =
+    unstakableSastBalanceRaw + unstakableSastBalanceV4_DeprecatedRaw;
+  const totalSastRaw = sAstBalanceRaw + sAstBalanceV4_DeprecatedRaw;
 
   const {
     totalStakedPercent,
@@ -19,8 +35,8 @@ export const PieBar = () => {
     stakedPercent,
     unstakedPercent,
   } = calculateTokenProportions({
-    unstakable: unstakableSastBalanceRaw,
-    staked: sAstBalanceRaw,
+    unstakable: totalUnstakableRaw,
+    staked: totalSastRaw,
     unstaked: astBalanceRaw,
   });
 
@@ -30,13 +46,13 @@ export const PieBar = () => {
     {
       color: "text-blue-500",
       bg: null,
-      var: unstakable,
+      var: totalUnstakable,
       text: "unstakable",
     },
     {
       color: "transparent",
       bg: "checkered-blue",
-      var: staked,
+      var: totalStaked,
       text: "staked",
     },
     {

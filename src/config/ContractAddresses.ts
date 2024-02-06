@@ -12,8 +12,7 @@ export const contractAddressesByChain: Record<number, ContractList> = {
   1: {
     [ContractTypes.AirSwapToken]: "0x27054b13b1B798B345b591a4d22e6562d47eA75a",
     [ContractTypes.AirSwapStaking_latest]:
-      // TODO: update contract with mainnet address when deployed
-      "0x9fc450F9AfE2833Eb44f9A1369Ab3678D3929860",
+      "0x8Bf384296A009723435aD5E8203DA5736b895038",
     [ContractTypes.AirSwapV3Staking_deprecated]:
       "0x6d88B09805b90dad911E5C5A512eEDd984D6860B",
     [ContractTypes.AirSwapV4Staking_deprecated]:
@@ -39,6 +38,11 @@ export const contractAddressesByChain: Record<number, ContractList> = {
     // polygon
     [ContractTypes.AirSwapPool]: "0xbbcec987e4c189fcbab0a2534c77b3ba89229f11",
   },
+  17000: {
+    // holesky
+    [ContractTypes.AirSwapStaking_latest]:
+      "0x8Bf384296A009723435aD5E8203DA5736b895038",
+  },
   43114: {
     // avax
     [ContractTypes.AirSwapPool]: "0xbbcec987e4c189fcbab0a2534c77b3ba89229f11",
@@ -46,6 +50,6 @@ export const contractAddressesByChain: Record<number, ContractList> = {
   111555111: {
     // sepolia
     [ContractTypes.AirSwapStaking_latest]:
-      "0x147644781C1ccb078738ecced7B247AF0bD5Aa8b",
+      "0x8Bf384296A009723435aD5E8203DA5736b895038",
   },
 };
