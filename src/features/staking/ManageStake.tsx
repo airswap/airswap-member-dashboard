@@ -89,6 +89,7 @@ export const ManageStake = ({
       .
     </div>
   );
+  const showContentBox = txType === TxType.STAKE || !sAstV4Balance;
 
   // if use has v4.0 stake which has not fully vested
   const contentBoxV4Stake = () => {
@@ -119,7 +120,17 @@ export const ManageStake = ({
             {timeLeftToUnstake.days} days {timeLeftToUnstake.hours} hours,{" "}
             {timeLeftToUnstake.minutes} minutes
           </span>
-          .
+          .{" "}
+          {
+            <a
+              href="https://about.airswap.io/announcements#id-4.1-migration-30-january-2024"
+              target="_blank"
+              rel="noopener noreferer"
+              className="underline"
+            >
+              Read our official announcement for more details
+            </a>
+          }
         </div>
       );
     } else {
@@ -131,7 +142,7 @@ export const ManageStake = ({
     <div>
       <PieBar />
       <LineBreak className="relative mb-4 -mx-6" />
-      {!sAstV4Balance && (
+      {showContentBox && (
         <div className="mt-4 rounded px-4 py-3 text-xs leading-[18px] bg-gray-800 text-gray-400">
           <div className="flex flex-row gap-2 items-start">{contentBox}</div>
         </div>
