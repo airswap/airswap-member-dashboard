@@ -80,7 +80,7 @@ export const StakingModal = () => {
     isLoading: stakeAwaitingSignature,
   } = useStakeAst({
     stakingAmount: stakingAmount,
-    enabled: stakingAmount > 0n && !needsApproval,
+    enabled: stakingAmount > 0n && !needsApproval && txType === TxType.STAKE,
   });
 
   const {
@@ -90,7 +90,7 @@ export const StakingModal = () => {
     isLoading: unstakeAwaitingSignature,
   } = useUnstakeSast({
     unstakingAmount: stakingAmount,
-    enabled: stakingAmount > 0n && canUnstake,
+    enabled: stakingAmount > 0n && canUnstake && txType === TxType.UNSTAKE,
   });
 
   const {
