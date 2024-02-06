@@ -136,6 +136,7 @@ export const ManageStake = ({
               Read our official announcement for more details
             </a>
           }
+          .
         </div>
       );
     } else {
