@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { IoMdAlert } from "react-icons/io";
 import { twJoin } from "tailwind-merge";
@@ -22,7 +23,7 @@ export const ManageStake = ({
   formReturn: UseFormReturn<FieldValues>;
   unstakeSastV4Deprecated: (() => Promise<WriteContractResult>) | undefined;
 }) => {
-  const { txType, setTxType } = useStakingModalStore();
+  const { txType, setTxType, setV4UnstakingBalance } = useStakingModalStore();
   const { setValue } = formReturn;
 
   const {
@@ -141,6 +142,13 @@ export const ManageStake = ({
       return null;
     }
   };
+
+  // v4UnstakingBalance gets set here, so it can be passed into StakingModal (after Verb) after a successful v4 unstake
+  useEffect(() => {
+    if (hasV4BalanceCanUnstake) {
+      setV4UnstakingBalance(sAstV4Balance);
+    }
+  }, [hasV4BalanceCanUnstake, setV4UnstakingBalance, sAstV4Balance]);
 
   return (
     <div>

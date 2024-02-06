@@ -10,6 +10,8 @@ type StakingModalStore = {
   setTxType: (change: TxType) => void;
   txHash: Address | undefined;
   setTxHash: (hash: Address | undefined) => void;
+  v4UnstakingBalance: bigint | undefined;
+  setV4UnstakingBalance: (balance: bigint) => void;
 };
 
 const stakingModalStore = create<StakingModalStore>()(
@@ -29,6 +31,11 @@ const stakingModalStore = create<StakingModalStore>()(
       setTxHash(hash: Address | undefined) {
         set({ txHash: hash });
       },
+
+      v4UnstakingBalance: undefined,
+      setV4UnstakingBalance(balance: bigint | undefined) {
+        set({ v4UnstakingBalance: balance });
+      },
     }),
     {
       name: "stakingModalStorage",
@@ -44,6 +51,8 @@ export const useStakingModalStore = () => {
     setTxType,
     txHash,
     setTxHash,
+    v4UnstakingBalance,
+    setV4UnstakingBalance,
   ] = stakingModalStore((state) => [
     state.showStakingModal,
     state.setShowStakingModal,
@@ -51,6 +60,8 @@ export const useStakingModalStore = () => {
     state.setTxType,
     state.txHash,
     state.setTxHash,
+    state.v4UnstakingBalance,
+    state.setV4UnstakingBalance,
   ]);
   return {
     showStakingModal,
@@ -59,5 +70,7 @@ export const useStakingModalStore = () => {
     setTxType,
     txHash,
     setTxHash,
+    v4UnstakingBalance,
+    setV4UnstakingBalance,
   };
 };

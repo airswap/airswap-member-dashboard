@@ -20,7 +20,8 @@ import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
 
 export const StakingModal = () => {
-  const { setShowStakingModal, txType, setTxHash } = useStakingModalStore();
+  const { setShowStakingModal, txType, setTxHash, v4UnstakingBalance } =
+    useStakingModalStore();
 
   const formReturn = useForm();
   const { getValues } = formReturn;
@@ -43,8 +44,8 @@ export const StakingModal = () => {
     astBalanceRaw: astBalance,
   } = useTokenBalances();
 
-  const { sAstBalanceV4Deprecated: sAstV4Balance } = useStakesForAccount();
-  const sAstV4BalanceFormatted = sAstV4Balance;
+  const { sAstBalanceV4Deprecated: sAstV4Balance, sAstMaturityV4Deprecated } =
+    useStakesForAccount();
 
   const isStakeAmountAndStakeType = txType === TxType.STAKE && !!stakingAmount;
 
@@ -93,15 +94,17 @@ export const StakingModal = () => {
     enabled: stakingAmount > 0n && canUnstake && txType === TxType.UNSTAKE,
   });
 
+  const enableV4Unstake = sAstV4Balance! > 0 && sAstMaturityV4Deprecated! > 0;
+
   const {
     writeAsync: unstakeSastV4Deprecated,
     reset: resetUnstakeSastV4Deprecated,
     data: dataUnstakeSastV4Deprecated,
     isLoading: unstakeAwaitingSignatureV4Deprecated,
   } = useUnstakeSast({
-    unstakingAmount: sAstV4BalanceFormatted,
+    unstakingAmount: sAstV4Balance,
     contractVersion: ContractVersion.V4,
-    enabled: !!sAstV4Balance,
+    enabled: enableV4Unstake,
   });
 
   const currentTransactionHash =
@@ -114,6 +117,14 @@ export const StakingModal = () => {
     hash: currentTransactionHash,
     enabled: !!currentTransactionHash,
   });
+
+  const isV4UnstakeSuccess =
+    dataUnstakeSastV4Deprecated?.hash && txStatus === "success";
+
+  // pass the following in after `verb` to check if v4 was unstaked
+  const transactionTrackerBalance = isV4UnstakeSuccess
+    ? Number(v4UnstakingBalance) / 10 ** 4
+    : Number(stakingAmount) / 10 ** 4;
 
   // don't pass in unstakeV4Deprecated actions because that is only handled in the content box in ManageStake
   const modalButtonAction = modalButtonActionsAndText({
@@ -210,7 +221,7 @@ export const StakingModal = () => {
             <span>
               You successfully {verb}{" "}
               <span className="text-white">
-                {Number(stakingAmount) / 10 ** 4} AST
+                {transactionTrackerBalance} AST
               </span>
             </span>
           }
