@@ -181,13 +181,25 @@ export const MigrationModal = ({}: {}) => {
     );
 
   /* ---------------------------- Contract reads ---------------------------- */
-  const { data: v3AvailableBalance } = useContractRead({
-    abi: v3StakingAbi,
-    ...oldStakingContract,
-    functionName: "available",
-    args: [connectedAccount!],
-    enabled: !!connectedAccount,
-  });
+  const { data: v3StakedBalance, refetch: refetchLegacyStakedBalance } =
+    useContractRead({
+      abi: v3StakingAbi,
+      ...oldStakingContract,
+      functionName: "balanceOf",
+      args: [connectedAccount!],
+      enabled: !!connectedAccount,
+      // 2 weeks
+      staleTime: 1000 * 60 * 60 * 24 * 14,
+      cacheTime: 1000 * 60 * 60 * 24 * 14,
+    });
+  const { data: v3AvailableBalance, refetch: refetchAvailableBalance } =
+    useContractRead({
+      abi: v3StakingAbi,
+      ...oldStakingContract,
+      functionName: "available",
+      args: [connectedAccount!],
+      enabled: !!connectedAccount && (v3StakedBalance || 0n) > 0n,
+    });
   const { data: newStakingAstAllowance } = useContractRead({
     abi: astAbi,
     ...astContract,
@@ -231,6 +243,8 @@ export const MigrationModal = ({}: {}) => {
         hash,
       });
       setIsMining([false, false, false]);
+      refetchLegacyStakedBalance();
+      refetchAvailableBalance();
       setTransactionHashes((prev) => [...prev, hash]);
       setCurrentStep(needsApproval ? 1 : 2);
     },
