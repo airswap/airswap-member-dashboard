@@ -9,9 +9,12 @@ import { useStakingModalStore } from "./store/useStakingModalStore";
 export const StakingButton = () => {
   const { showStakingModal, setShowStakingModal } = useStakingModalStore();
   const { isConnected } = useAccount();
-  const { sAstBalanceRaw } = useTokenBalances();
+  const { sAstBalanceRaw, sAstBalanceV4_DeprecatedRaw } = useTokenBalances();
 
-  const sAstBalance = formatNumber(sAstBalanceRaw, 4);
+  const sAstBalance = formatNumber(sAstBalanceRaw, 4) || 0;
+  const sAstBalanceV4 = formatNumber(sAstBalanceV4_DeprecatedRaw, 4) || 0;
+
+  const totalSastBalance = Number(sAstBalance) + Number(sAstBalanceV4);
 
   return (
     <>
@@ -20,9 +23,8 @@ export const StakingButton = () => {
           "flex flex-row items-center gap-4 ring-1 ring-gray-800 rounded-full sm:pl-5",
         )}
       >
-        <span className="hidden sm:flex font-medium ">{`${
-          sAstBalance || 0
-        } sAST`}</span>
+        <span className="hidden sm:flex font-medium ">{`${totalSastBalance} sAST`}</span>
+
         <Button
           className="-mr-5 -my-px"
           rounded={true}

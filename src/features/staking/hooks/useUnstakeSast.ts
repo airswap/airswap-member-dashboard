@@ -1,40 +1,45 @@
-import BigNumber from "bignumber.js";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { stakingAbi } from "../../../contracts/stakingAbi";
+import { ContractVersion } from "../types/StakingTypes";
 
 /**
  *
- * @param unstakingAmount - takes in stakingAmount from react-hook-form-register
- * @param canUnstake - boolean value, true if unstakingAmount (stakingAmount) > 0 and if unstakigAmount (stakingAmount) <= sAST balance
+ * @param unstakingAmount - if contract type is v4 (deprecated), pass in V4 sAST balance
+ * @returns write functions returned from WAGMI useContractWrite hook
  */
 export const useUnstakeSast = ({
-  unstakingAmountFormatted,
-  canUnstake,
+  unstakingAmount,
+  contractVersion = ContractVersion.LATEST,
+  enabled,
 }: {
-  unstakingAmountFormatted: number;
-  canUnstake: boolean;
+  unstakingAmount: bigint | undefined;
+  contractVersion?: ContractVersion;
+  enabled: boolean;
 }) => {
-  const [airSwapStaking] = useContractAddresses(
-    [ContractTypes.AirSwapStaking],
+  const [airSwapStaking, airSwapStakingV4Deprecated] = useContractAddresses(
+    [
+      ContractTypes.AirSwapStaking_latest,
+      ContractTypes.AirSwapV4Staking_deprecated,
+    ],
     {
       defaultChainId: 1,
       useDefaultAsFallback: false,
     },
   );
 
-  const unstakingAmountConversion = new BigNumber(unstakingAmountFormatted)
-    .multipliedBy(10 ** 4)
-    .integerValue()
-    .toString();
+  const contractAddress =
+    contractVersion === ContractVersion.LATEST
+      ? airSwapStaking.address
+      : airSwapStakingV4Deprecated.address;
 
   const { config: configUnstake } = usePrepareContractWrite({
-    address: airSwapStaking.address,
+    address: contractAddress,
     abi: stakingAbi,
     functionName: "unstake",
-    args: [BigInt(unstakingAmountConversion)],
-    enabled: canUnstake,
+    args: [BigInt(unstakingAmount || 0)],
+    enabled,
   });
 
   return useContractWrite(configUnstake);

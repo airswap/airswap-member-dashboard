@@ -19,7 +19,6 @@ export const NumberInput = ({
 
   return (
     <input
-      disabled
       max={Number(astBalance)}
       placeholder="0.00"
       autoComplete="off"

@@ -173,7 +173,7 @@ export const MigrationModal = ({}: {}) => {
   const [newStakingContract, oldStakingContract, astContract] =
     useContractAddresses(
       [
-        ContractTypes.AirSwapStaking,
+        ContractTypes.AirSwapStaking_latest,
         ContractTypes.AirSwapV3Staking_deprecated,
         ContractTypes.AirSwapToken,
       ],
@@ -181,13 +181,25 @@ export const MigrationModal = ({}: {}) => {
     );
 
   /* ---------------------------- Contract reads ---------------------------- */
-  const { data: v3AvailableBalance } = useContractRead({
-    abi: v3StakingAbi,
-    ...oldStakingContract,
-    functionName: "available",
-    args: [connectedAccount!],
-    enabled: !!connectedAccount,
-  });
+  const { data: v3StakedBalance, refetch: refetchLegacyStakedBalance } =
+    useContractRead({
+      abi: v3StakingAbi,
+      ...oldStakingContract,
+      functionName: "balanceOf",
+      args: [connectedAccount!],
+      enabled: !!connectedAccount,
+      // 2 weeks
+      staleTime: 1000 * 60 * 60 * 24 * 14,
+      cacheTime: 1000 * 60 * 60 * 24 * 14,
+    });
+  const { data: v3AvailableBalance, refetch: refetchAvailableBalance } =
+    useContractRead({
+      abi: v3StakingAbi,
+      ...oldStakingContract,
+      functionName: "available",
+      args: [connectedAccount!],
+      enabled: !!connectedAccount && (v3StakedBalance || 0n) > 0n,
+    });
   const { data: newStakingAstAllowance } = useContractRead({
     abi: astAbi,
     ...astContract,
@@ -231,6 +243,8 @@ export const MigrationModal = ({}: {}) => {
         hash,
       });
       setIsMining([false, false, false]);
+      refetchLegacyStakedBalance();
+      refetchAvailableBalance();
       setTransactionHashes((prev) => [...prev, hash]);
       setCurrentStep(needsApproval ? 1 : 2);
     },
@@ -290,7 +304,7 @@ export const MigrationModal = ({}: {}) => {
       <Modal
         className="max-w-sm text-white"
         onCloseRequest={() => setShowMigrationModal(false)}
-        heading="Migrate to V4!"
+        heading="Migrate to V4.2!"
         subHeading={
           <span className="[text-wrap:balance]">
             Stake using the new contract to continue voting and earning rewards
@@ -303,9 +317,9 @@ export const MigrationModal = ({}: {}) => {
             staking contract.
           </p>
           <p>
-            After 31st December 2023 you will no longer be able to vote with AST
-            staked in this way. Please migrate at your earliest convenience by
-            following the steps below.
+            Since 31st December 2023, it hasn't been possible to vote with your
+            AST in this way. Please migrate to V4.2 at your earliest convenience
+            by following the steps below.
           </p>
         </div>
 

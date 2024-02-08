@@ -12,7 +12,7 @@ export const useAstAllowance = () => {
     useDefaultAsFallback: true,
   });
   const [airSwapStaking] = useContractAddresses(
-    [ContractTypes.AirSwapStaking],
+    [ContractTypes.AirSwapStaking_latest],
     {
       defaultChainId: 1,
       useDefaultAsFallback: true,

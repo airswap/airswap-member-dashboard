@@ -7,19 +7,28 @@ type ActionButton = {
 
 type ActionButtons = { [k: string]: ActionButton };
 
+/**
+ * @remarks this returns button actions that get used when staking modal is in transitions, e.g. between when a user approves and stakes
+ *
+ */
 export const actionButtonsObject = ({
   resetApproveAst,
   resetStakeAst,
   resetUnstakeSast,
+  resetUnstakeSastV4Deprecated,
   formReturn,
+  setV4UnstakingBalance,
 }: {
   resetApproveAst: () => void;
   resetStakeAst: () => void;
   resetUnstakeSast: () => void;
+  resetUnstakeSastV4Deprecated: () => void;
   formReturn: UseFormReturn<FieldValues>;
+  setV4UnstakingBalance: (balance: number) => void;
 }): ActionButtons => {
   const { setValue } = formReturn;
-  return {
+
+  const actions = {
     approve: {
       afterSuccess: {
         label: "Continue",
@@ -56,5 +65,21 @@ export const actionButtonsObject = ({
         callback: resetUnstakeSast,
       },
     },
+    unstakeV4Deprecated: {
+      afterSuccess: {
+        label: "Manage Stake",
+        callback: () => {
+          resetUnstakeSastV4Deprecated();
+          setValue("stakingAmount", undefined);
+          setV4UnstakingBalance(0);
+        },
+      },
+      afterFailure: {
+        label: "Try again",
+        callback: resetUnstakeSastV4Deprecated,
+      },
+    },
   };
+
+  return actions;
 };

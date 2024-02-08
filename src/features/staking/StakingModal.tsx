@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSwitchNetwork, useWaitForTransaction } from "wagmi";
@@ -10,19 +11,30 @@ import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useChainSupportsStaking } from "./hooks/useChainSupportsStaking";
 import { useStakeAst } from "./hooks/useStakeAst";
+import { useStakesForAccount } from "./hooks/useStakesForAccount";
 import { useUnstakeSast } from "./hooks/useUnstakeSast";
 import { useStakingModalStore } from "./store/useStakingModalStore";
-import { TxType } from "./types/StakingTypes";
+import { ContractVersion, TxType } from "./types/StakingTypes";
 import { actionButtonsObject } from "./utils/actionButtonObject";
 import { modalButtonActionsAndText } from "./utils/modalButtonActionsAndText";
 import { modalTxLoadingStateHeadlines } from "./utils/modalTxLoadingStateHeadlines";
 
 export const StakingModal = () => {
-  const { setShowStakingModal, txType, setTxHash } = useStakingModalStore();
+  const {
+    setShowStakingModal,
+    txType,
+    setTxHash,
+    v4UnstakingBalance,
+    setV4UnstakingBalance,
+  } = useStakingModalStore();
 
   const formReturn = useForm();
   const { getValues } = formReturn;
-  const stakingAmountFormatted = getValues().stakingAmount;
+  const stakingAmount = BigInt(
+    new BigNumber(getValues().stakingAmount || 0)
+      .multipliedBy(10 ** 4)
+      .toString(),
+  );
 
   const isSupportedChain = useChainSupportsStaking();
   const { switchNetwork } = useSwitchNetwork();
@@ -37,28 +49,28 @@ export const StakingModal = () => {
     astBalanceRaw: astBalance,
   } = useTokenBalances();
 
-  // stakingAmount default is NaN. Wagmi hooks need to validate that stakingAmount exists
-  const validNumberInput =
-    !!stakingAmountFormatted && Number(stakingAmountFormatted) * 10 ** 4 > 0;
+  const {
+    sAstBalanceV4Deprecated: sAstV4Balance,
+    sAstMaturityV4Deprecated,
+    sAstTimestampV4Deprecated,
+  } = useStakesForAccount();
 
+  const isStakeAmountAndStakeType = txType === TxType.STAKE && !!stakingAmount;
+
+  // check if allowance is less than amount user wants to stake
   const needsApproval =
-    txType === TxType.STAKE &&
-    Number(astAllowance) < Number(stakingAmountFormatted) * 10 ** 4 &&
-    validNumberInput;
-
-  const canStake =
-    txType === TxType.STAKE && !needsApproval && validNumberInput;
+    (isStakeAmountAndStakeType && astAllowance === 0n) ||
+    (!!astAllowance && astAllowance < stakingAmount);
 
   const canUnstake =
-    Number(stakingAmountFormatted) * 10 ** 4 <= Number(unstakableSastBalance) &&
-    txType === TxType.UNSTAKE &&
-    validNumberInput;
+    txType === TxType.UNSTAKE && stakingAmount <= unstakableSastBalance;
 
   const isInsufficientBalance =
-    txType === TxType.STAKE && stakingAmountFormatted
-      ? Number(stakingAmountFormatted) * 10 ** 4 > Number(astBalance)
-      : Number(stakingAmountFormatted) * 10 ** 4 >
-        Number(unstakableSastBalance);
+    txType === TxType.STAKE
+      ? stakingAmount > astBalance
+      : stakingAmount > unstakableSastBalance;
+
+  const isStakeButtonDisabled = stakingAmount <= 0 || isInsufficientBalance;
 
   const {
     writeAsync: approveAst,
@@ -66,8 +78,8 @@ export const StakingModal = () => {
     reset: resetApproveAst,
     isLoading: approvalAwaitingSignature,
   } = useApproveAst({
-    stakingAmountFormatted: Number(stakingAmountFormatted) || 0,
-    enabled: needsApproval,
+    stakingAmount: stakingAmount,
+    enabled: stakingAmount > 0n && !!needsApproval,
   });
 
   const {
@@ -76,8 +88,8 @@ export const StakingModal = () => {
     data: dataStakeAst,
     isLoading: stakeAwaitingSignature,
   } = useStakeAst({
-    stakingAmountFormatted: Number(stakingAmountFormatted) || 0,
-    enabled: canStake,
+    stakingAmount: stakingAmount,
+    enabled: stakingAmount > 0n && !needsApproval && txType === TxType.STAKE,
   });
 
   const {
@@ -86,9 +98,114 @@ export const StakingModal = () => {
     data: dataUnstakeSast,
     isLoading: unstakeAwaitingSignature,
   } = useUnstakeSast({
-    unstakingAmountFormatted: Number(stakingAmountFormatted) || 0,
-    canUnstake: canUnstake,
+    unstakingAmount: stakingAmount,
+    enabled: stakingAmount > 0n && canUnstake && txType === TxType.UNSTAKE,
   });
+
+  const enableV4Unstake = Boolean(
+    sAstV4Balance! > 0 &&
+      sAstMaturityV4Deprecated &&
+      sAstTimestampV4Deprecated! < sAstMaturityV4Deprecated && // this causes a revert if false
+      sAstMaturityV4Deprecated <= Date.now() / 1000,
+  );
+
+  const {
+    writeAsync: unstakeSastV4Deprecated,
+    reset: resetUnstakeSastV4Deprecated,
+    data: dataUnstakeSastV4Deprecated,
+    isLoading: unstakeAwaitingSignatureV4Deprecated,
+  } = useUnstakeSast({
+    unstakingAmount: sAstV4Balance,
+    contractVersion: ContractVersion.V4,
+    enabled: enableV4Unstake,
+  });
+
+  const currentTransactionHash =
+    dataApproveAst?.hash ||
+    dataStakeAst?.hash ||
+    dataUnstakeSast?.hash ||
+    dataUnstakeSastV4Deprecated?.hash;
+
+  const { status: txStatus } = useWaitForTransaction({
+    hash: currentTransactionHash,
+    enabled: !!currentTransactionHash,
+  });
+
+  const isV4UnstakeSuccess =
+    dataUnstakeSastV4Deprecated?.hash && txStatus === "success";
+
+  // pass the following in after `verb` to check if v4 was unstaked
+  const transactionTrackerBalance = isV4UnstakeSuccess
+    ? Number(v4UnstakingBalance) / 10 ** 4
+    : Number(stakingAmount) / 10 ** 4;
+
+  // don't pass in unstakeV4Deprecated actions because that is only handled in the content box in ManageStake
+  const modalButtonAction = modalButtonActionsAndText({
+    isSupportedNetwork: isSupportedChain,
+    txType,
+    needsApproval,
+    buttonActions: {
+      switchNetwork: () => switchNetwork?.(1),
+      approve: approveAst,
+      stake: stakeAst,
+      unstake: unstakeSast,
+    },
+    isInsufficientBalance,
+  });
+
+  const actionButtons = actionButtonsObject({
+    resetApproveAst,
+    resetStakeAst,
+    resetUnstakeSast,
+    resetUnstakeSastV4Deprecated,
+    formReturn,
+    setV4UnstakingBalance,
+  });
+
+  const modalLoadingStateHeadlines = modalTxLoadingStateHeadlines(txStatus);
+
+  const actionButtonLogic = () => {
+    if (dataApproveAst) {
+      return actionButtons.approve;
+    } else if (dataStakeAst) {
+      return actionButtons.stake;
+    } else if (dataUnstakeSast) {
+      return actionButtons.unstake;
+    } else if (dataUnstakeSastV4Deprecated) {
+      return actionButtons.unstakeV4Deprecated;
+    } else {
+      return undefined;
+    }
+  };
+
+  const shouldShowTracker =
+    stakeAwaitingSignature ||
+    approvalAwaitingSignature ||
+    unstakeAwaitingSignature ||
+    unstakeAwaitingSignatureV4Deprecated ||
+    !!currentTransactionHash;
+
+  // Used in "you successfully {verb} {stakingAmount} AST"
+  const verb =
+    isApproval && !dataUnstakeSastV4Deprecated?.hash
+      ? "approved"
+      : isApproval && dataUnstakeSastV4Deprecated?.hash
+      ? "unstaked"
+      : txType === TxType.STAKE
+      ? "staked"
+      : "unstaked";
+
+  // Used to disable close button in Modal.tsx
+  const txIsLoading =
+    approvalAwaitingSignature ||
+    stakeAwaitingSignature ||
+    unstakeAwaitingSignature ||
+    unstakeAwaitingSignatureV4Deprecated ||
+    txStatus === "loading";
+
+  useEffect(() => {
+    currentTransactionHash ? setTxHash(currentTransactionHash) : null;
+  }, [currentTransactionHash, setTxHash]);
 
   useEffect(() => {
     // after successfully staking, `needsApproval` will reset to true. We need `dataStakeAst` to be falsey to set `isApproval` to true, otherwise const `verb` will show as "approved" after the user has staked
@@ -104,76 +221,6 @@ export const StakingModal = () => {
     stakeAwaitingSignature,
   ]);
 
-  const currentTransactionHash =
-    dataApproveAst?.hash || dataStakeAst?.hash || dataUnstakeSast?.hash;
-
-  const { status: txStatus } = useWaitForTransaction({
-    hash: currentTransactionHash,
-    enabled: !!currentTransactionHash,
-  });
-
-  const modalButtonAction = modalButtonActionsAndText({
-    isSupportedNetwork: isSupportedChain,
-    txType,
-    needsApproval,
-    buttonActions: {
-      switchNetwork: () => switchNetwork?.(1),
-      approve: approveAst,
-      stake: stakeAst,
-      unstake: unstakeSast,
-    },
-    insufficientBalance: isInsufficientBalance,
-  });
-
-  const isAmountInvalid = Number(stakingAmountFormatted || 0) <= 0;
-
-  const isStakeButtonDisabled = isAmountInvalid || isInsufficientBalance;
-
-  const actionButtons = actionButtonsObject({
-    resetApproveAst,
-    resetStakeAst,
-    resetUnstakeSast,
-    formReturn,
-  });
-
-  const modalLoadingStateHeadlines = modalTxLoadingStateHeadlines(txStatus);
-
-  const actionButtonLogic = () => {
-    if (dataApproveAst) {
-      return actionButtons.approve;
-    } else if (dataStakeAst) {
-      return actionButtons.stake;
-    } else if (dataUnstakeSast) {
-      return actionButtons.unstake;
-    } else {
-      return undefined;
-    }
-  };
-
-  const shouldShowTracker =
-    stakeAwaitingSignature ||
-    approvalAwaitingSignature ||
-    unstakeAwaitingSignature ||
-    !!currentTransactionHash;
-
-  // Used in "you successfully {verb} {stakingAmount} AST"
-  const verb = isApproval
-    ? "approved"
-    : txType === TxType.STAKE
-    ? "staked"
-    : "unstaked";
-
-  // Used to disable close button in Modal.tsx
-  const txIsLoading =
-    approvalAwaitingSignature ||
-    stakeAwaitingSignature ||
-    unstakeAwaitingSignature ||
-    txStatus === "loading";
-
-  useEffect(() => {
-    currentTransactionHash ? setTxHash(currentTransactionHash) : null;
-  }, [currentTransactionHash, setTxHash]);
-
   return (
     <Modal
       className="w-full max-w-none xs:max-w-[360px] text-white"
@@ -187,7 +234,9 @@ export const StakingModal = () => {
           successContent={
             <span>
               You successfully {verb}{" "}
-              <span className="text-white">{stakingAmountFormatted} AST</span>
+              <span className="text-white">
+                {transactionTrackerBalance} AST
+              </span>
             </span>
           }
           failureContent={"Your transaction has failed"}
@@ -200,7 +249,10 @@ export const StakingModal = () => {
         />
       ) : (
         <>
-          <ManageStake formReturn={formReturn} />
+          <ManageStake
+            formReturn={formReturn}
+            unstakeSastV4Deprecated={unstakeSastV4Deprecated}
+          />
           <div>
             <Button
               onClick={modalButtonAction?.callback}
