@@ -49,8 +49,11 @@ export const StakingModal = () => {
     astBalanceRaw: astBalance,
   } = useTokenBalances();
 
-  const { sAstBalanceV4Deprecated: sAstV4Balance, sAstMaturityV4Deprecated } =
-    useStakesForAccount();
+  const {
+    sAstBalanceV4Deprecated: sAstV4Balance,
+    sAstMaturityV4Deprecated,
+    sAstTimestampV4Deprecated,
+  } = useStakesForAccount();
 
   const isStakeAmountAndStakeType = txType === TxType.STAKE && !!stakingAmount;
 
@@ -99,7 +102,12 @@ export const StakingModal = () => {
     enabled: stakingAmount > 0n && canUnstake && txType === TxType.UNSTAKE,
   });
 
-  const enableV4Unstake = sAstV4Balance! > 0 && sAstMaturityV4Deprecated === 0n;
+  const enableV4Unstake = Boolean(
+    sAstV4Balance! > 0 &&
+      sAstMaturityV4Deprecated &&
+      sAstTimestampV4Deprecated! < sAstMaturityV4Deprecated && // this causes a revert if false
+      sAstMaturityV4Deprecated <= Date.now() / 1000,
+  );
 
   const {
     writeAsync: unstakeSastV4Deprecated,

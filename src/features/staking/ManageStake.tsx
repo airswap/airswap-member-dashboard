@@ -103,12 +103,13 @@ export const ManageStake = ({
           </span>{" "}
           AST staked in the deprecated v4 contract which you can{" "}
           {
-            <span
+            <button
+              type="button"
               onClick={handleUnstakeFromContentBox}
               className="underline hover:cursor-pointer"
             >
               unstake in full now
-            </span>
+            </button>
           }
           .
         </div>

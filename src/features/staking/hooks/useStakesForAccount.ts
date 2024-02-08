@@ -42,10 +42,12 @@ export const useStakesForAccount = () => {
   const sAstBalance = getStakesLatest?.balance;
   const sAstBalanceV4Deprecated = getStakesV4Deprecated?.balance;
   const sAstMaturityV4Deprecated = getStakesV4Deprecated?.maturity;
+  const sAstTimestampV4Deprecated = getStakesV4Deprecated?.timestamp;
 
   return {
     sAstBalance,
     sAstBalanceV4Deprecated,
     sAstMaturityV4Deprecated,
+    sAstTimestampV4Deprecated,
   };
 };
