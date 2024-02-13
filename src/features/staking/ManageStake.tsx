@@ -121,7 +121,9 @@ export const ManageStake = ({
           <span className="rounded-sm text-white">
             {availableSAstV4Balance}
           </span>{" "}
-          AST staked in the deprecated v4.0 contract which will be unstakable in{" "}
+          AST staked in V4, which you can continue to use it to vote. If you
+          would like to unstake these tokens, the full balance will be available
+          in{" "}
           <span className="rounded-sm text-white">
             {timeLeftToUnstake.days} days {timeLeftToUnstake.hours} hours,{" "}
             {timeLeftToUnstake.minutes} minutes
