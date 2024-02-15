@@ -15,14 +15,15 @@ export const PieBar = () => {
   } = useTokenBalances();
 
   const unstaked = formatNumber(astBalanceRaw, 4) || 0;
-  const staked = formatNumber(sAstBalanceRaw, 4) || 0;
-  const unstakable = formatNumber(unstakableSastBalanceRaw, 4) || 0;
-  const unstakableV4 =
-    formatNumber(unstakableSastBalanceV4_DeprecatedRaw, 4) || 0;
-  const stakedV4 = formatNumber(sAstBalanceV4_DeprecatedRaw, 4) || 0;
 
-  const totalStaked = String(Number(staked) + Number(stakedV4));
-  const totalUnstakable = String(Number(unstakable) + Number(unstakableV4));
+  const totalStaked = formatNumber(
+    sAstBalanceRaw + sAstBalanceV4_DeprecatedRaw,
+    4,
+  );
+  const totalUnstakable = formatNumber(
+    unstakableSastBalanceRaw + unstakableSastBalanceV4_DeprecatedRaw,
+    4,
+  );
 
   // the following 2 values are only used for calculateTokenProportions
   const totalUnstakableRaw =

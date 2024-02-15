@@ -11,10 +11,10 @@ export const StakingButton = () => {
   const { isConnected } = useAccount();
   const { sAstBalanceRaw, sAstBalanceV4_DeprecatedRaw } = useTokenBalances();
 
-  const sAstBalance = formatNumber(sAstBalanceRaw, 4) || 0;
-  const sAstBalanceV4 = formatNumber(sAstBalanceV4_DeprecatedRaw, 4) || 0;
-
-  const totalSastBalance = Number(sAstBalance) + Number(sAstBalanceV4);
+  const totalSastBalance = formatNumber(
+    sAstBalanceRaw + sAstBalanceV4_DeprecatedRaw,
+    4,
+  );
 
   return (
     <>
