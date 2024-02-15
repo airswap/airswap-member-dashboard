@@ -62,6 +62,8 @@ export const claimableTokens = {
     "0xae7ab96520de3a18e5e111b5eaab095312d7fe84", // stETH
     "0x111111111117dc0aa78b770fa6a738034120c302", // 1INCH
     "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2", // SUSHI
+    "0x576e2BeD8F7b46D34016198911Cdf9886f78bea7", // MAGA(Trump)
+    "0x6982508145454Ce325dDbE47a25d4ec3d2311933", // PEPE
   ] as `0x${string}`[],
   56: [
     // bsc
@@ -81,6 +83,7 @@ export const claimableTokens = {
     "0xc2132D05D31c914a87C6611C10748AEb04B58e8F", // USDT
     "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270", // WMATIC
     "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063", // DAI
+    "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359", // USDC
   ] as `0x${string}`[],
   43114: [
     // avax
