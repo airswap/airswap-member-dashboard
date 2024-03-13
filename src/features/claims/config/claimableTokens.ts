@@ -64,6 +64,8 @@ export const claimableTokens = {
     "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2", // SUSHI
     "0x576e2BeD8F7b46D34016198911Cdf9886f78bea7", // MAGA(Trump)
     "0x6982508145454Ce325dDbE47a25d4ec3d2311933", // PEPE
+    "0xaea46A60368A7bD060eec7DF8CBa43b7EF41Ad85", // FETCH
+    
   ] as `0x${string}`[],
   56: [
     // bsc
