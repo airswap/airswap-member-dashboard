@@ -45,17 +45,22 @@ const fetchTokenInfo = async ({
 export const useMultipleTokenInfo = ({
   chainId,
   tokenAddresses,
+  enabled = true,
 }: {
   tokenAddresses?: `0x${string}`[];
   chainId?: number;
+  enabled?: boolean;
 }) => {
-  const enabled =
-    chainId != null && tokenAddresses != null && tokenAddresses.length > 0;
+  const _enabled =
+    enabled &&
+    chainId != null &&
+    tokenAddresses != null &&
+    tokenAddresses.length > 0;
   const queries = useQueries({
     queries: tokenAddresses!.map((tokenAddress) => ({
       queryKey: [chainId, tokenAddress, "tokenInfo"] as TokenInfoQueryKey,
       queryFn: fetchTokenInfo,
-      enabled,
+      enabled: _enabled,
       cacheTime: 2_592_000_000, // 1 month
       staleTime: Infinity, // doesn't change
     })),

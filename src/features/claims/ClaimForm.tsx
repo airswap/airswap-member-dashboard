@@ -17,6 +17,7 @@ import { Button } from "../common/Button";
 import { TransactionTracker } from "../common/TransactionTracker";
 import { formatNumber } from "../common/utils/formatNumber";
 import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
+import { AddCustomTokenForm } from "./AddCustomTokenForm";
 import {
   ClaimableTokensLineItem,
   ClaimableTokensLineItemLoading,
@@ -25,6 +26,7 @@ import { useClaimableAmounts } from "./hooks/useClaimableAmounts";
 import { useResetClaimStatus } from "./hooks/useResetClaimStatus";
 
 export const ClaimForm = ({}: {}) => {
+  const [newCustomTokenAddress, setNewCustomTokenAddress] = useState<string>();
   const [pool] = useContractAddresses([ContractTypes.AirSwapPool], {});
   const { address: connectedAccount } = useAccount();
 
@@ -210,12 +212,21 @@ export const ClaimForm = ({}: {}) => {
             gridTemplateColumns: "auto 1fr auto",
           }}
         >
+          <div className="col-span-full">
+            <AddCustomTokenForm />
+          </div>
           {claimable.map(
-            ({ claimableAmount, claimableValue, price, tokenInfo }, i) => {
-              const isLoaded =
-                tokenInfo?.decimals &&
-                claimableAmount != null &&
-                price;
+            (
+              {
+                claimableAmount,
+                claimableValue,
+                price,
+                tokenInfo,
+                isCustomToken,
+              },
+              i,
+            ) => {
+              const isLoaded = tokenInfo?.decimals && claimableAmount != null;
 
               return isLoaded ? (
                 <ClaimableTokensLineItem
@@ -235,6 +246,8 @@ export const ClaimForm = ({}: {}) => {
                   symbol={tokenInfo?.symbol || "???"}
                   value={claimableValue || 0}
                   key={tokenInfo?.address || i}
+                  isCustomToken={isCustomToken}
+                  address={tokenInfo?.address}
                 />
               ) : (
                 <ClaimableTokensLineItemLoading key={i + "-loading"} />

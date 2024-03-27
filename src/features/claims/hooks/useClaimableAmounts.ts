@@ -1,9 +1,10 @@
 import BigNumber from "bignumber.js";
 import { useMemo } from "react";
+import { getAddress } from "viem";
 import { Address, useChainId } from "wagmi";
 import { useMultipleTokenInfo } from "../../common/hooks/useMultipleTokenInfo";
+import { useClaimSelectionStore } from "../../votes/store/useClaimSelectionStore";
 import {
-  TestnetClaimableToken,
   claimableTokens,
   testnetClaimableTokens,
 } from "../config/claimableTokens";
@@ -18,15 +19,45 @@ const testnets = Object.keys(testnetClaimableTokens).map((t) => parseInt(t));
 export const useClaimableAmounts = (points: number) => {
   const chainId = useChainId() as SupportedChainId;
 
-  const isTestnet = testnets.includes(chainId);
+  const savedCustomTokens = useClaimSelectionStore(
+    (state) => state.customTokens,
+  );
 
-  const tokenList = isTestnet
-    ? testnetClaimableTokens[chainId]
-    : claimableTokens[chainId];
+  const { tokenList, tokenAddresses, customTokens } = useMemo(() => {
+    const isTestnet = testnets.includes(chainId);
+    const tokens = isTestnet
+      ? testnetClaimableTokens[chainId]
+      : claimableTokens[chainId];
 
-  const tokenAddresses = isTestnet
-    ? (tokenList as TestnetClaimableToken[]).map((t) => t.address)
-    : (tokenList as Address[]);
+    if (isTestnet) {
+      return {
+        tokenList: tokens,
+        tokenAddresses: tokens as Address[],
+        customTokens: [] as Address[],
+      };
+    }
+
+    const defaultTokens: Address[] = tokens as Address[];
+
+    // filter out custom tokens that are already in the tokenList.
+    const customTokensForChain = savedCustomTokens[chainId] || [];
+    const checksummedTokenList = defaultTokens.map((token) =>
+      getAddress(token),
+    );
+    const customTokensNotInDefaults = customTokensForChain.filter(
+      (customToken) => !checksummedTokenList.includes(customToken),
+    );
+
+    return {
+      tokenList: customTokensNotInDefaults.length
+        ? [...defaultTokens, ...customTokensNotInDefaults]
+        : (defaultTokens as Address[]),
+      tokenAddresses: customTokensNotInDefaults.length
+        ? [...defaultTokens, ...customTokensNotInDefaults]
+        : (defaultTokens as Address[]),
+      customTokens: customTokensNotInDefaults,
+    };
+  }, [savedCustomTokens, chainId]);
 
   const { data: claimableAmounts, refetch } = useClaimCalculations(
     points,
@@ -40,17 +71,31 @@ export const useClaimableAmounts = (points: number) => {
 
   const { data: prices } = useDefiLlamaBatchPrices({
     chainId,
-    tokenAddresses: tokenList.map((token) =>
-      typeof token === "object" ? token.mainnetEquivalentAddress : token,
-    ),
+    tokenAddresses: tokenList
+      .map((token) => {
+        const addr =
+          typeof token === "object" ? token.mainnetEquivalentAddress : token;
+        return typeof token === "object"
+          ? token.mainnetEquivalentAddress
+          : token;
+      })
+      .concat(chainId === 1 ? customTokens : []),
   });
 
   return useMemo(() => {
     const data = tokenList
-      .map((_, index) => {
+      .map((token, index) => {
+        const address = typeof token === "object" ? token.address : token;
         const tokenInfo = tokenInfoResults[index].data;
         const price = prices?.[index].price;
         const claimableAmount = claimableAmounts?.[index];
+        console.log(
+          "symbol",
+          tokenInfo?.symbol,
+          claimableAmount,
+          "price",
+          price,
+        );
         const claimableValue =
           tokenInfo?.decimals &&
           price &&
@@ -65,9 +110,17 @@ export const useClaimableAmounts = (points: number) => {
           tokenInfo,
           price,
           claimableValue,
+          isCustomToken: customTokens.includes(getAddress(address)),
         };
       })
       .sort((a, b) => (b.claimableValue || 0) - (a.claimableValue || 0));
     return { data, refetch };
-  }, [prices, tokenInfoResults, claimableAmounts, tokenList, refetch]);
+  }, [
+    prices,
+    tokenInfoResults,
+    claimableAmounts,
+    tokenList,
+    refetch,
+    customTokens,
+  ]);
 };
