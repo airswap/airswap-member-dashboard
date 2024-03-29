@@ -1,7 +1,8 @@
 {
-  "name": "airswap-member-dashboard",
-  "private": true,
+  "name": "airswap-voter-rewards",
   "version": "0.1.0",
+  "private": true,
+  "homepage": ".",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
