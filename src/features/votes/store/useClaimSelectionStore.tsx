@@ -134,7 +134,10 @@ export const useClaimSelectionStore = create<SelectedClaimState>()(
         });
       },
       reset() {
-        set(defaultState);
+        set((state) => ({
+          ...defaultState,
+          customTokens: state.customTokens,
+        }));
       },
     }),
     {
