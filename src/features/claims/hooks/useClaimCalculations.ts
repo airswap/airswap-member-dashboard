@@ -33,26 +33,13 @@ export const useClaimCalculations = (
         args: [_points, tokenAddress],
       })),
     });
+
     // return just the results
     return multicallResponse.map((response) => response.result || 0n);
   };
 
   const claimableTokenAddressesHash = hashMessage(claimableTokens.join(","));
 
-  console.log({
-    enabled: Boolean(
-      enabled &&
-        _points > 0 &&
-        poolContract.address &&
-        claimableTokens.length &&
-        chain,
-    ),
-    enabledb: enabled,
-    _points,
-    pooladdr: poolContract.address,
-    claimableTokens: claimableTokens.length,
-    chain,
-  });
   return useQuery(
     ["claimCalculations", chain!.id, claimableTokenAddressesHash, points],
     fetch,

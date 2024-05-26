@@ -28,8 +28,6 @@ type CurrentPricesResponse = {
 };
 
 const fetch = async (chainName: string, addresses: `0x${string}`[]) => {
-  console.log("fetching prices for", addresses);
-  if (addresses.length === 37) debugger;
   try {
     const response = await axios.get<CurrentPricesResponse>(
       `${path}/${addresses

@@ -7,7 +7,6 @@ import {
   useContractWrite,
   usePrepareContractWrite,
   usePublicClient,
-  useSwitchNetwork,
   useWaitForTransaction,
 } from "wagmi";
 import { ContractTypes } from "../../config/ContractAddresses";
@@ -17,7 +16,6 @@ import { Button } from "../common/Button";
 import { TransactionTracker } from "../common/TransactionTracker";
 import { formatNumber } from "../common/utils/formatNumber";
 import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
-import { AddCustomTokenForm } from "./AddCustomTokenForm";
 import {
   ClaimableTokensLineItem,
   ClaimableTokensLineItemLoading,
@@ -26,7 +24,6 @@ import { useClaimableAmounts } from "./hooks/useClaimableAmounts";
 import { useResetClaimStatus } from "./hooks/useResetClaimStatus";
 
 export const ClaimForm = ({}: {}) => {
-  const [newCustomTokenAddress, setNewCustomTokenAddress] = useState<string>();
   const [pool] = useContractAddresses([ContractTypes.AirSwapPool], {});
   const { address: connectedAccount } = useAccount();
 
@@ -36,8 +33,6 @@ export const ClaimForm = ({}: {}) => {
   const chainId = useChainId();
   const publicClient = usePublicClient({ chainId: chainId });
 
-  const { switchNetwork, isLoading: switchNetworkLoading } = useSwitchNetwork();
-
   const [
     pointsClaimableByEpoch,
     allClaims,
@@ -45,6 +40,7 @@ export const ClaimForm = ({}: {}) => {
     clearSelectedClaims,
     setShowClaimModal,
     setIsClaimLoading,
+    setShowCustomTokensModal,
   ] = useClaimSelectionStore((state) => [
     state.pointsClaimableByEpoch,
     state.allClaims,
@@ -52,6 +48,7 @@ export const ClaimForm = ({}: {}) => {
     state.clearSelectedClaims,
     state.setShowClaimModal,
     state.setIsClaimLoading,
+    state.setShowCustomTokensModal,
   ]);
 
   const _selectedClaims = selectedClaims.length ? selectedClaims : allClaims;
@@ -204,7 +201,7 @@ export const ClaimForm = ({}: {}) => {
       className="w-[304px]"
     />
   ) : (
-    <div className="w-[320px] max-h-[300px] flex flex-col">
+    <div className="w-[320px] max-h-[320px] flex flex-col">
       <div className="flex-1 overflow-auto [scrollbar-width:thin]">
         <div
           className="grid items-center gap-x-5 gap-y-4 pr-3"
@@ -212,9 +209,6 @@ export const ClaimForm = ({}: {}) => {
             gridTemplateColumns: "auto 1fr auto",
           }}
         >
-          <div className="col-span-full">
-            <AddCustomTokenForm />
-          </div>
           {claimable.map(
             (
               {
@@ -257,20 +251,29 @@ export const ClaimForm = ({}: {}) => {
         </div>
       </div>
 
-      <Button
-        color="primary"
-        rounded={false}
-        className="mt-7"
-        onClick={() => {
-          if (write) {
-            write();
-            setPointsUsed(pointsSelected);
-          }
-        }}
-        disabled={selection === undefined || !write}
-      >
-        Claim
-      </Button>
+      <div className="flex flex-col gap-4 mt-2">
+        <button
+          className="text-white underline text-xs"
+          type="button"
+          onClick={() => setShowCustomTokensModal(true)}
+        >
+          Edit custom tokens
+        </button>
+
+        <Button
+          color="primary"
+          rounded={false}
+          onClick={() => {
+            if (write) {
+              write();
+              setPointsUsed(pointsSelected);
+            }
+          }}
+          disabled={selection === undefined || !write}
+        >
+          Claim
+        </Button>
+      </div>
     </div>
   );
 };

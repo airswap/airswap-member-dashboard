@@ -1,10 +1,8 @@
-import { IoMdClose } from "react-icons/io";
 import { twJoin } from "tailwind-merge";
 import { Address } from "viem";
 import { useChainId } from "wagmi";
 import { Checkbox } from "../common/Checkbox";
 import { formatNumber } from "../common/utils/formatNumber";
-import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
 
 export const ClaimableTokensLineItem = ({
   symbol,
@@ -26,9 +24,9 @@ export const ClaimableTokensLineItem = ({
   address: Address;
 }) => {
   const chainId = useChainId();
-  const removeCustomToken = useClaimSelectionStore(
-    (state) => state.removeCustomToken,
-  );
+  // const removeCustomToken = useClaimSelectionStore(
+  //   (state) => state.removeCustomToken,
+  // );
 
   return (
     <>
@@ -39,11 +37,11 @@ export const ClaimableTokensLineItem = ({
       />
       <span className="text-gray-400 inline-flex gap-2 items-center">
         {formatNumber(amount, decimals)} {symbol}
-        {isCustomToken && (
+        {/* {isCustomToken && (
           <button onClick={() => removeCustomToken(chainId, address)}>
             <IoMdClose className="text-red-500" />
           </button>
-        )}
+        )} */}
       </span>
       <span
         className={twJoin(

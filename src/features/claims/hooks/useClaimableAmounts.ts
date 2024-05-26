@@ -89,13 +89,6 @@ export const useClaimableAmounts = (points: number) => {
         const tokenInfo = tokenInfoResults[index].data;
         const price = prices?.[index].price;
         const claimableAmount = claimableAmounts?.[index];
-        console.log(
-          "symbol",
-          tokenInfo?.symbol,
-          claimableAmount,
-          "price",
-          price,
-        );
         const claimableValue =
           tokenInfo?.decimals &&
           price &&

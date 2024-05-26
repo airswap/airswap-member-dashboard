@@ -15,11 +15,13 @@ export type Claim = {
 export type SelectedClaimState = {
   /** Whether or not we are showing the claim modal */
   showClaimModal: boolean;
+  showCustomTokensModal: boolean;
   /** An array of the currently selected claims - will be sent to contract
    * via claim modal.
    */
   selectedClaims: Claim[];
   allClaims: Claim[];
+  /** Custom tokens, keyed by chain */
   customTokens: Record<number, Address[]>;
   /** Amount of points claimable by epoch - set by the past epoch card when the
    * claim is loaded, and used by the claim float to determine the total number
@@ -35,6 +37,7 @@ export type SelectedClaimState = {
   toggleClaimSelected: (claim: Claim) => void;
   clearSelectedClaims: () => void;
   setShowClaimModal: (show: boolean) => void;
+  setShowCustomTokensModal: (show: boolean) => void;
   isClaimSelected: (tree: string) => boolean;
   isClaimLoading: boolean;
   setIsClaimLoading: (isClaimLoading: boolean) => void;
@@ -42,11 +45,12 @@ export type SelectedClaimState = {
 };
 
 const defaultState = {
-  customTokens: [],
+  customTokens: {},
   selectedClaims: [],
   allClaims: [],
   pointsClaimableByEpoch: {},
   showClaimModal: false,
+  showCustomTokensModal: false,
   isClaimLoading: false,
 };
 
@@ -97,6 +101,9 @@ export const useClaimSelectionStore = create<SelectedClaimState>()(
       },
       setShowClaimModal(show: boolean) {
         set({ showClaimModal: show });
+      },
+      setShowCustomTokensModal(show) {
+        set({ showCustomTokensModal: show });
       },
       setIsClaimLoading(loading: boolean) {
         set({ isClaimLoading: loading });
