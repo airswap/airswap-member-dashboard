@@ -18,7 +18,6 @@ export const CustomTokensForm = () => {
     }));
 
   // 0x163f8C2467924be0ae7B5347228CABF260318753
-  console.log(tokens);
 
   const [newTokenAddress, setNewTokenAddress] = useState<string>("");
   const tokensForChain = tokens[chainId] || [];
@@ -28,7 +27,8 @@ export const CustomTokensForm = () => {
     ? getAddress(newTokenAddress)
     : undefined;
   const isEnteredAddressAlreadyInList =
-    checksummedAddress && tokensForChain.includes(checksummedAddress);
+    checksummedAddress &&
+    tokensForChain.some((a) => getAddress(a) === checksummedAddress);
 
   // Look up the tokeninfo for the entered address
   const [{ data: enteredTokenInfo, isLoading: enteredTokenInfoLoading }] =
@@ -87,6 +87,7 @@ export const CustomTokensForm = () => {
               <Button
                 type="button"
                 className="uppercase"
+                disabled={isEnteredAddressAlreadyInList}
                 rounded={false}
                 onClick={() => {
                   addToken(chainId, checksummedAddress!);
@@ -132,7 +133,7 @@ export const CustomTokensForm = () => {
       </div>
 
       <Button
-        className="mt-8"
+        className="mt-6"
         type="button"
         color="primary"
         rounded={false}
