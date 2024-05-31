@@ -1,4 +1,6 @@
 import { twJoin } from "tailwind-merge";
+import { Address } from "viem";
+import { useChainId } from "wagmi";
 import { Checkbox } from "../common/Checkbox";
 import { formatNumber } from "../common/utils/formatNumber";
 
@@ -9,6 +11,8 @@ export const ClaimableTokensLineItem = ({
   value,
   isSelected,
   onSelect,
+  isCustomToken = false,
+  address,
 }: {
   symbol: string;
   decimals: number;
@@ -16,7 +20,14 @@ export const ClaimableTokensLineItem = ({
   value: number;
   isSelected: boolean;
   onSelect: () => void;
+  isCustomToken?: boolean;
+  address: Address;
 }) => {
+  const chainId = useChainId();
+  // const removeCustomToken = useClaimSelectionStore(
+  //   (state) => state.removeCustomToken,
+  // );
+
   return (
     <>
       <Checkbox
@@ -24,8 +35,13 @@ export const ClaimableTokensLineItem = ({
         checked={isSelected}
         onCheckedChange={(state) => state === true && onSelect()}
       />
-      <span className="text-gray-400">
+      <span className="text-gray-400 inline-flex gap-2 items-center">
         {formatNumber(amount, decimals)} {symbol}
+        {/* {isCustomToken && (
+          <button onClick={() => removeCustomToken(chainId, address)}>
+            <IoMdClose className="text-red-500" />
+          </button>
+        )} */}
       </span>
       <span
         className={twJoin(

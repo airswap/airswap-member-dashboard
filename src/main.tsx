@@ -12,12 +12,13 @@ import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
-import { infuraProvider } from "wagmi/providers/infura";
-import { publicProvider } from "wagmi/providers/public";
 import App from "./App.tsx";
 import AirSwapLogo from "./assets/airswap-logo.svg";
 import "./index.css";
 import { isPlainObject } from "./utils/isPlainObject.ts";
+
+import { infuraProvider } from "wagmi/providers/infura";
+import { publicProvider } from "wagmi/providers/public";
 
 // Fonts:
 import "@fontsource/dm-mono/400.css";
@@ -31,6 +32,12 @@ if (!window.Buffer) {
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, goerli, avalanche, bsc, polygon],
   [
+    // uncomment to use local node.
+    // jsonRpcProvider({
+    //   rpc: () => ({
+    //     http: "http://localhost:8545",
+    //   }),
+    // }),
     infuraProvider({ apiKey: import.meta.env.VITE_INFURA_API_KEY || "" }),
     publicProvider(),
   ],

@@ -50,13 +50,6 @@ export const useActivatePointsClaim = ({ enabled }: { enabled: boolean }) => {
     // Generate their proof
     const proof = merkleTree.getHexProof(userLeaf) as `0x${string}`[];
 
-    if (import.meta.env.DEV) {
-      console.log("Activate migration details:", {
-        root: merkleTree.getHexRoot(),
-        tree: ACTIVATE_TREE_ID,
-      });
-    }
-
     return {
       tree: ACTIVATE_TREE_ID,
       value: points,

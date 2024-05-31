@@ -4,6 +4,7 @@ import { ActivatePointsCard } from "../activate-migration/ActivatePointsCard";
 import { NON_MAINNET_START_TIMESTAMP } from "../activate-migration/constants";
 import { ClaimForm } from "../claims/ClaimForm";
 import { ClaimModalSubheading } from "../claims/ClaimModalSubheading";
+import { CustomTokensForm } from "../claims/CustomTokensForm";
 import { Modal } from "../common/Modal";
 import { LiveVoteCard } from "./LiveVoteCard";
 import { PastEpochCard } from "./PastEpochCard";
@@ -18,12 +19,19 @@ export const VoteList = ({}: {}) => {
   const { address: connectedAccount } = useAccount();
   const { data: proposalGroups, isLoading: proposalGroupsLoading } =
     useGroupedProposals();
-  const [showClaimModal, setShowClaimModal, isClaimLoading] =
-    useClaimSelectionStore((state) => [
-      state.showClaimModal,
-      state.setShowClaimModal,
-      state.isClaimLoading,
-    ]);
+  const [
+    showClaimModal,
+    setShowClaimModal,
+    isClaimLoading,
+    showCustomTokensModal,
+    setShowCustomTokensModal,
+  ] = useClaimSelectionStore((state) => [
+    state.showClaimModal,
+    state.setShowClaimModal,
+    state.isClaimLoading,
+    state.showCustomTokensModal,
+    state.setShowCustomTokensModal,
+  ]);
 
   // Fetch proposal roots.
   const rootQueries = useTreeRoots({
@@ -118,14 +126,24 @@ export const VoteList = ({}: {}) => {
       {/* Claim Float */}
 
       {/* Claim modal. */}
-      {showClaimModal && (
+      {showClaimModal && !showCustomTokensModal && (
         <Modal
           onCloseRequest={() => setShowClaimModal(false)}
           heading="Claim"
           isClosable={!isClaimLoading}
           subHeading={<ClaimModalSubheading />}
+          className={`${showCustomTokensModal ? "hidden" : ""}`}
         >
           <ClaimForm />
+        </Modal>
+      )}
+      {showCustomTokensModal && (
+        <Modal
+          onCloseRequest={() => setShowCustomTokensModal(false)}
+          heading="Edit tokens"
+          subHeading={"Add or remove custom tokens"}
+        >
+          <CustomTokensForm />
         </Modal>
       )}
     </div>

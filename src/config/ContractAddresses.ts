@@ -47,7 +47,7 @@ export const contractAddressesByChain: Record<number, ContractList> = {
     // avax
     [ContractTypes.AirSwapPool]: "0xbbcec987e4c189fcbab0a2534c77b3ba89229f11",
   },
-  111555111: {
+  11155111: {
     // sepolia
     [ContractTypes.AirSwapStaking_latest]:
       "0x8Bf384296A009723435aD5E8203DA5736b895038",

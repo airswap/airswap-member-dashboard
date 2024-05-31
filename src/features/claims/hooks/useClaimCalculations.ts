@@ -1,4 +1,5 @@
 import { BigNumber } from "bignumber.js";
+import { hashMessage } from "viem";
 import { useNetwork, useQuery } from "wagmi";
 import { multicall } from "wagmi/actions";
 import { ContractTypes } from "../../../config/ContractAddresses";
@@ -8,6 +9,7 @@ import { poolAbi } from "../../../contracts/poolAbi";
 export const useClaimCalculations = (
   points: number,
   claimableTokens: `0x${string}`[],
+  enabled: boolean = true,
 ) => {
   const { chain } = useNetwork();
   const [poolContract] = useContractAddresses([ContractTypes.AirSwapPool], {
@@ -31,17 +33,28 @@ export const useClaimCalculations = (
         args: [_points, tokenAddress],
       })),
     });
+
     // return just the results
     return multicallResponse.map((response) => response.result || 0n);
   };
 
-  return useQuery(["claimCalculations", chain!.id, points], fetch, {
-    enabled: Boolean(
-      _points > 0 && poolContract.address && claimableTokens.length && chain,
-    ),
-    // 1 minute
-    cacheTime: 60_000,
-    staleTime: 30_000,
-    refetchInterval: 30_000,
-  });
+  const claimableTokenAddressesHash = hashMessage(claimableTokens.join(","));
+
+  return useQuery(
+    ["claimCalculations", chain!.id, claimableTokenAddressesHash, points],
+    fetch,
+    {
+      enabled: Boolean(
+        enabled &&
+          _points > 0 &&
+          poolContract.address &&
+          claimableTokens.length &&
+          chain,
+      ),
+      // 1 minute
+      cacheTime: 60_000,
+      staleTime: 30_000,
+      refetchInterval: 30_000,
+    },
+  );
 };
