@@ -19,17 +19,6 @@ export const contractAddressesByChain: Record<number, ContractList> = {
       "0x9fc450F9AfE2833Eb44f9A1369Ab3678D3929860",
     [ContractTypes.AirSwapPool]: "0xbbcec987e4c189fcbab0a2534c77b3ba89229f11",
   },
-  5: {
-    // goerli
-    [ContractTypes.AirSwapToken]: "0x4092D6DBA9abB7450B9d91aA7ED2712935D63b39",
-    [ContractTypes.AirSwapV3Staking_deprecated]:
-      "0xd913469D9FCdB84a6a8fF049765e99f4C9146B4F",
-    [ContractTypes.AirSwapV4Staking_deprecated]:
-      "0x20aaebad8c7c6ffb6fdaa5a622c399561562beea",
-    [ContractTypes.AirSwapStaking_latest]:
-      "0xaCfd509f5785E57257B2eAc3AE4Ef080074d37c3",
-    [ContractTypes.AirSwapPool]: "0xbbcec987e4c189fcbab0a2534c77b3ba89229f11",
-  },
   56: {
     // bsc
     [ContractTypes.AirSwapPool]: "0xbbcec987e4c189fcbab0a2534c77b3ba89229f11",
@@ -51,5 +40,6 @@ export const contractAddressesByChain: Record<number, ContractList> = {
     // sepolia
     [ContractTypes.AirSwapStaking_latest]:
       "0x8Bf384296A009723435aD5E8203DA5736b895038",
+    [ContractTypes.AirSwapToken]: "0x4092D6DBA9abB7450B9d91aA7ED2712935D63b39",
   },
 };

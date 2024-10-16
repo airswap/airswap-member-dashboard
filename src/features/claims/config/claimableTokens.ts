@@ -11,6 +11,7 @@ type TestnetTokensNetworkMapping = {
   [index: number]: TestnetClaimableToken[];
 };
 
+// FIXME: replace Goerli with Sepoli (11155111) addresses
 export const testnetClaimableTokens: TestnetTokensNetworkMapping = {
   5: [
     // goerli
@@ -70,8 +71,6 @@ export const claimableTokens = {
     "0xA9E8aCf069C58aEc8825542845Fd754e41a9489A", //pepecoin
     "0x7dA2641000Cbb407C329310C461b2cB9c70C3046", //AGI
     "0xf23a2BF7619Ad93300499c3fC7d7145A06CcA562", //NOISEGPT
-  
-    
   ] as `0x${string}`[],
   56: [
     // bsc

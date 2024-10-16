@@ -6,8 +6,14 @@ import {
 import { Buffer } from "buffer";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { WagmiConfig, configureChains, createConfig, mainnet } from "wagmi";
-import { avalanche, bsc, goerli, polygon } from "wagmi/chains";
+import {
+  WagmiConfig,
+  configureChains,
+  createConfig,
+  mainnet,
+  sepolia,
+} from "wagmi";
+import { avalanche, bsc, polygon } from "wagmi/chains";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
@@ -30,7 +36,7 @@ if (!window.Buffer) {
 }
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet, goerli, avalanche, bsc, polygon],
+  [mainnet, sepolia, avalanche, bsc, polygon],
   [
     // uncomment to use local node.
     // jsonRpcProvider({

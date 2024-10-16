@@ -21,6 +21,7 @@ export const useTokenBalances = () => {
     defaultChainId: 1,
     useDefaultAsFallback: true,
   });
+
   const airSwapTokenContract = {
     address: airSwapToken.address,
     chain: airSwapToken.chainId,
@@ -69,6 +70,8 @@ export const useTokenBalances = () => {
     ],
     enabled: !!isConnected,
   });
+
+  console.log(data);
 
   // available balance to unstake from latest contract
   const unstakableSastBalanceRaw = (data && (data[0].result as bigint)) || 0n;

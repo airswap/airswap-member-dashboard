@@ -18,7 +18,7 @@ export type TransactionErrorLookup = {
 
 export enum ChainId {
   Mainnet = 1,
-  Goerli = 5,
+  Sepolia = 11155111,
 }
 
 export enum ContractVersion {
