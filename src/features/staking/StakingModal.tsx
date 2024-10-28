@@ -1,12 +1,22 @@
 import BigNumber from "bignumber.js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSwitchNetwork, useWaitForTransaction } from "wagmi";
+import { zeroAddress } from "viem";
+import {
+  useAccount,
+  useContractRead,
+  useSwitchNetwork,
+  useWaitForTransaction,
+} from "wagmi";
+import { ContractTypes } from "../../config/ContractAddresses";
+import { useContractAddresses } from "../../config/hooks/useContractAddress";
+import { astAbi } from "../../contracts/astAbi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { Modal } from "../common/Modal";
 import { TransactionTracker } from "../common/TransactionTracker";
 import { ManageStake } from "./ManageStake";
+import { useApprovalEvent } from "./hooks/useApprovalEvent";
 import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useChainSupportsStaking } from "./hooks/useChainSupportsStaking";
@@ -26,6 +36,7 @@ export const StakingModal = () => {
     setTxHash,
     v4UnstakingBalance,
     setV4UnstakingBalance,
+    approvalLog,
   } = useStakingModalStore();
 
   const formReturn = useForm();
@@ -82,6 +93,33 @@ export const StakingModal = () => {
     enabled: stakingAmount > 0n && !!needsApproval,
   });
 
+  useApprovalEvent();
+  console.log("approvalLog", approvalLog);
+
+  const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
+    defaultChainId: 1,
+    useDefaultAsFallback: false,
+  });
+  const [AirSwapStaking_latest] = useContractAddresses(
+    [ContractTypes.AirSwapToken],
+    {
+      defaultChainId: 1,
+      useDefaultAsFallback: false,
+    },
+  );
+
+  const { address } = useAccount();
+  const { data: allowanceData } = useContractRead({
+    address: airSwapToken.address,
+    abi: astAbi,
+    functionName: "allowance",
+    args: [
+      address ?? zeroAddress,
+      AirSwapStaking_latest.address ?? zeroAddress,
+    ],
+    enabled: !!address,
+  });
+
   const {
     writeAsync: stakeAst,
     reset: resetStakeAst,
@@ -133,11 +171,6 @@ export const StakingModal = () => {
 
   const isV4UnstakeSuccess =
     dataUnstakeSastV4Deprecated?.hash && txStatus === "success";
-
-  // pass the following in after `verb` to check if v4 was unstaked
-  const transactionTrackerBalance = isV4UnstakeSuccess
-    ? Number(v4UnstakingBalance) / 10 ** 4
-    : Number(stakingAmount) / 10 ** 4;
 
   // don't pass in unstakeV4Deprecated actions because that is only handled in the content box in ManageStake
   const modalButtonAction = modalButtonActionsAndText({
@@ -194,6 +227,14 @@ export const StakingModal = () => {
       : txType === TxType.STAKE
       ? "staked"
       : "unstaked";
+
+  // pass the following in after `verb` to check if v4 was unstaked
+  const transactionTrackerBalance =
+    verb === "approved"
+      ? Number(allowanceData) / 10 ** 4
+      : isV4UnstakeSuccess
+      ? Number(v4UnstakingBalance) / 10 ** 4
+      : Number(stakingAmount) / 10 ** 4;
 
   // Used to disable close button in Modal.tsx
   const txIsLoading =

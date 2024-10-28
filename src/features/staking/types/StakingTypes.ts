@@ -25,3 +25,21 @@ export enum ContractVersion {
   "LATEST",
   "V4",
 }
+
+export type ApprovalLogType = {
+  address?: string;
+  args?: {
+    owner: `0x${string}`;
+    spender: `0x${string}`;
+    value: bigint;
+  };
+  blockHash?: `0x${string}`;
+  blockNumber?: bigint;
+  data: `0x${string}`;
+  eventName?: string;
+  logIndex?: number;
+  removed?: boolean;
+  topics: [signature: `0x${string}`, ...args: `0x${string}`[]];
+  transactionHash?: `0x${string}`;
+  transactionIndex?: number;
+}[];

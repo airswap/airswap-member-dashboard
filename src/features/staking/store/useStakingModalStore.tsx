@@ -1,7 +1,7 @@
 import { Address } from "viem";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { TxType } from "../types/StakingTypes";
+import { ApprovalLogType, TxType } from "../types/StakingTypes";
 
 type StakingModalStore = {
   showStakingModal: boolean;
@@ -12,6 +12,8 @@ type StakingModalStore = {
   setTxHash: (hash: Address | undefined) => void;
   v4UnstakingBalance: number | undefined;
   setV4UnstakingBalance: (balance: number) => void;
+  approvalLog: ApprovalLogType | undefined;
+  setApprovalLog: (log: ApprovalLogType | undefined) => void;
 };
 
 const stakingModalStore = create<StakingModalStore>()(
@@ -36,6 +38,11 @@ const stakingModalStore = create<StakingModalStore>()(
       setV4UnstakingBalance(balance: number | undefined) {
         set({ v4UnstakingBalance: balance });
       },
+
+      approvalLog: undefined,
+      setApprovalLog(log: ApprovalLogType | undefined) {
+        set({ approvalLog: log });
+      },
     }),
     {
       name: "stakingModalStorage",
@@ -53,6 +60,8 @@ export const useStakingModalStore = () => {
     setTxHash,
     v4UnstakingBalance,
     setV4UnstakingBalance,
+    approvalLog,
+    setApprovalLog,
   ] = stakingModalStore((state) => [
     state.showStakingModal,
     state.setShowStakingModal,
@@ -62,7 +71,10 @@ export const useStakingModalStore = () => {
     state.setTxHash,
     state.v4UnstakingBalance,
     state.setV4UnstakingBalance,
+    state.approvalLog,
+    state.setApprovalLog,
   ]);
+
   return {
     showStakingModal,
     setShowStakingModal,
@@ -72,5 +84,7 @@ export const useStakingModalStore = () => {
     setTxHash,
     v4UnstakingBalance,
     setV4UnstakingBalance,
+    approvalLog,
+    setApprovalLog,
   };
 };

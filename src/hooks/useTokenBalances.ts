@@ -71,8 +71,6 @@ export const useTokenBalances = () => {
     enabled: !!isConnected,
   });
 
-  console.log(data);
-
   // available balance to unstake from latest contract
   const unstakableSastBalanceRaw = (data && (data[0].result as bigint)) || 0n;
   // total staked balance latest contract (not necessarily available to unstake)
