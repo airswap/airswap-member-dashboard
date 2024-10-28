@@ -2,24 +2,21 @@ import { decodeEventLog } from "viem";
 import { astAbi } from "../../../contracts/astAbi";
 import { ApprovalLogType } from "../types/StakingTypes";
 
-export const decodedEventLog = (log: ApprovalLogType) => {
-  const logArray = log[1] || log[0];
-  if (logArray && logArray.topics.length > 0) {
+export const decodedEventLog = (log: ApprovalLogType): bigint | null => {
+  const lastLog = log[log.length - 1];
+
+  if (lastLog) {
     try {
       const decoded = decodeEventLog({
         abi: astAbi,
-        data: logArray.data,
-        topics: logArray.topics as [
-          signature: `0x${string}`,
-          ...args: `0x${string}`[],
-        ],
+        eventName: "Approval",
+        data: lastLog.data,
+        topics: lastLog.topics,
       });
 
       if (decoded.eventName === "Approval" && decoded.args) {
-        return {
-          data: logArray.data,
-          topics: logArray.topics,
-        };
+        const { value: approvalValue } = decoded.args;
+        return approvalValue;
       }
     } catch (error) {
       console.error("Error decoding log:", error);

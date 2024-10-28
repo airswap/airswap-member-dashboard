@@ -1,4 +1,4 @@
-import { useContractEvent, useNetwork } from "wagmi";
+import { useContractEvent } from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
@@ -7,12 +7,11 @@ import { ApprovalLogType } from "../types/StakingTypes";
 import { decodedEventLog } from "../utils/decodeEventLog";
 
 export const useApprovalEvent = () => {
-  const { chain } = useNetwork();
   const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
     defaultChainId: 1,
     useDefaultAsFallback: true,
   });
-  const { setApprovalLog } = useStakingModalStore();
+  const { setApprovalEventLog } = useStakingModalStore();
 
   useContractEvent({
     address: airSwapToken.address,
@@ -21,13 +20,12 @@ export const useApprovalEvent = () => {
     listener(log) {
       console.log("Raw log:", log);
 
-      const decodedLog = decodedEventLog(log as ApprovalLogType);
-      console.log("decodedLog:", decodedLog);
+      const approvalValue = decodedEventLog(log as ApprovalLogType);
+      console.log("Decoded approvalValue:", approvalValue);
 
-      if (decodedLog) {
-        setApprovalLog([decodedLog]);
+      if (approvalValue) {
+        setApprovalEventLog(approvalValue);
       }
     },
-    chainId: chain?.id,
   });
 };

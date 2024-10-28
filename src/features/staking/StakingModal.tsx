@@ -36,7 +36,7 @@ export const StakingModal = () => {
     setTxHash,
     v4UnstakingBalance,
     setV4UnstakingBalance,
-    approvalLog,
+    approvalEventLog,
   } = useStakingModalStore();
 
   const formReturn = useForm();
@@ -94,7 +94,7 @@ export const StakingModal = () => {
   });
 
   useApprovalEvent();
-  console.log("approvalLog", approvalLog);
+  console.log("approvalEventLog", approvalEventLog);
 
   const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
     defaultChainId: 1,

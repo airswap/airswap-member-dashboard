@@ -1,19 +1,18 @@
-import { Address } from "viem";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { ApprovalLogType, TxType } from "../types/StakingTypes";
+import { TxType } from "../types/StakingTypes";
 
 type StakingModalStore = {
   showStakingModal: boolean;
   setShowStakingModal: (show: boolean) => void;
   txType: TxType;
   setTxType: (change: TxType) => void;
-  txHash: Address | undefined;
-  setTxHash: (hash: Address | undefined) => void;
+  txHash: string | undefined;
+  setTxHash: (hash: string | undefined) => void;
   v4UnstakingBalance: number | undefined;
   setV4UnstakingBalance: (balance: number) => void;
-  approvalLog: ApprovalLogType | undefined;
-  setApprovalLog: (log: ApprovalLogType | undefined) => void;
+  approvalEventLog: bigint | undefined;
+  setApprovalEventLog: (log: bigint | undefined) => void;
 };
 
 const stakingModalStore = create<StakingModalStore>()(
@@ -30,7 +29,7 @@ const stakingModalStore = create<StakingModalStore>()(
       },
 
       txHash: undefined,
-      setTxHash(hash: Address | undefined) {
+      setTxHash(hash: string | undefined) {
         set({ txHash: hash });
       },
 
@@ -39,9 +38,9 @@ const stakingModalStore = create<StakingModalStore>()(
         set({ v4UnstakingBalance: balance });
       },
 
-      approvalLog: undefined,
-      setApprovalLog(log: ApprovalLogType | undefined) {
-        set({ approvalLog: log });
+      approvalEventLog: undefined,
+      setApprovalEventLog(log: bigint | undefined) {
+        set({ approvalEventLog: log });
       },
     }),
     {
@@ -50,41 +49,4 @@ const stakingModalStore = create<StakingModalStore>()(
   ),
 );
 
-export const useStakingModalStore = () => {
-  const [
-    showStakingModal,
-    setShowStakingModal,
-    txType,
-    setTxType,
-    txHash,
-    setTxHash,
-    v4UnstakingBalance,
-    setV4UnstakingBalance,
-    approvalLog,
-    setApprovalLog,
-  ] = stakingModalStore((state) => [
-    state.showStakingModal,
-    state.setShowStakingModal,
-    state.txType,
-    state.setTxType,
-    state.txHash,
-    state.setTxHash,
-    state.v4UnstakingBalance,
-    state.setV4UnstakingBalance,
-    state.approvalLog,
-    state.setApprovalLog,
-  ]);
-
-  return {
-    showStakingModal,
-    setShowStakingModal,
-    txType,
-    setTxType,
-    txHash,
-    setTxHash,
-    v4UnstakingBalance,
-    setV4UnstakingBalance,
-    approvalLog,
-    setApprovalLog,
-  };
-};
+export const useStakingModalStore = stakingModalStore;
