@@ -1,16 +1,7 @@
 import BigNumber from "bignumber.js";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zeroAddress } from "viem";
-import {
-  useAccount,
-  useContractRead,
-  useSwitchNetwork,
-  useWaitForTransaction,
-} from "wagmi";
-import { ContractTypes } from "../../config/ContractAddresses";
-import { useContractAddresses } from "../../config/hooks/useContractAddress";
-import { astAbi } from "../../contracts/astAbi";
+import { useSwitchNetwork, useWaitForTransaction } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
 import { Modal } from "../common/Modal";
@@ -36,7 +27,7 @@ export const StakingModal = () => {
     setTxHash,
     v4UnstakingBalance,
     setV4UnstakingBalance,
-    approvalEventLog,
+    approvalEventLog: amountApproved,
   } = useStakingModalStore();
 
   const formReturn = useForm();
@@ -45,6 +36,13 @@ export const StakingModal = () => {
     new BigNumber(getValues().stakingAmount || 0)
       .multipliedBy(10 ** 4)
       .toString(),
+  );
+  console.log(
+    "stakingAmount:",
+    stakingAmount,
+    "\n",
+    "amountApproved:",
+    amountApproved,
   );
 
   const isSupportedChain = useChainSupportsStaking();
@@ -92,33 +90,7 @@ export const StakingModal = () => {
     stakingAmount: stakingAmount,
     enabled: stakingAmount > 0n && !!needsApproval,
   });
-
   useApprovalEvent();
-  console.log("approvalEventLog", approvalEventLog);
-
-  const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
-    defaultChainId: 1,
-    useDefaultAsFallback: false,
-  });
-  const [AirSwapStaking_latest] = useContractAddresses(
-    [ContractTypes.AirSwapToken],
-    {
-      defaultChainId: 1,
-      useDefaultAsFallback: false,
-    },
-  );
-
-  const { address } = useAccount();
-  const { data: allowanceData } = useContractRead({
-    address: airSwapToken.address,
-    abi: astAbi,
-    functionName: "allowance",
-    args: [
-      address ?? zeroAddress,
-      AirSwapStaking_latest.address ?? zeroAddress,
-    ],
-    enabled: !!address,
-  });
 
   const {
     writeAsync: stakeAst,
@@ -231,7 +203,8 @@ export const StakingModal = () => {
   // pass the following in after `verb` to check if v4 was unstaked
   const transactionTrackerBalance =
     verb === "approved"
-      ? Number(allowanceData) / 10 ** 4
+      ? // ? Number(allowanceData) / 10 ** 4
+        Number(amountApproved?.toString()) / 10 ** 4 || 0
       : isV4UnstakeSuccess
       ? Number(v4UnstakingBalance) / 10 ** 4
       : Number(stakingAmount) / 10 ** 4;

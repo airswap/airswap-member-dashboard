@@ -1,3 +1,4 @@
+import { Hash } from "viem";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { TxType } from "../types/StakingTypes";
@@ -8,7 +9,7 @@ type StakingModalStore = {
   txType: TxType;
   setTxType: (change: TxType) => void;
   txHash: string | undefined;
-  setTxHash: (hash: string | undefined) => void;
+  setTxHash: (hash: Hash | undefined) => void;
   v4UnstakingBalance: number | undefined;
   setV4UnstakingBalance: (balance: number) => void;
   approvalEventLog: bigint | undefined;
@@ -29,7 +30,7 @@ const stakingModalStore = create<StakingModalStore>()(
       },
 
       txHash: undefined,
-      setTxHash(hash: string | undefined) {
+      setTxHash(hash: Hash | undefined) {
         set({ txHash: hash });
       },
 
