@@ -27,6 +27,7 @@ export const StakingModal = () => {
     setTxHash,
     v4UnstakingBalance,
     setV4UnstakingBalance,
+    setApprovalEventLog,
     approvalEventLog: amountApproved,
   } = useStakingModalStore();
 
@@ -36,13 +37,6 @@ export const StakingModal = () => {
     new BigNumber(getValues().stakingAmount || 0)
       .multipliedBy(10 ** 4)
       .toString(),
-  );
-  console.log(
-    "stakingAmount:",
-    stakingAmount,
-    "\n",
-    "amountApproved:",
-    amountApproved,
   );
 
   const isSupportedChain = useChainSupportsStaking();
@@ -90,6 +84,7 @@ export const StakingModal = () => {
     stakingAmount: stakingAmount,
     enabled: stakingAmount > 0n && !!needsApproval,
   });
+
   useApprovalEvent();
 
   const {

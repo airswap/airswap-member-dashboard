@@ -42,4 +42,4 @@ export type ApprovalLogType = {
   topics: [signature: `0x${string}`, ...args: `0x${string}`[]];
   transactionHash?: `0x${string}`;
   transactionIndex?: number;
-}[];
+};
