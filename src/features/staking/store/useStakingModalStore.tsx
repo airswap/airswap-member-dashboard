@@ -12,8 +12,8 @@ type StakingModalStore = {
   setTxHash: (hash: Hash | undefined) => void;
   v4UnstakingBalance: number | undefined;
   setV4UnstakingBalance: (balance: number) => void;
-  approvalEventLog: bigint | undefined;
-  setApprovalEventLog: (log: bigint | undefined) => void;
+  approvalEventLog: string | undefined;
+  setApprovalEventLog: (log: string | undefined) => void;
 };
 
 const stakingModalStore = create<StakingModalStore>()(
@@ -40,8 +40,8 @@ const stakingModalStore = create<StakingModalStore>()(
       },
 
       approvalEventLog: undefined,
-      setApprovalEventLog(log: bigint | undefined) {
-        set({ approvalEventLog: log });
+      setApprovalEventLog(log: string | undefined) {
+        set({ approvalEventLog: log ? log.toString() : undefined });
       },
     }),
     {

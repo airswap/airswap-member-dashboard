@@ -29,9 +29,9 @@ export enum ContractVersion {
 export type ApprovalLogType = {
   address?: string;
   args?: {
-    owner: `0x${string}`;
-    spender: `0x${string}`;
-    value: bigint;
+    owner?: `0x${string}`;
+    spender?: `0x${string}`;
+    value?: bigint;
   };
   blockHash?: `0x${string}`;
   blockNumber?: bigint;

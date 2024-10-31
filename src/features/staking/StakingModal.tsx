@@ -27,8 +27,7 @@ export const StakingModal = () => {
     setTxHash,
     v4UnstakingBalance,
     setV4UnstakingBalance,
-    setApprovalEventLog,
-    approvalEventLog: amountApproved,
+    approvalEventLog,
   } = useStakingModalStore();
 
   const formReturn = useForm();
@@ -194,6 +193,10 @@ export const StakingModal = () => {
       : txType === TxType.STAKE
       ? "staked"
       : "unstaked";
+
+  const amountApproved = approvalEventLog
+    ? BigInt(approvalEventLog)
+    : undefined;
 
   // pass the following in after `verb` to check if v4 was unstaked
   const transactionTrackerBalance =

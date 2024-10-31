@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useContractEvent } from "wagmi";
+import { useContractEvent, useNetwork } from "wagmi";
 import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
@@ -7,10 +6,7 @@ import { useStakingModalStore } from "../store/useStakingModalStore";
 import { decodedApprovalEventLog } from "./utils/decodedApprovalEventLog";
 
 export const useApprovalEvent = () => {
-  const [approvalLog, setApprovalLog] = useState<undefined | any>(undefined);
-  const [decodedValue, setDecodedValue] = useState<bigint | undefined>(
-    undefined,
-  );
+  const { chain } = useNetwork();
   const { setApprovalEventLog } = useStakingModalStore();
 
   const [airSwapToken] = useContractAddresses([ContractTypes.AirSwapToken], {
@@ -22,19 +18,15 @@ export const useApprovalEvent = () => {
     address: airSwapToken.address,
     abi: astAbi,
     eventName: "Approval",
-    listener: (log) => {
-      setApprovalLog(log);
+    listener(log) {
+      console.log("start listener LOG");
+
+      // Decode the array of event logs and update Zustand store with each valid decoded value
+      const decodedValues = decodedApprovalEventLog(log);
+      decodedValues.forEach((value) => {
+        setApprovalEventLog(value.toString());
+      });
     },
+    chainId: chain?.id,
   });
-
-  useEffect(() => {
-    if (approvalLog) {
-      const decodedValues = decodedApprovalEventLog(approvalLog);
-      setDecodedValue(decodedValues[decodedValues.length - 1]);
-
-      setApprovalEventLog(approvalLog);
-    }
-  }, [approvalLog, setApprovalEventLog]);
-
-  return decodedValue;
 };
