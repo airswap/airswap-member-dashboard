@@ -7,7 +7,6 @@ import { Button } from "../common/Button";
 import { Modal } from "../common/Modal";
 import { TransactionTracker } from "../common/TransactionTracker";
 import { ManageStake } from "./ManageStake";
-import { useApprovalEvent } from "./hooks/useApprovalEvent";
 import { useApproveAst } from "./hooks/useApproveAst";
 import { useAstAllowance } from "./hooks/useAstAllowance";
 import { useChainSupportsStaking } from "./hooks/useChainSupportsStaking";
@@ -84,7 +83,7 @@ export const StakingModal = () => {
     enabled: stakingAmount > 0n && !!needsApproval,
   });
 
-  useApprovalEvent();
+  // useApprovalEvent();
 
   const {
     writeAsync: stakeAst,
@@ -185,14 +184,18 @@ export const StakingModal = () => {
     !!currentTransactionHash;
 
   // Used in "you successfully {verb} {stakingAmount} AST"
-  const verb =
-    isApproval && !dataUnstakeSastV4Deprecated?.hash
-      ? "approved"
-      : isApproval && dataUnstakeSastV4Deprecated?.hash
-      ? "unstaked"
-      : txType === TxType.STAKE
-      ? "staked"
-      : "unstaked";
+  const handleVerb = () => {
+    if (txType === TxType.UNSTAKE) {
+      return "unstaked";
+    } else if (isApproval && !dataUnstakeSastV4Deprecated?.hash) {
+      return "approved";
+    } else if (!isApproval && dataStakeAst?.hash) {
+      return "staked";
+    } else {
+      return;
+    }
+  };
+  const verb = handleVerb();
 
   const amountApproved = approvalEventLog
     ? BigInt(approvalEventLog)

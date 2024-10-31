@@ -19,9 +19,8 @@ export const useApprovalEvent = () => {
     abi: astAbi,
     eventName: "Approval",
     listener(log) {
-      console.log("start listener LOG");
+      console.log("start listener LOG:", log);
 
-      // Decode the array of event logs and update Zustand store with each valid decoded value
       const decodedValues = decodedApprovalEventLog(log);
       decodedValues.forEach((value) => {
         setApprovalEventLog(value.toString());
