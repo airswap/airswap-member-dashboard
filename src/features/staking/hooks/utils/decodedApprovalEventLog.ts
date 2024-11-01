@@ -18,7 +18,6 @@ export const decodedApprovalEventLog = (logs: ApprovalLogType[]): bigint[] => {
           : undefined;
       } catch (error) {
         console.error("Error decoding log:", error);
-        return undefined;
       }
     })
     .filter((value): value is bigint => value !== undefined);
