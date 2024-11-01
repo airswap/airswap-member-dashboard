@@ -74,7 +74,7 @@ export const StakingModal = () => {
   const isStakeButtonDisabled = stakingAmount <= 0 || isInsufficientBalance;
 
   const {
-    writeAsync: approveAst,
+    approveAst,
     data: dataApproveAst,
     reset: resetApproveAst,
     isLoading: approvalAwaitingSignature,
@@ -82,8 +82,6 @@ export const StakingModal = () => {
     stakingAmount: stakingAmount,
     enabled: stakingAmount > 0n && !!needsApproval,
   });
-
-  // useApprovalEvent();
 
   const {
     writeAsync: stakeAst,
@@ -226,8 +224,7 @@ export const StakingModal = () => {
     // after successfully staking, `needsApproval` will reset to true. We need `dataStakeAst` to be falsey to set `isApproval` to true, otherwise const `verb` will show as "approved" after the user has staked
     if (needsApproval && !dataStakeAst) {
       setIsApproval(true);
-    }
-    if (unstakeAwaitingSignature || stakeAwaitingSignature)
+    } else if (unstakeAwaitingSignature || stakeAwaitingSignature)
       setIsApproval(false);
   }, [
     needsApproval,

@@ -33,13 +33,13 @@ export type ApprovalLogType = {
     spender?: `0x${string}`;
     value?: bigint;
   };
-  blockHash?: `0x${string}`;
-  blockNumber?: bigint;
+  blockHash?: `0x${string}` | null;
+  blockNumber?: bigint | null;
   data: `0x${string}`;
   eventName?: string;
-  logIndex?: number;
+  logIndex?: number | null;
   removed?: boolean;
-  topics: [signature: `0x${string}`, ...args: `0x${string}`[]];
-  transactionHash?: `0x${string}`;
-  transactionIndex?: number;
+  topics: [] | [signature: `0x${string}`, ...args: `0x${string}`[]]; // Allow empty array or populated array
+  transactionHash?: `0x${string}` | null;
+  transactionIndex?: number | null;
 };
