@@ -11,7 +11,6 @@ type TestnetTokensNetworkMapping = {
   [index: number]: TestnetClaimableToken[];
 };
 
-// FIXME: replace Goerli with a (11155111) addresses
 export const testnetClaimableTokens: TestnetTokensNetworkMapping = {
   11155111: [
     // USDT
