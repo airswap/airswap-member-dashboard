@@ -7,7 +7,7 @@ export const etherscanLink = (
 ) => {
   const chainUrls: { [key in ChainId]: string } = {
     [ChainId.Mainnet]: "https://etherscan.io/tx/",
-    [ChainId.Goerli]: "https://goerli.etherscan.io/tx/",
+    [ChainId.Sepolia]: "https://sepolia.etherscan.io/tx/",
   };
 
   return `${chainUrls[(chainId as ChainId) || 1]}${transactionHash}`;

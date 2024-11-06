@@ -12,21 +12,20 @@ type TestnetTokensNetworkMapping = {
 };
 
 export const testnetClaimableTokens: TestnetTokensNetworkMapping = {
-  5: [
-    // goerli
-    // link
+  11155111: [
+    // USDT
     {
-      address: "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
-      mainnetEquivalentAddress: "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+      address: "0x20aaebad8c7c6ffb6fdaa5a622c399561562beea",
+      mainnetEquivalentAddress: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
     },
-    // uni
+    // USDC
     {
-      address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
-      mainnetEquivalentAddress: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+      address: "0xf450ef4f268eaf2d3d8f9ed0354852e255a5eaef", // USDC
+      mainnetEquivalentAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     },
     // weth
     {
-      address: "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
+      address: "0xb16F35c0Ae2912430DAc15764477E179D9B9EbEa",
       mainnetEquivalentAddress: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     },
   ],
@@ -70,8 +69,6 @@ export const claimableTokens = {
     "0xA9E8aCf069C58aEc8825542845Fd754e41a9489A", //pepecoin
     "0x7dA2641000Cbb407C329310C461b2cB9c70C3046", //AGI
     "0xf23a2BF7619Ad93300499c3fC7d7145A06CcA562", //NOISEGPT
-  
-    
   ] as `0x${string}`[],
   56: [
     // bsc

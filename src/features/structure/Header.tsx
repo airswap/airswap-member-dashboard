@@ -25,17 +25,6 @@ export const Header = ({}: {}) => {
 
       <div className="flex flex-row items-center gap-2 xs:gap-4">
         <WalletConnection />
-        {/* {!isConnected ? (
-          <>
-            <SettingsMenuButton />
-            <WalletConnection />
-          </>
-        ) : (
-          <>
-            <WalletConnection />
-            <SettingsMenuButton />
-          </>
-        )} */}
         {isConnected ? <StakingButton /> : null}
       </div>
     </div>

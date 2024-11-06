@@ -1,4 +1,4 @@
-import { Address } from "viem";
+import { Hash } from "viem";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { TxType } from "../types/StakingTypes";
@@ -8,10 +8,12 @@ type StakingModalStore = {
   setShowStakingModal: (show: boolean) => void;
   txType: TxType;
   setTxType: (change: TxType) => void;
-  txHash: Address | undefined;
-  setTxHash: (hash: Address | undefined) => void;
+  txHash: string | undefined;
+  setTxHash: (hash: Hash | undefined) => void;
   v4UnstakingBalance: number | undefined;
   setV4UnstakingBalance: (balance: number) => void;
+  approvalEventLog: string | undefined;
+  setApprovalEventLog: (log: string | undefined) => void;
 };
 
 const stakingModalStore = create<StakingModalStore>()(
@@ -28,13 +30,18 @@ const stakingModalStore = create<StakingModalStore>()(
       },
 
       txHash: undefined,
-      setTxHash(hash: Address | undefined) {
+      setTxHash(hash: Hash | undefined) {
         set({ txHash: hash });
       },
 
       v4UnstakingBalance: undefined,
       setV4UnstakingBalance(balance: number | undefined) {
         set({ v4UnstakingBalance: balance });
+      },
+
+      approvalEventLog: undefined,
+      setApprovalEventLog(log: string | undefined) {
+        set({ approvalEventLog: log ? log.toString() : undefined });
       },
     }),
     {
@@ -43,34 +50,4 @@ const stakingModalStore = create<StakingModalStore>()(
   ),
 );
 
-export const useStakingModalStore = () => {
-  const [
-    showStakingModal,
-    setShowStakingModal,
-    txType,
-    setTxType,
-    txHash,
-    setTxHash,
-    v4UnstakingBalance,
-    setV4UnstakingBalance,
-  ] = stakingModalStore((state) => [
-    state.showStakingModal,
-    state.setShowStakingModal,
-    state.txType,
-    state.setTxType,
-    state.txHash,
-    state.setTxHash,
-    state.v4UnstakingBalance,
-    state.setV4UnstakingBalance,
-  ]);
-  return {
-    showStakingModal,
-    setShowStakingModal,
-    txType,
-    setTxType,
-    txHash,
-    setTxHash,
-    v4UnstakingBalance,
-    setV4UnstakingBalance,
-  };
-};
+export const useStakingModalStore = stakingModalStore;

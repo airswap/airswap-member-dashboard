@@ -21,6 +21,7 @@ export const useTokenBalances = () => {
     defaultChainId: 1,
     useDefaultAsFallback: true,
   });
+
   const airSwapTokenContract = {
     address: airSwapToken.address,
     chain: airSwapToken.chainId,

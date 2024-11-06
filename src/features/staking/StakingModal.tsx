@@ -26,6 +26,7 @@ export const StakingModal = () => {
     setTxHash,
     v4UnstakingBalance,
     setV4UnstakingBalance,
+    approvalEventLog,
   } = useStakingModalStore();
 
   const formReturn = useForm();
@@ -73,7 +74,7 @@ export const StakingModal = () => {
   const isStakeButtonDisabled = stakingAmount <= 0 || isInsufficientBalance;
 
   const {
-    writeAsync: approveAst,
+    approveAst,
     data: dataApproveAst,
     reset: resetApproveAst,
     isLoading: approvalAwaitingSignature,
@@ -134,11 +135,6 @@ export const StakingModal = () => {
   const isV4UnstakeSuccess =
     dataUnstakeSastV4Deprecated?.hash && txStatus === "success";
 
-  // pass the following in after `verb` to check if v4 was unstaked
-  const transactionTrackerBalance = isV4UnstakeSuccess
-    ? Number(v4UnstakingBalance) / 10 ** 4
-    : Number(stakingAmount) / 10 ** 4;
-
   // don't pass in unstakeV4Deprecated actions because that is only handled in the content box in ManageStake
   const modalButtonAction = modalButtonActionsAndText({
     isSupportedNetwork: isSupportedChain,
@@ -186,14 +182,31 @@ export const StakingModal = () => {
     !!currentTransactionHash;
 
   // Used in "you successfully {verb} {stakingAmount} AST"
-  const verb =
-    isApproval && !dataUnstakeSastV4Deprecated?.hash
-      ? "approved"
-      : isApproval && dataUnstakeSastV4Deprecated?.hash
-      ? "unstaked"
-      : txType === TxType.STAKE
-      ? "staked"
-      : "unstaked";
+  const handleVerb = () => {
+    if (txType === TxType.UNSTAKE) {
+      return "unstaked";
+    } else if (isApproval && !dataUnstakeSastV4Deprecated?.hash) {
+      return "approved";
+    } else if (!isApproval && dataStakeAst?.hash) {
+      return "staked";
+    } else {
+      return;
+    }
+  };
+  const verb = handleVerb();
+
+  const amountApproved = approvalEventLog
+    ? BigInt(approvalEventLog)
+    : undefined;
+
+  // pass the following in after `verb` to check if v4 was unstaked
+  const transactionTrackerBalance =
+    verb === "approved"
+      ? // ? Number(allowanceData) / 10 ** 4
+        Number(amountApproved?.toString()) / 10 ** 4 || 0
+      : isV4UnstakeSuccess
+      ? Number(v4UnstakingBalance) / 10 ** 4
+      : Number(stakingAmount) / 10 ** 4;
 
   // Used to disable close button in Modal.tsx
   const txIsLoading =
@@ -211,8 +224,7 @@ export const StakingModal = () => {
     // after successfully staking, `needsApproval` will reset to true. We need `dataStakeAst` to be falsey to set `isApproval` to true, otherwise const `verb` will show as "approved" after the user has staked
     if (needsApproval && !dataStakeAst) {
       setIsApproval(true);
-    }
-    if (unstakeAwaitingSignature || stakeAwaitingSignature)
+    } else if (unstakeAwaitingSignature || stakeAwaitingSignature)
       setIsApproval(false);
   }, [
     needsApproval,
