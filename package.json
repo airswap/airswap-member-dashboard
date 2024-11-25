@@ -37,7 +37,7 @@
     "zustand": "^4.4.2"
   },
   "devDependencies": {
-    "@tanstack/react-query-devtools": "^4.32.0",
+    "@tanstack/react-query-devtools": "4.32.0",
     "@types/node": "^20.8.2",
     "@types/react": "^18.2.24",
     "@types/react-blockies": "^1.4.2",
