@@ -85,7 +85,7 @@ const config = createConfig({
   autoConnect: true,
   publicClient,
   webSocketPublicClient,
-  // queryClient,
+  queryClient,
   connectors: [
     new MetaMaskConnector({ chains }),
     new InjectedConnector({ chains }),
