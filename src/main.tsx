@@ -22,8 +22,9 @@ import App from "./App.tsx";
 import AirSwapLogo from "./assets/airswap-logo.svg";
 import "./index.css";
 import { isPlainObject } from "./utils/isPlainObject.ts";
+import { providerUrlsByChain } from "./config/ProviderUrls.ts";
 
-import { infuraProvider } from "wagmi/providers/infura";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
 
 // Fonts:
@@ -44,7 +45,11 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     //     http: "http://localhost:8545",
     //   }),
     // }),
-    infuraProvider({ apiKey: import.meta.env.VITE_INFURA_API_KEY || "" }),
+    jsonRpcProvider({
+      rpc: (chain) => ({
+        http: providerUrlsByChain[chain.id],
+      }),
+    }),
     publicProvider(),
   ],
   {
