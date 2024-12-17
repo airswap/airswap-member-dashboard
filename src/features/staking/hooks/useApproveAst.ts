@@ -1,3 +1,4 @@
+// biome-ignore lint/style/useImportType: <explanation>
 import { Log, zeroAddress } from "viem";
 import {
   useContractWrite,
@@ -8,6 +9,7 @@ import { ContractTypes } from "../../../config/ContractAddresses";
 import { useContractAddresses } from "../../../config/hooks/useContractAddress";
 import { astAbi } from "../../../contracts/astAbi";
 import { useStakingModalStore } from "../store/useStakingModalStore";
+// biome-ignore lint/style/useImportType: <explanation>
 import { ApprovalLogType } from "../types/StakingTypes";
 import { decodedApprovalEventLog } from "./utils/decodedApprovalEventLog";
 
@@ -57,19 +59,22 @@ export const useApproveAst = ({
 
       // Filter and map logs for compatibility with ApprovalLogType
       const approvalLogs: ApprovalLogType[] = transactionReceipt.logs
-        .filter(
-          (log): log is Log<bigint, number> =>
-            log.address.toLowerCase() === airSwapToken.address!.toLowerCase(),
-        )
-        .map((log) => ({
-          ...log,
-          blockHash: log.blockHash ?? undefined, // Convert null to undefined for compatibility
-        }));
-
+        .filter((log) => {
+          return (
+            log.address.toLowerCase() ===
+              airSwapToken?.address?.toLowerCase() && log.blockHash !== null
+          );
+        })
+        .map((log) => {
+          return {
+            ...log,
+            blockHash: log.blockHash || undefined, // Ensure blockHash is not null
+          } as Log<bigint, number>; // Explicitly cast the log type
+        });
       const decodedValues = decodedApprovalEventLog(approvalLogs);
-      decodedValues.forEach((value) => {
+      for (const value of decodedValues) {
         setApprovalEventLog(value.toString()); // Store the approval value in Zustand
-      });
+      }
     },
   });
 
