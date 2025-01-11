@@ -40,6 +40,10 @@ jobs:
         uses: actions/configure-pages@v3
 
       - name: Install and Build 🔧
+        env:
+          VITE_WALLETCONNECT_ID: ${{ vars.VITE_WALLETCONNECT_ID }}
+          VITE_ACTIVATE_POINTS_LEAVES_URL: ${{ vars.VITE_ACTIVATE_POINTS_LEAVES_URL }}
+          VITE_ENABLE_ACTIVATE_MIGRATION: ${{ vars.VITE_ENABLE_ACTIVATE_MIGRATION }}
         run: |
           yarn
           yarn build

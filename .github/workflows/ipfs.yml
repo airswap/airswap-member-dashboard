@@ -16,7 +16,6 @@ jobs:
 
       - name: Install and Build 🔧
         env:
-          VITE_INFURA_API_KEY: ${{ vars.VITE_INFURA_API_KEY }}
           VITE_WALLETCONNECT_ID: ${{ vars.VITE_WALLETCONNECT_ID }}
           VITE_ACTIVATE_POINTS_LEAVES_URL: ${{ vars.VITE_ACTIVATE_POINTS_LEAVES_URL }}
           VITE_ENABLE_ACTIVATE_MIGRATION: ${{ vars.VITE_ENABLE_ACTIVATE_MIGRATION }}
