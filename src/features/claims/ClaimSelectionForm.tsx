@@ -23,7 +23,7 @@ import {
 import { useClaimableAmounts } from "./hooks/useClaimableAmounts";
 import { useResetClaimStatus } from "./hooks/useResetClaimStatus";
 
-export const ClaimForm = ({}: {}) => {
+export const ClaimStakingRewardForm = ({}: {}) => {
   const [pool] = useContractAddresses([ContractTypes.AirSwapPool], {});
   const { address: connectedAccount } = useAccount();
 

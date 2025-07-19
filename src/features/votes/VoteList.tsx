@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { useAccount, useChainId } from "wagmi";
 import { ActivatePointsCard } from "../activate-migration/ActivatePointsCard";
 import { NON_MAINNET_START_TIMESTAMP } from "../activate-migration/constants";
-import { ClaimForm } from "../claims/ClaimForm";
+import { ClaimStakingRewardForm } from "../claims/ClaimSelectionForm";
 import { ClaimModalSubheading } from "../claims/ClaimModalSubheading";
 import { CustomTokensForm } from "../claims/CustomTokensForm";
 import { Modal } from "../common/Modal";
@@ -134,9 +134,10 @@ export const VoteList = ({}: {}) => {
           subHeading={<ClaimModalSubheading />}
           className={`${showCustomTokensModal ? "hidden" : ""}`}
         >
-          <ClaimForm />
+          <ClaimStakingRewardForm />
         </Modal>
       )}
+
       {showCustomTokensModal && (
         <Modal
           onCloseRequest={() => setShowCustomTokensModal(false)}
