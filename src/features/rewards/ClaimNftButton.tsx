@@ -2,10 +2,13 @@ import { twJoin } from "tailwind-merge";
 import { useAccount } from "wagmi";
 import { useTokenBalances } from "../../hooks/useTokenBalances";
 import { Button } from "../common/Button";
-import { formatNumber } from "../common/utils/formatNumber";
 import { ClaimNftRewardForm } from "./ClaimNftRewardForm";
 import { useState } from "react";
 import { Modal } from "../common/Modal";
+import { requiredBalanceForNftClaim } from "./config";
+import { formatNumber } from "../common/utils/formatNumber";
+import { CheckMark } from "../common/icons/CheckMark";
+import { MdClose } from "react-icons/md";
 
 export const ClaimNftButton = () => {
   const { isConnected } = useAccount();
@@ -13,13 +16,14 @@ export const ClaimNftButton = () => {
   const { sAstBalanceRaw, sAstBalanceV4_DeprecatedRaw } = useTokenBalances();
 
   const totalSastBalance = sAstBalanceRaw + sAstBalanceV4_DeprecatedRaw;
-  const formattedTotalSastBalance = formatNumber(totalSastBalance, 4);
-  const requiredBalance = 100000n;
-  const isBalanceEnough = !!totalSastBalance && totalSastBalance >= requiredBalance;
+  const formattedRequiredBalance = formatNumber(requiredBalanceForNftClaim, 4, { minimumSignificantDigits: 4, maximumSignificantDigits: 4 });
+  // const isBalanceEnough = !!totalSastBalance && totalSastBalance >= requiredBalanceForNftClaim;
+  const isBalanceEnough = true;
+  const isEligible = isConnected && isBalanceEnough;
 
   return (
     <>
-      {isConnected && isBalanceEnough && (
+      {isEligible && (
         <div
           className={twJoin(
             "flex flex-row items-center gap-4 ring-1 ring-gray-800 max-h-[48px] rounded-full ml-5 md:pl-5 md:pr-[20px]",
@@ -30,7 +34,7 @@ export const ClaimNftButton = () => {
           </span>
 
           <Button
-            className="-mr-5 -my-px truncate"
+            className="md:-mr-5 -my-px truncate"
             rounded={true}
             color="primary"
             onClick={() => setShowClaimNftModal(true)}
@@ -43,7 +47,17 @@ export const ClaimNftButton = () => {
       {showClaimNftModal && (
         <Modal
           onCloseRequest={() => setShowClaimNftModal(false)}
-          heading="Claim NFT Reward"
+          heading={isEligible ? "Eligible for free mint" : "Not eligible for free mint"}
+          subHeading={
+            <div className="flex flex-row items-center">
+              <span>{`Required: ${formattedRequiredBalance} sAST`}</span>
+              <span
+                className={twJoin("ml-1", isEligible ? "text-green-400" : "text-red-400")}
+              >
+                {isEligible ? <CheckMark /> : <MdClose />}
+              </span>
+            </div>
+          }
         >
           <ClaimNftRewardForm />
         </Modal>

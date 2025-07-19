@@ -12,8 +12,13 @@ import { useContractAddresses } from "../../config/hooks/useContractAddress";
 import { poolAbi } from "../../contracts/poolAbi";
 import { Button } from "../common/Button";
 import { TransactionTracker } from "../common/TransactionTracker";
-import { useClaimSelectionStore } from "../votes/store/useClaimSelectionStore";
-import { useStakesForAccount } from "../staking/hooks/useStakesForAccount";
+import { requiredBalanceForNftClaim } from "./config";
+import { useTokenBalances } from "../../hooks/useTokenBalances";
+import { useClaimNftStore } from "./store/useClaimNftStore";
+import { useNftInfo } from "./hooks/useNftInfo";
+import { InfiniteInitiate } from "./InfiniteInitiate";
+
+const nftAddress = "0xf80cd411d49804d4a80bfe3b26dad4679b7918d7";
 
 export const ClaimNftRewardForm = ({}: {}) => {
   const [pool] = useContractAddresses([ContractTypes.AirSwapPool], {});
@@ -22,15 +27,18 @@ export const ClaimNftRewardForm = ({}: {}) => {
   const chainId = useChainId();
   const publicClient = usePublicClient({ chainId: chainId });
 
-  const { sAstBalance } = useStakesForAccount();
+  const { sAstBalanceRaw, sAstBalanceV4_DeprecatedRaw } = useTokenBalances();
 
-  const requiredBalance = 1000000000n;
-  const isBalanceEnough = !!sAstBalance && sAstBalance >= requiredBalance;
+  const totalSastBalance = sAstBalanceRaw + sAstBalanceV4_DeprecatedRaw;
+  const isBalanceEnough = !!totalSastBalance && totalSastBalance >= requiredBalanceForNftClaim;
   
-  const [setShowClaimModal, setIsClaimLoading] = useClaimSelectionStore((state) => [
-    state.setShowClaimModal,
+  const [showClaimNftModal, setShowClaimNftModal, setIsClaimLoading] = useClaimNftStore((state) => [
+    state.showClaimNftModal,
+    state.setShowClaimNftModal,
     state.setIsClaimLoading,
   ]);
+
+  const { data: nftInfo } = useNftInfo({address: nftAddress, id: 0n});
 
   const { config: claimTxConfig } = usePrepareContractWrite({
     ...pool,
@@ -78,7 +86,7 @@ export const ClaimNftRewardForm = ({}: {}) => {
     afterSuccess: {
       label: "Close",
       callback: () => {
-        setShowClaimModal(false);
+        setShowClaimNftModal(false);
       },
     },
   };
@@ -100,20 +108,11 @@ export const ClaimNftRewardForm = ({}: {}) => {
       className="w-[304px]"
     />
   ) : (
-    <div className="w-[320px] max-h-[320px] flex flex-col">
-      <div className="flex-1 overflow-auto [scrollbar-width:thin]">
-        <div
-          className="grid items-center gap-x-5 gap-y-4 pr-3"
-          style={{
-            gridTemplateColumns: "auto 1fr auto",
-          }}
-        >
-         
-        </div>
-      </div>
+    <div className="w-[320px]">
+      <InfiniteInitiate />
 
       <Button
-        className="mt-2 w-full"
+        className="mt-4 w-full"
         color="primary"
         rounded={false}
         onClick={() => {
