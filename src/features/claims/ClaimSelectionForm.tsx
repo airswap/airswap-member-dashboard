@@ -25,6 +25,7 @@ import { useResetClaimStatus } from "./hooks/useResetClaimStatus";
 
 export const ClaimStakingRewardForm = ({}: {}) => {
   const [pool] = useContractAddresses([ContractTypes.AirSwapPool], {});
+  
   const { address: connectedAccount } = useAccount();
 
   const [withdrawnAmount, setWithdrawnAmount] = useState<bigint>();
