@@ -3,6 +3,7 @@ import AirSwapLogoWithText from "../../assets/airswap-logo-with-text.svg";
 import AirSwapLogo from "../../assets/airswap-logo.svg";
 import WalletConnection from "../chain-connection/WalletConnection";
 import { StakingButton } from "../staking/StakingButton";
+import { ClaimNftButton } from "../rewards/ClaimNftButton";
 
 export const Header = ({}: {}) => {
   const { isConnected } = useAccount();
@@ -24,8 +25,9 @@ export const Header = ({}: {}) => {
       </div>
 
       <div className="flex flex-row items-center gap-2 xs:gap-4">
+        {isConnected && <ClaimNftButton />}
         <WalletConnection />
-        {isConnected ? <StakingButton /> : null}
+        {isConnected && <StakingButton />}
       </div>
     </div>
   );

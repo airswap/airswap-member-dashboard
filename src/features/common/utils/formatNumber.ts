@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js";
 export const formatNumber = (
   number?: number | bigint,
   decimals: number | null = null,
+  options?: (Intl.NumberFormatOptions & BigIntToLocaleStringOptions),
 ) => {
   if (number == null) return number;
 
@@ -21,5 +22,6 @@ export const formatNumber = (
     minimumSignificantDigits: 3,
     maximumSignificantDigits: 3,
     notation: "compact",
+    ...options,
   });
 };
